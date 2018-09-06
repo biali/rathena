@@ -20,7 +20,7 @@
 // see conf/battle/client.conf for other version
 
 #ifndef PACKETVER
-	#define PACKETVER 20130807
+	#define PACKETVER 20101124
 	//#define PACKETVER 20120410
 #endif
 
@@ -49,7 +49,7 @@
 /** Number of slots carded equipment can have. Never set to less than 4 as they are also used to keep the data of forged items/equipment. [Skotlex]
 * Note: The client seems unable to receive data for more than 4 slots due to all related packets having a fixed size. */
 #define MAX_SLOTS 4
-#define MAX_AMOUNT 30000 ////Max amount of a single stacked item
+#define MAX_AMOUNT 5000 ////Max amount of a single stacked item
 #define MAX_ZENY 1000000000 ///Max zeny
 #define MAX_BANK_ZENY SINT32_MAX ///Max zeny in Bank
 #define MAX_FAME 1000000000 ///Max fame points
@@ -62,9 +62,9 @@
 #define DEFAULT_WALK_SPEED 150 ///Default walk speed
 #define MIN_WALK_SPEED 20 ///Min walk speed
 #define MAX_WALK_SPEED 1000 ///Max walk speed
-#define MAX_STORAGE 600 ///Max number of storage slots a player can have, (up to ~850 tested)
-#define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
-#define MAX_PARTY 12 ///Max party member
+#define MAX_STORAGE 300 ///Max number of storage slots a player can have, (up to ~850 tested)
+#define MAX_GUILD_STORAGE 100 ///Max number of storage slots a guild
+#define MAX_PARTY 5 ///Max party member
 #define MAX_GUILD 16+10*6	///Increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	///Increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
 #define MAX_GUILDEXPULSION 32 ///Max Guild expulsion

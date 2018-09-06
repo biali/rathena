@@ -353,6 +353,88 @@ int battle_delay_damage(unsigned int tick, int amotion, struct block_list *src, 
 	return 0;
 }
 
+
+ 
+ // Adds the damage adjustments by sharpness
+ //Biali
+ struct Damage battle_calc_sharpness_dmg(struct map_session_data *sd, struct Damage wd) {
+ 	int sharpr, sharpl = 0;
+ 	short sharp = 0;
+ 	int pos = -1;
+ 
+ 	if(sd) {
+ 		if(sd->status.weapon == W_FIST)
+ 			return wd;
+ 		switch (sd->status.weapon) {
+ 			case W_DOUBLE_DD:
+ 			case W_DOUBLE_DS:
+ 			case W_DOUBLE_DA:
+ 			case W_DOUBLE_SS:
+ 			case W_DOUBLE_SA:
+ 			case W_DOUBLE_AA:
+ 				wd.damage2 = battle_calc_sharpness_dmg_sub(sd, wd.damage2, EQP_HAND_L);
+ 			case W_DAGGER:
+ 			case W_1HSWORD:
+ 			case W_1HSPEAR:
+ 			case W_1HAXE:
+ 				pos = pc_checkequip(sd,EQP_HAND_R);
+ 				if(pos >= 0) {
+ 					wd.damage = battle_calc_sharpness_dmg_sub(sd, wd.damage, EQP_HAND_R);
+ 				} else {
+ 					pos = pc_checkequip(sd,EQP_HAND_L);
+ 					wd.damage2 = battle_calc_sharpness_dmg_sub(sd, wd.damage2, EQP_HAND_L);
+ 				}
+ 				break;
+ 			case W_2HSWORD:
+ 			case W_2HSPEAR:
+ 			case W_2HAXE:
+ 			case W_KNUCKLE:
+ 			case W_KATAR:
+ 				wd.damage = battle_calc_sharpness_dmg_sub(sd, wd.damage, EQP_ARMS);
+ 				wd.damage2 = battle_calc_sharpness_dmg_sub(sd, wd.damage2, EQP_ARMS);
+ 				break;
+ 
+ 			default:
+ 				return wd; //equips with no sharpness
+ 				break;
+ 		}
+ 		pc_sharp_depletion(sd);
+ 	}
+ 
+ 	return wd;
+ }
+ 
+ //Biali
+ int64 battle_calc_sharpness_dmg_sub(struct map_session_data *sd, int64 damage, short hand)
+ {
+ 	short pos = -1;
+ 	int sharp = 0;
+ 
+ 	pos = pc_checkequip(sd,hand);
+ 	sharp = sd->status.inventory[pos].sharp;
+ 
+ 	if (sharp == 0){
+ 		damage = 0;
+ 		return damage;
+ 	}
+ 	if (sd->inventory_data[pos]->sharpness.b > 0 && sharp > sd->inventory_data[pos]->sharpness.b)
+ 		damage = damage * 132/100;
+ 	else if (sd->inventory_data[pos]->sharpness.g > 0 && sharp > sd->inventory_data[pos]->sharpness.g)
+ 		damage = damage * 120/100;
+ 	else if (sd->inventory_data[pos]->sharpness.y > 0 && sharp > sd->inventory_data[pos]->sharpness.y)
+ 		damage = damage * 105/100;
+ 	else if (sd->inventory_data[pos]->sharpness.o > 0 && sharp > sd->inventory_data[pos]->sharpness.o)
+ 		damage = damage;
+ 	else if (sd->inventory_data[pos]->sharpness.r > 0 && sharp > sd->inventory_data[pos]->sharpness.r)
+ 		damage = damage * 75/100;
+ 	else 
+ 		damage = damage * 50/100;
+ 
+ 	return damage;
+ }
+ 
+
+
 /**
  * Get attribute ratio
  * @param atk_elem Attack element enum e_element
@@ -1795,6 +1877,7 @@ static int battle_calc_base_weapon_attack(struct block_list *src, struct status_
 	uint16 atkmax = atkmin;
 	int64 damage = atkmin;
 	uint16 weapon_perfection = 0;
+	uint16 sharp = 0;
 	struct status_change *sc = status_get_sc(src);
 
 	if (sd->equip_index[type] >= 0 && sd->inventory_data[sd->equip_index[type]]) {
@@ -5247,6 +5330,12 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 		if (wd.damage + wd.damage2) { //Check if attack ignores DEF
 			if(!attack_ignores_def(wd, src, target, skill_id, skill_lv, EQI_HAND_L) || !attack_ignores_def(wd, src, target, skill_id, skill_lv, EQI_HAND_R))
 				wd = battle_calc_defense_reduction(wd, src, target, skill_id, skill_lv);
+ 
+ 			//Biali
+ 			if (src->type == BL_PC) {
+ 				sd=(struct map_session_data *)src;
+ 				wd = battle_calc_sharpness_dmg(sd, wd);
+ 			} 
 
 			wd = battle_calc_attack_post_defense(wd, src, target, skill_id, skill_lv);
 		}

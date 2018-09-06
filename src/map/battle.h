@@ -98,6 +98,10 @@ int64 battle_calc_bg_damage(struct block_list *src,struct block_list *bl,int64 d
 
 int battle_delay_damage (unsigned int tick, int amotion, struct block_list *src, struct block_list *target, int attack_type, uint16 skill_id, uint16 skill_lv, int64 damage, enum damage_lv dmg_lv, int ddelay, bool additional_effects);
 
+//Biali
+struct Damage battle_calc_sharpness_dmg(struct map_session_data *sd, struct Damage wd);
+int64 battle_calc_sharpness_dmg_sub(struct map_session_data *sd, int64 damage, short hand); 
+
 // Summary normal attack treatment (basic attack)
 enum damage_lv battle_weapon_attack( struct block_list *bl,struct block_list *target,unsigned int tick,int flag);
 
