@@ -1,13 +1,12 @@
 ars_fild01	mapflag	noteleport
 ars_fild01	mapflag	nomemo
 ars_fild01	mapflag	nobranch
-ars_fild01	mapflag	fullloot
 // ars_fild01	mapflag	nolockon
 //ars_fild01	mapflag	mob_dmg	100
-ars_fild01	mapflag	map_tier	50
-ars_fild01	mapflag	drop_rates	5
-ars_fild01	mapflag	bexp	120	120
-ars_fild01	mapflag	jexp	120	120
+ars_fild01	mapflag	rpk	RPK_MAP_TIER,5
+ars_fild01	mapflag	rpk	RPK_FULLLOOT,1
+ars_fild01	mapflag	bexp	120,120
+ars_fild01	mapflag	jexp	120,120
 ars_fild01	mapflag	loadevent
 
 
@@ -431,7 +430,6 @@ ars_dun16	mapflag	nomemo
 ars_dun16	mapflag	nobranch
 ars_dun16	mapflag	restricted	8
 ars_dun16	mapflag	monster_noteleport
-ars_dun16	mapflag	gvg
 ars_dun16	mapflag	partylock
 
 ars_dun17	mapflag	noteleport

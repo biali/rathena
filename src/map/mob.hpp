@@ -57,6 +57,7 @@ enum MOBID {
 	MOBID_BLACK_MUSHROOM	= 1084,
 	MOBID_MARINE_SPHERE		= 1142,
 	MOBID_EMPERIUM			= 1288,
+	MOBID_DEADBODY			= 25006,
 	MOBID_G_PARASITE		= 1555,
 	MOBID_G_FLORA			= 1575,
 	MOBID_G_HYDRA			= 1579,
@@ -74,7 +75,7 @@ enum MOBID {
 	MOBID_S_GIANT_HORNET,
 	MOBID_S_LUCIOLA_VESPA,
 	MOBID_GUILD_SKILL_FLAG	= 20269,
-	MOBID_CONTEST_STONE,
+	MOBID_CONTEST_STONE		= 20403,
 };
 
 ///Mob skill states.
@@ -293,6 +294,7 @@ struct mob_data {
 	int target_id,attacked_id,norm_attacked_id;
 	int areanpc_id; //Required in OnTouchNPC (to avoid multiple area touchs)
 	int bg_id; // BattleGround System
+	int spawnx,spawny,roam; // Biali
 
 	t_tick next_walktime,last_thinktime,last_linktime,last_pcneartime,dmgtick;
 	short move_fail_count;
@@ -399,10 +401,10 @@ void mob_free_dynamic_viewdata( struct mob_data* md );
 struct mob_data *mob_once_spawn_sub(struct block_list *bl, int16 m, int16 x, int16 y, const char *mobname, int mob_id, const char *event, unsigned int size, enum mob_ai ai);
 
 int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y,
-	const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai);
+	const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir = 0, int roam = 1); //Biali mob facing direction
 
-int mob_once_spawn_area(struct map_session_data* sd, int16 m, 
-	int16 x0, int16 y0, int16 x1, int16 y1, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, int faction_id);
+int mob_once_spawn_area(struct map_session_data* sd, int16 m,
+	int16 x0, int16 y0, int16 x1, int16 y1, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir = 0, int roam = 1); //Biali mob facing direction
 
 bool mob_ksprotected (struct block_list *src, struct block_list *target);
 

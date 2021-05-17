@@ -1823,41 +1823,6 @@ ACMD_FUNC(gvgon)
 	return 0;
 }
 
-// /*==========================================
-//  *
-//  *------------------------------------------*/
-// ACMD_FUNC(fvfoff)
-// {
-// 	nullpo_retr(-1, sd);
-
-// 	if (!map_getmapflag(sd->bl.m, MF_FVF)) {
-// 		clif_displaymessage(fd, msg_txt(sd,162)); // FVF is already Off.
-// 		return -1;
-// 	}
-
-// 	map_setmapflag(sd->bl.m, MF_FVF, false);
-// 	clif_displaymessage(fd, msg_txt(sd,33)); // FVF: Off.
-
-// 	return 0;
-// }
-
-// /*==========================================
-//  *
-//  *------------------------------------------*/
-// ACMD_FUNC(fvfon)
-// {
-// 	nullpo_retr(-1, sd);
-
-// 	if (map_getmapflag(sd->bl.m, MF_FVF)) {
-// 		clif_displaymessage(fd, msg_txt(sd,163)); // FVF is already On.
-// 		return -1;
-// 	}
-
-// 	map_setmapflag(sd->bl.m, MF_FVF, true);
-// 	clif_displaymessage(fd, msg_txt(sd,34)); // FvF: On.
-
-// 	return 0;
-// }
 /*==========================================
  *
  *------------------------------------------*/
@@ -4360,59 +4325,70 @@ ACMD_FUNC(mapinfo) {
 	if (map_getmapflag(m_id, MF_NOMEMO))
 		strcat(atcmd_output, "  NoMemo |");
 
-		strcpy(atcmd_output,"Ragnamania Mapflags"); // Ragnamania
-	if (map_getmapflag(m_id, MF_BLOCKED))
-		strcat(atcmd_output, "  Map Blocked |");
+	if (map_getmapflag(m_id, MF_NOSAVE)) {
+		if (!mapdata->save.map)
+			clif_displaymessage(fd, msg_txt(sd,1068)); // No Save (Return to last Save Point)
+		else if (mapdata->save.x == -1 || mapdata->save.y == -1 ) {
+			sprintf(atcmd_output, msg_txt(sd,1069), mapindex_id2name(mapdata->save.map)); // No Save, Save Point: %s,Random
+		}
+		else {
+			sprintf(atcmd_output, msg_txt(sd,1070), // No Save, Save Point: %s,%d,%d
+				mapindex_id2name(mapdata->save.map),mapdata->save.x,mapdata->save.y);
+		}
+	}
+	clif_displaymessage(fd, atcmd_output);
+
+	sprintf(atcmd_output, msg_txt(sd,1065),  // No Exp Penalty: %s | No Zeny Penalty: %s
+		(map_getmapflag(m_id, MF_NOEXPPENALTY)) ? msg_txt(sd,1066) : msg_txt(sd,1067), (map_getmapflag(m_id, MF_NOZENYPENALTY)) ? msg_txt(sd,1066) : msg_txt(sd,1067)); // On / Off
+	clif_displaymessage(fd, atcmd_output);
+	
+	strcpy(atcmd_output,"Ragnamania Mapflags: \n"); //Ragnamania flags
+
 	if (map_getmapflag(m_id, MF_ANCIENT))
-		strcat(atcmd_output, "  Classic GvG |");
-	if (map_getmapflag(m_id, MF_BG_CONSUME))
-		strcat(atcmd_output, "  BG Items |");
-	if (map_getmapflag(m_id, MF_WOE_CONSUME))
-		strcat(atcmd_output, "  WoE Items |");
-	if (map_getmapflag(m_id, MF_PVP_CONSUME))
-		strcat(atcmd_output, "  PvP Items |");
-	if (map_getmapflag(m_id, MF_SKILLNOREQUIREMENTS))
-		strcat(atcmd_output, "  Skills no Requirements |");	
+		strcat(atcmd_output, "Classic GvG | ");
+
 	if (map_getmapflag(m_id, MF_BLOCKED))
-		strcat(atcmd_output, "  Blocked |");
+		strcat(atcmd_output, "Map Blocked | ");
+	if (map_getmapflag(m_id, MF_SKILLNOREQUIREMENTS))
+		strcat(atcmd_output, "Skills no Requirements | ");	
 	if (map_getmapflag(m_id, MF_WOE_SET)){
 		char output[64];
 		sprintf(output,"WoE Set %d | ", map_getmapflag(m_id,MF_WOE_SET));
 		strcat(atcmd_output, output);
 	}
 	if (map_getmapflag(m_id, MF_FVF))
-		strcat(atcmd_output, "  FvF |");
-	if (map_getmapflag_sub(m_id, MF_CONTESTED, NULL)) {
+		strcat(atcmd_output, "FvF | ");
+
+	clif_displaymessage(fd, atcmd_output);
+
+	if (map_getmapflag(m_id, MF_CONTESTED)) {
 		struct guild* g = guild_search(mapdata->contested.info[CONTESTED_OWNER_ID]);
-		sprintf(atcmd_output,"  This map is currently guarded by guild %s.", g->name);
-		clif_displaymessage(fd,atcmd_output);
-		if(sd->status.guild_id > 0 && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
-			sprintf(atcmd_output," > Base Exp Bonus: %d%% | Job Exp Bonus: %d%% | Drop Rates Bonus: %d%%",
-				mapdata->contested.info[CONTESTED_BASE_BONUS],
-				mapdata->contested.info[CONTESTED_JOB_BONUS],
-				mapdata->contested.info[CONTESTED_DROP_BONUS]);
+		if(g) {
+			sprintf(atcmd_output,"This map is currently guarded by guild %s. ", g->name);
 			clif_displaymessage(fd,atcmd_output);
+			if(sd->status.guild_id > 0 && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
+				sprintf(atcmd_output," > Base Exp Bonus: %d | Job Exp Bonus: %d | Drop Rates Bonus: %d",
+					mapdata->contested.info[CONTESTED_BASE_BONUS],
+					mapdata->contested.info[CONTESTED_JOB_BONUS],
+					mapdata->contested.info[CONTESTED_DROP_BONUS]);
+				clif_displaymessage(fd, atcmd_output);
+			}
 		}
 	}
+	if (map_getmapflag(m_id, MF_RPK)) {
+		char tr[10],dg[4],hg[4],fl[16];
+		if(mapdata->rpk.info[RPK_MAP_TIER]) sprintf(tr,"Tier %d ", mapdata->rpk.info[RPK_MAP_TIER]); else sprintf(tr,"");
+		if(mapdata->rpk.info[RPK_FULLLOOT]) sprintf(fl,"FL "); else sprintf(fl,"");
+		if(mapdata->rpk.info[RPK_ISDG]) sprintf(dg,"DG "); else sprintf(dg,"");
+		if(mapdata->rpk.info[RPK_ISHG]) sprintf(hg,"HG ");	else sprintf(hg,"");
 
-	clif_displaymessage(fd, atcmd_output);
-
-	sprintf(atcmd_output, msg_txt(sd,1065),  // No Exp Penalty: %s | No Zeny Penalty: %s
-		(map_getmapflag(m_id, MF_NOEXPPENALTY)) ? msg_txt(sd,1066) : msg_txt(sd,1067), (map_getmapflag(m_id, MF_NOZENYPENALTY)) ? msg_txt(sd,1066) : msg_txt(sd,1067)); // On / Off
-	clif_displaymessage(fd, atcmd_output);
-
-	if (map_getmapflag(m_id, MF_NOSAVE)) {
-		if (!mapdata->save.map)
-			clif_displaymessage(fd, msg_txt(sd,1068)); // No Save (Return to last Save Point)
-		else if (mapdata->save.x == -1 || mapdata->save.y == -1 ) {
-			sprintf(atcmd_output, msg_txt(sd,1069), mapindex_id2name(mapdata->save.map)); // No Save, Save Point: %s,Random
-			clif_displaymessage(fd, atcmd_output);
-		}
-		else {
-			sprintf(atcmd_output, msg_txt(sd,1070), // No Save, Save Point: %s,%d,%d
-				mapindex_id2name(mapdata->save.map),mapdata->save.x,mapdata->save.y);
-			clif_displaymessage(fd, atcmd_output);
-		}
+		sprintf(atcmd_output, "PK Map %s%s%s%s",tr,dg,hg,fl);
+		clif_displaymessage(fd, atcmd_output);
+	}
+	if(mapdata->faction_id) {
+		struct faction_data *fdb = faction_search(mapdata->faction_id);
+		sprintf(atcmd_output,"This map is a sanctary for %s.", fdb->name);
+		clif_displaymessage(fd, atcmd_output);
 	}
 
 	strcpy(atcmd_output,msg_txt(sd,1049)); // Weather Flags:
@@ -9406,6 +9382,25 @@ ACMD_FUNC(font)
 	return 0;
 }
 
+//biali
+/*==========================================
+ * Char Data Backup Generation.
+ *------------------------------------------*/
+ACMD_FUNC(char2dump)
+{
+	int char_id;
+
+	nullpo_retr(-1,sd);
+
+	if( (char_id = atoi(message)) <= 0 )
+		return -1;
+
+	chrif_char2dumpfile(char_id);
+	clif_displaymessage(fd, "Requesting char server to do a backup of Char data");
+
+	return 0;
+}
+
 /*==========================================
  * type: 1 = commands (@), 2 = charcommands (#)
  *------------------------------------------*/
@@ -10930,6 +10925,75 @@ ACMD_FUNC(factionmonster)
 
 	return 0;
 }
+
+
+
+// Biali Damage Log
+
+ACMD_FUNC(bgranked)
+{
+	int i;
+
+	clif_displaymessage(fd, "============= RANKED BATTLEGROUND FAME LIST =============");
+	for( i = 0; i < MAX_FAME_LIST && bgrank_fame_list[i].id; i++ )
+	{
+		sprintf(atcmd_output,"%d - %s - %d points",i+1,bgrank_fame_list[i].name,bgrank_fame_list[i].fame);
+		clif_displaymessage(fd, atcmd_output);
+	}
+	clif_displaymessage(fd, "============= RANKED BATTLEGROUND FAME LIST =============");
+	return 0;
+}
+
+ACMD_FUNC(bgregular)
+{
+	int i;
+
+	clif_displaymessage(fd, "============= REGULAR BATTLEGROUND FAME LIST =============");
+	for( i = 0; i < MAX_FAME_LIST && bg_fame_list[i].id; i++ )
+	{
+		sprintf(atcmd_output,"%d - %s - %d points",i+1,bg_fame_list[i].name,bg_fame_list[i].fame);
+		clif_displaymessage(fd, atcmd_output);
+	}
+	clif_displaymessage(fd, "============= REGULAR BATTLEGROUND FAME LIST =============");
+	return 0;
+}
+
+ACMD_FUNC(battleinfo)
+{
+	if( sd->state.battleinfo )
+	{
+		clif_displaymessage(fd, "- Battle Information Display OFF - Kill/Death -");
+		sd->state.battleinfo = 0;
+	}
+	else
+	{
+		clif_displaymessage(fd, "- Battle Information Display ON - Kill/Death -");
+		sd->state.battleinfo = 1;
+	}
+	return 0;
+}
+
+/*==========================================
+ * Ranking Reset
+ *------------------------------------------*/
+ACMD_FUNC(rankreset)
+{
+	int type;
+	nullpo_retr(-1, sd);
+
+	if( (type = atoi(message)) < 1 || type > 3 )
+	{
+		clif_displaymessage(fd, "Enter reset rank type. Usage: @rankreset <n>");
+		clif_displaymessage(fd, "n = 1 WoE | 2 BG | 3 PVP");
+		return -1;
+	}
+
+	pc_ranking_reset(type - 1, true);
+	clif_displaymessage(fd, "Reseting Ranking...");
+	return 0;
+}
+// fim biali damage log
+
 
 // (^~_~^) Gepard Shield Start
 

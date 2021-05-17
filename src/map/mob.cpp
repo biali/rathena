@@ -683,7 +683,7 @@ struct mob_data *mob_once_spawn_sub(struct block_list *bl, int16 m, int16 x, int
 /*==========================================
  * Spawn a single mob on the specified coordinates.
  *------------------------------------------*/
-int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai)
+int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir /*= 0*/,int roam) //Biali spawn monster facing direction
 {
 	struct mob_data* md = nullptr;
 	int count, lv;
@@ -721,7 +721,18 @@ int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const
 			}
 		}	// end addition [Valaris]
 
+		// Biali Black Zone : Dungeon mobs must store their spawn location
+		md->roam = roam;
+		if(roam < 1){
+			md->spawnx = x;
+			md->spawny = y;
+		}
+		
 		mob_spawn(md);
+
+		// Biali spawn mob facing direction
+		if (dir != 0)
+			unit_setdir(&md->bl, dir);
 
 		if (mob_id < 0 && battle_config.dead_branch_active)
 			//Behold Aegis's masterful decisions yet again...
@@ -735,7 +746,7 @@ int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const
 /*==========================================
  * Spawn mobs in the specified area.
  *------------------------------------------*/
-int mob_once_spawn_area(struct map_session_data* sd, int16 m, int16 x0, int16 y0, int16 x1, int16 y1, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, int faction_id)
+int mob_once_spawn_area(struct map_session_data* sd, int16 m, int16 x0, int16 y0, int16 x1, int16 y1, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir /*= 0*/,int roam) //Biali spawn monster facing direction)
 {
 	int i, max, id = 0;
 	int lx = -1, ly = -1;
@@ -781,7 +792,7 @@ int mob_once_spawn_area(struct map_session_data* sd, int16 m, int16 x0, int16 y0
 		lx = x;
 		ly = y;
 
-		id = mob_once_spawn(sd, m, x, y, mobname, mob_id, 1, event, size, ai);
+		id = mob_once_spawn(sd, m, x, y, mobname, mob_id, 1, event, size, ai,roam);
 	}
 
 	return id; // id of last spawned mob
@@ -1834,6 +1845,15 @@ static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 		slave_lost_target = true;
 	}
 
+	//Biali Black Zone Mobs in the dungeons should go back to their spawn point and not chase too far
+	if(!md->roam && !check_distance_blxy(&md->bl, md->spawnx, md->spawny,20) && DIFF_TICK(tick, md->ud.canact_tick) > 0 && md->master_id == 0) {
+		md->next_walktime = tick+5000;
+		unit_movepos(&md->bl, md->spawnx,md->spawny,0,0);
+		mob_spawn(md);
+
+		return true;
+	}
+
 	// Scan area for targets
 	if (!tbl && can_move && mode&MD_LOOTER && md->lootitems && DIFF_TICK(tick, md->ud.canact_tick) > 0 &&
 		(md->lootitem_count < LOOTITEM_SIZE || battle_config.monster_loot_type != 1))
@@ -2517,8 +2537,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 	unsigned int mvp_damage;
 	t_tick tick = gettick();
 	bool rebirth, homkillonly, merckillonly;
-	int contested_base_bonus = 100; //Biali Contested Territories
-	int contested_job_bonus = 100; //Biali Contested Territories
+	int contested_base_bonus = 0; //Biali Contested Territories
+	int contested_job_bonus = 0; //Biali Contested Territories
 	int contested_drop_bonus = 0; //Biali Contested Territories
 
 	status = &md->status;
@@ -2796,6 +2816,30 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				drop_rate = 1;
 			}
 
+			//biali Black zone
+			if(map_getmapflag(m,MF_RPK))
+			{
+				struct map_data *mapdata = map_getmapdata(m);
+				switch(mapdata->rpk.info[RPK_MAP_TIER]) {
+					case 5:
+						drop_rate = drop_rate*1.3;
+						break;
+					case 6:
+						drop_rate = drop_rate*1.5;
+						break;
+					case 7:
+						drop_rate = drop_rate*1.6;
+						break;
+					case 8:
+						drop_rate = drop_rate*1.75;
+						break;
+					default:
+						break;
+				}
+
+			}
+
+
 			// change drops depending on monsters size [Valaris]
 			if (battle_config.mob_size_influence) {
 				if (md->special_state.size == SZ_MEDIUM && drop_rate >= 2)
@@ -2829,15 +2873,21 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				if (sd->sc.data[SC_ITEMBOOST])
 					drop_rate_bonus += sd->sc.data[SC_ITEMBOOST]->val1;
 
+				// biali contested territories bonus
+				if(contested_drop_bonus)
+					drop_rate_bonus += contested_drop_bonus;
+
+				//biali : infamy gives players a boost in drop rates (max 10%)
+				if(sd->status.infamy && map_getmapflag(sd->bl.m,MF_RPK)) {
+					int infamy = (sd->status.infamy * 10) / MAX_INFAMY;
+					drop_rate_bonus += cap_value(infamy, 1, 1000);
+					// ShowWarning("infamy %d gave Bonus : %d \n",sd->status.infamy, (sd->status.infamy * 100)/MAX_INFAMY);
+				}
+
 				drop_rate_bonus = (int)(0.5 + drop_rate * drop_rate_bonus / 100.);
 				// Now rig the drop rate to never be over 90% unless it is originally >90%.
 				drop_rate = i32max(drop_rate, cap_value(drop_rate_bonus, 0, 9000));
 
-				// biali contested territories bonus
-				if(contested_drop_bonus) {
-					drop_rate += (int)(0.5 + drop_rate * contested_drop_bonus / 100.);
-					drop_rate = min(drop_rate,9000); //cap it to 90%
-				}
 
 				if (pc_isvip(sd)) { // Increase item drop rate for VIP.
 					drop_rate += (int)(0.5 + drop_rate * battle_config.vip_drop_increase / 100.);

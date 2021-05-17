@@ -613,7 +613,7 @@ void clif_blown(struct block_list *bl); // area
 void clif_slide(struct block_list *bl, int x, int y); // area
 void clif_fixpos(struct block_list *bl);	// area
 void clif_npcbuysell(struct map_session_data* sd, int id);	//self
-void clif_buylist(struct map_session_data *sd, struct npc_data *nd);	//self
+void clif_buylist( struct map_session_data *sd, struct npc_data *nd );	//self
 void clif_selllist(struct map_session_data *sd);	//self
 void clif_npc_market_open(struct map_session_data *sd, struct npc_data *nd);
 void clif_parse_NPCMarketClosed(int fd, struct map_session_data *sd);
@@ -663,6 +663,16 @@ void clif_leavechat(struct chat_data* cd, struct map_session_data* sd, bool flag
 void clif_changechatstatus(struct chat_data* cd);	// chat
 void clif_refresh_storagewindow(struct map_session_data *sd);
 void clif_refresh(struct map_session_data *sd);	// self
+
+void clif_rank_info(struct map_session_data *sd, int points, int total, int flag); //biali damage log
+// void clif_faction_name( struct block_list* src, send_target target ); // biali update nametag on players when holding faction flags
+// #define clif_faction_name_self(bl) clif_faction_name( (bl), (bl), SELF )
+// #define clif_faction_name_area(bl) clif_faction_name( (bl), (bl), AREA )
+void clif_parse_GuildLeave(int fd,struct map_session_data *sd); // biali trying to get rid of emblem when leaving faction
+
+//Biali deadbody lootbag fullloot new system
+void clif_lootbaglist( struct map_session_data* sd, struct npc_data* vnd );
+void clif_lootbag_storagelist(struct map_session_data* sd, struct item* items, int items_length, const char *storename);
 
 void clif_emotion(struct block_list *bl,int type);
 void clif_talkiebox(struct block_list* bl, const char* talkie);
@@ -861,6 +871,17 @@ void clif_bg_queue_entry_init(struct map_session_data *sd);
 void clif_bg_queue_lobby_notify(const char *name, struct map_session_data *sd);
 void clif_bg_queue_ack_lobby(bool result, const char *name, const char *lobbyname, struct map_session_data *sd);
 
+// biali faction system
+// void clif_faction_belonginfo (struct map_session_data *sd);
+// void clif_faction_emblem (struct map_session_data *sd, struct faction_data *fdb);
+// void clif_sendfactionemblem_single(int fd, struct map_session_data *sd);
+// void clif_sendfactionemblem_area(struct map_session_data *sd);
+// eamod >>>
+void clif_sendauras(struct map_session_data *sd,  enum send_target type);
+void clif_faction_hp(struct map_session_data *sd);
+void clif_faction_area(struct map_session_data *sd);
+void clif_faction_single(int fd, struct map_session_data *sd);
+
 // Instancing
 void clif_instance_create(int instance_id, int num);
 void clif_instance_changewait(int instance_id, int num);
@@ -883,6 +904,9 @@ void clif_pvpset(struct map_session_data *sd, int pvprank, int pvpnum,int type);
 void clif_map_property_mapall(int map, enum map_property property);
 void clif_refine(int fd, int fail, int index, int val);
 void clif_upgrademessage( struct map_session_data* sd, int result, t_itemid item_id );
+
+// Biali damage log
+void clif_disp_onlyself(struct map_session_data *sd, const char *mes, int len);
 
 //petsystem
 void clif_catch_process(struct map_session_data *sd);

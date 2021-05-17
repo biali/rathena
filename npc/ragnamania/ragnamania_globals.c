@@ -21,31 +21,31 @@ function	script	F_isVSmap	{
 	getmapflag(.@m$,MF_GVG) || 
 	getmapflag(.@m$,MF_GVG_CASTLE)|| 
 	getmapflag(.@m$,MF_GVG_DUNGEON)  || 
-	getmapflag(.@m$,MF_BATTLEGROUND) ||
-	getmapflag(.@m$,MF_PK))
+	getmapflag(.@m$,MF_BATTLEGROUND)) ||
+	getmapflag(.@m$,MF_RPK)
 		return 1;
 	else
 		return 0;
 }
 
 
-function	script	F_GmBlessAsBars	{
-	.@bars		= 15;
-	.@totalxp 	= getvariableofnpc(.KickOff,"Gms_Blessing");
-	.currxp		= @gms_blessing;
-	.@blue 		= (.@currxp * .@bars) / .@totalxp;
-	if(isblessed() > 0) 
-		return "^0000FF|||||||||||||||^000000";
-	freeloop(1);
-	for(.@i=0;.@i<.@bars;.@i++) {
-		if(.@i <= blue)
-			.@m$ += "^0000FF|^000000";
-		else
-			.@m$ += "^FF0000|^000000";
-	}
-	freeloop(0);
-	return .@m$;
-}
+// function	script	F_GmBlessAsBars	{
+// 	.@bars		= 15;
+// 	.@totalxp 	= getvariableofnpc(.KickOff,"Gms_Blessing");
+// 	.currxp		= @gms_blessing;
+// 	.@blue 		= (.@currxp * .@bars) / .@totalxp;
+// 	if(isblessed() > 0) 
+// 		return "^0000FF|||||||||||||||^000000";
+// 	freeloop(1);
+// 	for(.@i=0;.@i<.@bars;.@i++) {
+// 		if(.@i <= blue)
+// 			.@m$ += "^0000FF|^000000";
+// 		else
+// 			.@m$ += "^FF0000|^000000";
+// 	}
+// 	freeloop(0);
+// 	return .@m$;
+// }
 
 function	script	IsAllowed	{
 	.n$ = "^AA00AA"+getarg(0)+"^000000";
@@ -213,16 +213,6 @@ switch (gettime(DT_MONTH)) {
 	}
 	return .@days;
 }
-
-
-
-
-function	script	F_isLeapYear	{
-	set .@year, getarg(0);
-	return ( .@year%4 == 0 && (.@year%100 != 0 || .@year%400 == 0) );
-}
-
-
 
 
 

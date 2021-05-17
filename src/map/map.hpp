@@ -46,8 +46,8 @@ void map_msg_reload(void);
 #define LOOTITEM_SIZE 10
 #define MAX_MOBSKILL 50		//Max 128, see mob skill_idx type if need this higher
 #define MAX_MOB_LIST_PER_MAP 128
-#define MAX_EVENTQUEUE 12 // Biali it was originally 2
-#define MAX_EVENTTIMER 32
+#define MAX_EVENTQUEUE 1000 // Biali it was originally 2
+#define MAX_EVENTTIMER 1000 // Biali was 32
 #define NATURAL_HEAL_INTERVAL 500
 #define MIN_FLOORITEM 2
 #define MAX_FLOORITEM START_ACCOUNT_NUM
@@ -432,6 +432,7 @@ enum _sp {
 	SP_UPPER,SP_PARTNER,SP_CART,SP_FAME,SP_UNBREAKABLE,	//56-60
 	SP_CARTINFO=99,	// 99
 
+	SP_ITEMUSEDID = 117,
 	SP_KILLEDGID=118,
 	SP_BASEJOB=119,	// 100+19 - celest
 	SP_BASECLASS=120,	//Hmm.. why 100+19? I just use the next one... [Skotlex]
@@ -448,6 +449,17 @@ enum _sp {
 	SP_CASHPOINTS, SP_KAFRAPOINTS,
 	SP_PCDIECOUNTER, SP_COOKMASTERY,
 	SP_ACHIEVEMENT_LEVEL,
+	SP_INFAMY = 136, //Biali
+	SP_PK_KILL = 137,
+	SP_PK_DEATH,
+	SP_PK_SCORE,
+	SP_PVP_KILL = 140,
+	SP_PVP_DEATH,
+	SP_PVP_SCORE,
+	SP_BG_WIN = 143,
+	SP_BG_LOST,
+	SP_BG_TIE,
+	SP_WOE_SCORE = 146,
 	SP_FACTION,
 
 	// Mercenaries
@@ -602,13 +614,11 @@ enum e_mapflag : int16 {
 	MF_SKILL_DURATION,
 #ifdef BGEXTENDED
 	MF_NOECALL, // [BattleGround System]
-	MF_BG_CONSUME, // allows using BG consumables
-	MF_WOE_CONSUME, // allows using WoE consumables
 	MF_BG_TOPSCORE,
 #endif
-	MF_PVP_CONSUME, // allows using PvP consumables
 	MF_FVF, // Biali Faction
 	MF_ATK_RATE, // Biali Global Dmg Adjustment
+	MF_RPK, // Biali Fullloot
 	MF_CONTESTED, // Biali Contested Territories
 	MF_WOE_SET, // Biali eAmod WoE
 	MF_BLOCKED, // Biali eAmod WoE
@@ -654,18 +664,6 @@ struct s_drop_list {
 	enum e_nightmare_drop_type drop_type;
 };
 
-/// Enum of faction data Biali
-enum e_faction_data_type : uint8 {
-	FACTION_ID,
-	FACTION_RELIC,
-	FACTION_MAX,
-};
-
-// Faction system biali
-struct s_faction_data {
-	int info[FACTION_MAX];
-};
-
 /// Enum of global damage types [Cydh]
 enum e_global_damage_rate_type : uint8 {
 	DMGRATE_BL,
@@ -680,6 +678,20 @@ enum e_global_damage_rate_type : uint8 {
 // Map-based damage rate [Cydh]
 struct s_global_damage_rate {
 	int rate[DMGRATE_MAX];
+};
+
+/// Enum of rpk [biali]
+enum e_rpk_type : uint8 {
+	RPK_MAP_TIER,
+	RPK_FULLLOOT,
+	RPK_ISDG,
+	RPK_ISHG,
+	RPK_MAX,
+};
+
+// rpk maps Biali
+struct s_rpk {
+	int info[RPK_MAX];
 };
 
 /// Enum of contested territories bonus types biali
@@ -703,8 +715,9 @@ union u_mapflag_args {
 	struct s_skill_damage skill_damage;
 	struct s_skill_duration skill_duration;
 	struct s_global_damage_rate atk_rate;
+	struct s_rpk rpk; //rpk biali
 	struct s_contested_bonuses contested; //Contested Territories Biali
-	struct s_faction_data faction_data; //biali faction system : keeps faction related bonuses on each map
+	// struct s_faction_data faction_data; //biali faction system : keeps faction related bonuses on each map
 	int flag_val;
 };
 
@@ -812,8 +825,9 @@ struct map_data {
 	std::unordered_map<uint16, s_skill_damage> skill_damage; // Used for single skill damage adjustment
 	std::unordered_map<uint16, int> skill_duration;
 	struct s_global_damage_rate atk_rate; // Global Damage [Cydh]
+	struct s_rpk rpk; // rpk biali
 	struct s_contested_bonuses contested;
-	struct s_faction_data faction_data; // Biali Faction System
+	short faction_id;
 
 	struct npc_data *npc[MAX_NPC_PER_MAP];
 	struct spawn_data *moblist[MAX_MOB_LIST_PER_MAP]; // [Wizputer]
@@ -876,7 +890,7 @@ inline bool mapdata_flag_vs(struct map_data *mapdata) {
 	if (mapdata == nullptr)
 		return false;
 
-	if (mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG_DUNGEON] || mapdata->flag[MF_GVG] || ((agit_flag || agit2_flag) && mapdata->flag[MF_GVG_CASTLE]) || mapdata->flag[MF_GVG_TE] || (agit3_flag && mapdata->flag[MF_GVG_TE_CASTLE]) || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF])
+	if (mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG_DUNGEON] || mapdata->flag[MF_GVG] || ((agit_flag || agit2_flag) && mapdata->flag[MF_GVG_CASTLE]) || mapdata->flag[MF_GVG_TE] || (agit3_flag && mapdata->flag[MF_GVG_TE_CASTLE]) || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF] || mapdata->flag[MF_RPK])
 		return true;
 
 	return false;
@@ -891,7 +905,7 @@ inline bool mapdata_flag_vs2(struct map_data *mapdata) {
 	if (mapdata == nullptr)
 		return false;
 
-	if (mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG_DUNGEON] || mapdata->flag[MF_GVG] || mapdata->flag[MF_GVG_CASTLE] || mapdata->flag[MF_GVG_TE] || mapdata->flag[MF_GVG_TE_CASTLE] || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF])
+	if (mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG_DUNGEON] || mapdata->flag[MF_GVG] || mapdata->flag[MF_GVG_CASTLE] || mapdata->flag[MF_GVG_TE] || mapdata->flag[MF_GVG_TE_CASTLE] || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF] || mapdata->flag[MF_RPK])
 		return true;
 
 	return false;
@@ -952,7 +966,7 @@ inline bool mapdata_flag_ks(struct map_data *mapdata) {
 	if (mapdata == nullptr)
 		return false;
 
-	if (mapdata->flag[MF_TOWN] || mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG] || mapdata->flag[MF_GVG_TE] || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF])
+	if (mapdata->flag[MF_TOWN] || mapdata->flag[MF_PVP] || mapdata->flag[MF_GVG] || mapdata->flag[MF_GVG_TE] || mapdata->flag[MF_BATTLEGROUND] || mapdata->flag[MF_FVF] || mapdata->flag[MF_RPK])
 		return true;
 
 	return false;

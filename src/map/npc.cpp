@@ -88,13 +88,16 @@ int npc_get_new_npc_id(void) {
 	}
 }
 
-static DBMap* ev_db; // const char* event_name -> struct event_data*
-static DBMap* npcname_db; // const char* npc_name -> struct npc_data*
+// biali dynamic npc creation
+// static DBMap* ev_db; // const char* event_name -> struct event_data*
+// static DBMap* npcname_db; // const char* npc_name -> struct npc_data*
 
-struct event_data {
-	struct npc_data *nd;
-	int pos;
-};
+// struct event_data {
+// 	struct npc_data *nd;
+// 	int pos;
+// };
+DBMap* ev_db; // const char* event_name -> struct event_data*
+DBMap* npcname_db; // const char* npc_name -> struct npc_data*
 
 static struct eri *timer_event_ers; //For the npc timer data. [Skotlex]
 
@@ -1449,6 +1452,10 @@ int npc_click(struct map_session_data* sd, struct npc_data* nd)
 		return 1;
 	}
 
+	//Biali deadbody
+	if(nd->isdeadbody)
+		clif_skill_poseffect(&sd->bl, 152, 1, sd->bl.x, sd->bl.y, gettick());
+
 	switch(nd->subtype) {
 		case NPCTYPE_SHOP:
 			clif_npcbuysell(sd,nd->bl.id);
@@ -2333,7 +2340,12 @@ int npc_remove_map(struct npc_data* nd)
 
 	if (nd->subtype == NPCTYPE_SCRIPT)
 		skill_clear_unitgroup(&nd->bl);
-	clif_clearunit_area(&nd->bl,CLR_RESPAWN);
+	
+	//biali deadbody
+	if(nd->isdeadbody)
+		clif_clearunit_area(&nd->bl,CLR_OUTSIGHT);
+	else
+		clif_clearunit_area(&nd->bl,CLR_RESPAWN);
 	npc_unsetcells(nd);
 	map_delblock(&nd->bl);
 	//Remove npc from map[].npc list. [Skotlex]
@@ -2376,7 +2388,8 @@ static int npc_unload_ev(DBKey key, DBData *data, va_list ap)
 
 //Chk if npc matches src_id, then unload.
 //Sub-function used to find duplicates.
-static int npc_unload_dup_sub(struct npc_data* nd, va_list args)
+//static int npc_unload_dup_sub(struct npc_data* nd, va_list args)
+int npc_unload_dup_sub(struct npc_data* nd, va_list args) // biali dynamic npc creation
 {
 	int src_id;
 
@@ -2390,6 +2403,14 @@ static int npc_unload_dup_sub(struct npc_data* nd, va_list args)
 void npc_unload_duplicates(struct npc_data* nd)
 {
 	map_foreachnpc(npc_unload_dup_sub,nd->bl.id);
+}
+
+//biali dynamic npc deadbody
+TIMER_FUNC(npc_remove_deadbody) {
+	struct npc_data* nd=(struct npc_data *)map_id2bl(id);
+	if(nd != NULL)
+		npc_unload(nd,false);
+	return 0;
 }
 
 //Removes an npc from map and db.
@@ -2892,24 +2913,19 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 	int m, is_discount = 0;
 	uint16 dir;
 	short x, y;
-	t_itemid nameid = 0;
+	unsigned short nameid = 0;
 	struct npc_data *nd;
-	struct faction_data *fdb = NULL;
 	enum npc_subtype type;
 
-	char *t_p;
-	int faction_id = 0, faction_id2 = 0, discount = 0;
-	// int t_discount[MAX_FACTION];
-	// memset(t_discount, 0, sizeof(t_discount));
-	if( w1[0] == '-' )
+	if( strcmp(w1,"-") == 0 )
 	{// 'floating' shop?
 		x = y = dir = 0;
 		m = -1;
 	}
 	else
-	{// w1=<map name>,<x>,<y>,<facing>[,<Faction ID>]
+	{// w1=<map name>,<x>,<y>,<facing>
 		char mapname[MAP_NAME_LENGTH_EXT];
-		if((sscanf(w1, "%15[^,],%6hd,%6hd,%4hd,%4hd", mapname, &x, &y, &dir, &faction_id) != 5 && sscanf(w1, "%15[^,],%6hd,%6hd,%4hd", mapname, &x, &y, &dir) != 4)
+		if( sscanf(w1, "%15[^,],%6hd,%6hd,%4hd", mapname, &x, &y, &dir) != 4
 		||	strchr(w4, ',') == NULL )
 		{
 			ShowError("npc_parse_shop: Invalid shop definition in file '%s', line '%d'.\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer,start-buffer), w1, w2, w3, w4);
@@ -2941,45 +2957,14 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 
 	switch(type) {
 		case NPCTYPE_ITEMSHOP: {
-			if (sscanf(p,",%u:%11d,",&nameid,&is_discount) < 1) {
+			if (sscanf(p,",%5hu:%11d,",&nameid,&is_discount) < 1) {
 				ShowError("npc_parse_shop: Invalid item cost definition in file '%s', line '%d'. Ignoring the rest of the line...\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer,start-buffer), w1, w2, w3, w4);
 				return strchr(start,'\n'); // skip and continue
 			}
 			if (itemdb_exists(nameid) == NULL) {
-				ShowWarning("npc_parse_shop: Invalid item ID cost in file '%s', line '%d' (id '%u').\n", filepath, strline(buffer,start-buffer), nameid);
+				ShowWarning("npc_parse_shop: Invalid item ID cost in file '%s', line '%d' (id '%hu').\n", filepath, strline(buffer,start-buffer), nameid);
 				return strchr(start,'\n'); // skip and continue
 			}
-
-			if( (p = strchr(w1,',[')) != NULL ) // [<Faction ID>:<Discount>]
-			{
-				int i;
-				if( (t_p = strchr(w1,']')) != NULL )
-				{
-					p++;
-					for( i = 0; i < MAX_FACTION && p; i++ )
-					{
-						if( sscanf(p, "%d:%d", &faction_id2, &discount) != 2 && sscanf(p, ",%d:%d", &faction_id2, &discount) != 2 )
-						{
-							ShowError("npc_parse_shop: Invalid discount definition in file '%s', line '%d'. Ignoring the rest of the line...\n * w1=%s\n", filepath, strline(buffer,start-buffer), w1);
-							break;
-						}
-
-						if( (fdb = faction_search(faction_id2)) == NULL)
-						{
-							ShowWarning("npc_parse_shop: Invalid faction ID in file '%s', line '%d' (id '%d').\n", filepath, strline(buffer,start-buffer), faction_id2);
-							p = strchr(p+1,',');
-							continue;
-						}
-
-						cap_value(discount,battle_config.faction_disc_min,battle_config.faction_disc_max);
-						nd->u.shop.faction_discount[faction_id2] = discount;
-						//t_discount[faction_id2-1] = discount;
-						p = strchr(p+1,',');
-					}
-				}
-				else ShowWarning("npc_parse_shop: Invalid format: ']' column not found in file '%s', line '%d' .\n", filepath, strline(buffer,start-buffer));
-			}
-			
 			p = strchr(p+1,',');
 			break;
 		}
@@ -3012,28 +2997,14 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 			break;
 #endif
 		default:
-			if( sscanf( p, ",%32[^,:]:%11d,", point_str, &is_discount ) == 2 ){
-				is_discount = 1;
-			}else{
-				if( !strcasecmp( point_str, "yes" ) ){
-					is_discount = 1;
-				}else if( !strcasecmp( point_str, "no" ) ){
-					is_discount = 0;
-				}else{
-					ShowError( "npc_parse_shop: unknown discount setting %s\n", point_str );
-					return strchr( start, '\n' ); // skip and continue
-				}
-
-				p = strchr( p + 1, ',' );
-			}
+			is_discount = 1;
 			break;
 	}
 	
 	nd = npc_create_npc(m, x, y);
 	nd->u.shop.count = 0;
 	while ( p ) {
-		t_itemid nameid2;
-		unsigned short qty = 0;
+		unsigned short nameid2, qty = 0;
 		int value;
 		struct item_data* id;
 		bool skip = false;
@@ -3043,14 +3014,14 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		switch(type) {
 			case NPCTYPE_MARKETSHOP:
 #if PACKETVER >= 20131223
-				if (sscanf(p, ",%u:%11d:%6hu", &nameid2, &value, &qty) != 3) {
+				if (sscanf(p, ",%6hu:%11d:%6hu", &nameid2, &value, &qty) != 3) {
 					ShowError("npc_parse_shop: (MARKETSHOP) Invalid item definition in file '%s', line '%d'. Ignoring the rest of the line...\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer, start - buffer), w1, w2, w3, w4);
 					skip = true;
 				}
 #endif
 				break;
 			default:
-				if (sscanf(p, ",%u:%11d", &nameid2, &value) != 2) {
+				if (sscanf(p, ",%6hu:%11d", &nameid2, &value) != 2) {
 					ShowError("npc_parse_shop: Invalid item definition in file '%s', line '%d'. Ignoring the rest of the line...\n * w1=%s\n * w2=%s\n * w3=%s\n * w4=%s\n", filepath, strline(buffer, start - buffer), w1, w2, w3, w4);
 					skip = true;
 				}
@@ -3061,7 +3032,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 			break;
 
 		if( (id = itemdb_exists(nameid2)) == NULL ) {
-			ShowWarning("npc_parse_shop: Invalid sell item in file '%s', line '%d' (id '%u').\n", filepath, strline(buffer,start-buffer), nameid2);
+			ShowWarning("npc_parse_shop: Invalid sell item in file '%s', line '%d' (id '%hu').\n", filepath, strline(buffer,start-buffer), nameid2);
 			p = strchr(p+1,',');
 			continue;
 		}
@@ -3106,7 +3077,7 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		nd->u.shop.shop_item[nd->u.shop.count].value = value;
 #if PACKETVER >= 20131223
 		nd->u.shop.shop_item[nd->u.shop.count].flag = 0;
-		if (type == NPCTYPE_MARKETSHOP )
+		if (type == NPCTYPE_MARKETSHOP)
 			nd->u.shop.shop_item[nd->u.shop.count].qty = qty;
 #endif
 		nd->u.shop.count++;
@@ -3118,27 +3089,16 @@ static const char* npc_parse_shop(char* w1, char* w2, char* w3, char* w4, const 
 		return strchr(start,'\n');// continue
 	}
 
-	if( faction_id && (fdb = faction_search(faction_id)) == NULL)
-	{
-		ShowWarning("npc_parse_shop: Invalid faction ID '%d' in file '%s', line '%d'.\n Defaulting to 0.\n", faction_id, filepath, strline(buffer,start-buffer));
-		faction_id = 0;
+	if (type != NPCTYPE_SHOP) {
+		if (type == NPCTYPE_ITEMSHOP) nd->u.shop.itemshop_nameid = nameid; // Item shop currency
+		else if (type == NPCTYPE_POINTSHOP) safestrncpy(nd->u.shop.pointshop_str,point_str,strlen(point_str)+1); // Point shop currency
+		nd->u.shop.discount = is_discount > 0;
 	}
-
-	if( type == NPCTYPE_ITEMSHOP ){
-		// Item shop currency
-		nd->u.shop.itemshop_nameid = nameid;
-	}else if( type == NPCTYPE_POINTSHOP ){
-		// Point shop currency
-		safestrncpy( nd->u.shop.pointshop_str, point_str, strlen( point_str ) + 1 );
-	}
-
-	nd->u.shop.discount = is_discount > 0;
 
 	npc_parsename(nd, w3, start, buffer, filepath);
 	nd->class_ = m == -1 ? JT_FAKENPC : npc_parseview(w4, start, buffer, filepath);
 	nd->speed = 200;
 
-	nd->faction_id = faction_id;
 	++npc_shop;
 	nd->bl.type = BL_NPC;
 	nd->subtype = type;
@@ -3988,6 +3948,140 @@ void npc_setclass(struct npc_data* nd, short class_)
 	unit_refresh(&nd->bl);
 }
 
+
+
+
+
+// biali dynamic npc creation (frost)
+/*==========================================
+ * Duplicate any npc on live server
+ * npc_createdeadbody "<Source NPC name>","<New NPC shown name>","<mapname>",<map_x>,<map_y>,<dir>,<lootbag>
+ *------------------------------------------*/
+struct npc_data* npc_createdeadbody(const char *sourcename, const char *new_shown_name, const char *mapname, int x, int y, int dir)
+{
+	int map_x = x;
+	int map_y = y;
+	int sourceid,spriteid, type, mapid, i;
+
+	char new_npc_name[24] = "";
+	struct npc_data *nd_source, *nd_target;
+
+	nd_source = npc_name2id(sourcename);
+	spriteid = nd_source->class_;
+
+	if(nd_source == NULL) {
+		ShowError("createdeadbody: original npc not found for duplicate. (%s)\n", sourcename);
+		return NULL;
+	}
+	
+	sourceid = nd_source->bl.id;
+	type = nd_source->subtype;
+	mapid = map_mapname2mapid(mapname);
+
+	if(mapid < 0) {
+		ShowError("createdeadbody: target map not found. (%s)\n", mapname);
+		return NULL;
+	}
+
+	if(strlen(new_shown_name) > NAME_LENGTH) {
+		ShowError("createdeadbody: New NPC shown name + New NPC hidden name is too long (max %d chars). (%s)\n", sourcename, NAME_LENGTH);
+		return NULL;
+	}
+
+	nd_target = npc_create_npc(mapid, x, y);
+	char str[10];
+	sprintf(str, "%d", nd_target->bl.id);
+	const char* new_hidden_name = str;
+	nd_target->bl.id = npc_get_new_npc_id();
+	nd_target->bl.prev = nd_target->bl.next = nullptr;
+	
+	strcat(new_npc_name, new_shown_name);
+	strncat(new_npc_name, "#", 1);
+	strncat(new_npc_name, new_hidden_name, strlen(new_hidden_name));
+	memcpy(nd_target->name,new_npc_name,NPC_NAME_LENGTH);
+	memcpy(nd_target->exname,new_npc_name,NPC_NAME_LENGTH);
+
+	nd_target->bl.m = mapid;
+	nd_target->bl.x = map_x;
+	nd_target->bl.y = map_y;
+	nd_target->class_ = spriteid;
+	nd_target->speed = 200;
+	nd_target->src_id = sourceid;
+	nd_target->bl.type = BL_NPC;
+	nd_target->subtype = (enum npc_subtype)type;
+
+	nd_target->u.scr.xs = 0;
+	nd_target->u.scr.ys = 0;
+	nd_target->u.scr.script = nd_source->u.scr.script;
+	nd_target->u.scr.label_list = nd_source->u.scr.label_list;
+	nd_target->u.scr.label_list_num = nd_source->u.scr.label_list_num;
+
+	map_addnpc(mapid, nd_target);
+	status_change_init(&nd_target->bl);
+	unit_dataset(&nd_target->bl);
+	nd_target->ud.dir = dir;
+	npc_setcells(nd_target);
+	map_addblock(&nd_target->bl);
+
+	if(spriteid >= 0) {
+		status_set_viewdata(&nd_target->bl, nd_target->class_);
+		clif_spawn(&nd_target->bl);
+	}
+
+	strdb_put(npcname_db, nd_target->exname, nd_target);
+
+	if(type == NPCTYPE_SCRIPT) {
+
+		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
+			char* lname = nd_target->u.scr.label_list[i].name;
+			int pos = nd_target->u.scr.label_list[i].pos;
+
+			if ((lname[0] == 'O' || lname[0] == 'o') && (lname[1] == 'N' || lname[1] == 'n')) {
+				struct event_data* ev;
+				char buf[NAME_LENGTH*2+3];
+				snprintf(buf, ARRAYLENGTH(buf), "%s::%s", nd_target->exname, lname);
+
+				CREATE(ev, struct event_data, 1);
+				ev->nd = nd_target;
+				ev->pos = pos;
+				if(strdb_put(ev_db, buf, ev))
+					ShowWarning("npc_parse_duplicate : duplicate event %s (%s)\n", buf, nd_target->name);
+			}
+		}
+
+		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
+			int t = 0, k = 0;
+			char *lname = nd_target->u.scr.label_list[i].name;
+			int pos = nd_target->u.scr.label_list[i].pos;
+			if (sscanf(lname, "OnTimer%d%n", &t, &k) == 1 && lname[k] == '\0') {
+				struct npc_timerevent_list *te = nd_target->u.scr.timer_event;
+				int j, k = nd_target->u.scr.timeramount;
+				if (te == NULL)
+					te = (struct npc_timerevent_list *)aMalloc(sizeof(struct npc_timerevent_list));
+				else
+					te = (struct npc_timerevent_list *)aRealloc( te, sizeof(struct npc_timerevent_list) * (k+1) );
+				for (j = 0; j < k; j++) {
+					if (te[j].timer > t) {
+						memmove(te+j+1, te+j, sizeof(struct npc_timerevent_list)*(k-j));
+						break;
+					}
+				}
+				te[j].timer = t;
+				te[j].pos = pos;
+				nd_target->u.scr.timer_event = te;
+				nd_target->u.scr.timeramount++;
+			}
+		}
+		nd_target->u.scr.timerid = INVALID_TIMER;
+	}
+
+	return nd_target;
+}
+
+
+
+
+
 // @commands (script based)
 int npc_do_atcmd_event(struct map_session_data* sd, const char* command, const char* message, const char* eventname)
 {
@@ -4106,6 +4200,17 @@ void npc_parse_mob2(struct spawn_data* mob)
 		struct mob_data* md = mob_spawn_dataset(mob);
 		md->spawn = mob;
 		md->spawn->active++;
+
+		//biali random monster level in Blackzone
+		if(map_getmapflag(md->bl.m,MF_RPK) && md->db->lv > 1 ) {
+			struct map_data *m = map_getmapdata(md->bl.m);
+			//Biali TODO : convert this 5 into a battle_config so ppl can define different ranges for monster levels
+			int rand = rnd()%5;
+			md->level = (rnd()%2)? m->rpk.info[RPK_MAP_TIER] + rand : m->rpk.info[RPK_MAP_TIER] - rand;
+		}
+
+		md->roam = 1;
+
 		mob_spawn(md);
 	}
 }
@@ -4502,6 +4607,22 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 			break;
 		}
 
+		case MF_RPK: { // Biali
+			union u_mapflag_args args = {};
+			if (!state) {
+				map_setmapflag_sub(m, MF_RPK, false, &args);
+			} else {
+				int64 idx = -1;
+				short value = 0;
+				char index[13];
+				sscanf(w4, "%13s %6hd", &index, &value);
+				script_get_constant(index,&idx);
+				args.rpk.info[idx] = value;
+				map_setmapflag_sub(m, MF_RPK, true, &args);
+			}
+			break;
+		}
+
 		case MF_CONTESTED: { // Biali Contested Territories
 			union u_mapflag_args args = {};
 
@@ -4762,6 +4883,12 @@ const char *npc_get_script_event_name(int npce_index)
 		return script_config.kill_pc_event_name;
 	case NPCE_KILLNPC:
 		return script_config.kill_mob_event_name;
+	case NPCE_STATCALC:
+		return script_config.stat_calc_event_name;
+	case NPCE_ITEMUSED:
+		return script_config.item_used_event_name;
+	case NPCE_BASEEXPGAIN: // Biali Adventurer Quest
+		return script_config.baseexpgain_event_name;
 	default:
 		ShowError("npc_get_script_event_name: npce_index is outside the array limits: %d (max: %d).\n", npce_index, NPCE_MAX);
 		return NULL;
@@ -5069,6 +5196,9 @@ void do_init_npc(void){
 
 	add_timer_func_list(npc_event_do_clock,"npc_event_do_clock");
 	add_timer_func_list(npc_timerevent,"npc_timerevent");
+	//biali deadbody
+	// Add homunc timer function to timer func list [Toms]
+	add_timer_func_list(npc_remove_deadbody, "npc_remove_deadbody");
 
 	// Init dummy NPC
 	fake_nd = (struct npc_data *)aCalloc(1,sizeof(struct npc_data));

@@ -63,6 +63,7 @@ static struct status_data dummy_status;
 short current_equip_item_index; /// Contains inventory index of an equipped item. To pass it into the EQUP_SCRIPT [Lupus]
 unsigned int current_equip_combo_pos; /// For combo items we need to save the position of all involved items here
 int current_equip_card_id; /// To prevent card-stacking (from jA) [Skotlex]
+bool running_npc_stat_calc_event; /// Indicate if OnPCStatCalcEvent is running.
 // We need it for new cards 15 Feb 2005, to check if the combo cards are insrerted into the CURRENT weapon only to avoid cards exploits
 short current_equip_opt_index; /// Contains random option index of an equipped item. [Secret]
 
@@ -3915,6 +3916,10 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	);
 
 	memset(&sd->bonus, 0, sizeof(sd->bonus));
+
+	running_npc_stat_calc_event = true;
+	npc_script_event(sd, NPCE_STATCALC);
+	running_npc_stat_calc_event = false;
 
 	// Autobonus
 	pc_delautobonus(sd, sd->autobonus, true);
@@ -8237,7 +8242,10 @@ int status_get_guild_id(struct block_list *bl)
 	nullpo_ret(bl);
 	switch (bl->type) {
 		case BL_PC:
-			return ((TBL_PC*)bl)->status.guild_id;
+			if(((TBL_PC*)bl)->status.faction_id)
+				return ((TBL_PC*)bl)->faction.g.guild_id;
+			else
+				return ((TBL_PC*)bl)->status.guild_id;
 		case BL_PET:
 			if (((TBL_PET*)bl)->master)
 				return ((TBL_PET*)bl)->master->status.guild_id;
@@ -8286,7 +8294,14 @@ int status_get_emblem_id(struct block_list *bl)
 	nullpo_ret(bl);
 	switch (bl->type) {
 		case BL_PC:
-			return ((TBL_PC*)bl)->guild_emblem_id;
+			{
+				struct map_session_data* sd = BL_CAST(BL_PC,bl);
+				if(sd->status.faction_id){
+					return sd->faction.g.emblem_id;
+				} else
+					return sd->guild_emblem_id;
+			}
+			break;
 		case BL_PET:
 			if (((TBL_PET*)bl)->master)
 				return ((TBL_PET*)bl)->master->guild_emblem_id;
@@ -13864,6 +13879,17 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 			clif_changelook(bl,LOOK_BODY2,cap_value(sd->status.body,0,battle_config.max_body_style));
 		}
 	}
+
+	//Biali Faction System
+	if( sd && faction_get_id(bl) && (
+		type == SC_HIDING ||
+		type == SC_CLOAKING ||
+		type == SC_CHASEWALK ||
+		type == SC__INVISIBILITY ||
+		type == SC_CAMOUFLAGE ||
+		type == SC_CLOAKINGEXCEED) )
+			clif_sendauras(sd, AREA_WOS); // Refresh Aura
+
 	if (calc_flag) {
 		switch (type) {
 		case SC_MAGICPOWER:
@@ -13882,16 +13908,16 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 	if(opt_flag&2 && sd && !sd->state.warping && map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 		npc_touch_area_allnpc(sd,bl->m,bl->x,bl->y); // Trigger on-touch event.
 
-	// Complete Faction System [Lilith]
-	if( faction_get_id(bl) && (
-		type == SC_HIDING ||
-		type == SC_CLOAKING ||
-		type == SC_CHASEWALK ||
-		type == SC__INVISIBILITY ||
-		type == SC_CAMOUFLAGE ||
-		type == SC_CLOAKINGEXCEED) 
-	)
-		faction_show_aura(bl);
+	// // Complete Faction System [Lilith]
+	// if( faction_get_id(bl) && (
+	// 	type == SC_HIDING ||
+	// 	type == SC_CLOAKING ||
+	// 	type == SC_CHASEWALK ||
+	// 	type == SC__INVISIBILITY ||
+	// 	type == SC_CAMOUFLAGE ||
+	// 	type == SC_CLOAKINGEXCEED) 
+	// )
+	// 	faction_show_aura(bl);
 
 	ers_free(sc_data_ers, sce);
 	return 1;

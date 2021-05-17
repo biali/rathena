@@ -83,13 +83,10 @@ ars_dun01,122,29,0	script	#ars_dun01	45,1,1,{
 		setmapflag strnpcinfo(4),mf_noteleport;
 		setmapflag strnpcinfo(4),mf_nomemo;
 		setmapflag strnpcinfo(4),mf_nobranch;
-		setmapflag strnpcinfo(4),mf_pk;
-		setmapflag strnpcinfo(4),mf_fullloot;
+		setmapflag strnpcinfo(4),mf_rpk,RPK_MAP_TIER,5;
+		setmapflag strnpcinfo(4),mf_rpk,RPK_ISDG,true;
 		setmapflag strnpcinfo(4),mf_loadevent;
-		setmapflag strnpcinfo(4),mf_bz_dungeon;
 		setmapflag strnpcinfo(4),mf_monster_noteleport;
-		setmapflag strnpcinfo(4),mf_map_tier,50;
-		setmapflag strnpcinfo(4),mf_drop_rates,5;
 		setmapflag strnpcinfo(4),mf_bexp,120;
 		setmapflag strnpcinfo(4),mf_jexp,120;
 		return;

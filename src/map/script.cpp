@@ -267,6 +267,9 @@ struct Script_Config script_config = {
 	"OnPCLoadMapEvent", //loadmap_event_name
 	"OnPCBaseLvUpEvent", //baselvup_event_name
 	"OnPCJobLvUpEvent", //joblvup_event_name
+	"OnPCBaseExpGain", //baseexpgain_event_name - Biali Adventurer Quest
+	"OnPCStatCalcEvent", //stat_calc_event_name
+	"OnItemUsed",
 	// NPC related
 	"OnTouch_",	//ontouch_event_name (runs on first visible char to enter area, picks another char if the first char leaves)
 	"OnTouch",	//ontouch2_event_name (run whenever a char walks into the OnTouch area)
@@ -8501,6 +8504,7 @@ BUILDIN_FUNC(readparam)
  *	3 : account_id
  *	4 : bg_id
  *	5 : clan_id
+ *	6 : faction_id
  *------------------------------------------*/
 BUILDIN_FUNC(getcharid)
 {
@@ -8795,9 +8799,8 @@ BUILDIN_FUNC(strcharinfo)
 			script_pushconststr(st,map_getmapdata(sd->bl.m)->name);
 			break;
 		case 4:
-			struct faction_data* fdb; // Faction System [Biali]
-			if( ( fdb = faction_search(sd->status.faction_id) ) != NULL )
-				script_pushstrcopy(st,fdb->pl_name);
+			if(sd->status.faction_id)
+				script_pushstrcopy(st,sd->faction.pl_name);
 			else
 				script_pushconststr(st,"");
 			break;
@@ -10567,7 +10570,7 @@ BUILDIN_FUNC(guildchangegm)
 
 /*==========================================
  * Spawn a monster:
- * *monster "<map name>",<x>,<y>,"<name to show>",<mob id>,<amount>{,"<event label>",<size>,<ai>};
+ * *monster "<map name>",<x>,<y>,"<name to show>",<mob id>,<amount>{,"<event label>",<size>,<ai>,<dir>};
  *------------------------------------------*/
 BUILDIN_FUNC(monster)
 {
@@ -10580,6 +10583,8 @@ BUILDIN_FUNC(monster)
 	const char* event	= "";
 	unsigned int size	= SZ_SMALL;
 	enum mob_ai ai		= AI_NONE;
+	uint8 dir 			= 0; // Biali mob facing direction
+	int roam			= script_getnum(st,12);
 
 	struct map_session_data* sd;
 	int16 m;
@@ -10605,6 +10610,12 @@ BUILDIN_FUNC(monster)
 			return SCRIPT_CMD_FAILURE;
 		}
 	}
+	// Biali Mob facing direction
+	if (script_hasdata(st, 11))
+		dir = script_getnum(st, 11) % DIR_MAX;
+
+	if (!script_hasdata(st, 12))
+		roam = 1;
 
 	if (class_ >= 0 && !mobdb_checkid(class_)) {
 		ShowWarning("buildin_monster: Attempted to spawn non-existing monster class %d\n", class_);
@@ -10619,7 +10630,7 @@ BUILDIN_FUNC(monster)
 		m = map_mapname2mapid(mapn);
 
 	for(i = 0; i < amount; i++) { //not optimised
-		int mobid = mob_once_spawn(sd, m, x, y, str, class_, 1, event, size, ai);
+		int mobid = mob_once_spawn(sd, m, x, y, str, class_, 1, event, size, ai, dir, roam); // biali mob facing direction
 
 		if (mobid)
 			mapreg_setreg(reference_uid(add_str("$@mobid"), i), mobid);
@@ -11569,6 +11580,61 @@ BUILDIN_FUNC(getunits)
 	script_pushint(st, size);
 	return SCRIPT_CMD_SUCCESS;
 }
+
+
+//Biali Clear Units (mobs) from a Map
+//clearunits("map name")
+//it does not remove mobs randomily spawned! only script mobs
+BUILDIN_FUNC(clearunits)
+{
+	struct block_list *bl = NULL;
+	struct map_session_data *sd = NULL;
+	char *command = (char *)script_getfuncname(st);
+	const char *str;
+	int16 m = -1;
+	struct s_mapiterator *iter = mapit_alloc(MAPIT_NORMAL, bl_type(BL_MOB));
+
+	str = script_getstr(st, 2);
+	if ((m = map_mapname2mapid(str)) < 0) {
+		script_pushint(st, -1);
+		st->state = END;
+		ShowWarning("buildin_%s: Unknown map '%s'.\n", command, str);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	for( bl = (struct block_list*)mapit_first(iter); mapit_exists(iter); bl = (struct block_list*)mapit_next(iter) ) {
+		if(bl->type == BL_MOB && m == bl->m)
+			if(!((TBL_MOB*)bl)->spawn )
+				unit_free(bl,CLR_OUTSIGHT);
+	}
+
+	mapit_free(iter);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+//biali deadbody
+BUILDIN_FUNC(openlootbag)
+{
+	TBL_PC* sd;
+	
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	TBL_NPC * nd = map_id2nd(st->oid);
+
+	int i=0;
+	ARR_FIND(0,MAX_INVENTORY,i,nd->lootbag[i].nameid > 0);
+	if(i == MAX_INVENTORY) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	pc_lootbag_storageopen(sd,nd,nd->lootbag_size);
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 
 /*==========================================
  *------------------------------------------*/
@@ -12840,6 +12906,9 @@ BUILDIN_FUNC(getmapflag)
 			case MF_CONTESTED:
 				args.flag_val = CONTESTED_MAX;
 				break;
+			case MF_RPK:
+				args.flag_val = RPK_MAX;
+				break;
 		}
 	}
 	else
@@ -12914,6 +12983,16 @@ BUILDIN_FUNC(setmapflag)
 				return SCRIPT_CMD_FAILURE;
 			}
 			break;
+		case MF_RPK:
+			if (script_hasdata(st, 4) && script_hasdata(st, 5)) {
+				int idx = script_getnum(st,4);
+				int value = script_getnum(st,5);
+				args.rpk.info[idx] = value;
+			} else {
+				ShowWarning("buildin_setmapflag: Unable to set rpk mapflag as flag data is missing.\n");
+				return SCRIPT_CMD_FAILURE;
+			}
+			break;
 		case MF_CONTESTED:
 			if (script_hasdata(st, 4) && script_hasdata(st, 5) && script_hasdata(st, 6) && script_hasdata(st, 7)) {
 				args.contested.info[CONTESTED_OWNER_ID] 	=  script_getnum(st, 4);
@@ -12924,7 +13003,7 @@ BUILDIN_FUNC(setmapflag)
 				ShowWarning("buildin_setmapflag: Unable to set Contested mapflag as flag data is missing.\n");
 				return SCRIPT_CMD_FAILURE;
 			}
-			break;
+		break;
 		default:
 			FETCH(4, args.flag_val);
 			break;
@@ -24709,7 +24788,7 @@ BUILDIN_FUNC(unloadnpc) {
 	if( nd == NULL ){
 		ShowError( "buildin_unloadnpc: npc '%s' was not found.\n", name );
 		return SCRIPT_CMD_FAILURE;
-	} else if ( nd->bl.id == st->oid ) {
+	} else if ( nd->bl.id == st->oid && !nd->isdeadbody) { //biali deadbody
 		// Supporting self-unload isn't worth the problem it may cause. [Secret]
 		ShowError("buildin_unloadnpc: You cannot self-unload NPC '%s'.\n.", name);
 		return SCRIPT_CMD_FAILURE;
@@ -25593,6 +25672,54 @@ BUILDIN_FUNC(isnpccloaked)
 
 #include "../custom/script.inc"
 
+//biali faction system
+BUILDIN_FUNC(setfactionmap) 
+{
+	if(script_hasdata(st,2)) {
+		int faction_id = script_getnum(st,2);
+		struct faction_data* fdb = NULL;
+		if((fdb = faction_search(faction_id)) != NULL ) {
+			TBL_NPC* nd = map_id2nd(st->oid);
+			struct map_data *mapdata = map_getmapdata(nd->bl.m);
+			mapdata->faction_id = faction_id;
+			script_pushint(st, 1);
+		} else{
+			script_pushint(st, -1);
+			ShowWarning("setfactionmap : Invalid faction id \n");
+		}
+	} else {
+		script_pushint(st,-1);
+		ShowWarning("setfactionmap : No Faction Id give \n");
+	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(getfactionmap) 
+{
+	if(script_hasdata(st,2)) {
+		int faction_id = -1;
+		const char *str = script_getstr(st,2);
+		int m_id = map_mapname2mapid(str);
+		if(m_id >= 0) {
+			struct map_data *mapdata = map_getmapdata(m_id);
+			script_pushint(st, mapdata->faction_id);
+		} else {
+			script_pushint(st, -1);
+		}
+		return SCRIPT_CMD_SUCCESS;
+	}
+}
+
+
+BUILDIN_FUNC(removefactionmap) 
+{
+	TBL_NPC* nd = map_id2nd(st->oid);
+	struct map_data *mapdata = map_getmapdata(nd->bl.m);
+	mapdata->faction_id = 0;
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /**
  * Complete Faction System [Lilith]
  * factioninfo(<Faction ID>,<Type>[,<Val>]);
@@ -25664,18 +25791,42 @@ BUILDIN_FUNC(setfaction)
 	}
 
 	faction_id = script_getnum(st,2);
-	if( (fdb = faction_search(faction_id)) == NULL )
+	if(faction_id == 0 ) {
+		sd->status.faction_id = 0;
+		faction_update_data(sd);
+
+		clif_refresh(sd);
+		return SCRIPT_CMD_SUCCESS;
+	} 
+	else if( (fdb = faction_search(faction_id)) == NULL )
 	{
 		ShowWarning("setfaction: Invalid faction id %d \n",faction_id);
 		return 0;
 	}
 
 	sd->status.faction_id = faction_id;
+	faction_update_data(sd); //feed sd->faction with new faction data;
 	status_calc_pc(sd,SCO_NONE);
 	if( map_getmapflag(sd->bl.m, MF_FVF) )
 		pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 
+	clif_refresh(sd);
 	return 0;
+}
+
+BUILDIN_FUNC(factionleave) 
+{
+	TBL_PC* sd = NULL;
+
+	if (!script_rid2sd(sd))
+		return SCRIPT_CMD_SUCCESS;// no player attached
+
+	if(sd->status.faction_id)
+		faction_leave(sd);
+	else
+		ShowWarning("factionleave : tried to leave faction while not in a faction \n");
+
+	return SCRIPT_CMD_SUCCESS;
 }
 
 /**
@@ -25857,7 +26008,7 @@ BUILDIN_FUNC(contestedadjbonus)
 	int job = script_getnum(st,4);
 	int drop = script_getnum(st,5);
 
-	if( (m_id = map_mapname2mapid(str)) == NULL )
+	if( (m_id = map_mapname2mapid(str)) == -1 )
 	{
 		ShowWarning("contestedadjbonus: map not found %s\n",str);
 		return 0;
@@ -25865,9 +26016,9 @@ BUILDIN_FUNC(contestedadjbonus)
 
 	struct map_data *mapdata = map_getmapdata(m_id);
 
-	if(mapdata->contested.info[CONTESTED_OWNER_ID] == NULL || !map_getmapflag(m_id,MF_CONTESTED)) 
+	if(mapdata->contested.info[CONTESTED_OWNER_ID] == 0 || !map_getmapflag(m_id,MF_CONTESTED)) 
 	{
-		ShowWarning("contestedadjbonus: map %s has no owner ot is not contested. Aborting.\n",str);
+		ShowWarning("contestedadjbonus: map %s has no owner or is not contested. Aborting.\n",str);
 		return 0;
 	}
 
@@ -25890,6 +26041,191 @@ BUILDIN_FUNC(contestedoff)
 	str=script_getstr(st,2);
 	if( (m_id = map_mapname2mapid(str)) >= 0 && map_getmapflag(m_id, MF_CONTESTED) )
 		map_setmapflag_sub(m_id, MF_CONTESTED, false, NULL);
+
+	return 0;
+}
+
+
+// Biali
+/*==========================================
+ * Hunting Missions [Zephyrus]
+ *------------------------------------------*/
+BUILDIN_FUNC(mission_sethunting)
+{
+	TBL_PC* sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+//	struct map_session_data *sd = script_rid2sd(st);
+	int index, i;
+	char varname[32];
+
+	if( sd == NULL )
+		return 0;
+
+	index = script_getnum(st,2);
+	if( index < 1 || index > 5 )
+		return 0; // Invalid Index
+
+	i = index - 1;
+
+	sprintf(varname, "Mission_ID%d", index);
+	sd->hunting[i].mob_id = script_getnum(st,3);
+	pc_setglobalreg(sd, add_str(varname), sd->hunting[i].mob_id);
+
+	sprintf(varname, "Mission_Count%d", index);
+	sd->hunting[i].count = script_getnum(st,4);
+	pc_setglobalreg(sd, add_str(varname), sd->hunting[i].count);
+
+	return 0;
+}
+
+BUILDIN_FUNC(mission_settime)
+{
+//	struct map_session_data *sd = script_rid2sd(st);
+
+	TBL_PC* sd;
+
+	if( sd == NULL )
+		return 0;
+
+	sd->hunting_time = script_getnum(st,2);
+	pc_setglobalreg(sd, add_str("Mission_Tick"), sd->hunting_time);
+
+	return 0;
+}
+
+// Biali
+BUILDIN_FUNC(getpartyshare) {
+	int party_id;
+	struct party_data* p;
+	party_id = script_getnum(st,2);
+	if( ( p = party_search(party_id) ) != NULL )
+		script_pushint(st,p->party.exp);
+	else
+		script_pushint(st,0);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/*==========================================
+* Costume Items
+*------------------------------------------*/
+BUILDIN_FUNC(costume)
+{
+	int i = -1, num, ep;
+	TBL_PC *sd;
+
+	num = script_getnum(st, 2); // Equip Slot
+
+	if (!script_rid2sd(sd))
+		return SCRIPT_CMD_FAILURE;
+
+	if (equip_index_check(num))
+		i = pc_checkequip(sd, equip_bitmask[num]);
+	if (i < 0)
+		return SCRIPT_CMD_FAILURE;
+
+	ep = sd->inventory.u.items_inventory[i].equip;
+	if (!(ep&EQP_HEAD_LOW) && !(ep&EQP_HEAD_MID) && !(ep&EQP_HEAD_TOP) && !(ep&EQP_GARMENT)) {
+		ShowError("buildin_costume: Attempted to convert non-cosmetic item to costume.");
+		return SCRIPT_CMD_FAILURE;
+	}
+	log_pick_pc(sd, LOG_TYPE_SCRIPT, -1, &sd->inventory.u.items_inventory[i]);
+	pc_unequipitem(sd, i, 2);
+	clif_delitem(sd, i, 1, 3);
+	// --------------------------------------------------------------------
+	sd->inventory.u.items_inventory[i].refine = 0;
+	sd->inventory.u.items_inventory[i].attribute = 0;
+	sd->inventory.u.items_inventory[i].card[0] = CARD0_CREATE;
+	sd->inventory.u.items_inventory[i].card[1] = 0;
+	sd->inventory.u.items_inventory[i].card[2] = GetWord(battle_config.reserved_costume_id, 0);
+	sd->inventory.u.items_inventory[i].card[3] = GetWord(battle_config.reserved_costume_id, 1);
+
+	if (ep&EQP_HEAD_TOP) { ep &= ~EQP_HEAD_TOP; ep |= EQP_COSTUME_HEAD_TOP; }
+	if (ep&EQP_HEAD_LOW) { ep &= ~EQP_HEAD_LOW; ep |= EQP_COSTUME_HEAD_LOW; }
+	if (ep&EQP_HEAD_MID) { ep &= ~EQP_HEAD_MID; ep |= EQP_COSTUME_HEAD_MID; }
+	if (ep&EQP_GARMENT) { ep &= EQP_GARMENT; ep |= EQP_COSTUME_GARMENT; }
+	// --------------------------------------------------------------------
+	log_pick_pc(sd, LOG_TYPE_SCRIPT, 1, &sd->inventory.u.items_inventory[i]);
+
+	clif_additem(sd, i, 1, 0);
+	pc_equipitem(sd, i, ep);
+	clif_misceffect(&sd->bl, 3);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/*===============================
+ * getcostumeitem <item id>;
+ * getcostumeitem <"item name">;
+ *===============================*/
+BUILDIN_FUNC(getcostumeitem)
+{
+	unsigned short nameid;
+	struct item item_tmp;
+	TBL_PC *sd;
+	struct script_data *data;
+
+	if (!script_rid2sd(sd))
+	{	// No player attached.
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	data = script_getdata(st, 2);
+	get_val(st, data);
+	if (data_isstring(data)) {
+		int ep;
+		const char *name = conv_str(st, data);
+		struct item_data *item_data = itemdb_searchname(name);
+		if (item_data == NULL)
+		{	//Failed
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		ep = item_data->equip;
+		if (!(ep&EQP_HEAD_LOW) && !(ep&EQP_HEAD_MID) && !(ep&EQP_HEAD_TOP) && !(ep&EQP_GARMENT)){
+			ShowError("buildin_getcostumeitem: Attempted to convert non-cosmetic item to costume.");
+			return SCRIPT_CMD_FAILURE;
+		}
+		nameid = item_data->nameid;
+	}
+	else
+		nameid = conv_num(st, data);
+
+	if (!itemdb_exists(nameid))
+	{	// Item does not exist.
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	memset(&item_tmp, 0, sizeof(item_tmp));
+	item_tmp.nameid = nameid;
+	item_tmp.amount = 1;
+	item_tmp.identify = 1;
+	item_tmp.card[0] = CARD0_CREATE;
+	item_tmp.card[2] = GetWord(battle_config.reserved_costume_id, 0);
+	item_tmp.card[3] = GetWord(battle_config.reserved_costume_id, 1);
+	if (pc_additem(sd, &item_tmp, 1, LOG_TYPE_SCRIPT)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;	//Failed to add item, we will not drop if they don't fit
+	}
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+//biali damage log
+/*==========================================
+ * Ranking Reset
+ *------------------------------------------*/
+BUILDIN_FUNC(rankreset)
+{
+	int type = script_getnum(st,2);
+	if( type >= 0 && type <= 2 )
+		pc_ranking_reset(type,true);
 
 	return 0;
 }
@@ -25958,6 +26294,204 @@ BUILDIN_FUNC(get_unique_id)
 }
 
 // (^~_~^) Gepard Shield End
+
+// biali dynamic npc creation (frost)
+/*==========================================
+ * Duplicate any npc on live server
+ * duplicatenpc "<Source NPC name>","<New NPC shown name>","<New NPC hidden name>","<mapname>",<map_x>,<map_y>,<dir>{, spriteid{, map_xs, map_ys}}};
+ *------------------------------------------*/
+BUILDIN_FUNC(duplicatenpc)
+{
+	int map_x = script_getnum(st, 6);
+	int map_y = script_getnum(st, 7);
+	int dir = script_getnum(st, 8);
+	int spriteid, map_xs = -1, map_ys = -1, sourceid, type, mapid, i;
+	const char *sourcename = script_getstr(st, 2);
+	const char *new_shown_name = script_getstr(st, 3);
+	const char *new_hidden_name = script_getstr(st, 4);
+	const char *mapname = script_getstr(st, 5);
+
+	char new_npc_name[24] = "";
+	struct npc_data *nd_source, *nd_target;
+
+	if(script_hasdata(st, 10))
+		map_xs = (script_getnum(st, 10) < -1) ? -1 : script_getnum(st, 10);
+
+	if(script_hasdata(st, 11))
+		map_ys = (script_getnum(st, 11) < -1) ? -1 : script_getnum(st, 10);
+
+	if(map_xs == -1 && map_ys != -1)
+		map_xs = 0;
+
+	if(map_xs != - 1 && map_ys == -1)
+		map_ys = 0;
+
+	if(strlen(new_shown_name) + strlen(new_hidden_name) > NAME_LENGTH) {
+		ShowError("buildin_duplicatenpc: New NPC shown name + New NPC hidden name is too long (max %d chars). (%s)\n", sourcename, NAME_LENGTH);
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	nd_source = npc_name2id(sourcename);
+
+	if(script_hasdata(st, 9))
+		spriteid = (script_getnum(st, 9) < -1) ? -1 : script_getnum(st, 9);
+	else
+		spriteid = nd_source->class_;
+
+	if(nd_source == NULL) {
+		ShowError("buildin_duplicatenpc: original npc not found for duplicate. (%s)\n", sourcename);
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	sourceid = nd_source->bl.id;
+	type = nd_source->subtype;
+	mapid = map_mapname2mapid(mapname);
+
+	if(mapid < 0) {
+		ShowError("buildin_duplicatenpc: target map not found. (%s)\n", mapname);
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	CREATE(nd_target, struct npc_data, 1);
+	
+	strcat(new_npc_name, new_shown_name);
+	strncat(new_npc_name, "#", 1);
+	strncat(new_npc_name, new_hidden_name, strlen(new_hidden_name));
+
+	safestrncpy(nd_target->name, new_npc_name , sizeof(nd_target->name));
+	safestrncpy(nd_target->exname, new_npc_name, sizeof(nd_target->exname));
+
+	nd_target->bl.prev = nd_target->bl.next = NULL;
+	nd_target->bl.m = mapid;
+	nd_target->bl.x = map_x;
+	nd_target->bl.y = map_y;
+	nd_target->bl.id = npc_get_new_npc_id();
+	nd_target->class_ = spriteid;
+	nd_target->speed = 200;
+	nd_target->src_id = sourceid;
+	nd_target->bl.type = BL_NPC;
+	nd_target->subtype = (enum npc_subtype)type;
+
+	switch(type) {
+		case NPCTYPE_SCRIPT:
+			nd_target->u.scr.xs = map_xs;
+			nd_target->u.scr.ys = map_ys;
+			nd_target->u.scr.script = nd_source->u.scr.script;
+			nd_target->u.scr.label_list = nd_source->u.scr.label_list;
+			nd_target->u.scr.label_list_num = nd_source->u.scr.label_list_num;
+			break;
+		case NPCTYPE_SHOP:
+		case NPCTYPE_CASHSHOP:
+		case NPCTYPE_ITEMSHOP:
+		case NPCTYPE_POINTSHOP:
+		case NPCTYPE_MARKETSHOP:
+			nd_target->u.shop.shop_item = nd_source->u.shop.shop_item;
+			nd_target->u.shop.count = nd_source->u.shop.count;
+			break;
+		case NPCTYPE_WARP:
+			if( !battle_config.warp_point_debug )
+				nd_target->class_ = JT_WARPNPC;
+			else
+				nd_target->class_ = JT_GUILD_FLAG;
+			nd_target->u.warp.xs = map_xs;
+			nd_target->u.warp.ys = map_ys;
+			nd_target->u.warp.mapindex = nd_source->u.warp.mapindex;
+			nd_target->u.warp.x = nd_source->u.warp.x;
+			nd_target->u.warp.y = nd_source->u.warp.y;
+			nd_target->trigger_on_hidden = nd_source->trigger_on_hidden;
+			break;
+	}
+
+	map_addnpc(mapid, nd_target);
+	status_change_init(&nd_target->bl);
+	unit_dataset(&nd_target->bl);
+	nd_target->ud.dir = dir;
+	npc_setcells(nd_target);
+	map_addblock(&nd_target->bl);
+
+	if(spriteid >= 0) {
+		status_set_viewdata(&nd_target->bl, nd_target->class_);
+		clif_spawn(&nd_target->bl);
+	}
+
+	strdb_put(npcname_db, nd_target->exname, nd_target);
+
+	if(type == NPCTYPE_SCRIPT) {
+		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
+			char* lname = nd_target->u.scr.label_list[i].name;
+			int pos = nd_target->u.scr.label_list[i].pos;
+
+			if ((lname[0] == 'O' || lname[0] == 'o') && (lname[1] == 'N' || lname[1] == 'n')) {
+				struct event_data* ev;
+				char buf[NAME_LENGTH*2+3];
+				snprintf(buf, ARRAYLENGTH(buf), "%s::%s", nd_target->exname, lname);
+
+				CREATE(ev, struct event_data, 1);
+				ev->nd = nd_target;
+				ev->pos = pos;
+				if(strdb_put(ev_db, buf, ev))
+					ShowWarning("npc_parse_duplicate : duplicate event %s (%s)\n", buf, nd_target->name);
+			}
+		}
+
+		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
+			int t = 0, k = 0;
+			char *lname = nd_target->u.scr.label_list[i].name;
+			int pos = nd_target->u.scr.label_list[i].pos;
+			if (sscanf(lname, "OnTimer%d%n", &t, &k) == 1 && lname[k] == '\0') {
+				struct npc_timerevent_list *te = nd_target->u.scr.timer_event;
+				int j, k = nd_target->u.scr.timeramount;
+				if (te == NULL)
+					te = (struct npc_timerevent_list *)aMalloc(sizeof(struct npc_timerevent_list));
+				else
+					te = (struct npc_timerevent_list *)aRealloc( te, sizeof(struct npc_timerevent_list) * (k+1) );
+				for (j = 0; j < k; j++) {
+					if (te[j].timer > t) {
+						memmove(te+j+1, te+j, sizeof(struct npc_timerevent_list)*(k-j));
+						break;
+					}
+				}
+				te[j].timer = t;
+				te[j].pos = pos;
+				nd_target->u.scr.timer_event = te;
+				nd_target->u.scr.timeramount++;
+			}
+		}
+		nd_target->u.scr.timerid = INVALID_TIMER;
+	}
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/*==========================================
+ * Remove any npc duplicate on live server
+ * duplicateremove "<NPC name>";
+ *------------------------------------------*/
+BUILDIN_FUNC(duplicateremove)
+{
+	struct npc_data *nd;
+
+	if(script_hasdata(st, 2)) {
+		nd = npc_name2id(script_getstr(st, 2));
+		if(nd == NULL) {
+			script_pushint(st, -1);
+			return SCRIPT_CMD_FAILURE;
+		}
+	} else
+		nd = (struct npc_data *)map_id2bl(st->oid);
+
+	if(!nd->src_id)
+		npc_unload_duplicates(nd);
+	else
+		npc_unload(nd,true);
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
 
 /// script command definitions
 /// for an explanation on args, see add_buildin_func
@@ -26100,11 +26634,12 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(openstorage,""),
 	BUILDIN_DEF(guildopenstorage,""),
 	BUILDIN_DEF(guildopenstorage_log,"?"),
+	BUILDIN_DEF(openlootbag,""), // biali deadbody
 	BUILDIN_DEF(guild_has_permission,"i?"),
 	BUILDIN_DEF(itemskill,"vi?"),
 	BUILDIN_DEF(produce,"i"),
 	BUILDIN_DEF(cooking,"i"),
-	BUILDIN_DEF(monster,"siisii???"),
+	BUILDIN_DEF(monster,"siisii?????"),
 	BUILDIN_DEF(getmobdrops,"i"),
 	BUILDIN_DEF(areamonster,"siiiisii???"),
 	BUILDIN_DEF(killmonster,"ss?"),
@@ -26134,6 +26669,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getunits, "i?"),
 	BUILDIN_DEF2(getunits, "getmapunits", "is?"),
 	BUILDIN_DEF2(getunits, "getareaunits", "isiiii?"),
+	BUILDIN_DEF(clearunits, "s"), //biali blackzone
 	BUILDIN_DEF(getareadropitem,"siiiiv"),
 	BUILDIN_DEF(enablenpc,"s"),
 	BUILDIN_DEF(disablenpc,"s"),
@@ -26178,7 +26714,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(isloggedin,"i?"),
 	BUILDIN_DEF(setmapflagnosave,"ssii"),
 	BUILDIN_DEF(getmapflag,"si?"),
-	BUILDIN_DEF(setmapflag,"si??"),
+	BUILDIN_DEF(setmapflag,"si????"),
 	BUILDIN_DEF(removemapflag,"si?"),
 	BUILDIN_DEF(pvpon,"s"),
 	BUILDIN_DEF(pvpoff,"s"),
@@ -26493,10 +27029,14 @@ struct script_function buildin_func[] = {
 	**/
 	BUILDIN_DEF(factioninfo, "ii?"),
 	BUILDIN_DEF(setfaction, "i?"),
+	BUILDIN_DEF(factionleave, ""),
 	BUILDIN_DEF(factionmonster,"isiisii?"),
 	BUILDIN_DEF(areafactionmonster,"isiiiisii?"),
 	BUILDIN_DEF(fvfon,"s?"),
 	BUILDIN_DEF(fvfoff,"s"),
+	BUILDIN_DEF(setfactionmap,"i"),
+	BUILDIN_DEF(getfactionmap,"s"),
+	BUILDIN_DEF(removefactionmap,""),
 
 	/**
 	* Contested System [Biali]
@@ -26504,6 +27044,14 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(contestedon,"s"),
 	BUILDIN_DEF(contestedoff,"s"),
 	BUILDIN_DEF(contestedadjbonus,"siii"),
+
+	// Other Ragnamania custom commands
+	BUILDIN_DEF(mission_sethunting,"iii"),
+	BUILDIN_DEF(mission_settime,"i"),
+	BUILDIN_DEF(getpartyshare,"i"),
+	BUILDIN_DEF(costume, "i"),
+	BUILDIN_DEF(getcostumeitem, "v"),
+	BUILDIN_DEF(rankreset,"i"),
 
 	/**
 	 * rAthena and beyond!
@@ -26652,6 +27200,10 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(rentalcountitem, "v?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem2", "viiiiiii?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem3", "viiiiiiirrr?"),
+
+	//Biali dynamic npc creation (frost)
+	BUILDIN_DEF(duplicatenpc, "ssssiii???"),
+	BUILDIN_DEF(duplicateremove, "?"),
 
 #include "../custom/script_def.inc"
 

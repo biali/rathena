@@ -223,6 +223,17 @@ struct Battle_Config
 	int emergency_call;
 	int guild_aura;
 	int pc_invincible_time;
+	int pc_invincible_time_reset; //biali black zone
+	int pc_knocked_time; // Biali black zone
+	int infamy_given; // Biali black zone
+	int infamy_taken; // Biali black zone
+	int infamy_from_mobs; // Biali black zone
+	int pk_log;// Biali black zone
+	int bg_log;// Biali black zone
+	int pvp_log;// Biali black zone
+	int woe_log;// Biali black zone
+	int break_chance;// Biali RPK fullloot equips break chance
+	int remove_deadbody_timer; // time in ticks to automatically unload a deadbody npc
 
 	int pet_catch_rate;
 	int pet_rename;

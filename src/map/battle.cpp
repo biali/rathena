@@ -225,6 +225,8 @@ static int battle_getenemyarea_sub(struct block_list *bl, va_list ap)
 	return 0;
 }
 
+
+// Biali check this out TODO
 /**
  * Returns list of enemies within an area
  * @param src
@@ -2516,9 +2518,9 @@ static int battle_skill_damage_skill(struct block_list *src, struct block_list *
 
 	map_data *mapdata = map_getmapdata(src->m);
 
-	if ((damage->map&1 && (!mapdata->flag[MF_PVP] && !mapdata_flag_gvg2(mapdata) && !mapdata->flag[MF_BATTLEGROUND] && !mapdata->flag[MF_SKILL_DAMAGE] && !mapdata->flag[MF_RESTRICTED])) ||
+	if ((damage->map&1 && (!mapdata->flag[MF_RPK] && !mapdata->flag[MF_PVP] && !mapdata_flag_gvg2(mapdata) && !mapdata->flag[MF_BATTLEGROUND] && !mapdata->flag[MF_SKILL_DAMAGE] && !mapdata->flag[MF_RESTRICTED])) ||
 		(damage->map&2 && mapdata->flag[MF_PVP]) ||
-		(damage->map&4 && mapdata_flag_gvg2(mapdata)) ||
+		(damage->map&4 && (mapdata_flag_gvg2(mapdata) || mapdata->flag[MF_RPK])) ||
 		(damage->map&8 && mapdata->flag[MF_BATTLEGROUND]) ||
 		(damage->map&16 && mapdata->flag[MF_SKILL_DAMAGE]) ||
 		(damage->map&mapdata->zone && mapdata->flag[MF_RESTRICTED]))
@@ -3564,12 +3566,20 @@ static void battle_calc_skill_base_damage(struct Damage* wd, struct block_list *
 	std::bitset<NK_MAX> nk = battle_skill_get_damage_properties(skill_id, wd->miscflag);
 
 	switch (skill_id) {	//Calc base damage according to skill
-		case PA_SACRIFICE:
+		case PA_SACRIFICE: // biali hellgates
+			// union u_mapflag_args args = {};
+			// if(src->type == BL_PC && map_getmapflag_sub(src->m, static_cast<e_mapflag>(MF_RPK), &args ) && args.rpk.info[RPK_ISHG]) {
+			//  	wd->damage = sstatus->max_hp* 3/100;
+			//  	wd->damage2 = 0;
+			//  } else {
 			wd->damage = sstatus->max_hp* 9/100;
 			wd->damage2 = 0;
+			// }
+
 #ifdef RENEWAL
-			wd->weaponAtk = wd->damage;
-			wd->weaponAtk2 = wd->damage2;
+		union u_mapflag_args args = {};
+		wd->weaponAtk = wd->damage;
+		wd->weaponAtk2 = wd->damage2;
 #endif
 			break;
 #ifdef RENEWAL
@@ -8448,7 +8458,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 						case NC_AXETORNADO:
 						case SR_SKYNETBLOW:
 							// Can only hit traps in PVP/GVG maps
-							if (!mapdata->flag[MF_PVP] && !mapdata->flag[MF_GVG] && !mapdata->flag[MF_FVF])
+							if (!mapdata->flag[MF_PVP] && !mapdata->flag[MF_GVG] && !mapdata->flag[MF_FVF] && !mapdata->flag[MF_RPK])
 								return 0;
 							break;
 					}
@@ -8465,7 +8475,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 					case NC_AXETORNADO:
 					case SR_SKYNETBLOW:
 						// Can only hit icewall in PVP/GVG maps
-						if (!mapdata->flag[MF_PVP] && !mapdata->flag[MF_GVG] && !mapdata->flag[MF_FVF])
+						if (!mapdata->flag[MF_PVP] && !mapdata->flag[MF_GVG] && !mapdata->flag[MF_FVF] && !mapdata->flag[MF_RPK])
 							return 0;
 						break;
 					case HT_CLAYMORETRAP:
@@ -8589,8 +8599,10 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 0; //If you are not representing a guild, can't target Contested Stone. Biali
 			if( sd->status.guild_id && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID] && t_bl->type == BL_MOB && ((TBL_MOB*)t_bl)->mob_id == MOBID_CONTEST_STONE)
 				return 0; //If your guild holds the contested map u cant hit the contest stone. Biali
-			if( t_bl->type != BL_PC )
+			if( t_bl->type != BL_PC || (t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_RPK))) // Biali rpk mode
 				state |= BCT_ENEMY; //Natural enemy.
+			// if( t_bl->type != BL_PC )
+			// 	state |= BCT_ENEMY; //Natural enemy.
 			break;
 		}
 		case BL_MOB:
@@ -8668,7 +8680,10 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		{
 			int s_guild = status_get_guild_id(s_bl);
 			int t_guild = status_get_guild_id(t_bl);
-			if( !(mapdata->flag[MF_PVP] && mapdata->flag[MF_PVP_NOGUILD]) && s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))) && (!mapdata->flag[MF_BATTLEGROUND] || sbg_id == tbg_id) )
+			//biali Faction system
+			if(faction_get_id(s_bl) > 0 && faction_get_id(s_bl) != faction_get_id(t_bl))
+				state |= BCT_ENEMY;
+			else if( !(mapdata->flag[MF_PVP] && mapdata->flag[MF_PVP_NOGUILD]) && s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))) && (!mapdata->flag[MF_BATTLEGROUND] || sbg_id == tbg_id) )
 				state |= BCT_GUILD;
 			else
 				state |= BCT_ENEMY;
@@ -8713,7 +8728,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		{
 			int s_guild = status_get_guild_id(s_bl);
 			int t_guild = status_get_guild_id(t_bl);
-			if(s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))))
+			if(s_guild && t_guild && (s_guild == t_guild || (!(flag&BCT_SAMEGUILD) && guild_isallied(s_guild, t_guild))) )
 				state |= BCT_GUILD;
 		}
 	} //end non pvp/gvg chk rivality
@@ -9386,11 +9401,25 @@ static const struct _battle_data {
 	{ "mythic_dg_reserved_char_id",         &battle_config.mythic_dg_reserved_char_id,      999995, 0,      INT_MAX,        },
 	{ "reserved_costume_id",                &battle_config.reserved_costume_id,             999999, 0,      INT_MAX,        },
 //	Reputation System Biali
-	{ "reputation_hated",                 	&battle_config.reputation_neutral,            30000000, 0,     99999999,        },
-	{ "reputation_unfriendly",              &battle_config.reputation_neutral,            45000000, 0,     99999999,        },
-	{ "reputation_neutral",                 &battle_config.reputation_neutral,            50000000, 0,     99999999,        },
-	{ "reputation_friendly",                &battle_config.reputation_neutral,            60000000, 0,     99999999,        },
-	{ "reputation_honored",                 &battle_config.reputation_neutral,            80000000, 0,     99999999,        },
+	{ "reputation_hated",                 	&battle_config.reputation_hated,             -45000000, -99999999,     99999999,},
+	{ "reputation_unfriendly",              &battle_config.reputation_unfriendly,        -30000000, -99999999,     99999999,},
+	{ "reputation_neutral",                 &battle_config.reputation_neutral,                   0, -99999999,     99999999,},
+	{ "reputation_friendly",                &battle_config.reputation_friendly,           60000000, -99999999,     99999999,},
+	{ "reputation_honored",                 &battle_config.reputation_honored,            80000000, -99999999,     99999999,},
+//	Infamy System
+	{ "infamy_given",					 	&battle_config.infamy_given,        	          7,    0,      100,            },
+	{ "infamy_taken",						&battle_config.infamy_taken,          	         10,    0,      100,            },
+	{ "infamy_from_mobs",					&battle_config.infamy_from_mobs,          	     10,    0,      INT_MAX,        },
+// Ragnamania battle log and others
+	{ "player_invincible_time_reset",       &battle_config.pc_invincible_time_reset,     120000, 	0,      INT_MAX,        },
+	{ "player_knocked_time",  		        &battle_config.pc_knocked_time, 	          20000,  	0,      INT_MAX,        },
+	{ "char_pk_log",  		                &battle_config.pk_log,                            0,    0,      1,              },
+	{ "char_bg_log",  		                &battle_config.bg_log,                            0,    0,      1,              },
+	{ "char_pvp_log",  		                &battle_config.pvp_log,              		      0,    0,      1,              },
+	{ "char_woe_log",  		                &battle_config.woe_log,               		      0,    0,      1,              },
+// Ragnamania RPK full loot settings
+	{ "rpk_equips_break_chance",            &battle_config.break_chance,           		     70,    0,    100,              },
+	{ "rpk_remove_deadbody_timer",          &battle_config.remove_deadbody_timer,  	    1800000,    0,    INT_MAX,          },
 
 #include "../custom/battle_config_init.inc"
 };

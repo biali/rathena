@@ -2113,6 +2113,10 @@ int map_quit(struct map_session_data *sd) {
 	if( sd->status.clan_id )
 		clan_member_left(sd);
 
+	//faction system
+	if(sd->status.faction_id)
+		sd->status.faction_id = 0;
+
 	pc_itemcd_do(sd,false);
 
 	npc_script_event(sd, NPCE_LOGOUT);
@@ -2785,6 +2789,11 @@ int map_addinstancemap(int src_m, int instance_id)
 	dst_map->bys = src_map->bys;
 	dst_map->iwall_num = src_map->iwall_num;
 
+	// Biali custom
+	dst_map->rpk = src_map->rpk;
+	dst_map->atk_rate = src_map->atk_rate;
+	dst_map->contested = src_map->contested;
+
 	memset(dst_map->npc, 0, sizeof(dst_map->npc));
 	dst_map->npc_num = 0;
 	dst_map->npc_num_area = 0;
@@ -2894,6 +2903,9 @@ int map_delinstancemap(int m)
 	mapdata->damage_adjust = {};
 	mapdata->flag.clear();
 	mapdata->skill_damage.clear();
+
+	// mapdata->rpk.info = {};
+	// mapdata->contested.info = {};
 
 	mapindex_removemap(mapdata->index);
 	map_removemapdb(mapdata);
@@ -3720,6 +3732,9 @@ void map_flags_init(void){
 		mapdata->contested.info[CONTESTED_BASE_BONUS] = NULL;
 		mapdata->contested.info[CONTESTED_JOB_BONUS] = NULL;
 		mapdata->contested.info[CONTESTED_DROP_BONUS] = NULL;
+
+		// Biali FvF Maps (ON for all maps except the ones in ragnamania/mapflags/fvf.c)
+		map_setmapflag_sub(i, MF_FVF, true, &args);
 
 		if (instance_start && i >= instance_start)
 			continue;
@@ -4644,32 +4659,43 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 				default:
 					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 			}
-		case MF_ATK_RATE:
-			nullpo_retr(-1, args);
+		// case MF_ATK_RATE:
+		// 	nullpo_retr(-1, args);
 
-			switch (args->flag_val) {
-				case DMGRATE_BL:
-				case DMGRATE_SHORT:
-				case DMGRATE_LONG:
-				case DMGRATE_WEAPON:
-				case DMGRATE_MAGIC:
-				case DMGRATE_MISC:
-					return mapdata->atk_rate.rate[args->flag_val];
-				default:
-					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
-			}
-		case MF_CONTESTED:
-			nullpo_retr(-1, args);
+		// 	switch (args->flag_val) {
+		// 		case DMGRATE_BL:
+		// 		case DMGRATE_SHORT:
+		// 		case DMGRATE_LONG:
+		// 		case DMGRATE_WEAPON:
+		// 		case DMGRATE_MAGIC:
+		// 		case DMGRATE_MISC:
+		// 			return mapdata->atk_rate.rate[args->flag_val];
+		// 		default:
+		// 			return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
+		// 	}
+		// case MF_RPK:
+		// 	nullpo_retr(-1, args);
+		// 	switch (args->flag_val) {
+		// 		case RPK_MAP_TIER:
+		// 		case RPK_FULLLOOT:
+		// 		case RPK_ISDG:
+		// 		case RPK_ISHG:
+		// 			return mapdata->rpk.info[args->flag_val];
+		// 		default:
+		// 			return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
+		// 	}
+		// case MF_CONTESTED:
+		// 	nullpo_retr(-1, args);
 
-			switch (args->flag_val) {
-				case CONTESTED_OWNER_ID:
-				case CONTESTED_BASE_BONUS:
-				case CONTESTED_JOB_BONUS:
-				case CONTESTED_DROP_BONUS:
-					return mapdata->contested.info[args->flag_val];
-				default:
-					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
-			}
+		// 	switch (args->flag_val) {
+		// 		case CONTESTED_OWNER_ID:
+		// 		case CONTESTED_BASE_BONUS:
+		// 		case CONTESTED_JOB_BONUS:
+		// 		case CONTESTED_DROP_BONUS:
+		// 			return mapdata->contested.info[args->flag_val];
+		// 		default:
+		// 			return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
+		// 	}
 		default:
 			return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 	}
@@ -4747,6 +4773,10 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 					mapdata->flag[MF_FVF] = false;
 					ShowWarning("map_setmapflag: Unable to set Faction and PvP flags for the same map! Removing Faction flag from %s.\n", mapdata->name);
 				}
+				if (mapdata->flag[MF_RPK]) {
+					mapdata->flag[MF_RPK] = false;
+					ShowWarning("map_setmapflag: Unable to set PK and PvP flags for the same map! Removing PK flag from %s.\n", mapdata->name);
+				}
 			}
 			break;
 		case MF_GVG:
@@ -4770,6 +4800,10 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 					mapdata->flag[MF_FVF] = false;
 					ShowWarning("map_setmapflag: Unable to set Faction and GvG flags for the same map! Removing Faction flag from %s.\n", mapdata->name);
 				}
+				if (mapdata->flag[MF_RPK]) {
+					mapdata->flag[MF_RPK] = false;
+					ShowWarning("map_setmapflag: Unable to set PK and GvG flags for the same map! Removing PK flag from %s.\n", mapdata->name);
+				}
 			}
 			break;
 		case MF_GVG_CASTLE:
@@ -4792,6 +4826,10 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 					mapdata->flag[MF_FVF] = false;
 						ShowWarning("npc_parse_mapflag: Unable to set FVF and GvG%s Castle flags for the same map! Removing FVF flag from %s.\n", (mapflag == MF_GVG_CASTLE ? NULL : " TE"), mapdata->name);
 				}
+				if (mapdata->flag[MF_RPK]) {
+					mapdata->flag[MF_RPK] = false;
+					ShowWarning("map_setmapflag: Unable to set PK and GvG%s Castle flags for the same map! Removing PK flag from %s.\n", (mapflag == MF_GVG_CASTLE ? NULL : " TE"), mapdata->name);
+				}
 			}
 			mapdata->flag[mapflag] = status;
 			break;
@@ -4806,8 +4844,61 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 					mapdata->flag[MF_FVF] = false;
 						ShowWarning("map_setmapflag: Unable to set FVF and GvG Dungeon flags for the same map! Removing FVF flag from %s.\n", mapdata->name);
 				}
+				if (mapdata->flag[MF_RPK]) {
+					mapdata->flag[MF_RPK] = false;
+					ShowWarning("map_setmapflag: Unable to set PK and GvG Dungeon flags for the same map! Removing PK flag from %s.\n", mapdata->name);
+				}
 			}
 			mapdata->flag[mapflag] = status;
+			break;
+		case MF_RPK: //Biali pk
+			mapdata->flag[mapflag] = status; // Must come first to properly set map property
+			if (!status) {
+				mapdata->rpk = {};
+				clif_map_property_mapall(m, MAPPROPERTY_NOTHING);
+				map_foreachinmap(unit_stopattack, m, BL_CHAR, 0);
+			} else {
+				nullpo_retr(false, args);
+
+				for (int i = 0; i < RPK_MAX; i++) {
+					if(args->rpk.info[i]){ 
+						mapdata->rpk.info[i] = args->rpk.info[i];
+						// ShowWarning("map_setmapflag_sub : map %s : args->[%d] = %d\n",mapdata->name,i,args->rpk.info[i]);
+					}
+				}
+
+				clif_map_property_mapall(m, MAPPROPERTY_FREEPVPZONE);
+				map_foreachinmap(map_mapflag_pvp_start_sub, m, BL_PC);
+
+				if (mapdata->flag[MF_GVG]) {
+					mapdata->flag[MF_GVG] = false;
+					ShowWarning("map_setmapflag: Unable to set GvG and PK flags for the same map! Removing GvG flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_GVG_TE]) {
+					mapdata->flag[MF_GVG_TE] = false;
+					ShowWarning("map_setmapflag: Unable to set GvG TE and PK flags for the same map! Removing GvG TE flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_GVG_DUNGEON]) {
+					mapdata->flag[MF_GVG_DUNGEON] = false;
+					ShowWarning("map_setmapflag: Unable to set GvG Dungeon and PK flags for the same map! Removing GvG Dungeon flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_GVG_CASTLE]) {
+					mapdata->flag[MF_GVG_CASTLE] = false;
+					ShowWarning("map_setmapflag: Unable to set GvG Castle and PK flags for the same map! Removing GvG Castle flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_GVG_TE_CASTLE]) {
+					mapdata->flag[MF_GVG_TE_CASTLE] = false;
+					ShowWarning("map_setmapflag: Unable to set GvG TE Castle and PK flags for the same map! Removing GvG TE Castle flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_BATTLEGROUND]) {
+					mapdata->flag[MF_BATTLEGROUND] = false;
+					ShowWarning("map_setmapflag: Unable to set Battleground and PK flags for the same map! Removing Battleground flag from %s.\n", mapdata->name);
+				}
+				if (mapdata->flag[MF_FVF]) {
+					mapdata->flag[MF_FVF] = false;
+					ShowWarning("map_setmapflag: Unable to set FvF and PK flags for the same map! Removing FvF flag from %s.\n", mapdata->name);
+				}
+			}
 			break;
 		case MF_NOBASEEXP:
 		case MF_NOJOBEXP:
@@ -4976,6 +5067,12 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 				memcpy(&mapdata->contested, &args->contested, sizeof(struct s_contested_bonuses));
 				mapdata->flag[mapflag] = status;
 			}
+			break;
+		case MF_FVF: // biali Faction System
+			if (!status) 
+				mapdata->flag[mapflag] = false;
+			else 
+				mapdata->flag[mapflag] = true;
 			break;
 		default:
 			mapdata->flag[mapflag] = status;
@@ -5357,6 +5454,7 @@ int do_init(int argc, char *argv[])
 	
 	map_do_init_msg();
 	do_init_path();
+	do_init_faction(); //Biali Faction system
 	do_init_atcommand();
 	do_init_battle();
 	do_init_instance();
@@ -5386,7 +5484,6 @@ int do_init(int argc, char *argv[])
 	do_init_duel();
 	do_init_vending();
 	do_init_buyingstore();
-	do_init_faction(); //Biali Faction system
 
 	npc_event_do_oninit();	// Init npcs (OnInit)
 
