@@ -185,6 +185,10 @@ int npc_ontouch_event(struct map_session_data *sd, struct npc_data *nd)
 	if (pc_isdead(sd))	// Dead player don't trigger 'OnTouch_'
 		return 0;
 
+	// Biali deadbody
+	if(nd->isdeadbody)
+		return 0;
+
 	if( nd->touching_id )
 		return 0; // Attached a player already. Can't trigger on anyone else.
 
@@ -4030,55 +4034,10 @@ struct npc_data* npc_createdeadbody(const char *sourcename, const char *new_show
 
 	strdb_put(npcname_db, nd_target->exname, nd_target);
 
-	if(type == NPCTYPE_SCRIPT) {
-
-		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
-			char* lname = nd_target->u.scr.label_list[i].name;
-			int pos = nd_target->u.scr.label_list[i].pos;
-
-			if ((lname[0] == 'O' || lname[0] == 'o') && (lname[1] == 'N' || lname[1] == 'n')) {
-				struct event_data* ev;
-				char buf[NAME_LENGTH*2+3];
-				snprintf(buf, ARRAYLENGTH(buf), "%s::%s", nd_target->exname, lname);
-
-				CREATE(ev, struct event_data, 1);
-				ev->nd = nd_target;
-				ev->pos = pos;
-				if(strdb_put(ev_db, buf, ev))
-					ShowWarning("npc_parse_duplicate : duplicate event %s (%s)\n", buf, nd_target->name);
-			}
-		}
-
-		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
-			int t = 0, k = 0;
-			char *lname = nd_target->u.scr.label_list[i].name;
-			int pos = nd_target->u.scr.label_list[i].pos;
-			if (sscanf(lname, "OnTimer%d%n", &t, &k) == 1 && lname[k] == '\0') {
-				struct npc_timerevent_list *te = nd_target->u.scr.timer_event;
-				int j, k = nd_target->u.scr.timeramount;
-				if (te == NULL)
-					te = (struct npc_timerevent_list *)aMalloc(sizeof(struct npc_timerevent_list));
-				else
-					te = (struct npc_timerevent_list *)aRealloc( te, sizeof(struct npc_timerevent_list) * (k+1) );
-				for (j = 0; j < k; j++) {
-					if (te[j].timer > t) {
-						memmove(te+j+1, te+j, sizeof(struct npc_timerevent_list)*(k-j));
-						break;
-					}
-				}
-				te[j].timer = t;
-				te[j].pos = pos;
-				nd_target->u.scr.timer_event = te;
-				nd_target->u.scr.timeramount++;
-			}
-		}
-		nd_target->u.scr.timerid = INVALID_TIMER;
-	}
+	nd_target->u.scr.timerid = INVALID_TIMER;
 
 	return nd_target;
 }
-
-
 
 
 
@@ -4615,7 +4574,7 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 				int64 idx = -1;
 				short value = 0;
 				char index[13];
-				sscanf(w4, "%13s %6hd", &index, &value);
+				sscanf(w4, "%13[^,],%hd", index, &value);
 				script_get_constant(index,&idx);
 				args.rpk.info[idx] = value;
 				map_setmapflag_sub(m, MF_RPK, true, &args);

@@ -6,7 +6,9 @@ prontera,1,1,1	script	deadbody	25006,{
 		mes "Damn it!";
 		mes "There is nothing useful in here.";
 		mes "Rest in peace whoever you were.";
-		close;
+		close2;
+		duplicateremove();
+		end;
 	}
 	end;
 }

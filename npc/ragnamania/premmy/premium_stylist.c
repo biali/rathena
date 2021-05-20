@@ -46,11 +46,11 @@ OnTalk:
 		
         // 87 is ugly as fuck
 		.@next = .@style_number + 1;
-        if(sex == SEX_MALE && .@next == 87)
+        if(sex == SEX_MALE && .@next == 88)
             .@next++;
 
 		.@prev = .@style_number - 1;
-                if(sex == SEX_MALE && .@prev == 87)
+                if(sex == SEX_MALE && .@prev == 88)
             .@prev--;
 
 

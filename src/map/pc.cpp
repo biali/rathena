@@ -6901,6 +6901,12 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 				instance_addusers(new_map_instance_id);
 		}
 
+		// Biali remove faction whenever steping in a non-fvf map or non-sanctuary of their faction
+		if((sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id > 0 && mapdata->faction_id != sd->status.faction_id) ||
+		  (sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id <= 0 ) )
+		  	return SETPOS_NOTALLOW;
+			//faction_leave(sd);
+
 		if (sd->bg_id && !mapdata->flag[MF_BATTLEGROUND]) // Moving to a map that isn't a Battlegrounds
 			bg_team_leave(sd, false, true);
 
@@ -7098,6 +7104,10 @@ char pc_randomwarp(struct map_session_data *sd, clr_type type)
 
 	if (mapdata->flag[MF_NOTELEPORT]) //Teleport forbidden
 		return 3;
+
+	// // Biali Faction / Fullloot no fly wing use when RPK / faction flag
+	// if(sd->status.faction_id > 0 || mapdata->rpk.info[RPK_FULLLOOT] == 1)
+	// 	return 3;
 
 	do {
 		x = rnd()%(mapdata->xs-2)+1;
@@ -14750,7 +14760,7 @@ void pc_lootbag_storageclose(struct map_session_data *sd)
 	clif_storageclose(sd);
 
 	int i=0;
-	ARR_FIND( 0, MAX_INVENTORY, i, nd->lootbag[i].nameid > 0 );
+	ARR_FIND( 0, MAX_INVENTORY, i, nd->lootbag[i].amount > 0 );
 	if(i == MAX_INVENTORY)
 		npc_unload(nd, true);
 

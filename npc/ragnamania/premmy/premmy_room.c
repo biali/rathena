@@ -1,4 +1,4 @@
-sala_premmy,43,57,1	script	HuntingQuests	111,{
+sala_premmy,43,57,1	script	premmy_room_c	111,{
 end;
 OnInit:
 	end;

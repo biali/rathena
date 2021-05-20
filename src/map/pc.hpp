@@ -1201,7 +1201,8 @@ enum e_setpos{
 	SETPOS_OK = 0,
 	SETPOS_MAPINDEX = 1,
 	SETPOS_NO_MAPSERVER = 2,
-	SETPOS_AUTOTRADE = 3
+	SETPOS_AUTOTRADE = 3,
+	SETPOS_NOTALLOW = 4
 };
 
 enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, int x, int y, clr_type clrtype);

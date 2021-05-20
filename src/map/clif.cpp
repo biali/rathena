@@ -446,16 +446,6 @@ void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *d
 				clif_specialeffect_single(&sd->bl,fdb->aura[i],dsd->fd); //clif_specialeffect(bl, fdb->aura[i], AREA);
 	}
 
-	// //send guild emblem too
-	// int fd = dsd->fd;
-	// nullpo_retv(sd);
-	// WFIFOHEAD(fd,32);
-	// WFIFOW(fd,0) = 0x2dd;
-	// WFIFOL(fd,2) = sd->bl.id;
-	// safestrncpy(WFIFOCP(fd,6), sd->status.name, NAME_LENGTH);
-	// WFIFOW(fd,30) = sd->status.faction_id;
-	// WFIFOSET(fd,packet_len(0x2dd));
-
 }
 
 //biali faction system (from eamod)
@@ -1792,12 +1782,6 @@ int clif_spawn( struct block_list *bl, bool walking ){
 				clif_specialeffect(bl,EF_GIANTBODY2,AREA);
 			else if(sd->state.size==SZ_MEDIUM)
 				clif_specialeffect(bl,EF_BABYBODY2,AREA);
-			
-			//Biali Faction System (from Eamod)
-			// if( map_getmapflag(sd->bl.m,MF_FVF) 
-			// faction_spawn(sd);
-			// clif_faction_area(sd);
-			// clif_sendauras((TBL_PC*)bl, AREA);
 
 #ifdef BGEXTENDED
 			if((battle_config.bg_eAmod_mode && sd->bg_id && map_getmapflag(sd->bl.m, MF_BATTLEGROUND)) || sd->status.faction_id )
@@ -4969,7 +4953,7 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 	switch (bl->type)
 	{
 	case BL_PC:
-		{
+		{	
 			TBL_PC* tsd = (TBL_PC*)bl;
 
 			clif_getareachar_pc(sd, tsd);
@@ -4977,23 +4961,27 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				clif_specialeffect_single(bl,EF_GIANTBODY2,sd->fd);
 			else if(tsd->state.size==SZ_MEDIUM)
 				clif_specialeffect_single(bl,EF_BABYBODY2,sd->fd);
-			//Biali faction system (from eamod)
-			// clif_sendaurastoone(sd, tsd);
-			clif_sendaurastoone(tsd, sd);
-			// clif_sendauras(sd,FACTION_AREA_WOS);
-			// clif_sendauras(tsd,FACTION_AREA_WOS);
 
-			clif_name(&sd->bl,bl,FACTION_AREA_WOS);
+			if(sd->status.faction_id || tsd->status.faction_id) {
+				//Biali faction system (from eamod)
+				clif_sendaurastoone(tsd, sd);
+				clif_name(&sd->bl,bl,FACTION_AREA_WOS);
+				clif_sendbgemblem_single(tsd->fd,sd);
+				clif_sendbgemblem_single(sd->fd,tsd);
+				clif_guild_emblem_area(&tsd->bl);
+				clif_guild_emblem_area(&sd->bl);
+			}
 
-				// if(sd->status.faction_id) { 
-		clif_sendbgemblem_single(tsd->fd,sd);
-		clif_sendbgemblem_single(sd->fd,tsd);
-		clif_guild_emblem_area(&tsd->bl);
-		clif_guild_emblem_area(&sd->bl);
-
-	// }
-
-
+			// biali trying to show the crossed swords on top of enemy heads
+			if(map_getmapflag(tsd->bl.m,MF_RPK)) {
+				int s_guild = status_get_guild_id(&sd->bl);
+				int t_guild = status_get_guild_id(&tsd->bl);
+				if(!guild_isallied(s_guild, t_guild) && (sd->status.guild_id != tsd->status.guild_id && sd->status.guild_id + tsd->status.guild_id > 0)) {
+					clif_sendrpkswords_single(tsd->fd, sd);
+					clif_sendrpkswords_single(sd->fd, tsd);
+				}
+			}
+	
 #ifdef BGEXTENDED
 			if(battle_config.bg_eAmod_mode && tsd->bg_id && map_getmapflag(tsd->bl.m, MF_BATTLEGROUND) )
 				clif_sendbgemblem_single(sd->fd,tsd);
@@ -6804,6 +6792,7 @@ void clif_map_property(struct block_list *bl, enum map_property property, enum s
 
 	WBUFL(buf,4) = ((mapdata->flag[MF_FVF] || mapdata->flag[MF_RPK] || mapdata->flag[MF_PVP]?1:0 || (bl->type == BL_PC && ((TBL_PC *)bl)->duel_group > 0))<<0)| // PARTY - Show attack cursor on non-party members (PvP)
 		((mapdata->flag[MF_BATTLEGROUND] || mapdata_flag_gvg2(mapdata)?1:0)<<1)|// GUILD - Show attack cursor on non-guild members (GvG)
+		((mapdata->flag[MF_RPK] || mapdata_flag_gvg2(mapdata)?1:0)<<1)| // Biali blackzone - Show attack cursor on non-guild members
 		((mapdata->flag[MF_BATTLEGROUND] || mapdata_flag_gvg2(mapdata)?1:0)<<2)|// SIEGE - Show emblem over characters heads when in GvG (WoE castle)
 		((mapdata->flag[MF_NOMINEEFFECT] || !mapdata_flag_gvg2(mapdata)?0:1)<<3)| // USE_SIMPLE_EFFECT - Automatically enable /mineffect
 		((mapdata->flag[MF_NOLOCKON] || mapdata_flag_vs(mapdata)?1:0)<<4)| // DISABLE_LOCKON - Only allow attacks on other players with shift key or /ns active
@@ -11314,7 +11303,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				if(!map_getmapflag(sd->bl.m,MF_FVF) && (mapdata->faction_id > 0 && sd->status.faction_id != mapdata->faction_id)) {
 					//Remove faction flag when moving into a pvp, battleground or gvg or non-FvF map
 					faction_leave(sd);
-					sprintf(output,"You have entered an area of the Peace Pact.\nCity representations are not allowed here");
+					sprintf(output,"You have entered an area of the Peace Pact. City representations are not allowed here");
 					clif_broadcast2(&sd->bl, output, (int)strlen(output)+1, strtol("0x00ffff", (char **)NULL, 0), FW_BOLD, 14, 0, 0, SELF);
 				} else if((fdb = faction_search(mapdata->faction_id)) != NULL) {
 					// Announce Faction Sanctuaries	
@@ -18445,6 +18434,20 @@ void clif_faction_single(int fd, struct map_session_data *sd)
 	WFIFOSET(fd,packet_len(0x2dd));
 }
 
+void clif_sendrpkswords_single(int fd, struct map_session_data *sd)
+{
+	nullpo_retv(sd);
+	WFIFOHEAD(fd,32);
+	WFIFOW(fd,0) = 0x2dd;
+	WFIFOL(fd,2) = sd->bl.id;
+	safestrncpy(WFIFOCP(fd,6), sd->status.name, NAME_LENGTH);
+	WFIFOW(fd,30) = sd->status.char_id;
+	WFIFOSET(fd,packet_len(0x2dd));
+}
+
+
+
+// BIALI TODO : Check this out to rework/simplify the faction flags
 
 /// Battlegrounds
 ///
@@ -18576,29 +18579,6 @@ void clif_bg_emblem(struct map_session_data *sd, struct guild *g)
 	WFIFOSET(fd,WFIFOW(fd,2));
 }
 
-
-
-// void clif_faction_emblem(struct map_session_data *sd, struct faction_data *fdb)
-// {
-// 	int fd;
-
-// 	nullpo_retv(sd);
-// 	nullpo_retv(fdb);
-
-// 	if( fdb->emblem_len <= 0 )
-// 		return;
-
-// 	fd = sd->fd;
-// 	WFIFOHEAD(fd,fdb->emblem_len+12);
-// 	WFIFOW(fd,0)=0x152;
-// 	WFIFOW(fd,2)=fdb->emblem_len+12;
-// 	WFIFOL(fd,4)=fdb->id;
-// 	WFIFOL(fd,8)=fdb->emblem_id;
-// 	memcpy(WFIFOP(fd,12),fdb->emblem_data,fdb->emblem_len);
-// 	WFIFOSET(fd,WFIFOW(fd,2));
-
-// 	return;
-// }
 
 void clif_bg_leave(struct map_session_data *sd, const char *name, const char *mes)
 {

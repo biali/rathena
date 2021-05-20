@@ -553,7 +553,6 @@ struct Battle_Config
 	int faction_aura_bl;
 	int faction_aura_settings;
 	int faction_trade_settings;
-	int faction_ally_info_bl;
 	int faction_npc_settings;
 	int fvf_in_all_maps;
 	int faction_disc_min;

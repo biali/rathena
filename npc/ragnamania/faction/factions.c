@@ -19,7 +19,7 @@ OnPCLoadMapEvent:
 geffen,0,0,4	duplicate(factions)	Geffen Register#1	4_F_KAFRA6
 payon,0,0,4	duplicate(factions)	Payon Register#2	4_F_KAFRA6
 morocc,0,0,4	duplicate(factions)	Morocc Register#3	4_F_KAFRA6
-prontera,146,196,4	duplicate(factions)	Prontera Register#4	4_F_KAFRA6
+prontera,0,0,4	duplicate(factions)	Prontera Register#4	4_F_KAFRA6
 
 
 
