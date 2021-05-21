@@ -1159,6 +1159,11 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_INCREASE_MAXHP] = EFST_ATKER_ASPD;
 	StatusIconChangeTable[SC_INCREASE_MAXSP] = EFST_ATKER_MOVESPEED;
 
+	//biali blackzone
+	StatusIconChangeTable[SC_IMUNITY] = EFST_IMUNITY;
+	StatusIconChangeTable[SC_IMUNITY_CD] = EFST_IMUNITY_CD;
+	StatusIconChangeTable[SC_KNOCKED] = EFST_KNOCKED;
+
 	/* Cash Items */
 	StatusIconChangeTable[SC_FOOD_STR_CASH] = EFST_FOOD_STR_CASH;
 	StatusIconChangeTable[SC_FOOD_AGI_CASH] = EFST_FOOD_AGI_CASH;
@@ -2059,6 +2064,21 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			unit_set_walkdelay(target, gettick(), walkdelay, 0);
 		return (int)(hp+sp);
 	}
+
+	//Biali final cut : players are knocked down when deadly hit by monsters (last hit)
+	if(src && src->type == BL_MOB && target->type == BL_PC && map_getmapdata(target->m)->rpk.info[RPK_FULLLOOT] ) {
+		struct map_session_data *sd = (TBL_PC*)target;
+		status->hp = 1;
+		clif_specialeffect(target, EF_ANGEL2, AREA);
+		unit_stop_walking(target,4);
+		pc_close_npc(sd,1);
+		clif_cutin(sd, "", 255);
+		pc_setsit(sd);
+		clif_sitting(&sd->bl);
+		sc_start(&sd->bl,&sd->bl,SC_KNOCKED,100,1,battle_config.pc_knocked_time);
+		pc_setknockedtimer(sd,battle_config.pc_knocked_time);
+		return (int)(hp+sp);
+	} 
 
 	status->hp = 0;
 	/** [Skotlex]

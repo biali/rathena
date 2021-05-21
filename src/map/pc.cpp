@@ -2408,6 +2408,8 @@ bool pc_authok(struct map_session_data *sd, uint32 login_id2, time_t expiration_
 
 	sd->followtimer = INVALID_TIMER; // [MouseJstr]
 	sd->invincible_timer = INVALID_TIMER;
+	sd->invincible_timer_reset = INVALID_TIMER; //Biali
+	sd->state.knocked = INVALID_TIMER; //Biali
 	sd->npc_timer_id = INVALID_TIMER;
 	sd->pvp_timer = INVALID_TIMER;
 	sd->expiration_tid = INVALID_TIMER;
@@ -6429,6 +6431,10 @@ int pc_useitem(struct map_session_data *sd,int n)
 		return 0;
 
 	if( !pc_isUseitem(sd,n) )
+		return 0;
+
+	// Biali Black Zone - Fallen players cant consume items
+	if(sd->state.knocked != INVALID_TIMER)
 		return 0;
 
 	// Store information for later use before it is lost (via pc_delitem) [Paradox924X]
@@ -11578,6 +11584,18 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 
 	nullpo_retr(false,sd);
 
+	// biali hellgates - Cant change equips in HellGates
+	if(map_getmapdata(sd->bl.m)->rpk.info[RPK_ISHG]) {
+		clif_equipitemack(sd,0,0,ITEM_EQUIP_ACK_FAIL);
+		return false;
+	}
+
+	//Biali Black Zone - Fallen players cant change equips
+	if(sd->state.knocked != INVALID_TIMER) {
+		clif_equipitemack(sd,0,0,ITEM_EQUIP_ACK_FAIL);
+		return false;
+	}
+
 	if( n < 0 || n >= MAX_INVENTORY ) {
 		if( equipswitch ){
 			clif_equipswitch_add( sd, n, req_pos, ITEM_EQUIP_ACK_FAIL );
@@ -11594,12 +11612,7 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 		}
 		return false;
 	}
-	//biali hellgates. one shouldnt be allowed to change equips in hg
-	// union u_mapflag_args args = {};
-	// if(map_getmapflag_sub( sd->bl.m, static_cast<e_mapflag>(MF_RPK), &args ) && args.rpk.info[RPK_ISHG]) {
-	// 	clif_equipitemack(sd,n,0,ITEM_EQUIP_ACK_FAIL);
-	// 	return false;
-	// }
+
 
 	if (!(id = sd->inventory_data[n]))
 		return false;

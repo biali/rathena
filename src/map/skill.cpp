@@ -6500,6 +6500,13 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 	if(status_isdead(src))
 		return 1;
 
+	// Biali Black Zone final cut
+	if(src != bl && dstsd && dstsd->state.knocked != INVALID_TIMER) {
+		clif_skill_nodamage(src,bl,skill_id,skill_lv,
+			sc_start(src,bl,type,100,skill_lv,skill_get_time(skill_id,skill_lv)));
+		return 0;
+	}
+
 	if( src != bl && status_isdead(bl) ) {
 		switch( skill_id ) { // Skills that may be cast on dead targets
 			case NPC_WIDESOULDRAIN:

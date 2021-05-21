@@ -1598,6 +1598,11 @@ int mob_randomwalk(struct mob_data *md,t_tick tick)
 
 	nullpo_ret(md);
 
+	//biali black zone dungeons mob will not random walk but stand in their spawn position
+	//if(map_getmapflag(md->bl.m,MF_BZ_DUNGEON))
+	if(md->roam < 1)
+		return 0;
+
 	if(DIFF_TICK(md->next_walktime,tick)>0 ||
 	   status_has_mode(&md->status,MD_NORANDOMWALK) ||
 	   !unit_can_move(&md->bl) ||
@@ -2727,6 +2732,19 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 			if ((base_exp > 0 || job_exp > 0) && md->dmglog[i].flag == MDLF_HOMUN && homkillonly && battle_config.hom_idle_no_share && pc_isidle_hom(tmpsd[i]))
 				base_exp = job_exp = 0;
 
+			//biali Monster of the day
+			int64 uid;
+			uid = reference_uid( add_str( "$@motd_mobid" ), 0 );
+			int value = mapreg_readreg(uid);
+			if(md->db->base_exp && value && value == md->mob_id) {
+				int64 xp = reference_uid( add_str( "$@motd_XP" ), 0 );
+				// Base
+				double exp = apply_rate2(md->db->base_exp, per, 1);
+				exp += mapreg_readreg(xp);
+				base_exp = (unsigned int)cap_value(exp, 1, UINT_MAX);
+			}
+			// pronto
+
 			if ( ( temp = tmpsd[i]->status.party_id)>0 ) {
 				int j;
 				for( j = 0; j < pnum && pt[j].id != temp; j++ ); //Locate party.
@@ -3163,6 +3181,8 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 			// The master or Mercenary can increase the kill count
 			if (sd->md && src && (src->type == BL_PC || src->type == BL_MER) && mob->lv > sd->status.base_level / 2)
 				mercenary_kills(sd->md);
+
+			pc_record_mobkills(sd,md); //Biali log damage
 		}
 
 		if( md->npc_event[0] && !md->state.npc_killmonster ) {

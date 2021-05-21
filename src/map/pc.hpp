@@ -1422,6 +1422,13 @@ void pc_setinvincibletimerreset(struct map_session_data* sd, int val);
 void pc_delinvincibletimerreset(struct map_session_data* sd);
 void pc_setknockedtimer(struct map_session_data* sd, int val);
 void pc_delknockedtimer(struct map_session_data* sd);
+//biali deadbody lootbag rework
+int8 pc_create_lootbag(struct npc_data* nd);
+//new deadbody lootbag biali
+void pc_lootbag_storageopen(struct map_session_data *sd, struct npc_data *nd, int count);
+void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, int index, int amount);
+void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
+void pc_lootbag_storageclose(struct map_session_data *sd);
 
 extern struct fame_list smith_fame_list[MAX_FAME_LIST];
 extern struct fame_list chemist_fame_list[MAX_FAME_LIST];
@@ -1430,15 +1437,6 @@ extern struct fame_list taekwon_fame_list[MAX_FAME_LIST];
 extern struct fame_list pvprank_fame_list[MAX_FAME_LIST];
 extern struct fame_list bgrank_fame_list[MAX_FAME_LIST];
 extern struct fame_list bg_fame_list[MAX_FAME_LIST];
-
-//biali deadbody lootbag rework
-int8 pc_create_lootbag(struct npc_data* nd);
-
-//new deadbody lootbag biali
-void pc_lootbag_storageopen(struct map_session_data *sd, struct npc_data *nd, int count);
-void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, int index, int amount);
-void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
-void pc_lootbag_storageclose(struct map_session_data *sd);
 
 void pc_readdb(void);
 void do_init_pc(void);

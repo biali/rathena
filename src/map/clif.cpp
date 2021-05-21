@@ -4974,12 +4974,12 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 
 			// biali trying to show the crossed swords on top of enemy heads
 			if(map_getmapflag(tsd->bl.m,MF_RPK)) {
-				int s_guild = status_get_guild_id(&sd->bl);
-				int t_guild = status_get_guild_id(&tsd->bl);
-				if(!guild_isallied(s_guild, t_guild) && (sd->status.guild_id != tsd->status.guild_id && sd->status.guild_id + tsd->status.guild_id > 0)) {
+				// int s_guild = status_get_guild_id(&sd->bl);
+				// int t_guild = status_get_guild_id(&tsd->bl);
+				// if(!guild_isallied(s_guild, t_guild) && (sd->status.guild_id != tsd->status.guild_id && sd->status.guild_id + tsd->status.guild_id > 0)) {
 					clif_sendrpkswords_single(tsd->fd, sd);
 					clif_sendrpkswords_single(sd->fd, tsd);
-				}
+				// }
 			}
 	
 #ifdef BGEXTENDED
@@ -11919,6 +11919,13 @@ void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action_type, 
 {
 	if (pc_isdead(sd)) {
 		clif_clearunit_area(&sd->bl, CLR_DEAD);
+		return;
+	}
+
+	//Biali Black Zone - Bugus clients need this to ensure they show fallen chars sit
+	if(sd->state.knocked != INVALID_TIMER) {
+		if(pc_issit(sd))
+			clif_sitting(&sd->bl);
 		return;
 	}
 
