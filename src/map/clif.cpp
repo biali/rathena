@@ -10999,15 +10999,19 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	if(battle_config.pc_invincible_time > 0) {
 		if(mapdata_flag_gvg(mapdata))
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
-		else {
-			//biali blackzone
-			if(!mapdata->flag[MF_RPK] || (mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER)) {
-				pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-				if(mapdata->flag[MF_RPK])
-					pc_setinvincibletimerreset(sd,battle_config.pc_invincible_time_reset);
-			}
-		}
+		else if(mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER) { //Biali blackzone
+			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+			pc_setinvincibletimerreset(sd,battle_config.pc_invincible_time_reset);
+		} else
+			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	}
+
+	// if(battle_config.pc_invincible_time > 0) {
+	// 	if(mapdata_flag_gvg(mapdata))
+	// 		pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
+	// 	else
+	// 		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+	// }
 
 	if( mapdata->users++ == 0 && battle_config.dynamic_mobs )
 		map_spawnmobs(sd->bl.m);
@@ -11919,13 +11923,6 @@ void clif_parse_ActionRequest_sub(struct map_session_data *sd, int action_type, 
 {
 	if (pc_isdead(sd)) {
 		clif_clearunit_area(&sd->bl, CLR_DEAD);
-		return;
-	}
-
-	//Biali Black Zone - Bugus clients need this to ensure they show fallen chars sit
-	if(sd->state.knocked != INVALID_TIMER) {
-		if(pc_issit(sd))
-			clif_sitting(&sd->bl);
 		return;
 	}
 

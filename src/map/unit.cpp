@@ -1739,10 +1739,9 @@ int unit_skilluse_id2(struct block_list *src, int target_id, uint16 skill_id, ui
 	if( battle_config.ksprotection && sd && mob_ksprotected(src, target) )
 		return 0;
 
-	// biali black zone final cut
-	if(src->type == BL_PC && target->type == BL_PC && src->id != target->id)
-		if( ((TBL_PC*)target)->state.knocked != INVALID_TIMER )
-			return 0;
+	// biali blackzone final cut
+	if(target->type == BL_PC && src->id != target->id && ((TBL_PC*)target)->state.knocked != INVALID_TIMER)
+		return 0;
 
 	// Normally not needed because clif.cpp checks for it, but the at/char/script commands don't! [Skotlex]
 	if(ud->skilltimer != INVALID_TIMER && skill_id != SA_CASTCANCEL && skill_id != SO_SPELLFIST)

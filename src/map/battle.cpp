@@ -1384,8 +1384,10 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 	if( battle_config.ksprotection && mob_ksprotected(src, bl) )
 		return 0;
 
-	//Biali Black Zone - Final cut must be malee attack. area skills from players and mobs should just "miss" a fallen player
-	if( src->type == BL_PC && ((TBL_PC*)src)->state.knocked != INVALID_TIMER)
+	/*	Biali Black Zone
+		This will deny knocked players from being hit by skills
+	*/
+	if( bl->type == BL_PC && ((TBL_PC*)bl)->state.knocked != INVALID_TIMER)
 		return 0;
 
 	if( map_getcell(bl->m, bl->x, bl->y, CELL_CHKMAELSTROM) && skill_id && skill_get_type(skill_id) != BF_MISC
@@ -6037,7 +6039,7 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 
 	wd = initialize_weapon_data(src, target, skill_id, skill_lv, wflag);
 
-	// Biali Black Zone Final Cut. Final cut is a crit with the max_hp of the fallen player
+	//Biali Black Zone Final Cut. Final cut is a crit with the max_hp of the fallen player
 	if(src->type == BL_PC && target->type == BL_PC && ((TBL_PC*)target)->state.knocked != INVALID_TIMER ) {
 		wd.type = DMG_CRITICAL;
 		wd.damage = ((TBL_PC*)target)->status.max_hp;
@@ -8528,8 +8530,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 
 			if( ((sd->state.block_action & PCBLOCK_IMMUNE) || (sc->data[SC_KINGS_GRACE] && s_bl->type != BL_PC)) && flag&BCT_ENEMY )
 				return 0; // Global immunity only to Attacks
-			if(s_bl->type != BL_PC && sd->state.knocked != INVALID_TIMER)
-				return 0; //Biali Black zone. Cant use targeted spells in a fallen player. not even support ones
+			if( s_bl->type != BL_PC && sd->state.knocked != INVALID_TIMER) //Biali Black zone. Cant use targeted attacks on a fallen player.
+				return 0;
+
 			if( sd->status.karma && s_bl->type == BL_PC && ((TBL_PC*)s_bl)->status.karma )
 				state |= BCT_ENEMY; // Characters with bad karma may fight amongst them
 			if( sd->state.killable ) {

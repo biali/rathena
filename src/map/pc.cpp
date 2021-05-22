@@ -543,17 +543,18 @@ static TIMER_FUNC(pc_knocked_timer){
 	if( (sd=(struct map_session_data *)map_id2sd(id)) == NULL || sd->bl.type!=BL_PC )
 		return 1;
 
-	if(sd->state.knocked != tid){
-		ShowError("knocked_timer %d != %d\n",sd->state.knocked,tid);
+	if(sd->state.knocked != tid)
 		return 0;
-	}
+
 	sd->state.knocked = INVALID_TIMER;
-	if(pc_issit(sd)) {
-		pc_setstand(sd,true);
-		clif_standing(&sd->bl);
-		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-		sc_start(&sd->bl,&sd->bl,SC_IMUNITY,100,1,battle_config.pc_invincible_time);
-	}
+	
+	sd->state.workinprogress = WIP_DISABLE_NONE;
+	sd->state.block_action &= ~(PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
+
+	status_change_end(&sd->bl, SC_SLEEP, INVALID_TIMER);
+	pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+	sc_start(&sd->bl,&sd->bl,SC_IMUNITY,100,1,battle_config.pc_invincible_time);
+
 	skill_unit_move(&sd->bl,tick,1);
 
 	return 0;
@@ -611,6 +612,7 @@ void pc_setknockedtimer(struct map_session_data* sd, int val) {
 
 	if( sd->state.knocked != INVALID_TIMER )
 		delete_timer(sd->state.knocked,pc_knocked_timer);
+
 	sd->state.knocked = add_timer(gettick()+val,pc_knocked_timer,sd->bl.id,0);
 }
 
@@ -623,7 +625,8 @@ void pc_delknockedtimer(struct map_session_data* sd)
 	{
 		delete_timer(sd->state.knocked,pc_knocked_timer);
 		sd->state.knocked = INVALID_TIMER;
-		skill_unit_move(&sd->bl,gettick(),1);
+		status_change_end(&sd->bl, SC_SLEEP, INVALID_TIMER);
+		// skill_unit_move(&sd->bl,gettick(),1);
 	}
 }
 
@@ -9658,7 +9661,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 	}
 
 	//biali deadbody rework
-	if(map_getmapflag_sub(sd->bl.m,MF_RPK,NULL) || (src && faction_get_id(&sd->bl) > 0 && src->type == BL_PC )) {
+	if((map_getmapflag_sub(sd->bl.m,MF_RPK,NULL) && src->type != BL_MOB) || (src && faction_get_id(&sd->bl) > 0 && src->type == BL_PC )) {
 	
 		struct item lootbag[MAX_INVENTORY] = {};
 		i = k = 0;
@@ -9735,6 +9738,9 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 		sd->respawn_tid = add_timer(tick+500, pc_respawn_timer, sd->bl.id, 0);
 		return 1;
 	}
+
+	// to remove the timer in case they have died in the blackzone and were in the knocked state
+	pc_delknockedtimer(sd);
 
 	//Reset "can log out" tick.
 	//Biali check this out blackzone

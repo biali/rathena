@@ -1757,7 +1757,8 @@ static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 			(
 				tbl->type == BL_PC &&
 				((((TBL_PC*)tbl)->state.gangsterparadise && !(mode&MD_STATUSIMMUNE)) ||
-				((TBL_PC*)tbl)->invincible_timer != INVALID_TIMER)
+				(((TBL_PC*)tbl)->invincible_timer != INVALID_TIMER) ||
+				(((TBL_PC*)tbl)->state.knocked != INVALID_TIMER)) //Biali blackzone knocked
 		)) {	//No valid target
 			if (mob_warpchase(md, tbl))
 				return true; //Chasing this target.

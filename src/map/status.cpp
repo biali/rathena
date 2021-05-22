@@ -2068,15 +2068,28 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 	//Biali final cut : players are knocked down when deadly hit by monsters (last hit)
 	if(src && src->type == BL_MOB && target->type == BL_PC && map_getmapdata(target->m)->rpk.info[RPK_FULLLOOT] ) {
 		struct map_session_data *sd = (TBL_PC*)target;
+		// sd->state.block_action |= PCBLOCK_IMMUNE;
+		
+		// lets kindly ask the mob to stop attacking target
+		unit_stop_attack(src);
+		unit_skillcastcancel(src,0);
+		skill_cleartimerskill(src);
+
+		// then lets knock the player down
 		status->hp = 1;
 		clif_specialeffect(target, EF_ANGEL2, AREA);
 		unit_stop_walking(target,4);
+		unit_stop_attack(target);
+		unit_skillcastcancel(target,0);
 		pc_close_npc(sd,1);
 		clif_cutin(sd, "", 255);
-		pc_setsit(sd);
-		clif_sitting(&sd->bl);
-		sc_start(&sd->bl,&sd->bl,SC_KNOCKED,100,1,battle_config.pc_knocked_time);
 		pc_setknockedtimer(sd,battle_config.pc_knocked_time);
+		// pc_setsit(sd);
+		// clif_sitting(&sd->bl);
+		sd->state.workinprogress = WIP_DISABLE_ALL;
+		sd->state.block_action |= (PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
+		sc_start(&sd->bl,&sd->bl, SC_SLEEP, 100, 1, battle_config.pc_knocked_time);
+		sc_start(&sd->bl,&sd->bl,SC_KNOCKED,100,1,battle_config.pc_knocked_time);
 		return (int)(hp+sp);
 	} 
 
@@ -3103,6 +3116,10 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 	if (md->master_id && battle_config.slaves_inherit_mode)
 		flag |= 32;
 
+	//Biali Blackzone Mobs Level
+	if (md->level != md->db->lv)
+		flag|=64;
+
 	if (!flag) { // No special status required.
 		if (md->base_status) {
 			aFree(md->base_status);
@@ -3143,6 +3160,23 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 		status->int_ += diff;
 		status->dex += diff;
 		status->luk += diff;
+		status->max_hp += diff * status->vit;
+		status->max_sp += diff * status->int_;
+		status->hp = status->max_hp;
+		status->sp = status->max_sp;
+		status->speed -= cap_value(diff, 0, status->speed - 10);
+	}
+
+	//Biali - Blackzone mobs level
+	if (flag&64) { // Increase from mobs 
+		int diff = md->level - md->db->lv;
+
+		status->str += diff * 2;
+		status->agi += diff;
+		status->vit += diff;
+		status->int_ += diff;
+		status->dex += diff;
+		status->luk += diff * 2;
 		status->max_hp += diff * status->vit;
 		status->max_sp += diff * status->int_;
 		status->hp = status->max_hp;

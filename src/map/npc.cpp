@@ -1458,8 +1458,10 @@ int npc_click(struct map_session_data* sd, struct npc_data* nd)
 
 	//Biali deadbody
 	if(nd->isdeadbody) {
-		clif_takeitem(&sd->bl,&nd->bl);
+		clif_damage(&sd->bl, &nd->bl, gettick(), 0, 1, 0, 1, DMG_PICKUP_ITEM, 0, false);
+		clif_takeitem(&sd->bl, &nd->bl);
 	}
+		//clif_skill_poseffect(&sd->bl, 152, 1, sd->bl.x, sd->bl.y, gettick());
 
 	switch(nd->subtype) {
 		case NPCTYPE_SHOP:

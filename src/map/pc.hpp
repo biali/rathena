@@ -340,7 +340,7 @@ struct map_session_data {
 		bool sale_open;
 		int deadbody_looting; // biali flags if the player is looting a body at the time (keeps deadbody gid while lootbag is open)
 		unsigned int block_action : 10;
-		bool knocked; // Biali Black zone
+		int knocked; // Biali Black zone
 #ifdef BGEXTENDED
 		// BG eAmod
 		unsigned bg_afk : 1;
@@ -423,7 +423,7 @@ struct map_session_data {
 	int menuskill_id, menuskill_val, menuskill_val2;
 
 	int invincible_timer;
-	int invincible_timer_reset = 120000; // Biali blackzone 2 mins to reset invincibility when changing maps
+	int invincible_timer_reset = 120000; // Biali blackzone 2 mins to reset invincibility when changing maps Biali TODO: Convert to battle_config
 	t_tick canlog_tick;
 	t_tick canuseitem_tick;	// [Skotlex]
 	t_tick canusecashfood_tick;
