@@ -2543,9 +2543,9 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 	unsigned int mvp_damage;
 	t_tick tick = gettick();
 	bool rebirth, homkillonly, merckillonly;
-	int contested_base_bonus = 0; //Biali Contested Territories
-	int contested_job_bonus = 0; //Biali Contested Territories
-	int contested_drop_bonus = 0; //Biali Contested Territories
+	int contested_base_bonus = 100; //Biali Contested Territories
+	int contested_job_bonus = 100; //Biali Contested Territories
+	int contested_drop_bonus = 100; //Biali Contested Territories
 
 	status = &md->status;
 

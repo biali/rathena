@@ -8237,6 +8237,21 @@ void pc_gainexp_disp(struct map_session_data *sd, t_exp base_exp, t_exp next_bas
 	clif_messagecolor(&sd->bl, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
 }
 
+// biali calc infamy from mobs
+int pc_calcinfamy (map_session_data *sd, block_list *src, t_exp exp) {
+	struct mob_data *md = BL_CAST(BL_MOB,src);
+	int lvl_diff = 1;
+	int infamy = 1;
+	
+	if(md->level > sd->status.base_level) {
+		lvl_diff = (md->level - sd->status.base_level ) + 1;
+	}
+
+	infamy = (exp * (battle_config.infamy_from_mobs * lvl_diff))/100;
+	
+	return infamy;
+}
+
 /**
  * Give Base or Job EXP to player, then calculate remaining exp for next lvl
  * @param sd Player
@@ -8309,15 +8324,19 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 
 	// Biali : get infamy from killing mobs
 	// infamy is a % of the base exp given by the mob
-	// in non full-loot maps infamy is a 10th of that
+	// in non RPK maps infamy is a 10th of that
 	if(src->type == BL_MOB) {
-		int inf = 0;
-		if(map_getmapflag_sub(src->m,MF_RPK, NULL))
-			inf=(base_exp * battle_config.infamy_from_mobs)/100;
-		else
-			inf=(base_exp * (battle_config.infamy_from_mobs * .10))/100;
+		// char buf[256];
+		int infamy = pc_calcinfamy(sd,src,base_exp);
+
+		if(!map_getmapflag(src->m,MF_RPK))
+			infamy = infamy * 0.1;
+
+		if(infamy < 1) infamy = 1;
 		
-		add2limit(sd->status.infamy,inf,MAX_INFAMY);
+		add2limit(sd->status.infamy,infamy,MAX_INFAMY);
+		// sprintf(buf, "Infamy increased by %d. Total infamy (%d/%d) \n",infamy,sd->status.infamy,MAX_INFAMY);
+		// clif_displaymessage(sd->fd,buf);
 	}
 
 	// Biali Adventurer Quest
