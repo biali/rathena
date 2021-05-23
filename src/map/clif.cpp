@@ -10748,6 +10748,8 @@ static bool clif_process_message(struct map_session_data* sd, bool whisperFormat
 	return true;
 }
 
+
+// BIALI TODO : CHECK THIS OUT clif_showscript
 /**
  * Displays a message if the player enters a PK Zone (during pk_mode)
  * @param sd: Player data

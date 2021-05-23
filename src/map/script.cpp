@@ -25960,6 +25960,25 @@ BUILDIN_FUNC(fvfoff)
 	return 0;
 }
 
+// biali Reputation
+BUILDIN_FUNC(getreputation)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+
+	return sd->status.rep[i].value;
+
+}
+
 /**
  * Contested System [Biali]
  * contestedon <mapname>,<guild_id>,<base_bonus>,<job_bonus>,<drop_bonus>
@@ -27037,6 +27056,9 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setfactionmap,"i"),
 	BUILDIN_DEF(getfactionmap,"s"),
 	BUILDIN_DEF(removefactionmap,""),
+
+	//Biali reputation system
+	BUILDIN_DEF(getreputation,"i"),
 
 	/**
 	* Contested System [Biali]

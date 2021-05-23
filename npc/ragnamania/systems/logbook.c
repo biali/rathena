@@ -17,6 +17,7 @@ function	script	isVs	{
 }
 
 function	script	RM_DiarioDeBordo	{
+	function CalcRep; function Red; function Orange; function Green; function Acqua; function Blue;
 
 	if(inarray($@EventPlayers[0],getcharid(3)) >= 0) {
 		mes "^0000FF[ Logbook ]^000000";
@@ -38,27 +39,13 @@ L_Menu:
 	if( vip_status(1) ) mes "Account: ^00CCAA[ Premium ]^000000";
 	else mes "Account: ^00AAFF[ Regular ]^000000";
 	mes (#CASHPOINTS)?"Mania$: ^0000FF" +#CASHPOINTS+ "^000000.":"Mania$: ^FF000000.00^000000.";
-	mes "-------------------";
+	mes " ";
 	if(getcharid(6)) {
-		mes "^0000FFEmpire Flags^000000";
+		mes "^0000FFCitie Representation^000000";
 		mes factioninfo(getcharid(6),0);
-		mes "-------------------";
+		mes " ";
 	}
-	mes "Infamy: ^0000FF" + callfunc("F_InsertComma",readparam(136)) + " (+"+callfunc("F_InsertComma",readparam(136)/10000)+"% bonus)^000000";
-	mes "Total PK Kills: ^0000FF" + callfunc("F_InsertComma",readparam(137)) + "^000000";
-	mes "Total PK Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(138)) + "^000000";
-	mes "Total PK Score: ^0000FF" + callfunc("F_InsertComma",readparam(139)) + "^000000";
-	mes "-------------------";
-	mes "Total PvP Kills: ^0000FF" + callfunc("F_InsertComma",readparam(140)) + "^000000";
-	mes "Total PvP Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(141)) + "^000000";
-	mes "Total PvP Score: ^0000FF" + callfunc("F_InsertComma",readparam(142)) + "^000000";
-	mes "-------------------";
-	mes "Total BG Wins: ^0000FF" + callfunc("F_InsertComma",readparam(143)) + "^000000";
-	mes "Total BG Losses: ^0000FF" + callfunc("F_InsertComma",readparam(144)) + "^000000";
-	mes "Total BG Ties: ^0000FF" + callfunc("F_InsertComma",readparam(145)) + "^000000";
-	mes "-------------------";
-	mes "Total WoE Score: ^0000FF" + callfunc("F_InsertComma",readparam(146)) + "^000000";
-	mes "-------------------";
+
 	mes "Personal Vote Points: ^0000FF[" + #VP_VOTEPOINTS + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
 	if(gettime(DT_DAYOFMONTH) < getvariableofnpc(.ThirdDday,"v4p"))	
 		mes "Global VP: ^0000FF[" + $vp_totalVotePoints + "/" + getvariableofnpc(.VotePointsTarget,"v4p") + "]^000000";
@@ -66,15 +53,10 @@ L_Menu:
 		mes "Global Donation: ^0000FF[" + callfunc("F_InsertComma",$vp_donations) + "/" + callfunc("F_InsertComma",getvariableofnpc(.ExtensionCost,"v4p")) + "]^000000";
 	.@days = (gettime(DT_DAYOFMONTH)>=getvariableofnpc(.ThirdDday,"v4p")?getvariableofnpc(.dayOfMonth,"v4p")-gettime(DT_DAYOFMONTH):(gettime(DT_DAYOFMONTH)>=getvariableofnpc(.SecondDday,"v4p")?getvariableofnpc(.ThirdDday,"v4p")-gettime(DT_DAYOFMONTH):getvariableofnpc(.SecondDday,"v4p")-gettime(DT_DAYOFMONTH)));
 	mes "Voting Event ends in ^FF0000" + .@days + "^000000 days.";
-	mes "-------------------";
-	mes "^0000DDAdventurer's Challenge^000000";
-	mes "Daily: " + F_DailyBar();
-	mes "Weekly: " + F_WeeklyBar();
-	mes "Monthly: " + F_MonthlyBar();
 	next;
 
 	L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Empire Flags")) {
+	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Cities Flags:^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
 			mes "^0000FF[ Logbook ]^000000";
 			if( !vip_status(1) && getgmlevel() < 10) {
@@ -209,7 +191,42 @@ L_Menu:
 					X2: warp "yuno",282,288; end;
 					break;
 			}
-		case 3: // Empire Flags Options
+		case 3: // Battlelog
+			mes "^0000DDBattlelog^000000";
+			mes "Infamy: ^0000FF" + callfunc("F_InsertComma",readparam(136)) + " (+"+callfunc("F_InsertComma",readparam(136)/10000)+"% bonus)^000000";
+			mes " ";
+			mes "Total PK Kills: ^0000FF" + callfunc("F_InsertComma",readparam(137)) + "^000000";
+			mes "Total PK Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(138)) + "^000000";
+			mes "Total PK Score: ^0000FF" + callfunc("F_InsertComma",readparam(139)) + "^000000";
+			mes " ";
+			mes "Total PvP Kills: ^0000FF" + callfunc("F_InsertComma",readparam(140)) + "^000000";
+			mes "Total PvP Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(141)) + "^000000";
+			mes "Total PvP Score: ^0000FF" + callfunc("F_InsertComma",readparam(142)) + "^000000";
+			mes " ";
+			mes "Total BG Wins: ^0000FF" + callfunc("F_InsertComma",readparam(143)) + "^000000";
+			mes "Total BG Losses: ^0000FF" + callfunc("F_InsertComma",readparam(144)) + "^000000";
+			mes "Total BG Ties: ^0000FF" + callfunc("F_InsertComma",readparam(145)) + "^000000";
+			mes " ";
+			mes "Total WoE Score: ^0000FF" + callfunc("F_InsertComma",readparam(146)) + "^000000";
+			next;
+			goto L_Loop;
+			break;
+		case 4: // Cities Reputation
+			mes "^0000DDCities' Reputation^000000";
+			for(.@i=1;.@i<=getvariableofnpc(.totalfac,"reputation");.@i++) {
+				.@rep$ = CalcRep(.@i);
+				mes factioninfo(.@i,0) + " : " + .@rep$;
+			}
+			next;
+			goto L_Loop;
+		case 5: // Adventurer's Quest
+				mes "^0000DDAdventurer's Challenge^000000";
+				mes "Daily: " + F_DailyBar();
+				mes "Weekly: " + F_WeeklyBar();
+				mes "Monthly: " + F_MonthlyBar();
+				next;
+				goto L_Loop;
+		case 6: // Empire Flags Options
 			if(getcharid(6)) { // player is already in a faction
 				mes "^0000FF[ Logbook ]^000000";
 				mes "Would you like to stop representing " + factioninfo(getcharid(6),0) + "?";
@@ -224,7 +241,7 @@ L_Menu:
 					close;
 				}
 			} else { // player is not in a faction yet
-				mes "^0000FF[ Logbook ]^000000";
+				mes "^0000FF[ Cities Flags ]^000000";
 				for(.@i=1;.@i<=4;.@i++) {
 					if(factioninfo(.@i,2) == strcharinfo(3)) {
 						mes "Should we start representing ^0000FF"+strcharinfo(3)+"?";
@@ -240,11 +257,45 @@ L_Menu:
 				mes "I am afraid you'll need to head to the town of your choice to start a representation.";
 				close;
 			}
-			
+		case 7:	
 		default:
 			close;
 			break;
 	}
+
+	function CalcRep {
+		.@faction = getarg(0,0);
+		if(.@faction == 0)
+			return -1;
+		
+		.@rep = getreputation(.@faction);
+		if(.@rep >= getvariableofnpc(.honored,"reputation")) return Blue("[ Honored ]");
+		else if(.@rep >= getvariableofnpc(.friendly,"reputation")) return Acqua("[ Friendly ]");
+		else if(.@rep > getvariableofnpc(.unfriendly,"reputation") && .@rep < getvariableofnpc(.friendly,"reputation")) return Green("[ Normal ]");
+		else if(.@rep <= getvariableofnpc(.hated,"reputation")) return Red("[ Hated ]");
+		else if(.@rep <= getvariableofnpc(.unfriendly,"reputation")) return Orange("[ Unfriendly ]");
+	}
+
+	function Red {
+		.@t$ = getarg(0);
+		return "^cc0000" + .@t$ + "^000000";
+	} 
+	function Orange {
+		.@t$ = getarg(0);
+		return "^ff6600" + .@t$ + "^000000";
+	} 
+	function Green {
+		.@t$ = getarg(0);
+		return "^009933" + .@t$ + "^000000";
+	} 
+	function Acqua {
+		.@t$ = getarg(0);
+		return "^3399ff" + .@t$ + "^000000";
+	} 
+	function Blue {
+		.@t$ = getarg(0);
+		return "^0033cc" + .@t$ + "^000000";
+	} 
 }
 
 // Sellers are now in premmy_quickmall.c

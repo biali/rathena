@@ -9417,11 +9417,13 @@ static const struct _battle_data {
 	{ "mythic_dg_reserved_char_id",         &battle_config.mythic_dg_reserved_char_id,      999995, 0,      INT_MAX,        },
 	{ "reserved_costume_id",                &battle_config.reserved_costume_id,             999999, 0,      INT_MAX,        },
 //	Reputation System Biali
+	{ "reputation_min",                 	&battle_config.reputation_min,            	 -60000000, -99999999,     99999999,},
 	{ "reputation_hated",                 	&battle_config.reputation_hated,             -45000000, -99999999,     99999999,},
 	{ "reputation_unfriendly",              &battle_config.reputation_unfriendly,        -30000000, -99999999,     99999999,},
 	{ "reputation_neutral",                 &battle_config.reputation_neutral,                   0, -99999999,     99999999,},
 	{ "reputation_friendly",                &battle_config.reputation_friendly,           60000000, -99999999,     99999999,},
 	{ "reputation_honored",                 &battle_config.reputation_honored,            80000000, -99999999,     99999999,},
+	{ "reputation_max",                 	&battle_config.reputation_max,                99999999, -99999999,     99999999,},
 //	Infamy System
 	{ "infamy_given",					 	&battle_config.infamy_given,        	          7,    0,      100,            },
 	{ "infamy_taken",						&battle_config.infamy_taken,          	         10,    0,      100,            },

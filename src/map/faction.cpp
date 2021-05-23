@@ -183,6 +183,9 @@ int faction_aura_clear(struct block_list *bl,va_list ap)
 
 struct faction_data *faction_search(int id)
 {
+	if(id < 1 || id > MAX_FACTION)
+		return NULL;
+
 	return (struct faction_data*)idb_get(faction_db,id);
 }
 

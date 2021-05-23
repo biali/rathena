@@ -175,7 +175,7 @@ const t_itemid WEDDING_RING_F = 2635;
 #define ACHIEVEMENT_NAME_LENGTH 50 /// Max Achievement Name length
 
 // Max factions
-#define MAX_FACTION 6
+#define MAX_FACTION 5
 // Max effects for faction aura
 #define MAX_AURA_EFF 3
 // Castle Ranking biali damage log

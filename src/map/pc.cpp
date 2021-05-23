@@ -8135,7 +8135,7 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 
 /** Calculates Reputation on exp gain [biali]
 * @param sd Player
-* @param base_exp Base EXP before peronal bonuses
+* @param base_exp Base EXP before personal bonuses
 */
 static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 {
@@ -8144,17 +8144,17 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 	if((faction_id = sd->status.faction_id) <= 0)
 		return;
 
-	exp = (int)(base_exp / sd->status.base_level);
+	//exp = (int)(base_exp / sd->status.base_level);
+	exp = int(base_exp);
 
-	for (i=1; i <= MAX_FACTION; i++) {
+	for (i=1; i < MAX_FACTION; i++) {
 		if(faction_search(i) && faction_id == i) {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, 1, INT_MAX);
+			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
 			clif_name_area(&sd->bl);
-			ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 		} else {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), 1, INT_MAX);
-			ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
+			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
+		ShowWarning("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 	}
 	return;
 }
