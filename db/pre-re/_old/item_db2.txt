@@ -1,0 +1,1444 @@
+29000,Bandit's Scalp,Bandit's Scalp,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29001,Gawelle's apprentice,Gawelle's apprentice,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29002,Lophophora Flower,Lophophora Flower,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29003,Calliope's soul,Calliope's soul,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29004,Euterpe's soul,Euterpe's soul,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29005,Uranie's soul,Uranie's soul,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29006,Clerc Graivois's Letter,Clerc Graivois's Letter,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29007,Chef Pevnec's Letter,Chef Pevnec's Letter,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29008,Thébaide Ink,Thébaide Ink,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29009,Vermillon refined Ink,Vermillon refined Ink,3,0,0,10,,,,,,7,,,,,,,{ callfunc "Inscription_DropInfo",0; end; },{},{}
+29010,Black Lotus,Black Lotus,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29011,Member Card,Member Card,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29012,Marmotte Fur,Marmotte Fur,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29013,Bilal's Excretion,Bilal's Excretion,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29014,Mammouth Bone,Mammouth Bone,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29015,Gobelin Fang,Gobelin Fang,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29016,Gondar Jewel,Gondar Jewel,3,0,0,10,,,,,,7,,,,,,,{},{},{}
+29017,Arsinoé Card,Arsinoé Card,3,0,0,1,,,,,,7,,,,,,,{},{},{}
+29170,Helm of the Champion,Helm of the Champion,5,5000,1500,10,,5,,0,4294967295,7,2,256,,0,1,510,{ bonus2 bAddRace,7,50; bonus3 bAutoSpell,68,10,5; bonus bVit,10; },{ callfunc "ars_done"; },{}
+29171,Veridict-Vision,Veridict-Vision,5,5000,1500,10,,2,,0,4294967295,7,2,512,,0,0,568,{ bonus bFleeRate,20; bonus bAtkRange,4; bonus bCriticalRate,20; },{ callfunc "ars_done"; },{}
+29172,Veil of Danifae,Veil of Danifae,5,5000,1500,10,,2,,0,4294967295,7,2,1,,0,0,383,{ bonus bMaxSPrate,50; bonus bMaxHPrate,50; },{ callfunc "ars_done"; },{}
+29173,Scourge of the Gods,Scourge of the Gods,4,100,30,5,25,,1,3,4294967295,7,2,2,1,2,1,8,{ bonus bAtkRate,100; bonus bAgiDexStr,8; bonus bSplashRange,3; bonus bMatkRate,100; },{ callfunc "ars_done"; },{}
+29174,Parade of Harpocrates,Parade of Harpocrates,5,5,2,300,,3,,0,4294967295,7,2,32,,0,1,3,{  bonus5 bAutoSpellWhenHit,"NPC_MAGICMIRROR",2,150,BF_MAGIC,0; bonus bNearAtkDef,20; bonus bLongAtkDef,20; bonus bMagicAtkDef,20; },{ callfunc "ars_done"; },{}
+26550,Mega Poção Laranja,Mega Poção Laranja,0,200,60,50,,,,,4294967295,7,2,,,,,,{  if(getgmlevel()==0){mes "[Voz do Além]"; mes "Somente Doadores podem beber desta poção."; close; } else itemheal rand(105,144),0;  },{},{}
+26551,Mega Poção Amarela,Mega Poção Amarela,0,550,165,65,,,,,4294967295,7,2,,,,,,{  if(getgmlevel()==0){mes "[Voz do Além]"; mes "Somente Doadores podem beber desta poção."; close; } else itemheal rand(175,234),0;  },{},{}
+26552,Mega Poção Branca,Mega Poção Branca,0,1200,360,75,,,,,4294967295,7,2,,,,,,{  if(getgmlevel()==0){mes "[Voz do Além]"; mes "Somente Doadores podem beber desta poção."; close; } else itemheal rand(325,404),0; },{},{}
+26553,Mega Poção Azul,Mega Poção Azul,0,5000,1500,0,,,,,4294967295,7,2,,,,,,{ if(getgmlevel()==0){ mes "[Voz do Além]"; mes "Somente Doadores podem beber desta poção."; close; } else itemheal 0,rand(40,59); },{},{}
+26558,Premmy Wing,Premmy Wing,11,0,0,0,,,,,4294967295,7,2,,,,,,{ if(vip_status(VIP_STATUS_ACTIVE) == true) {
+	if( getmapflag(strcharinfo(3),33) == 1 ) end; if( getmapflag(strcharinfo(3),6) == 1 ) end; if( getmapflag(strcharinfo(3),9) == 1 ) end;
+	warp "sala_premmy",41,38; end;
+} else { mes "[Voz do Além]"; mes "Somente doadores podem usar este item."; close; }  },{},{}
+26560,Apprentice Scribe Book,Apprentice Scribe Book,11,500,150,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",0; end; },{},{}
+26561,Journeyman Scribe Book,Journeyman Scribe Book,11,10000,3000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",1; end; },{},{}
+26562,Skilled Scribe Book,Skilled Scribe Book,11,100000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",2; end; },{},{}
+26563,Expert Scribe Book,Expert Scribe Book,11,300000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",3; end; },{},{}
+26564,Artisan Scribe Book,Artisan Scribe Book,11,600000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",4; end; },{},{}
+26565,Master Scribe Book,Master Scribe Book,11,1000000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",5; end; },{},{}
+26566,Grand Master Scribe Book,Grand Master Scribe Book,11,5000000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",6; end; },{},{}
+26567,Illustrious Scribe Book,Illustrious Scribe Book,11,10000000,4000,0,,,,,4294967295,7,2,,,,,,{ callfunc "Inscription_DropInfo",7; end; },{},{}
+3333,Class_Manual,Class Manual,11,0,0,0,,,,,4294967295,7,2,,,,,,{ callfunc "Class_Mastery"; },{},{}
+8996,Hunter_Coin,Hunter's Coin,3,,,40,,,,,4294967295,7,2,,,,,,{},{},{}
+4786,Mdef2,MDEF+2,6,20,6,10,,,,,,,,,,,,,{ bonus bMdef,2; },{},{}
+4787,Mdef4,MDEF+4,6,20,6,10,,,,,,,,,,,,,{ bonus bMdef,4; },{},{}
+4788,Mdef6,MDEF+6,6,20,6,10,,,,,,,,,,,,,{ bonus bMdef,6; },{},{}
+4789,Mdef8,MDEF+8,6,20,6,10,,,,,,,,,,,,,{ bonus bMdef,8; },{},{}
+4790,Mdef10,MDEF+10,6,20,6,10,,,,,,,,,,,,,{ bonus bMdef,10; },{},{}
+4791,Def3,DEF+3,6,20,6,10,,,,,,,,,,,,,{ bonus bDef,3; },{},{}
+4792,Def6,DEF+6,6,20,6,10,,,,,,,,,,,,,{ bonus bDef,6; },{},{}
+4793,Def9,DEF+9,6,20,6,10,,,,,,,,,,,,,{ bonus bDef,9; },{},{}
+4794,Def12,DEF+12,6,20,6,10,,,,,,,,,,,,,{ bonus bDef,12; },{},{}
+4795,HP100,HP+100,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHP,100; },{},{}
+4796,HP200,HP+200,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHP,200; },{},{}
+4797,HP300,HP+300,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHP,300; },{},{}
+4798,HP400,HP+400,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHP,400; },{},{}
+4799,HP500,HP+500,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHP,500; },{},{}
+4800,SP50,SP+50,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxSP,50; },{},{}
+4801,SP100,SP+100,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxSP,100; },{},{}
+4802,SP150,SP+150,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxSP,150; },{},{}
+4803,Highness_Heal_3sec,Recovery Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bSkillCooldown,"AB_HIGHNESSHEAL",-3000; },{},{}
+4804,Coluceo_Heal30,Cathedral Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bSkillUseSP,"AB_CHEAL",30; },{},{}
+4805,Heal_Amount2,Archbishop Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus bHealPower,3; },{},{}
+4806,Matk3,MATK+3%,6,20,6,10,,,,,,,,,,,,,{ bonus bMatkRate,3; bonus bFixedCastrate,-1; },{},{}
+4807,Atk_Speed1,ASPD+1,6,20,6,10,,,,,,,,,,,,,{ bonus bAspd,1; },{},{}
+4808,Fighting_Spirit4,Fighting Lv4,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,15; bonus bHit,5; },{},{}
+4809,Fighting_Spirit3,Fighting Lv3,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,12; bonus bHit,4; },{},{}
+4810,Fighting_Spirit2,Fighting Lv2,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,9; bonus bHit,3; },{},{}
+4811,Fighting_Spirit1,Fighting Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,6; bonus bHit,2; },{},{}
+4812,Spell4,Force Lv4,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,15; bonus bVariableCastrate,-10; },{},{}
+4813,Spell3,Force Lv3,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,12; bonus bVariableCastrate,-8; },{},{}
+4814,Spell2,Force Lv2,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,9; bonus bVariableCastrate,-6; },{},{}
+4815,Spell1,Force Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,6; bonus bVariableCastrate,-4; },{},{}
+4816,Sharp3,Sharp Lv3,6,20,6,10,,,,,,,,,,,,,{ bonus bCritical,12; bonus bHit,4; },{},{}
+4817,Sharp2,Sharp Lv2,6,20,6,10,,,,,,,,,,,,,{ bonus bCritical,9; bonus bHit,3; },{},{}
+4818,Sharp1,Sharp Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus bCritical,6; bonus bHit,2; },{},{}
+4819,Atk1,ATK+1%,6,20,6,10,,,,,,,,,,,,,{ bonus2 bAddClass,Class_All,1; },{},{}
+4820,Fighting_Spirit5,Fighting Lv5,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,18; bonus bHit,5; },{},{}
+4821,Fighting_Spirit6,Fighting Lv6,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,21; bonus bHit,5; },{},{}
+4822,Fighting_Spirit7,Fighting Lv7,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,24; bonus bHit,5; },{},{}
+4823,Fighting_Spirit8,Fighting Lv8,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,27; bonus bHit,5; },{},{}
+4824,Fighting_Spirit9,Fighting Lv9,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,30; bonus bHit,5; },{},{}
+4825,Fighting_Spirit10,Fighting Lv10,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,50; bonus bHit,15; },{},{}
+4826,Spell5,Force Lv5,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,18; bonus bVariableCastrate,-10; },{},{}
+4827,Spell6,Force Lv6,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,21; bonus bVariableCastrate,-10; },{},{}
+4828,Spell7,Force Lv7,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,24; bonus bVariableCastrate,-10; },{},{}
+4829,Spell8,Force Lv8,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,27; bonus bVariableCastrate,-10; },{},{}
+4830,Spell9,Force Lv9,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,30; bonus bVariableCastrate,-10; },{},{}
+4831,Spell10,Force Lv10,6,20,6,10,,,,,,,,,,,,,{ bonus bMatk,50; bonus bVariableCastrate,-20; },{},{}
+4832,Expert_Archer1,Archer Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,2; },{},{}
+4833,Expert_Archer2,Archer Lv2,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,4; },{},{}
+4834,Expert_Archer3,Archer Lv3,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,6; },{},{}
+4835,Expert_Archer4,Archer Lv4,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,8; },{},{}
+4836,Expert_Archer5,Archer Lv5,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,10; },{},{}
+4837,Expert_Archer6,Archer Lv6,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,12; },{},{}
+4838,Expert_Archer7,Archer Lv7,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,14; },{},{}
+4839,Expert_Archer8,Archer Lv8,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,16; },{},{}
+4840,Expert_Archer9,Archer Lv9,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,18; },{},{}
+4841,Expert_Archer10,Archer Lv10,6,20,6,10,,,,,,,,,,,,,{ bonus bLongAtkRate,20; bonus bAspd,1; },{},{}
+4842,Atk_Speed2,ASPD+2,6,20,6,10,,,,,,,,,,,,,{ bonus bAspd,2; },{},{}
+4843,Sharp4,Sharp Lv4,6,20,6,10,,,,,,,,,,,,,{ bonus bCritical,14; bonus bHit,5; },{},{}
+4844,Sharp5,Sharp Lv5,6,20,6,10,,,,,,,,,,,,,{ bonus bCritical,15; bonus bHit,6; },{},{}
+4845,Sea_Energy,Strength Of Ocean,6,0,0,0,,,,,,,,,,,,,{},{},{}
+4846,2011val_Angel,Fully Loved Stone,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,10; bonus bMatk,10; },{},{}
+4847,2011val_Devil,Spelled Stone,6,20,6,10,,,,,,,,,,,,,{ bonus bBaseAtk,10; bonus bMatk,10; },{},{}
+4848,Immuned1,Immune Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bSubEle,Ele_Neutral,5; },{},{}
+4849,Cranial1,Crescent Lv1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bSubRace,RC_DemiHuman,5; bonus2 bSubRace,RC_Player,5; },{},{}
+4850,Heal_Amount3,Archbishop Lv2,6,20,6,10,,,,,,,,,,,,,{ bonus bHealPower,6; bonus bUseSPrate,5; },{},{}
+4851,Heal_Amount4,Archbishop Lv3,6,20,6,10,,,,,,,,,,,,,{ bonus bHealPower,12; bonus bUseSPrate,10; },{},{}
+4852,Heal_Amount5,Archbishop Lv4,6,20,6,10,,,,,,,,,,,,,{ bonus bHealPower,20; bonus bUseSPrate,15; },{},{}
+4853,S_STR,Special STR,6,20,6,10,,,,,,,,,,,,,{ bonus bStr,1; if(getrefine()>7) { bonus bStr,3; } if(getrefine()>8) { bonus2 bAddClass,Class_All,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4854,S_AGI,Special AGI,6,20,6,10,,,,,,,,,,,,,{ bonus bAgi,1; if(getrefine()>7) { bonus bAgi,3; } if(getrefine()>8) { bonus2 bAddClass,Class_All,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4855,S_VIT,Special VIT,6,20,6,10,,,,,,,,,,,,,{ bonus bVit,1; if(getrefine()>7) { bonus bVit,3; } if(getrefine()>8) { bonus bMaxSPrate,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4856,S_INT,Special INT,6,20,6,10,,,,,,,,,,,,,{ bonus bInt,1; if(getrefine()>7) { bonus bInt,3; } if(getrefine()>8) { bonus bMatkRate,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4857,S_DEX,Special DEX,6,20,6,10,,,,,,,,,,,,,{ bonus bDex,1; if(getrefine()>7) { bonus bDex,3; } if(getrefine()>8) { bonus bMatkRate,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4858,S_LUK,Special LUK,6,20,6,10,,,,,,,,,,,,,{ bonus bLuk,1; if(getrefine()>7) { bonus bLuk,3; } if(getrefine()>8) { bonus bMaxHPrate,1; } if(getrefine()>11) { bonus bAspd,1; bonus bFixedCastrate,-7; } },{},{}
+4859,Evasion1,Flee+1,6,20,6,10,,,,,,,,,,,,,{ bonus bFlee,1; },{},{}
+4860,Evasion3,Flee+3,6,20,6,10,,,,,,,,,,,,,{ bonus bFlee,3; },{},{}
+4861,MHP1,MHP+1%,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHPrate,1; },{},{}
+4862,MHP2,MHP+2%,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHPrate,2; },{},{}
+4863,Fatal1Lv,Fatal1Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bCriticalRate,4; bonus bCritical,1; },{},{}
+4864,Fatal2Lv,Fatal2Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bCriticalRate,6; bonus bCritical,2; },{},{}
+4865,Fatal3Lv,Fatal3Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bCriticalRate,8; bonus bCritical,3; },{},{}
+4866,Fatal4Lv,Fatal4Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bCriticalRate,10; bonus bCritical,4; },{},{}
+4867,MHP3,MHP+3%,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHPrate,3; },{},{}
+4868,MHP4,MHP+4%,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxHPrate,4; },{},{}
+4869,DelayafterAttack1Lv,DelayafterAttack1Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bAspdRate,4; bonus bDelayrate,-4; },{},{}
+4870,SP25,SP+25,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxSP,25; },{},{}
+4871,SP75,SP+75,6,20,6,10,,,,,,,,,,,,,{ bonus bMaxSP,75; },{},{}
+4872,DelayafterAttack2Lv,DelayafterAttack2Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bAspdRate,4; bonus bDelayrate,-4; },{},{}
+4873,DelayafterAttack3Lv,DelayafterAttack3Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bAspdRate,4; bonus bDelayrate,-4; },{},{}
+4881,DelayafterAttack4Lv,DelayafterAttack4Lv,6,10,3,0,,,,,,,,,,,,,{ bonus bAspdRate,4; bonus bDelayrate,-4; },{},{}
+4882,ATK_+_1%,ATK + 1%,6,10,3,0,,,,,,,,,,,,,{ bonus bAtkRate,1; },{},{}
+4883,MATK_+_1%,MATK + 1%,6,10,3,0,,,,,,,,,,,,,{ bonus bMatkRate,1; },{},{}
+4884,HIT_+_1,HIT + 1,6,10,3,0,,,,,,,,,,,,,{ bonus bHit,1; },{},{}
+4885,Spell_1,Spell 1,6,10,3,0,,,,,,,,,,,,,{ bonus bMatk,5; bonus bVariableCastrate,-3; },{},{}
+4886,Spell_2,Spell 2,6,10,3,0,,,,,,,,,,,,,{ bonus bMatk,10; bonus bVariableCastrate,-3; },{},{}
+4887,Spell_3,Spell 3,6,10,3,0,,,,,,,,,,,,,{ bonus bMatk,15; bonus bVariableCastrate,-3; },{},{}
+4888,Spell_4,Spell 4,6,10,3,0,,,,,,,,,,,,,{ bonus bMatk,20; bonus bVariableCastrate,-3; },{},{}
+4889,Spell_5,Spell 5,6,10,3,0,,,,,,,,,,,,,{ bonus bMatk,30; bonus bVariableCastrate,-5; },{},{}
+4890,MDEF+1,MDEF+1,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,1; },{},{}
+4891,MDEF+3,MDEF+3,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,3; },{},{}
+4892,MDEF+5,MDEF+5,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,5; },{},{}
+4893,DEF+15,DEF+15,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,15; },{},{}
+4894,ATK_+_4%,ATK + 4%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bAtkRate,4; },{},{}
+4895,ATK_+_5%,ATK + 5%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bAtkRate,5; },{},{}
+4896,MATK_+_2%,MATK + 2%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,2; },{},{}
+4897,MATK_+_3%,MATK + 3%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,3; },{},{}
+4898,MATK_+_4%,MATK + 4%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,4; },{},{}
+4899,MATK_+_5%,MATK + 5%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,5; },{},{}
+4900,MHP+5%,MHP+5%,6,10,3,0,,,,,,,,,,,,,{ bonus bMaxSPrate,5; },{},{}
+4902,DEF+18,DEF+18,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,18; },{},{}
+4903,DEF+21,DEF+21,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMdef,21; },{},{}
+4904,ATK_+_6%,ATK + 6%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bAtkRate,6; },{},{}
+4905,ATK_+_7%,ATK + 7%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bAtkRate,7; },{},{}
+4906,MATK_+_6,MATK + 6,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,6; },{},{}
+4907,MATK_+_7%,MATK + 7%,6,10,3,0,,,,0,4294967295,63,2,,,,,,{ bonus bMatkRate,7; },{},{}
+4908,Essence_of_Evil_STR1,Essence of Evil STR1,6,20,6,10,,,,,,,,,,,,,{ bonus bStr,1; bonus bBaseAtk,3; bonus bInt,-1; },{},{}
+4909,Essence_of_Evil_STR2,Essence of Evil STR2,6,20,6,10,,,,,,,,,,,,,{ bonus bStr,2; bonus bBaseAtk,6; bonus bInt,-2; },{},{}
+4910,Essence_of_Evil_STR3,Essence of Evil STR3,6,20,6,10,,,,,,,,,,,,,{ bonus bStr,4; bonus bBaseAtk,12; bonus bInt,-4; },{},{}
+4911,Essence_of_Evil_INT1,Essence of Evil INT1,6,20,6,10,,,,,,,,,,,,,{ bonus bInt,1; bonus bMatk,3; bonus bStr,-1; },{},{}
+4912,Essence_of_Evil_INT2,Essence of Evil INT2,6,20,6,10,,,,,,,,,,,,,{ bonus bInt,2; bonus bMatk,6; bonus bStr,-2; },{},{}
+4913,Essence_of_Evil_INT3,Essence of Evil INT3,6,20,6,10,,,,,,,,,,,,,{ bonus bInt,4; bonus bMatk,12; bonus bStr,-4; },{},{}
+4914,Essence_of_Evil_AGI1,Essence of Evil AGI1,6,20,6,10,,,,,,,,,,,,,{ bonus bAgi,1; bonus bFlee,2; bonus bVit,-1; },{},{}
+4915,Essence_of_Evil_AGI2,Essence of Evil AGI2,6,20,6,10,,,,,,,,,,,,,{ bonus bAgi,2; bonus bFlee,4; bonus bVit,-2; },{},{}
+4916,Essence_of_Evil_AGI3,Essence of Evil AGI3,6,20,6,10,,,,,,,,,,,,,{ bonus bAgi,4; bonus bFlee,8; bonus bVit,-4; },{},{}
+4917,Essence_of_Evil_VIT1,Essence of Evil VIT1,6,20,6,10,,,,,,,,,,,,,{ bonus bVit,1; bonus bDef,3; bonus bMdef,2; bonus bAgi,-1; },{},{}
+4918,Essence_of_Evil_VIT2,Essence of Evil VIT2,6,20,6,10,,,,,,,,,,,,,{ bonus bVit,2; bonus bDef,6; bonus bMdef,4; bonus bAgi,-2; },{},{}
+4919,Essence_of_Evil_VIT3,Essence of Evil VIT3,6,20,6,10,,,,,,,,,,,,,{ bonus bVit,4; bonus bDef,12; bonus bMdef,8; bonus bAgi,-4; },{},{}
+4920,Essence_of_Evil_DEX1,Essence of Evil DEX1,6,20,6,10,,,,,,,,,,,,,{ bonus bDex,1; bonus bHit,2; bonus bLuk,-1; },{},{}
+4921,Essence_of_Evil_DEX2,Essence of Evil DEX2,6,20,6,10,,,,,,,,,,,,,{ bonus bDex,2; bonus bHit,4; bonus bLuk,-2; },{},{}
+4922,Essence_of_Evil_DEX3,Essence of Evil DEX3,6,20,6,10,,,,,,,,,,,,,{ bonus bDex,4; bonus bHit,8; bonus bLuk,-4; },{},{}
+4923,Essence_of_Evil_LUK1,Essence of Evil LUK1,6,20,6,10,,,,,,,,,,,,,{ bonus bLuk,1; bonus bCritical,1; bonus bDex,-1; },{},{}
+4924,Essence_of_Evil_LUK2,Essence of Evil LUK2,6,20,6,10,,,,,,,,,,,,,{ bonus bLuk,2; bonus bCritical,2; bonus bDex,-2; },{},{}
+4925,Essence_of_Evil_LUK3,Essence of Evil LUK3,6,20,6,10,,,,,,,,,,,,,{ bonus bLuk,4; bonus bCritical,4; bonus bDex,-4; },{},{}
+4926,Critical_Lv1,Critical Lv1,6,10,3,0,,,,,,,,,,,,,{ bonus bCritical,1; },{},{}
+4927,MaxHP+50,MaxHP +50,6,10,3,0,,,,,,,,,,,,,{ bonus bMaxHP,50; },{},{}
+4928,MaxSP+10,MaxSP +10,6,10,3,0,,,,,,,,,,,,,{ bonus bMaxSP,10; },{},{}
+4929,MSP+1%,MSP+1%,3,10,3,0,,,,,,,,,,,,,{ bonus bMaxSPrate,1; },{},{}
+4930,Increase_Recovery,Increase Recovery,3,10,3,0,,,,,,,,,,,,,{ bonus bHPrecovRate,2; bonus bSPrecovRate,2; },{},{}
+4931,Healing_10,Healing 10,3,10,3,0,,,,,,,,,,,,,{ bonus2 bHPRegenRate,10,10000; },{},{}
+4932,SP_Recovery_1,SP Recovery 1,3,10,3,0,,,,,,,,,,,,,{ bonus bSPGainValue,1; },{},{}
+4933,Neutral_Properties_Lv1,Neutral Properties Lv1,6,10,3,0,,,,,,,,,,,,,{ bonus2 bSubEle,Ele_Neutral,1; },{},{}
+4934,Neutral_Properties_Lv2,Neutral Properties Lv2,6,10,3,0,,,,,,,,,,,,,{ bonus2 bSubEle,Ele_Neutral,2; },{},{}
+4935,Neutral_Properties_Lv3,Neutral Properties Lv3,6,10,3,0,,,,,,,,,,,,,{ bonus2 bSubEle,Ele_Neutral,3; },{},{}
+4936,Large_Size_Attack_1,Large Size Attack 1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bAddSize,Size_Large,1; },{},{}
+4937,Medium_Size_Attack_1,Medium Size Attack 1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bAddSize,Size_Medium,1; },{},{}
+4938,Small_Size_Attack_1,Small Size Attack 1,6,20,6,10,,,,,,,,,,,,,{ bonus2 bAddSize,Size_Small,1; },{},{}
+4939,Critical_Lv2,Critical Lv2,6,10,3,0,,,,,,,,,,,,,{ bonus bCritical,2; },{},{}
+4940,Cricital_Lv3,Cricital Lv3,6,10,3,0,,,,,,,,,,,,,{ bonus bCritical,4; },{},{}
+4941,Critical_Lv4,Critical Lv4,6,10,3,0,,,,,,,,,,,,,{ bonus bCritical,6; },{},{}
+4942,Shedding_Lv1,Critical Lv1,6,10,3,0,,,,,,,,,,,,,{ bonus bFlee2,2; },{},{}
+4943,Shedding_Lv2,Shedding Lv2,6,10,3,0,,,,,,,,,,,,,{ bonus bFlee2,4; },{},{}
+4944,Shedding_Lv3,Shedding Lv3,6,10,3,0,,,,,,,,,,,,,{ bonus bFlee2,5; },{},{}
+4945,Saving_Lv1,Saving Lv1,6,10,3,0,,,,,,,,,,,,,{ bonus bUseSPrate,-2; },{},{}
+4946,Saving_Lv2,Saving Lv2,6,10,3,0,,,,,,,,,,,,,{ bonus bUseSPrate,-4; },{},{}
+4947,Saving_Lv3,Saving Lv3,6,10,3,0,,,,,,,,,,,,,{ bonus bUseSPrate,-6; },{},{}
+4948,Delay_After_Skill_Lv1,Delay After Skill Lv1,6,10,3,0,,,,,,,,,,,,,{ bonus bDelayrate,-2; },{},{}
+4949,Delay_After_Skill_Lv2,Delay After Skill Lv2,6,10,3,0,,,,,,,,,,,,,{ bonus bDelayrate,-4; },{},{}
+4950,Delay_After_Skill_Lv3,Delay After Skill Lv3,6,10,3,0,,,,,,,,,,,,,{ bonus bDelayrate,-6; },{},{}
+12622,Boarding_Halter,Reins Of Mount,11,0,0,10,,,,,4294967295,63,2,,,,,,{ if(!ismounting()) progressbar "0xffffff",1;
+
+sc_start SC_ALL_RIDING,-1,1; },{},{}
+5538,Tucan_Hat,Tucan Hat,4,20,6,600,,2,,1,4294967295,7,2,256,,45,0,528,{ bonus bDex,3; },{},{}
+30000,Premmy_Booster,Premmy Booster,2,2,1,10,,,,,4294967295,7,2,0,,,0,,{ sc_start SC_EXPBOOST,1800000,25; sc_start SC_ITEMBOOST,1800000,125; },{},{}
+30003,Costume Carnival_Circlet,Costume Carnival Circlet,4,0,0,0,,,,0,4294967295,7,2,1024,,0,0,506,{},{},{}
+30002,Box_Akaraje,Akaraje Box,18,20,6,10,,,,,4294967295,7,2,,,,,,{ getitem 12375,10; },{},{}
+5145,Carnival_Joker_Jester,Carnival Joker Jester,4,10,3,100,,0,,0,4294967295,7,2,1024,,0,1,89,{},{},{}
+5307,Carmen_Miranda's_Hat,Carmen Miranda's Hat,4,20,6,400,,0,,0,4294967295,7,2,1024,,0,1,329,{ bonus bMdef,3; bonus3 bAutoSpellWhenHit,"DC_WINKCHARM",1,50; },{},{}
+30005,Costume Carmen_Miranda's_Hat,Costume Carmen Miranda's Hat,4,20,6,400,,0,,0,4294967295,7,2,1024,,0,1,329,{},{},{}
+30004,Costume Carnival_Joker_Jester,Costume Carnival Joker Jester,4,10,3,100,,0,,0,4294967295,7,2,1024,,0,1,89,{},{},{}
+1164,Muramasa,Muramasa,5,20,6,1000,155,,1,0,16514,7,2,34,4,48,1,3,{ bonus bCritical,30; bonus bAspdRate,8; bonus2 bAddEff2,Eff_Curse,10; },{},{}
+30006,War_Badge_box,War Badge Box,2,0,0,10,,,,,4294967295,7,2,,,,,,{ getitem 7773,50; },{},{}
+19609,C_Red_Glasses,Costume Red Glasses,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,316,{},{},{}
+19539,C_Reginleif_Hairband,Costume Hairband Of Reginleif,4,20,6,0,,0,,0,4294967295,63,2,1024,,1,0,468,{},{},{}
+19643,C_Whikebain_Ears,Costume Wickebine Ears,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,368,{},{},{}
+19745,C_Holy_Marching_Hat,Costume Holy Marching Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,587,{},{},{}
+20023,C_Red_Beret,Costume Red Beret,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,559,{},{},{}
+19726,C_Scarlet_Rose,Costume Scarlet Rose,4,0,0,0,,0,,0,4294967295,63,2,4096,,1,0,534,{},{},{}
+30007,Costume_Mischievous_Fairy,Costume Mischievous Fairy,4,10,3,200,,0,,0,4294967295,63,2,2048,,70,0,405,{},{},{}
+30008,Costume_Hellomother_Hat,Costume Hello Mother Hat,4,20,6,200,,0,,0,4294967294,63,2,1024,,1,0,341,{},{},{}
+30009,Costume_Soldier_Hat,Costume Legionnaire Hat,4,20,6,400,,0,,0,4294967295,63,2,1024,,0,1,420,{},{},{}
+30010,Costume_Minstrel_Song_Hat,Costume Minstrel Song Hat,4,20,6,100,,0,,0,4294967295,63,2,1024,,1,1,628,{},{},{}
+30011,Costume_Rasta_Wig,Costume Rasta Wig,4,20,6,100,,0,,0,4294967295,63,2,1024,,0,1,552,{},{},{}
+30012,Costume_Black_Bunny_Band,Costume Sheila Hairnet,4,0,0,200,,0,,0,4294967295,63,2,1024,,1,1,267,{},{},{}
+30013,Costume_Soulless_Wing,Costume Soul Ring,4,20,6,300,,0,,0,4294967294,63,2,1024,,20,1,301,{},{},{}
+30014,Costume_Russian_Ribbon,Costume Victory Hairband,4,0,0,100,,0,,0,4294967295,63,2,1024,,0,1,323,{},{},{}
+30015,Costume_Wit_Pumpkin_Hat,Costume Witch's Pumpkin Hat,4,20,6,300,,0,,0,4294967295,63,2,1024,,20,1,717,{},{},{}
+18565,Leprechaun_Hat,St Patrick's Hat,4,20,6,300,,8,,1,4294967295,63,2,256,,40,1,735,{ bonus bStr,1; bonus bInt,1; bonus bMdef,4; if(getrefine()>7){ bonus2 bAddMonsterDropItem,12135,50; } },{},{}
+19541,C_Romantic_White_Flower,Costume Romantic White Flower,4,20,6,0,,0,,0,4294967295,63,2,4096,,1,0,259,{},{},{}
+30016,C_Buzzy_Ball_Gum,Buzzy Ball Gum,4,50,15,100,,0,,0,4294967295,63,2,4096,,1,0,572,{},{},{}
+30017,C_Green_Bunny_Hairband,Costume Green Bunny Hairband,4,20,6,200,,0,,0,4294967295,63,2,1024,,1,1,664,{},{},{}
+30018,C_PinkBunny_Hairband,Costume PinkBunny Hairband,4,20,6,200,,0,,0,4294967295,63,2,1024,,1,1,663,{},{},{}
+30019,C_YellowBunny_Hairband,Costume YellowBunny Hairband,4,20,6,200,,0,,0,4294967295,63,2,1024,,1,1,662,{},{},{}
+30020,C_Red_Bunny_Band,Costume Red Bunny Band,4,0,0,200,,4,,0,4294967295,63,2,1024,,1,1,640,{},{},{}
+30021,C_Black_Bunny_Band,Costume Sheila Hairnet,4,0,0,200,,4,,0,4294967295,63,2,1024,,1,1,267,{},{},{}
+19876,C_Rabbit_Ear_Hat,Costume Bunny Top Hat,4,0,0,0,,,,,4294967295,63,2,1024,,1,,384,{},{},{}
+30022,Mania_Coin,Mania Coin,3,0,0,0,,,,,4294967295,7,2,,,,,,{},{},{}
+18885,Jejecap,Jejecap,4,0,0,100,,8,,0,4294967295,63,2,256,,70,1,1011,{ bonus bStr,2; bonus bInt,3; bonus2 bSubRace,RC_DemiHuman,11; bonus2 bAddItemHealRate,522,70; },{},{}
+31055,C_Poring_Soap_Pipe,Costume Poring Soap Pipe,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1499,{},{},{}
+20132,C_Subject_Aura,Costume Aura Vicious Mind,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1267,{},{},{}
+19742,C_Small_Golden_Wings,Costume Small Golden Wings,4,10,3,0,,,,0,4294967295,63,2,2048,,,,724,{},{},{}
+20401,C_Angel_Guidance,Costume Angel Guidance,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1188,{},{},{}
+31151,C_Chasher_Ear,Costume Cheshire's Cat Ears,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1565,{},{},{}
+19640,C_Charming_Ribbon,Costume Charming Ribbon,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,211,{},{},{}
+31439,C_Fluffy_Heart_Earmuffs,C Fluffy Heart Earmuffs,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1707,{},{},{}
+31667,Costume_Poring_Beret,Costume Poring Beret,4,0,0,0,,,,,4294967295,63,2,1024,,1,0,1825,{},{},{}
+31046,C_White_Rose_Princess,Costume White Rose Princess,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1493,{},{},{}
+30024,whiteremes,whiteremes,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1882,{},{},{}
+30025,C_Giant_Fly_Wing,C_Giant Fly Wing,2,2,1,10,,,,,4294967295,7,2,,,,,,{ callfunc "F_CashPartyCall"; },{},{}
+30026,C_Megaphone_,C_Megaphone,2,2,1,10,,,,,4294967295,7,2,,,,,,{ input @megaphone$; announce strcharinfo(0) + ": " + @megaphone$,bc_all,0xFF0000; },{},{}
+18740,C_Hair_Of_The_Strong,RMSC2012 Special Costume,4,20,6,0,,0,,0,4294967295,63,2,1024,,0,0,879,{},{},{}
+20761,C_Wing_Of_Happiness,Costume Happiness Wings,4,0,0,0,,0,,0,4294967295,63,2,8192,,1,0,9,{},{},{}
+19602,C_Invisible_Cap,Costume Invisible Cap,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,0,{},{},{}
+19604,C_Invisible_Mask,Costume Invisible Flu Mask,4,0,0,0,,0,,0,4294967295,63,2,4096,,1,0,0,{},{},{}
+19603,C_Invisible_Sunglasses,Costume Invisible Sunglasses,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,0,{},{},{}
+20764,C_Fallen_Angel_Wing,Costume Fallen Angel Wing,4,0,0,0,,0,,0,4294967295,63,2,8192,,1,0,3,{},{},{}
+20727,Brilliant_Golden_Wings,Brilliant Golden Wings,4,10,3,0,,,,0,4294967295,63,2,8192,,1,1,5,{},{},{}
+31062,C_Eleanor_Wig,Costume Eleanor Wig,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1502,{},{},{}
+12790,Change_Name_Card,Character Name Change Coupon,2,0,0,0,,,,,4294967295,63,2,,,,,,{ CharRename++; },{},{}
+31186,C_Black_Cat,Costume Black Cat,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1582,{},{},{}
+31798,Costume_Baby_Panda,C Baby Panda,4,0,0,0,,,,,4294967295,63,2,2048,,1,0,1922,{},{},{}
+31437,C_Baby_Penguin,C Baby Penguin,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1705,{},{},{}
+31433,C_Celestial_Circle,C Celestial Circle,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1073,{},{},{}
+31390,C_Let_It_Snow,C Let It Snow,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1690,{},{},{}
+31719,Costume_Master_Of_Flames,C Master Of Flames,4,0,0,0,,,,,4294967295,63,2,4096,,1,0,1890,{},{},{}
+31803,Costume_Master_Of_Wind,C Master of Wind,4,0,0,0,,,,,4294967295,63,2,4096,,1,0,1924,{},{},{}
+31797,Costume_Shih_Tzu_Hair,C Shih Tzu Hair,4,0,0,0,,,,,4294967295,63,2,4096,,1,0,1921,{},{},{}
+31299,C_White_Rabbit,C White Rabbit,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1656,{},{},{}
+5979,C_Angel_Fluttering,C Angel Fluttering,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1380,{ hateffect HAT_EF_ANGEL_FLUTTERING,true; },{},{ hateffect HAT_EF_ANGEL_FLUTTERING,false; }
+30028,Ragnamania_Golden_Key,Ragnamania Golden Key,11,0,0,0,,,,,4294967295,7,2,,,,,,{ callfunc "F_LootBox"; },{},{}
+20183,C_There_Is_Something,Costume There's..Something..,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,1091,{},{},{}
+20496,C_Black_Shiba_Inu_Hat,Costume Black Shiba Inu Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,894,{},{},{}
+30001,Premmy_Booster_Box30,Premmy Booster Box 30,18,20,6,10,,,,,4294967295,7,2,,,,,,{ if(vip_status(1)) {getitem 30000,30;} },{},{}
+30023,Mania_Coin_Moneybag,Bag of Mania Coins,0,0,0,0,,,,,4294967295,7,2,,,,,,{ getitem 30022,rand(2,10); },{},{}
+20000,C_Mouse_Hat2,Costume Mouse Hat 2,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1194,{},{},{}
+20001,C_Mouse_Hat3,Costume Mouse Hat 3,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1195,{},{},{}
+19996,Horse_King,Horse King,4,10,3,0,,,,0,4294967295,63,2,7168,,1,,1189,{},{},{}
+19999,C_Mouse_Hat1,Costume Mouse Hat 1,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1193,{},{},{}
+20002,C_Mouse_Hat4,Costume Mouse Hat 4,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1196,{},{},{}
+20003,C_Mouse_Hat5,Costume Mouse Hat 5,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1197,{},{},{}
+20004,C_Big_Golden_Bell,Costume Big Golden Bell,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,175,{},{},{}
+20005,C_Pegasus_Wing_Ears,Costume Sigrun Wing,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,568,{},{},{}
+20006,C_Dark_Knight_Mask,Costume Dark Knight Mask,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,479,{},{},{}
+20007,C_Bullock_Helm_J,Costume Horned Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,322,{},{},{}
+20008,C_General_Helmet,Costume Dragon General Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,729,{},{},{}
+20009,C_Dragon_Skull,Costume Dragon Skull Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,319,{},{},{}
+20010,C_Rainbow_Wing_Ears,Costume Rainbow Ears Feather,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1198,{},{},{}
+20011,C_Lightning_Speed,Costume Lightning Speed,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1199,{},{},{}
+20012,C_Double_Horn_Helm,Costume Double Horn Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1200,{},{},{}
+20013,C_Chef_Hat,Costume Chef Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,111,{},{},{}
+20014,Lincoln_Hat,Costume Lincoln Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,1204,{},{},{}
+20015,Lincoln_Beard,Costume Lincoln Beard,4,10,3,0,,,,0,4294967295,63,2,4096,,,0,1205,{},{},{}
+20016,Lobster_Hat,Costume Cool Dinner Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,1206,{},{},{}
+20017,C_Marionette_Doll,Costume Marionette Doll,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,212,{},{},{}
+20018,C_Holo_Ear,Costume Holo Ear,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,1208,{},{},{}
+20019,Beret_Of_Artist,Costume Beret Of Artist,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,1209,{},{},{}
+20020,C_Zaha_Doll_Hat,Costume Zaha Doll Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,461,{},{},{}
+20021,C_Heart_Ribbon_Hairband,Costume Heart Ribbon Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,708,{},{},{}
+20022,C_Love_Fragment,Costume Love Fragment,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,734,{},{},{}
+20024,C_Orange_Ribbon,Costume Orange Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,247,{},{},{}
+20025,C_Cow_Hat1,Costume Cow Hat 1,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1211,{ bonus bDex,2; bonus2 bAddMonsterDropItem,519,100; },{},{}
+20026,C_Cow_Hat2,Costume Cow Hat 2,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1212,{ bonus bDex,2; bonus2 bAddMonsterDropItem,519,100; },{},{}
+20027,C_Cow_Hat3,Costume Cow Hat 3,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1213,{ bonus bDex,2; bonus2 bAddMonsterDropItem,519,100; },{},{}
+20028,C_Cow_Hat4,Costume Cow Hat 4,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1214,{ bonus bDex,2; bonus2 bAddMonsterDropItem,519,100; },{},{}
+20029,C_Donut_in_Mouth,Costume Donut in Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,569,{},{},{}
+20030,C_Choco_Donut_in_Mouth,Costume Choco Donut in Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,653,{},{},{}
+20031,C_Bunny_Head_Dress,Costume Bunny Headress,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1215,{},{},{}
+20032,C_Firinto_Scarf,Costume Firinto Scarf,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1216,{},{},{}
+20033,C_Buddhist_Priest_Crown,Costume Monk Crown,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1217,{},{},{}
+20034,C_Jack_Castle_Bat,Costume Jack Castle Bat,4,10,3,0,,,,0,4294967295,63,2,4096,,1,0,1041,{},{},{}
+20035,C_Miracle_Blue_Rose,Costume Miracle Blue Rose,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1064,{},{},{}
+20036,C_Sword_Master_Crown,Costume Sword Master Crown,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,981,{},{},{}
+20037,C_Owlduke_Silk_Hat,Costume Owlduke Silk Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,982,{},{},{}
+20038,C_Alphonse_Helmet,Costume Alphonse Helmet,4,10,3,0,,,,0,4294967295,63,2,1024,,,0,1214,{},{},{}
+20039,C_Butterfly_Wing_Ear_J,Costume Butterfly Wing Ears,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,695,{},{},{}
+20040,C_Rose_Crown,Costume Chung Hairpin,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,583,{},{},{}
+20041,C_Earth_Goddess_Flower,Costume Rose Headband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,864,{},{},{}
+20042,C_Hermose_Cap,Costume Hermos Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,478,{},{},{}
+20043,C_Red_Cherry_Blossom,Costume Cherryblossom in Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,823,{},{},{}
+20044,C_Carmen_Miranda_Hat,Costume Carmen Miranda's Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,329,{},{},{}
+20045,C_Samambaia,Costume Samambaia,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,508,{},{},{}
+20046,C_Decoration_bluerose,Costume Blue Ribbon Band,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1222,{},{},{}
+20047,C_Pray_Cherry_Blossom,Costume Prayer Cherry Blossom,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1223,{},{},{}
+20048,C_Wind_Of_The_Prairie,Costume Wind Prairie,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1224,{},{},{}
+20049,C_Plaster,Costume Giant Band Aid,4,0,0,0,,,,,4294967295,63,2,1024,,1,,147,{},{},{}
+20050,C_Ph.D_Hat,Costume Ph.D Hat,4,0,0,0,,,,,4294967295,63,2,1024,,1,,98,{},{},{}
+20051,C_Stop_Post,Costume Stop Post,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,59,{},{},{}
+20052,C_AFK_Hat,Costume AFK Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,471,{},{},{}
+20053,C_W_King_Tiger_Doll_Hat,Costume White King Tiger Doll Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,973,{},{},{}
+20054,C_Baby_Pacifier,Costume Baby Pacifier,4,0,0,0,,,,,4294967295,63,2,4096,,1,,191,{},{},{}
+20055,C_Ghost_Bandana,Costume Ghost Bandana,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,61,{},{},{}
+20056,C_Bride_Corolla,Costume Bride's Corolla,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,437,{},{},{}
+20057,C_Feather_Bonnet,Costume Feather Bonnet,4,0,0,0,,,,,4294967295,63,2,1024,,1,,104,{},{},{}
+20058,C_Hot_Blood_Headband,Costume Hot Blood Headband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,154,{},{},{}
+20059,C_Welding_Mask,Costume Welding Mask,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,79,{},{},{}
+20060,C_Construction_Helmet,Costume Construction Helmet,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,95,{},{},{}
+20061,C_Demo_Mask,Costume Demo Mask,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,52,{},{},{}
+20062,C_Angel_Stair,Costume Angel Stair,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,,{},{ sc_start SC_HAT_EFFECT,INFINITE_TICK,0; },{ sc_end SC_HAT_EFFECT; }
+20063,C_Yellow_Brain_Hat,Costume Yellow Brain Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1228,{},{},{}
+20064,C_Blue_Brain_Hat,Costume Blue Brain Hat,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1229,{},{},{}
+20065,C_Hairband_Of_Grandpeco,Costume Grand Peco Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,473,{},{},{}
+20066,C_Pecopeco_Hairband,Costume Pecopeco Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,314,{},{},{}
+20067,C_White_Rabbit_Headband,Costume White Rabbit Headband,4,0,0,0,,,,,4294967295,63,2,1024,,1,,719,{},{},{}
+20068,C_Black_Rabbit_Headband,Costume Black Rabbit Headband,4,0,0,0,,,,,4294967295,63,2,1024,,1,,718,{},{},{}
+20069,C_Gryphon_Hairband,Costume Gryphon Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1233,{},{},{}
+20070,C_Alpaca_Hood,Costume Alpaca Hood,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1234,{},{},{}
+20071,C_Worg_In_Mouth,Costume Worg In Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1235,{},{},{}
+20073,C_Hair_Band,Costume Hair Band,4,0,0,0,,,,,4294967295,63,2,1024,,1,,9,{},{},{}
+20074,C_Biretta,Costume Biretta,4,0,0,0,,,,,4294967295,63,2,1024,,1,,11,{},{},{}
+20075,C_Little_Fhat,Costume Little Feather Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,715,{},{},{}
+20076,C_Idun_Wing_Ears,Costume Idun Feather Ears,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,724,{},{},{}
+20077,C_Wing_Form_Spectacle,Costume Wing Frame Sunglasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,925,{},{},{}
+20078,C_White_Feather,Costume White Feather,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,741,{},{},{}
+20079,C_Love_Daddy_2013,Costume Forgotten Angel Wing,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1104,{},{},{}
+20080,C_Shaman's_Hair_Orna,Costume Shaman Hair Ornament,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,476,{},{},{}
+20081,C_Metal_Dragon_Helm,Costume Metal Dragon Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1242,{},{},{}
+20082,C_Metal_Dragon_Hat,Costume Metal Dragon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1243,{},{},{}
+20083,C_Mythlit_Hat,Costume Mythlit Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1244,{},{},{}
+20084,C_Clover_Coronet,Costume Ceremonial Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,325,{},{},{}
+20085,C_Clover_Silkhat,Costume St Patrick's Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,735,{},{},{}
+20086,C_Dragon_Cintamani_Hat1,Costume Dragon Cintamani Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1245,{},{},{}
+20087,C_Dragon_Cintamani_Hat2,Costume Dragon Cintamani Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1246,{},{},{}
+20088,C_Dragon_Cintamani_Hat3,Costume Dragon Cintamani Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1247,{},{},{}
+20089,C_Dragon_Cintamani_Hat4,Costume Dragon Cintamani Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1248,{},{},{}
+20090,C_Egg_Shell,Costume Egg Shell,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,101,{},{},{}
+20091,C_Smoking_Pipe,Costume Pipe,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,55,{},{},{}
+20092,C_Sales_Signboard,Costume Sales Banner,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,183,{},{},{}
+20093,C_Star_Sparkling,Costume Wizard Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,36,{},{},{}
+20094,C_Fillet_Green,Costume Green Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,439,{},{},{}
+20095,C_Fillet_Red,Costume Red Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,440,{},{},{}
+20096,C_Fillet_Blue,Costume Blue Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,441,{},{},{}
+20097,C_Fillet_White,Costume White Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,442,{},{},{}
+20098,C_Vampire_Hairband,Costume Vampire Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1238,{},{},{}
+20099,C_Ljosalfar,Flying Ljosalfar,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1239,{},{ sc_start SC_LJOSALFAR,INFINITE_TICK,0; },{ sc_end SC_LJOSALFAR; }
+20100,C_Volume_Fhat,Costume Volume Fhat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1240,{},{},{}
+20101,C_Bragi_Wing_Ears,Costume Bragi Wing Ears,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1241,{},{},{}
+20102,C_Horse_King_J,Costume Horse King J,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1189,{},{},{}
+20103,C_Drooping_Panda,Costume Drooping Panda,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1029,{},{},{}
+20104,C_Picky_Egg_Shell,Costume Picky Egg Shell,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1001,{},{},{}
+20105,C_Fish_Head_Hat,Costume Fish Head,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,386,{},{},{}
+20106,C_Classic_Hat,Costume Classic Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,475,{},{},{}
+20107,C_Fish_In_Mouth,Costume Fish In Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,406,{},{},{}
+20108,C_Blind_Glasses,Costume Blind Glasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,813,{},{},{}
+20109,C_Jolly_Roger,Costume Jolly Roger Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,962,{},{},{}
+20110,C_Coiledup_Snake,Costume Coiledup Snake,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1258,{},{},{}
+20111,C_Coiledup_Snake_Hat2,Costume Coiledup Snake Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1259,{},{},{}
+20112,C_Aqua_Ten_Gallon_Hat,Costume Aqua Ten Gallon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1256,{},{},{}
+20113,C_Star_Reading_Hat,Costume Star Reading Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1253,{},{},{}
+20114,C_Funeral_Costume,Costume Funeral Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,77,{},{},{}
+20115,C_Under_Rim_Glasses,Under Rim Glasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1255,{},{},{}
+20116,C_Mermaid_Headphone,Mermaid Headphone,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1254,{},{},{}
+20117,C_Raspberry_Mousse_Hat,Raspberry Mousse Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1257,{},{},{}
+20118,C_Hat_Of_Cake,Costume Cake Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,109,{},{},{}
+20119,C_Fur_Hat,Costume Beanie,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,160,{},{},{}
+20120,C_Antenna,Costume Aerial,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,97,{},{},{}
+20121,C_Lotus_Flower_Hat,Costume Flower Lily,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,324,{},{},{}
+20122,Happy_Summer_Ribbon,Costume Happy Summer Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1260,{},{},{}
+20123,C_Eagle_Eyes,Costume Eagle Eyes,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,63,{},{},{}
+20124,C_Masquerade,Costume Masquerade,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,78,{},{},{}
+20125,C_Mini_Glasses,Costume Mini Glasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,47,{},{},{}
+20126,C_Odium_Thanatos_Mask,Costume Odium Thanatos Mask,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,667,{},{},{}
+20127,C_Abysmal_Knight_Helm,Costume Abysmal Knight Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,371,{},{},{}
+20128,C_Remover_Hat,Costume Remover Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,655,{},{},{}
+20129,C_Poporing_Cap,Costume Poporing Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,361,{},{},{}
+20130,C_Whisper_Tall_Hat,Costume Whisper Tall Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1265,{},{},{}
+20131,C_C_Tower_Manager_Incom,Costume Clock Tower Manager,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1266,{},{},{}
+20133,C_Poring_Mascot_Costume,Costume Poring Mascot,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1268,{},{},{}
+20134,C_Helm_Of_Abyss_White,Costume White Helm Of Abyss,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1269,{},{},{}
+20135,C_12_Anniversary_Crown_Of_Saint,Costume 12 Anniversary Crown of Saint,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1117,{},{},{}
+20136,C_12_Anniversary_Elf_Ears,Costume 12 Anniversary Elf Ears,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,875,{},{},{}
+20137,C_Bomb_Wick,Costume Bomb Wick,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,66,{},{},{}
+20138,C_Sea_Otter_Hat,Costume Sea Otter Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,162,{},{},{}
+20139,C_Horse_Hairpin,Costume Horse Hairpin,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1271,{},{},{}
+20140,C_Horse_Hairpin_,Costume Horse Hairpin,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1272,{},{},{}
+20141,C_Observer,Costume Observer,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,337,{},{},{}
+20142,C_Machoman_Glasses,Costume Machoman Glasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,92,{},{},{}
+20143,C_Candy_Cane_In_Mouth,Costume Candy Cane In Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,665,{},{},{}
+20144,C_Ancient_Elven_Ear,Costume Ancient Elven Ear,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,665,{},{},{}
+20145,C_Robo_Eye,Costume Robo Eye,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,345,{},{},{}
+20146,C_Angel_Spirit,Costume Angel of Ghost,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,394,{},{},{}
+20147,C_Bell_Pigeon,Costume Bell of Piegon,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1034,{},{},{}
+20148,C_Musketeer_Hat,Costume Musketeer Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,466,{},{},{}
+20149,C_Hexagon_Glasses,Costume Hexagon Glasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,822,{},{},{}
+20150,C_Wind_Fan,Costume Wind Fan,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1051,{},{},{}
+20151,C_Poison_Spore_Hat,Costume Poison Spore Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,899,{},{},{}
+20152,C_Straw_Rice_Bag,Costume Straw Rice Bag,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1273,{},{},{}
+20153,C_Monochrome_Cap,Costume Monochrome Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1274,{},{},{}
+20154,C_Maple_Which_Falls,Costume Maple Which Falls,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1275,{},{ sc_start SC_MAPLE_FALLS,INFINITE_TICK,0; },{ sc_end SC_MAPLE_FALLS; }
+20155,C_Ladys_Feather_Hat,Costume Lady's Feather Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,,0,1276,{},{},{}
+20156,C_Fan_in_Mouth,Costume Fan in Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,857,{},{},{}
+20157,C_Fish_On_Head,Costume Evolved Blue Fish,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,149,{},{},{}
+20158,C_Circlet,Costume Circlet,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,18,{},{},{}
+20159,C_Blue_Hair_Band,Costume Blue Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,136,{},{},{}
+20160,C_Fried_Egg,Costume Magnolia Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,373,{},{},{}
+20161,C_Prontera_Army_Cap,Costume Army Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,48,{},{},{}
+20162,C_Fleece_Hat,Costume Fleece Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1277,{},{},{}
+20163,C_Fleece_Hat_,Costume Fleece Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1278,{},{},{}
+20164,C_Duneyrr_Hat,Costume Duneyrr Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,639,{},{},{}
+20165,C_Tendrilion_Hat,Costume Tendrilion Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,658,{},{},{}
+20166,C_Hockey_Mask,Costume Hockey Mask,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,336,{},{},{}
+20167,C_Deviruchi_Headphone,Costume Deviruchi Headphone,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,805,{},{},{}
+20168,C_Skull_Hood,Costume Skull Hood,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,598,{},{},{}
+20169,C_Long_Tongue,Costume Long Tongue,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,773,{},{},{}
+20170,C_Brown_Deviruchi_Cap,Costume Brown Deviruchi Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,273,{},{},{}
+20171,C_Sepia_Cap,Costume Sepia Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1280,{},{},{}
+20172,C_Pumpkin_Head,Costume Pumpkin Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1281,{},{},{}
+20173,C_Lude_Hood,Costume Lude Hood,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1282,{},{},{}
+20174,C_Halloween_Hat_Orange,Costume Orange Halloween Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1283,{},{},{}
+20175,C_Diabolic_Headphone,Costume Diabolic Headphone,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1284,{},{},{}
+20176,Happy_Pierrot_Mask,Costume Happy Pierrot Mask,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,1288,{},{},{}
+20177,C_Drooping_Dorasuke,Costume Drooping Dorasuke,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1290,{},{},{}
+20178,C_Puppy_Love,Costume Puppy Love,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,94,{},{},{}
+20179,C_Monkey_Coat_Hat,Costume Monkey Coat Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,858,{},{},{}
+20180,C_Westren_Grace,Costume Western Grace,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,32,{},{},{}
+20181,C_Mistic_Rose,Costume Mystic Rose,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,198,{},{},{}
+20182,C_Mottled_Egg_Shell,Costume Rainbow Eggshell,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,124,{},{},{}
+20184,C_Party_Hat,Costume Party Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,144,{},{},{}
+20185,C_Fashionable_Glasses,Costume Fashionable Glasses,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,131,{},{},{}
+20186,C_Magni_Cap,Costume Magni's Cap,4,20,6,0,,,,,4294967295,63,2,1024,,1,0,250,{},{},{}
+20187,C_Fricca's_Circlet,Costume Fricca's Circlet,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,251,{},{},{}
+20188,C_Morpheus's_Hood,Costume Morpheus's Hood,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,256,{},{},{}
+20189,C_Goibne's_Helm,Costume Goibne's Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,258,{},{},{}
+20190,C_Chick_Hat_J,Costume Chick Hat J,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,432,{},{},{}
+20191,C_Black_Cat_Ears_Beret,Costume Black Cat Ears Beret,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1071,{},{},{}
+20192,C_Green_Foxtail,Costume Green Foxtail,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1058,{},{},{}
+20193,C_Foxtail,Costume Foxtail,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,711,{},{},{}
+20194,C_Lion_Mask,Costume Lion Mask,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,202,{},{},{}
+20195,C_Scratching_Cat,Costume Scratching Cat,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,1292,{},{},{}
+20196,C_Leopard_Ear_Hat,Costume Leopard Ear Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1293,{},{},{}
+20197,C_Amistr_Beret,Costume Amistr Beret,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1294,{},{},{}
+20198,C_Misty_Ears,Costume Misty Ears,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1295,{},{},{}
+20199,C_Evil_Marcher_Hat,Costume Evil Marcher Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,687,{},{},{}
+20200,C_Rabbit_Head_Dress,Costume Rabbit Head Dress,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1095,{},{},{}
+20201,C_Banshee_Master_Kiss,Costume Banshee Master Kiss,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,959,{},{},{}
+20202,C_Deviruchi_Balloon,Costume Deviruchi Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1082,{},{},{}
+20203,C_Bandana,Costume Bandana,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,6,{},{},{}
+20204,C_Hunting_Cap,Costume Hunter Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,389,{},{},{}
+20205,C_Fancy_Flower,Costume Fancy Flower,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,4,{},{},{}
+20206,C_Chicken_Hat,Costume Chicken Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1296,{},{},{}
+20207,C_Stripe_Band,Costume Striped Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,133,{},{},{}
+20208,C_Necktie,Costume Neck Tie,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,443,{},{},{}
+20209,C_Mermaid_Longing,Costume Mermaid Bubbles,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1299,{},{ sc_start SC_MERMAID_LONGING,INFINITE_TICK,0; },{ sc_end SC_MERMAID_LONGING; }
+20210,C_Chicken_Hat_,Costume Chicken Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1297,{},{},{}
+20211,C_Chicken_Hat__,Costume Chicken Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1298,{},{},{}
+20212,C_Loki_Nidhogg_Hat,Costume Loki & Nidhoggur's Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1304,{},{},{}
+20213,C_Sirt_Evil_Eye,Costume Robot Eyes,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,345,{},{},{}
+20214,C_Evil_Marcher_Hat_J,Costume Evil Marcher Hat J,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1002,{},{},{}
+20215,C_Black_Devil_Mask,Costume Black Devil Mask,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,760,{},{},{}
+20216,C_Rideword_Hat,Costume Rideword Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,890,{},{},{}
+20217,C_Arabian_Veil,Costume Arabian Veil,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1300,{},{},{}
+20218,C_Spell_Circuit,Costume Spell Circuit,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1301,{},{},{}
+20219,C_Angel_Marcher_Hat,Costume Angel Marcher Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1302,{},{},{}
+20220,C_Dark_Night_Veil,Costume Dark Night Veil,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,1303,{},{},{}
+20221,C_Eyes_Of_Ifrit,C Eyes Of Ifrit,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,886,{},{},{}
+20222,C_Santa_Hat_2,Costume Blue Pigtail Santa Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,,0,395,{},{},{}
+20223,C_Centimental_Leaf,Costume Romantic Leaf,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,57,{},{},{}
+20224,C_Red_Tailed_Ribbon,Costume Red Tailed Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,167,{},{},{}
+20225,C_Pumpkin_Hat,Costume Pumpkin-Head,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,206,{},{},{}
+20226,C_Hair_Brush,Costume Red Comb,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,445,{},{},{}
+20227,C_Husky_Hat,Costume Husky Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1016,{},{},{}
+20228,C_Pig_MoneyBox,Costume Pig MoneyBox,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,603,{},{},{}
+20230,C_Mask_Of_Bankrupt,Costume Bankruptcy Mask,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,936,{},{},{}
+20231,C_Snowman_Hat,Costume Snowman Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,616,{},{},{}
+20232,C_Celines_Ribbon,Costume Celine Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,967,{},{},{}
+20233,C_Gold_Angel_Sculpture,Costume Golden Angel,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,646,{},{},{}
+20234,C_Baphomet_Hat,Costume Baphomet Hat,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1311,{  },{},{}
+20235,C_Frozen_Land_Rose,Costume Frozen Rose,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1025,{},{},{}
+20236,C_Hellomother_Hat,Costume Arc Angeling Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,241,{},{},{}
+20237,C_Pink_Fur_Hat,Costume Pink Beanie,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,281,{},{},{}
+20238,C_Blue_Drooping_Kitty,Costume Drooping Blue Cat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,277,{},{},{}
+20239,C_Large_Ribbon_Muffler,Costume Large Ribbon Muffler,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1312,{},{},{}
+20240,C_Gift_Of_Snow,Costume Gift of Snow,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,,{ /*TODO: ViewID*/ },{},{}
+20241,C_Eclipse_Hat,Costume Eclipse Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,922,{},{},{}
+20242,C_Snownow_Hat,Costume Snownow Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1313,{},{},{}
+20243,C_Choco_Mint_Bonnet,Costume Choco Mint Bonnet,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1314,{},{},{}
+20244,C_Zealotus_Mask,Costume Zealotus Mask,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,200,{},{},{}
+20245,C_Cat_Paw_Hairpin,Costume Cat Paw Hairpin,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,447,{},{},{}
+20246,C_Decoration_Time,Costume Decoration Time,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1309,{},{ sc_start SC_TIME_ACCESSORY,INFINITE_TICK,0; },{ sc_end SC_TIME_ACCESSORY; }
+20247,C_Fate_Of_Black_Hand,Costume Fate Of Black Hand,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1310,{},{},{}
+20248,C_Black_Strong_Hair,Costume Black Strong Hair,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1315,{},{},{}
+20249,C_Red_Strong_Hair,Costume Red Strong Hair,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1316,{},{},{}
+20250,C_White_Strong_Hair,Costume White Strong Hair,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1317,{},{},{}
+20251,C_Rose_Cascade,Costume Rose Cascade,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,920,{},{},{}
+20252,C_Accessory_of_Ascetic,Costume Mage Decoration,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1150,{},{},{}
+20253,C_Droopy_Alice_Doll,Costume Drooping Alicel,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,784,{},{},{}
+20254,C_Ribbon_Yellow,Costume Yellow Ribbonn,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,243,{},{},{}
+20255,C_Love_Cheek,Costume Love Cheeks,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1318,{},{},{}
+20256,C_Honey_Pancakes,Costume Honey Pancake,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1319,{},{},{}
+20257,C_Black_Rabbit_Bonnet,Costume Black Rabbit Bonnet,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1320,{},{},{}
+20258,C_Blue_Head_Dress,Costume Blue Headdress,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1321,{},{},{}
+20259,C_Pink_Clover,Costume Pink Clover,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1322,{},{},{}
+20260,C_Stardust,Costume Stardust,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,81,{},{},{}
+20262,C_Fox_Ears_Bell_Ribbon,Costume Fox Ears Drop Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1070,{},{},{}
+20263,C_Hat_Of_Drowsy_Cat,Costume Sleeping Cat Hat J,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,838,{},{},{}
+20264,C_Blood_Sucker,Costume Blood Sucker,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,893,{},{},{}
+20265,C_Bird_Nest_Hat,Costume Bird Nest Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,235,{},{},{}
+20266,C_Secret_Zipper,Costume Secret Zipper,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1324,{},{},{}
+20267,C_Penguin_Cap,Costume Penguin Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1325,{},{},{}
+20268,C_Sleep_Eclipse_Family,Costume Sleep Eclipse Family,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1326,{},{},{}
+20269,C_White_Fox_Ear_Ribbon,Costume White Fox Ear Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1327,{},{},{}
+20270,C_Gryphon_Wing_Ears,Costume Gryphon Wing Ears,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1328,{},{},{}
+20271,C_Sunflower,Costume Sunflower,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,37,{},{},{}
+20272,C_Snowy_Horn,Costume Unicorn Horn,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,42,{},{},{}
+20273,C_Soft_Sheep_Hat,Costume Soft Sheep Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,738,{},{},{}
+20274,C_Polar_Bear_Cap_J,Costume Polar Bear Cap J,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,966,{},{},{}
+20277,C_Balloon_Hat,Costume Balloon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,385,{},{},{}
+20278,C_Mans_Medal,Costume Man's Medal,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,775,{},{},{}
+20279,C_Cheering_Whistle,Costume Cheering Whistle,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,952,{},{},{}
+20280,C_Well-Chewed_Pencil,Costume Well-Chewed Pencil,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,555,{},{},{}
+20281,C_Kindergarten_Hat,Costume Kindergarten Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,977,{},{},{}
+20282,C_White_Student_Cap,Costume White Student Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,877,{},{},{}
+20283,C_Over_Protector,Costume Over Protector,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1329,{},{},{}
+20284,C_Cherry_Blossom_Hat,Costume Sakura Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1330,{},{},{}
+20285,C_Blossom_Fluttering,Costume Dancing Fallen Sakura,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1331,{ hateffect HAT_EF_BLOSSOM_FLUTTERING,true; },{},{ hateffect HAT_EF_BLOSSOM_FLUTTERING,false; }
+20286,C_Under_Rim_Glasses_Red,Costume Under Rim Glasses Red,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1332,{},{},{}
+20287,C_Mans_Medal_Gold,Costume Man's Medal(Gold),4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1333,{},{},{}
+20288,C_Bijou_Hat,Costume Bijou Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1334,{},{},{}
+20291,C_Helm_of_Thoth,Costume Helm of Thoth,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,860,{},{},{}
+20292,C_Black_Ramen_Hat,Costume Black Ramen Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1338,{},{},{}
+20293,C_Sleeper_Hat,Costume Sleeper Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,590,{},{},{}
+20294,C_Savage_Babe_Hat,Costume Savage Babe Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,553,{},{},{}
+20295,C_Poring_Sunglasses,Costume Poring Sunglasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,954,{},{},{}
+20296,C_Yoyo_Hat,Costume Yoyo Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,391,{},{},{}
+20297,C_Cactus_Hat,Costume Cactus Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,615,{},{},{}
+20298,C_Happy_Lunatic_Ear,Costume Happy Lunatic Hanging Ear,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1340,{},{},{}
+20299,C_Face_Crusher,Costume Face Crusher,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,1341,{},{},{}
+20300,C_Hill_Wind_Mask,Costume Hill Wind Mask,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1342,{},{},{}
+19537,C_Gryphon_Hat,Costume Gryphon Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,591,{ bonus bUnbreakableHelm; },{},{}
+31841,Costume_BJ_Headset_B,C OnAir BJ Headset,4,0,0,0,,,,,4294967295,63,2,1024,,1,0,1943,{},{},{}
+31799,Costume_Pretty_White_Bear,C Pretty White Bear,4,0,0,0,,,,,4294967295,63,2,1024,,1,0,1923,{},{},{}
+31606,C_Autumn_Headband,C Autumn Headband,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1119,{},{},{}
+31322,C_Candy_Hat,C Candy Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,853,{},{},{}
+31245,C_Cherry,C Cherry,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,602,{},{},{}
+31263,C_Disposable_Popcorn_Hat,C Disposable Popcorn Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,415,{},{},{}
+31320,C_Pinwheel_Hat,C Pinwheel Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,456,{},{},{}
+31518,C_Popping_Popcorn_Hat,C Popping Popcorn Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1763,{},{},{}
+31368,C_Harvest_Festa_Hat,C Thanksgiving Memorial Hat,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1677,{},{},{}
+19847,C_Big_Sis_Ribbon,Costume Big Ribbon,4,20,6,10,,0,,0,4294967295,63,2,1024,,1,0,28,{},{},{}
+20446,C_Bunny_Eggshell,Costume Bunny Eggshell,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1339,{},{},{}
+31141,C_Rose_Corsage_,Costume Cactus Flower Corsage,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1570,{},{},{}
+19974,C_Camouflage_RabbitHood,Costume Camouflage Rabbit Hood,4,10,3,0,,,,0,4294967295,63,2,1024,,1,0,1142,{},{},{}
+20456,C_Combat_Vestige,Costume Combat Vestige,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1460,{},{},{}
+19775,C_Marvelous_Wig,Costume Dokebi Hat,4,20,6,10,,0,,0,4294967295,63,2,1024,,1,0,307,{},{},{}
+31512,C_Panda_Rabbit,C Panda Rabbit,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1754,{},{},{}
+30029,Ragnamania_Golden_Keyring3,Ragnamania Golden Keyring 03,2,0,0,0,,,,,4294967295,63,2,,,,,,{ getitem 30028,3; },{},{}
+30032,Ragnamania_Golden_Keyring100,Ragnamania Golden Keyring 100,2,0,0,0,,,,,4294967295,63,2,,,,,,{ getitem 30028,100; },{},{}
+30031,Ragnamania_Golden_Keyring50,Ragnamania Golden Keyring 50,2,0,0,0,,,,,4294967295,63,2,,,,,,{ getitem 30028,50; },{},{}
+30030,Ragnamania_Golden_Keyring20,Ragnamania Golden Keyring 20,2,0,0,0,,,,,4294967295,63,2,,,,,,{ getitem 30028,20; },{},{}
+20301,C_Golden_Savage_Hat,Costume Golden Savage Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,648,{},{},{}
+20302,C_Beelzebub_Crown,Costume Beelzebub Crown,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1343,{},{},{}
+20303,C_Mandragora_Cap,Costume Mandragora Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,402,{},{},{}
+20304,C_Raccoon_Hat,Costume Raccoon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,118,{},{},{}
+20307,C_Beginner_Cap,Costume Beginner Cap,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1348,{},{},{}
+20311,C_Magical_Booster,Costume Magical Booster,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,873,{},{},{}
+20312,C_Barons_Evil_Eye,Costume Baron's Evil Eye,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,989,{},{},{}
+20313,C_CD_in_Mouth,Costume CD in Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,815,{},{},{}
+20314,C_New_Wave_Sunglasses,Costume New Wave Sunglasses,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,856,{},{},{}
+20315,C_Analyze_Eye,Costume Analyze Eye,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1351,{},{},{}
+20316,C_Seraph_Wing_Helm,Costume Seraph Wing Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1352,{},{},{}
+20317,C_Nekomimi_Cyber_Headphone,Costume Nekomimi Cyber Headphone,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1353,{},{},{}
+20318,C_Charleston_Antenna,Costume Charleston Antenna,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1354,{},{},{}
+20319,C_Crimson_Booster,Costume Crimson Booster,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1355,{},{},{}
+20320,C_Red_Bandana,Costume Red Bandana,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,62,{},{},{}
+20321,C_Pterios_Fins,Costume Pterios Fins,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1009,{},{},{}
+20322,C_Seal_Hat,Costume Seal Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,540,{},{},{}
+20323,C_Sparkling_Sound,Costume Sparkling Sound,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1074,{},{ sc_start SC_DECORATION_OF_MUSIC,INFINITE_TICK,0; },{ sc_end SC_DECORATION_OF_MUSIC; }
+20324,C_Pigeon_Hat,Costume Pigeon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1362,{},{},{}
+20325,C_Little_Aquarium,Costume Little Aquarium,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1363,{},{},{}
+20326,C_Sailor_Collar,Costume Sailor Collar,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1364,{},{},{}
+20327,C_Marine_Cap,Costume Marine Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1365,{},{},{}
+20328,C_Mackerel_Pike,Costume Mackerel Pike,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1081,{},{},{}
+20329,C_Very_Cute_Doll_Hat,Costume Very Cute Doll Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1084,{},{},{}
+20330,C_Sombrero,Costume Sombrero,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,151,{},{},{}
+20331,C_Desert_Prince,Costume Desert Prince,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,567,{},{},{}
+20332,C_Pure_White_Ribbon,Costume Pure White Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1175,{},{},{}
+20333,C_Family_Hat,Costume Family Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,650,{},{},{}
+20334,C_Joystick_Hat,Costume Joystick Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1305,{},{},{}
+20335,C_Watery_Eyes,Costume Watery Eyes,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,828,{},{},{}
+20338,C_Colorful_Dancing_Octopus,Costume Colorful Dancing Octopus,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1007,{},{},{}
+20339,C_Flower_Summer_Hat,Costume Flower Summer Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1369,{},{},{}
+20340,C_Straight_Pony_Black,Costume Straight Pony Black,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1371,{},{},{}
+20341,C_Bouncing_Hair_Black,Costume Bouncing Hair Black,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1372,{},{},{}
+20342,C_Loose_Wave_Twin,Costume Loose Wave Twin,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1373,{},{},{}
+20345,C_Seagod_Protector,Costume Seagod Protector,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,960,{},{},{}
+20346,C_Drooping_Permeter,Costume Drooping Permeter,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,694,{},{},{}
+20347,C_Poring_Pirate_Hat,Costume Poring Pirate Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,726,{},{},{}
+20348,C_Sunday_Hat,Costume Sunday Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,117,{},{},{}
+20349,C_Flying_Galapago,Costume Flying Galapago,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1358,{},{},{}
+20350,C_Bouncing_Hair_Yellow,Costume Bouncing Hair Yellow,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1382,{},{},{}
+20351,C_Bouncing_Hair_Green,Costume Bouncing Hair Green,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1383,{},{},{}
+20352,C_Bouncing_Hair_Purple,Costume Bouncing Hair Purple,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1384,{},{},{}
+20353,C_Bouncing_Hair_Red,Costume Bouncing Hair Red,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1385,{},{},{}
+20354,C_Bouncing_Hair_Crimson,Costume Bouncing Hair Crimson,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1386,{},{},{}
+20355,C_Bouncing_Hair_Blue,Costume Bouncing Hair Blue,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1387,{},{},{}
+20356,C_Bouncing_Hair_White,Costume Bouncing Hair White,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1388,{},{},{}
+20357,C_Straight_Pony_Yellow,Costume Straight Pony Yellow,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1389,{},{},{}
+20358,C_Straight_Pony_Green,Costume Straight Pony Green,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1390,{},{},{}
+20359,C_Straight_Pony_Purple,Costume Straight Pony Purple,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1391,{},{},{}
+20360,C_Straight_Pony_Red,Costume Straight Pony Red,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1392,{},{},{}
+20361,C_Straight_Pony_Crimson,Costume Straight Pony Crimson,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1393,{},{},{}
+20362,C_Straight_Pony_Blue,Costume Straight Pony Blue,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1394,{},{},{}
+20363,C_Straight_Pony_White,Costume Straight Pony White,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1395,{},{},{}
+20364,C_Loose_Wave_Twin_Yellow,Costume Loose Wave Twin Yellow,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1396,{},{},{}
+20365,C_Loose_Wave_Twin_Green,Costume Loose Wave Twin Green,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1397,{},{},{}
+20366,C_Loose_Wave_Twin_Purple,Costume Loose Wave Twin Purple,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1398,{},{},{}
+20367,C_Loose_Wave_Twin_Red,Costume Loose Wave Twin Red,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1399,{},{},{}
+20368,C_Loose_Wave_Twin_Crimson,Costume Loose Wave Twin Crimson,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1400,{},{},{}
+20369,C_Loose_Wave_Twin_Blue,Costume Loose Wave Twin Blue,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1401,{},{},{}
+20370,C_Loose_Wave_Twin_White,Costume Loose Wave Twin White,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1402,{},{},{}
+20371,C_Special_Kafra_Hat,Costume Special Kafra Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,581,{},{},{}
+20372,C_Ribbon_Hat,Costume Ribbon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,956,{},{},{}
+20373,C_Watermelon_Hat,Costume Watermelon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,690,{},{},{}
+20374,C_Mechanical_Plant_Hat,Costume Mechanical Plant Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1069,{},{},{}
+20375,C_Ignis_Cap,Costume Ignis Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,803,{},{},{}
+20376,C_Memory_of_Lovers,Costume Memory of Lovers,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1072,{},{},{}
+20377,C_Flight_Cap,Costume Flight Cap,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,820,{},{},{}
+20378,C_Skymet,Costume Sky Met,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,868,{},{},{}
+20379,C_Pocketwatch_Hair_Ornament,Costume Pocketwatch Hair Ornament,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1404,{},{},{}
+20380,C_Mechanical_Feather_Hairband,Costume Mechanical Feather Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1405,{},{},{}
+20381,C_Steampunk_Hat,Costume Steampunk Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1406,{},{},{}
+20382,C_Silver_Sniper_Doll,Costume Silver Sniper Doll,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1407,{},{},{}
+20383,C_Magic_Decoy_Doll,Costume Magic Decoy Doll,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1408,{},{},{}
+20384,C_Douce_Tiara,Costume Douce Tiara,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1410,{},{},{}
+20386,C_Victory_Wing_Helm,Costume Victory Wing Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,677,{},{},{}
+20391,C_Silent_Executor,Costume Silent Executor,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,632,{},{},{}
+20392,C_Sniper_Google,Costume Sniper Google,4,0,0,0,,,,0,4294967295,63,2,3072,,1,0,625,{},{},{}
+20393,C_Schmitz_Helm,Costume Schmitz Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,634,{},{},{}
+20394,C_Pumpkin_Toque,Costume Pumpkin Toque,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1411,{},{},{}
+20396,C_Green_Hat,Costume Green Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,939,{},{},{}
+20397,C_Jakk,Costume Jack,4,0,0,0,,,,0,4294967295,63,2,6144,,1,0,1415,{ autobonus2 "{}",31,10000,BF_WEAPON|BF_MAGIC,"{ active_transform 1130,10000; specialeffect2 372; /*Confirm Special Effect*/ }"; },{},{}
+20398,C_Niffleheim_Bunny_Hat,Costume Niffleheim Bunny Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1285,{},{},{}
+20399,C_Crow_Tengu_Mask,Costume Crow Tengu Mask,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1287,{},{},{}
+20400,C_Ichthys_Rosario,Costume Ichthys Rosario,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1028,{},{},{}
+20402,C_Holy_Klobuk,Costume Holy Klobuk,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,895,{},{},{}
+20403,C_Dolor_Thanatos,Costume Dolor Thanatos,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,547,{},{},{}
+20404,C_Blessing_Of_Angels,Costume Blessing of Angel,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1425,{ hateffect(HAT_EF_BLESSING_OF_ANGELS,true); },{},{ hateffect(HAT_EF_BLESSING_OF_ANGELS,false); }
+20405,C_Eremes_Scarf,Costume Eremes Scarf,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1416,{},{},{}
+20406,C_Commandments_Of_Chain,Costume Chain of Commandments,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1417,{},{},{}
+20407,C_Subject_Aura_Red,Costume Vicious Mind Aura Crimson,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1418,{},{},{}
+20408,C_Requiem_Crown_of_Light_and_Dark,Costume Requiem Crown of Light and Dark,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1419,{},{},{}
+20409,C_There_is_Something_,Costume There is Something,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1091,{},{},{}
+20416,C_1Grade_Balloon,Costume Grade 1 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1426,{},{},{}
+20417,C_2Grade_Balloon,Costume Grade 2 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1427,{},{},{}
+20418,C_3Grade_Balloon,Costume Grade 3 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1428,{},{},{}
+20419,C_4Grade_Balloon,Costume Grade 4 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1429,{},{},{}
+20420,C_5Grade_Balloon,Costume Grade 5 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1430,{},{},{}
+20421,C_6Grade_Balloon,Costume Grade 6 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1431,{},{},{}
+20422,C_7Grade_Balloon,Costume Grade 7 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1432,{},{},{}
+20423,C_8Grade_Balloon,Costume Grade 8 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1433,{},{},{}
+20424,C_9Grade_Balloon,Costume Grade 9 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1434,{},{},{}
+20425,C_10Grade_Balloon,Costume Grade 10 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1435,{},{},{}
+20426,C_11Grade_Balloon,Costume Grade 11 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1436,{},{},{}
+20427,C_12Grade_Balloon,Costume Grade 12 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1437,{},{},{}
+20428,C_13Grade_Balloon,Costume Grade 13 Balloon,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1438,{},{},{}
+20429,C_Piamette_Bowtie,Costume Piamette Bowtie,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1439,{},{},{}
+20430,C_Loyal_Servant_of_Devil_Morocc,Costume Loyal Servant of Devil Morocc,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1440,{},{},{}
+20431,C_Magician_Headdress,Costume Magician Headdress,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1441,{},{},{}
+20432,C_Khalitzburg_Knight_Helm,Costume Khalitzburg Knight Helm,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1442,{},{},{}
+20433,C_Louise_Red_Hat,Costume Louise Red Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1443,{},{},{}
+20434,C_Drooping_Gunslinger,Costume Drooping Gunslinger,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1444,{},{},{}
+20435,C_Camellia_Hair_Pin,Costume Camellia Hair Pin,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1203,{ hateffect(HAT_EF_CAMELLIA_HAIR_PIN,true); },{},{ hateffect(HAT_EF_CAMELLIA_HAIR_PIN,false); }
+20436,C_Angelring_Furhat,Costume Angelring Furhat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,953,{},{},{}
+20437,C_Sakura_Hairband,Costume Sakura Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,949,{},{},{}
+20438,C_Abacus_In_Mouth,Costume Abacus In Mouth,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,825,{},{},{}
+20439,C_New_Year_Shine,Costume New Year Shine,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,0,{ hateffect(HAT_EF_GLOW_OF_NEW_YEAR,true); },{},{ hateffect(HAT_EF_GLOW_OF_NEW_YEAR,false); }
+20440,C_Tone_of_Gold,Costume Tone of Gold,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1447,{},{},{}
+20441,C_Large_Ribbon_Muffler_Red,Costume Large Ribbon Muffler Red,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1448,{},{},{}
+20442,C_Red_and_White_Mochiring_Hat,Costume Red and White Mochiring Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1449,{},{},{}
+20447,C_Small_Porings_Headband,Costume Small Porings Headband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,955,{},{},{}
+20448,C_Water_Spellcaster,Costume Water Spellcaster,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1451,{},{},{}
+20449,C_White_and_Black_Temptation,Costume White and Black Temptation,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1452,{},{},{}
+20450,C_Gram_Peony,Costume Gram Peony,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1453,{},{},{}
+20451,C_Sky_of_Memory,Costume Sky of Memory,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1454,{},{},{}
+20452,C_Crown_of_Strawberry_Prince,Costume Crown of Strawberry Prince,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1455,{},{},{}
+20455,C_Republic_Hat,Costume Republic Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1458,{},{},{}
+20457,C_Fluttering_Feathers,Costume Fluttering Feathers,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1461,{ hateffect(HAT_EF_FEATHER_FLUTTERING,true); },{},{ hateffect(HAT_EF_FEATHER_FLUTTERING,false); }
+20458,C_Wild_Poring_Rider,Costume Wild Poring Rider,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1422,{},{},{}
+20459,C_Valhalla_Idol,Costume Valhalla Idol,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1423,{ hateffect(HAT_EF_VALHALLA_IDOL,true); },{},{ hateffect(HAT_EF_VALHALLA_IDOL,false); }
+20460,C_Thorny_Hairband,Costume Thorny Hairband,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,921,{},{},{}
+20461,C_93_Style_Bloody_Wings,Costume 93 Style Bloody Wings,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1037,{},{},{}
+20462,C_Cat_Ears_Cape,Costume Cat Ears Cape,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1464,{},{},{}
+20463,C_Two_Tone_Beret,Costume Two Tone Beret,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1465,{},{},{}
+20464,C_Monochrome_Ribbon_Hat,Costume Monochrome Ribbon Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1466,{},{},{}
+20465,C_Glasses_Without_Lens,Costume Glasses Without Lens,4,0,0,0,,,,0,4294967295,63,2,2048,,1,0,1467,{},{},{}
+20466,C_Crimson_Ribbon,Costume Crimson Ribbon,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1468,{},{},{}
+20467,C_Elemental_Crown,Costume Elemental Crown,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1219,{},{},{}
+20468,C_Youinone_Mask,You in ONE,4,0,0,0,,,,0,4294967295,63,2,7168,,1,0,1462,{},{},{}
+20470,C_SweetChocolate_Hat,Costume Sweet Chocolate Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1469,{},{},{}
+20487,C_Waltz_of_Flowers,Costume Waltz of Flowers,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,1473,{ hateffect(HAT_EF_FLORAL_WALTZ,true); },{},{ hateffect(HAT_EF_FLORAL_WALTZ,false); }
+20490,C_Full_Blossom_Sakura_Hairpin_Blue,Costume Full Blossom Sakura Hairpin Blue,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1476,{},{},{}
+20491,C_Laser_of_Eagle,Costume Laser of Eagle,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1424,{},{},{}
+20492,C_Unidentified_Flying_Poring,Costume Unidentified Flying Poring,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1017,{},{},{}
+20495,C_Quati_Hat,Costume Quati Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,527,{},{},{}
+20497,C_Umbala_Spirit,Costume Umbala Spirit,4,0,0,0,,,,0,4294967295,63,2,4096,,1,0,675,{},{},{}
+20498,C_Elephant_Hat,Costume Elephant Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,215,{},{},{}
+20499,C_Cat_Ears_Hat,Costume Cat Ears Hat,4,0,0,0,,,,0,4294967295,63,2,1024,,1,0,1479,{},{},{}
+30033,Aloe_Seeds,Aloe Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30034,Strawberry_Seeds,Strawberry Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30035,Yggdrasil_Dried_Seeds,Yggdrasil Dried Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30036,Clovers_Seeds,Clover Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30037,Bitter_Herbs_Seeds,Bitter Herbs Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30038,Illusion_Flower_Seeds,Illusion Flower Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30039,Grapes_Seeds,Grapes Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30040,Fig_Seeds,Fig Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30041,Hinalle_Seeds,HInalle Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+30042,Ment_Seeds,Ment Seeds,3,0,0,50,,,,,,,,,,,,,{},{},{}
+11059,WoE_TE_Rental_List,WoE TE Rental List,3,0,0,10,,,,,,,,,,,,,{},{},{}
+2178,TE_Woe_Buckler,TE Woe Buckler,4,0,0,0,,15,,0,4294967295,63,2,32,,40,1,2,{ bonus bMdef,15; bonus bMaxHP,100; bonus bMaxSP,100; bonus2 bSubRace,RC_Player,15; },{},{}
+2179,TE_Woe_Shield,TE Woe Shield,4,0,0,0,,25,,0,279714,63,2,32,,40,1,3,{ bonus bMdef,5; bonus bMaxHP,200; bonus2 bSubRace,RC_Player,20; },{},{}
+2180,TE_Woe_Magic_Guard,TE Woe Magic Guard,4,0,0,0,,5,,0,8487701,63,2,32,,40,1,1,{ bonus bMdef,25; bonus bMaxSP,200; bonus2 bSubRace,RC_Player,10; },{},{}
+15062,TE_Woe_Coat,TE Woe Coat,4,0,0,0,,15,,0,4294967295,63,2,16,,40,1,,{ bonus bMdef,15; bonus bMaxHP,250; bonus bMaxSP,250; bonus2 bSubRace,RC_Player,10; bonus2 bResEff,Eff_Freeze,25; },{},{}
+15063,TE_Woe_Chain_Mail,TE Woe Chain Mail,4,0,0,0,,25,,0,279714,63,2,16,,40,1,,{ bonus bMdef,5; bonus bMaxHP,450; bonus bMaxSP,50; bonus2 bSubRace,RC_Player,15; bonus2 bResEff,Eff_Freeze,25; },{},{}
+15064,TE_Woe_Mage_Coat,TE Woe Mage Coat,4,0,0,0,,5,,0,8487701,63,2,16,,40,1,,{ bonus bMdef,25; bonus bMaxHP,200; bonus bMaxSP,200; bonus2 bSubRace,RC_Player,5; bonus2 bResEff,Eff_Freeze,25; },{},{}
+20702,TE_Woe_Muffler,TE Woe Muffler,4,0,0,0,,5,,0,4294967295,63,2,4,,40,1,,{ bonus bMdef,5; bonus2 bAddRace,RC_Player,5; bonus2 bMagicAddRace,RC_Player,5; bonus2 bResEff,Eff_Freeze,25; },{},{}
+20703,TE_Woe_Manteau,TE Woe Manteau,4,0,0,0,,10,,0,279714,63,2,4,,40,1,,{ bonus2 bAddRace,RC_Player,10; bonus2 bResEff,Eff_Freeze,25; },{},{}
+20704,TE_Woe_Magic_Manteau,TE Woe Magic Manteau,4,0,0,0,,5,,0,8487701,63,2,4,,40,1,,{ bonus2 bMagicAddRace,RC_Player,10; bonus2 bResEff,Eff_Freeze,25; },{},{}
+2496,TE_Woe_Shoes,TE Woe Shoes,4,0,0,0,,5,,0,4294967295,63,2,64,,40,1,,{ bonus bMdef,5; bonus bMaxHP,150; bonus bMaxSP,150; bonus2 bAddRace,RC_Player,5; bonus2 bMagicAddRace,RC_Player,5; bonus2 bResEff,Eff_Freeze,25; },{},{}
+2497,TE_Woe_Boots,TE Woe Boots,4,0,0,0,,10,,0,279714,63,2,64,,40,1,,{ bonus bMaxHP,200; bonus bMaxSP,100; bonus2 bAddRace,RC_Player,10; bonus2 bResEff,Eff_Freeze,25; },{},{}
+2498,TE_Woe_Magic_Sandal,TE Woe Magic Sandal,4,0,0,0,,5,,0,8487701,63,2,64,,40,1,,{ bonus bMdef,5; bonus bMaxHP,100; bonus bMaxSP,200; bonus2 bMagicAddRace,RC_Player,5; bonus2 bResEff,Eff_Freeze,25; },{},{}
+2944,TE_Ring_Of_Protection,TE Ring Of Protection,4,0,0,0,,,,0,4294967295,63,2,136,,40,0,,{ bonus bMaxHP,100; bonus2 bSubRace,RC_Player,5; },{},{}
+2945,TE_Ring_Of_Rage,TE Ring Of Rage,4,0,0,0,,,,0,4294967295,63,2,136,,40,0,,{ bonus2 bAddRace,RC_Player,5; bonus2 bMagicAddRace,RC_Player,5; },{},{}
+2946,TE_Ring_Of_Defiance,TE Ring Of Defiance,4,0,0,0,,,,0,4294967295,63,2,136,,40,0,,{ bonus bMdef,5; bonus2 bSubRace,RC_Player,5; },{},{}
+18732,TE_Woe_Cap,TE Woe Cap,4,0,0,0,,5,,0,4294967295,63,2,256,,40,1,14,{ bonus bMdef,5; bonus bBaseAtk,5; bonus bMatk,5; bonus2 bAddRace,RC_Player,10; bonus2 bMagicAddRace,RC_Player,10; bonus2 bResEff,Eff_Freeze,25; },{},{}
+18733,TE_Woe_Bone_Helm,TE Woe Bone Helm,4,0,0,0,,10,,0,279714,63,2,256,,40,1,103,{ bonus bBaseAtk,10; bonus2 bAddRace,RC_Player,20; bonus2 bResEff,Eff_Freeze,25; },{},{}
+18734,TE_Woe_Magic_Eyes,TE Woe Magic Eyes,4,0,0,0,,5,,0,8487701,63,2,256,,40,1,209,{ bonus bMdef,5; bonus bMatk,10; bonus2 bMagicAddRace,RC_Player,20; bonus2 bResEff,Eff_Freeze,25; },{},{}
+1299,TE_Woe_Katar,TE Woe Katar,5,0,0,0,120,,1,0,4096,63,2,34,3,40,1,16,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Bleeding,1000; },{},{}
+1319,TE_Woe_Axe,TE Woe Axe,5,0,0,0,100,,1,0,414947,63,2,2,3,40,1,6,{ bonus bUnbreakableWeapon; bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Freeze,1000; },{},{}
+1399,TE_Woe_Two_Handed_Axe,TE Woe Two Handed Axe,5,0,0,0,150,,1,0,279714,63,2,34,3,40,1,7,{ bonus bUnbreakableWeapon; bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Stun,1000; },{},{}
+1437,TE_Woe_Pike,TE Woe Pike,5,0,0,0,100,,3,0,16514,63,2,2,3,40,1,4,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Curse,3000; },{},{}
+1495,TE_Woe_Lance,TE Woe Lance,5,0,0,0,150,,3,0,16514,63,2,34,3,40,1,5,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Blind,3000; },{},{}
+1591,TE_Woe_Book,TE Woe Book,5,0,0,0,120,,1,0,4260096,63,2,2,3,40,1,15,{ bonus2 bAddRace,RC_Player,40; bonus2 bMagicAddRace,RC_Player,5; bonus3 bAddEff,Eff_Blind,1000,ATF_MAGIC; bonus bHPRecovRate,5; bonus bSPRecovRate,5; },{},{}
+1667,TE_Woe_Staff,TE Woe Staff,5,0,0,0,50,,1,0,8487701,63,2,2,3,40,1,10,{ bonus2 bMagicAddRace,RC_Player,10; bonus3 bAddEff,Eff_Blind,1000,ATF_MAGIC; bonus bHPRecovRate,5; bonus bSPRecovRate,5; },{},{}
+1834,TE_Woe_Fist,TE Woe Fist,5,0,0,0,150,,1,0,33024,63,2,2,3,40,1,12,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Freeze,3000; },{},{}
+1932,TE_Woe_Guitar,TE Woe Guitar,5,0,0,0,100,,1,0,524288,63,1,2,3,40,1,13,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Poison,3000; },{},{}
+1987,TE_Woe_Rope,TE Woe Rope,5,0,0,0,100,,2,0,524288,63,0,2,3,40,1,14,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Blind,3000; },{},{}
+2019,TE_Woe_Two_Hand_Staff,TE Woe Two Hand Staff,5,0,0,0,50,,1,0,8487701,63,2,34,3,40,1,23,{ bonus2 bMagicAddRace,RC_Player,20; bonus3 bAddEff,Eff_Stun,1000,ATF_MAGIC; bonus bHPRecovRate,5; bonus bSPRecovRate,5; },{},{}
+13083,TE_Woe_Knife,TE Woe Knife,5,0,0,0,100,,1,0,1050640111,63,2,2,3,40,1,1,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Silence,3000; },{},{}
+13117,TE_Woe_Pistol,TE Woe Pistol,5,0,0,0,60,,7,0,1090519040,63,2,34,3,40,1,17,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Curse,3000; },{},{}
+13184,TE_Woe_Rifle,TE Woe Rifle,5,0,0,0,80,,9,0,1090519040,63,2,34,3,40,1,18,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Silence,3000; },{},{}
+13185,TE_Woe_Gatling,TE Woe Gatling,5,0,0,0,100,,7,0,1090519040,63,2,34,3,40,1,19,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Stun,3000; },{},{}
+13186,TE_Woe_Shotgun,TE Woe Shotgun,5,0,0,0,100,,7,0,1090519040,63,2,34,3,40,1,20,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Poison,3000; },{},{}
+13187,TE_Woe_Grenade,TE Woe Grenade,5,0,0,0,100,,9,0,1090519040,63,2,34,3,40,1,21,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Blind,3000; },{},{}
+13189,COLORSCOPE,Color Scope,5,1350000,4000,1200,240,,9,2,1073741824,63,2,34,3,105,1,18,{ bonus bHit,20; bonus bCriticalRate,30; },{},{}
+13317,TE_Woe_Huuma,TE Woe Huuma,5,0,0,0,80,,1,0,570425344,63,2,2,3,40,1,22,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Bleeding,3000; },{},{}
+13439,TE_Woe_Sword,TE Woe Sword,5,0,0,0,120,,1,0,414947,63,2,2,3,40,1,2,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Poison,3000; },{},{}
+16025,TE_Woe_Mace,TE Woe Mace,5,0,0,0,120,,1,0,312755,63,2,2,3,40,1,8,{ bonus bUnbreakableWeapon; bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Freeze,3000; bonus bHPRecovRate,5; bonus bSPRecovRate,5; },{},{}
+18118,TE_Woe_Bow,TE Woe Bow,5,0,0,0,120,,5,0,657480,63,2,34,3,40,1,11,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Curse,3000; },{},{}
+21006,TE_Woe_Two_Hand_Sword,TE Woe Two Hand Sword,5,0,0,0,150,,1,0,16514,63,2,34,3,40,1,3,{ bonus2 bAddRace,RC_Player,40; bonus2 bAddEff,Eff_Bleeding,3000; },{},{}
+35004,Custom_Monster_Tame,Custom Monster Tame,2,10000,3000,200,,,,,4294967295,7,2,,,,,,{ pet 0; },{},{}
+50000,Scorpion Egg,Scorpion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50001,Hornet Egg,Hornet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50002,Familiar Egg,Familiar Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50003,Fabre Egg,Fabre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50004,Pupa Egg,Pupa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50005,Condor Egg,Condor Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50006,Willow Egg,Willow Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50007,Roda Frog Egg,Roda Frog Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50008,Wolf Egg,Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50009,Zombie Egg,Zombie Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50010,Archer Skeleton Egg,Archer Skeleton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50011,Creamy Egg,Creamy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50012,Mandragora Egg,Mandragora Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50013,Wormtail Egg,Wormtail Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50014,Boa Egg,Boa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50015,Soldier Skeleton Egg,Soldier Skeleton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50016,Anacondaq Egg,Anacondaq Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50017,Verit Egg,Verit Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50018,Elder Willow Egg,Elder Willow Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50019,Thara Frog Egg,Thara Frog Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50020,Ghoul Egg,Ghoul Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50021,Side Winder Egg,Side Winder Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50022,Osiris Egg,Osiris Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50023,Baphomet Egg,Baphomet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50024,Golem Egg,Golem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50025,Mummy Egg,Mummy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50026,Obeaune Egg,Obeaune Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50027,Marc Egg,Marc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50028,Doppelganger Egg,Doppelganger Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50029,Peco Peco Egg Egg,Peco Peco Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50030,Thief Bug Egg Egg,Thief Bug Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50031,Thief Bug Egg,Thief Bug Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50032,Thief Bug Female Egg,Thief Bug Female Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50033,Thief Bug Male Egg,Thief Bug Male Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50034,Muka Egg,Muka Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50035,Metaller Egg,Metaller Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50036,Mistress Egg,Mistress Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50037,Bigfoot Egg,Bigfoot Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50038,Nightmare Egg,Nightmare Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50039,Santa Poring Egg,Santa Poring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50040,Megalodon Egg,Megalodon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50041,Strouf Egg,Strouf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50042,Vadon Egg,Vadon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50043,Cornutus Egg,Cornutus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50044,Hydra Egg,Hydra Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50045,Swordfish Egg,Swordfish Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50046,Kukre Egg,Kukre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50047,Pirate Skeleton Egg,Pirate Skeleton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50048,Kaho Egg,Kaho Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50049,Crab Egg,Crab Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50050,Shellfish Egg,Shellfish Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50051,Turtle Egg,Turtle Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50052,Skeleton Egg,Skeleton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50053,Red Plant Egg,Red Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50054,Blue Plant Egg,Blue Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50055,Green Plant Egg,Green Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50056,Yellow Plant Egg,Yellow Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50057,White Plant Egg,White Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50058,Shining Plant Egg,Shining Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50059,Black Mushroom Egg,Black Mushroom Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50060,Red Mushroom Egg,Red Mushroom Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50061,Golden Thief Bug Egg,Golden Thief Bug Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50062,Orc Hero Egg,Orc Hero Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50063,Vocal Egg,Vocal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50064,Toad Egg,Toad Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50065,Mastering Egg,Mastering Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50066,Dragon Fly Egg,Dragon Fly Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50067,Vagabond Wolf Egg,Vagabond Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50068,Eclipse Egg,Eclipse Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50069,Ambernite Egg,Ambernite Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50070,Andre Egg,Andre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50071,Angeling Egg,Angeling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50072,Ant Egg Egg,Ant Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50073,Anubis Egg,Anubis Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50074,Argiope Egg,Argiope Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50075,Argos Egg,Argos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50076,Bathory Egg,Bathory Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50077,Caramel Egg,Caramel Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50078,Coco Egg,Coco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50079,Deniro Egg,Deniro Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50080,Desert Wolf Egg,Desert Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50081,Deviace Egg,Deviace Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50082,Drainliar Egg,Drainliar Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50083,Drake Egg,Drake Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50084,Dustiness Egg,Dustiness Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50085,Eddga Egg,Eddga Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50086,Eggyra Egg,Eggyra Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50087,Evil Druid Egg,Evil Druid Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50088,Flora Egg,Flora Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50089,Frilldora Egg,Frilldora Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50090,Ghostring Egg,Ghostring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50091,Giearth Egg,Giearth Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50092,Goblin Egg,Goblin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50093,Goblin Egg_,Goblin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50094,Hode Egg,Hode Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50095,Horn Egg,Horn Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50096,Horong Egg,Horong Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50097,Jakk Egg,Jakk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50098,Joker Egg,Joker Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50099,Khalitzburg Egg,Khalitzburg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50100,Kobold Egg,Kobold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50101,Kobold Egg_,Kobold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50102,Kobold Egg__,Kobold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50103,Magnolia Egg,Magnolia Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50104,Mantis Egg,Mantis Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50105,Marduk Egg,Marduk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50106,Marina Egg,Marina Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50107,Marine Sphere Egg,Marine Sphere Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50108,Marionette Egg,Marionette Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50109,Marse Egg,Marse Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50110,Martin Egg,Martin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50111,Matyr Egg,Matyr Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50112,Maya Egg,Maya Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50113,Medusa Egg,Medusa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50114,Minorous Egg,Minorous Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50115,Moonlight Flower Egg,Moonlight Flower Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50116,Myst Egg,Myst Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50117,Orc Skeleton Egg,Orc Skeleton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50118,Orc Zombie Egg,Orc Zombie Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50119,Pasana Egg,Pasana Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50120,Pharaoh Egg,Pharaoh Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50121,Phen Egg,Phen Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50122,Phreeoni Egg,Phreeoni Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50123,Piere Egg,Piere Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50124,Plankton Egg,Plankton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50125,Rafflesia Egg,Rafflesia Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50126,Raydric Egg,Raydric Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50127,Requiem Egg,Requiem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50128,Sandman Egg,Sandman Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50129,Savage Egg,Savage Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50130,Skeleton Worker Egg,Skeleton Worker Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50131,Stainer Egg,Stainer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50132,Tarou Egg,Tarou Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50133,Vitata Egg,Vitata Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50134,Zenorc Egg,Zenorc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50135,Zerom Egg,Zerom Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50136,Whisper Egg,Whisper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50137,Nine Tail Egg,Nine Tail Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50138,Thief Mushroom Egg,Thief Mushroom Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50139,Chonchon Egg,Chonchon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50140,Fabre Egg_,Fabre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50141,Whisper Egg_,Whisper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50142,Giant Whisper Egg,Giant Whisper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50143,Switch Egg,Switch Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50144,Orc Archer Egg,Orc Archer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50145,Orc Lord Egg,Orc Lord Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50146,Mimic Egg,Mimic Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50147,Wraith Egg,Wraith Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50148,Alarm Egg,Alarm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50149,Arclouze Egg,Arclouze Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50150,Rideword Egg,Rideword Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50151,Skeleton Prisoner Egg,Skeleton Prisoner Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50152,Zombie Prisoner Egg,Zombie Prisoner Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50153,Dark Priest Egg,Dark Priest Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50154,Punk Egg,Punk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50155,Rybio Egg,Rybio Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50156,Phendark Egg,Phendark Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50157,Mysteltainn Egg,Mysteltainn Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50158,Ogretooth Egg,Ogretooth Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50159,Executioner Egg,Executioner Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50160,Anolian Egg,Anolian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50161,Sting Egg,Sting Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50162,Cramp Egg,Cramp Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50163,Brilight Egg,Brilight Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50164,Iron Fist Egg,Iron Fist Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50165,High Orc Egg,High Orc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50166,Choco Egg,Choco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50167,Stem Worm Egg,Stem Worm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50168,Penomena Egg,Penomena Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50169,Abysmal Knight Egg,Abysmal Knight Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50170,Desert Wolf Egg_,Desert Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50171,Savage Egg_,Savage Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50172,High Orc Egg_,High Orc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50173,Poison Spore Egg,Poison Spore Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50174,Choco Egg_,Choco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50175,Kobold Egg___,Kobold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50176,Goblin Egg__,Goblin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50177,Phen Egg_,Phen Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50178,Fabre Egg__,Fabre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50179,Pupa Egg_,Pupa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50180,Creamy Egg_,Creamy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50182,Peco Peco Egg,Peco Peco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50183,Yoyo Egg,Yoyo Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50184,Smoking Orc Egg,Smoking Orc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50185,Ant Egg Egg_,Ant Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50186,Andre Egg_,Andre Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50187,Piere Egg_,Piere Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50188,Deniro Egg_,Deniro Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50189,Picky Egg,Picky Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50190,Picky Egg_,Picky Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50191,Marin Egg,Marin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50192,Sasquatch Egg,Sasquatch Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50193,Christmas Jakk Egg,Christmas Jakk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50194,Christmas Cookie Egg,Christmas Cookie Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50195,Antonio Egg,Antonio Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50196,Cruiser Egg,Cruiser Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50197,Myst Case Egg,Myst Case Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50198,Chepet Egg,Chepet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50199,Stormy Knight Egg,Stormy Knight Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50200,Garm Egg,Garm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50201,Gargoyle Egg,Gargoyle Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50202,Raggler Egg,Raggler Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50203,Nereid Egg,Nereid Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50204,Pest Egg,Pest Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50205,Injustice Egg,Injustice Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50206,Goblin Archer Egg,Goblin Archer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50207,Gryphon Egg,Gryphon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50208,Dark Frame Egg,Dark Frame Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50209,Wild Rose Egg,Wild Rose Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50210,Mutant Dragonoid Egg,Mutant Dragonoid Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50211,Wind Ghost Egg,Wind Ghost Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50212,Merman Egg,Merman Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50213,Cookie Egg,Cookie Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50214,Aster Egg,Aster Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50215,Carat Egg,Carat Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50216,Bloody Knight Egg,Bloody Knight Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50217,Clock Egg,Clock Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50218,Clock Tower Manager Egg,Clock Tower Manager Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50219,Alligator Egg,Alligator Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50220,Dark Lord Egg,Dark Lord Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50221,Orc Lady Egg,Orc Lady Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50222,Megalith Egg,Megalith Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50223,Raydric Archer Egg,Raydric Archer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50224,Greatest General Egg,Greatest General Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50225,Stalactic Golem Egg,Stalactic Golem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50226,Tri Joint Egg,Tri Joint Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50227,Goblin Steamrider Egg,Goblin Steamrider Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50228,Sage Worm Egg,Sage Worm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50229,Kobold Archer Egg,Kobold Archer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50230,Chimera Egg,Chimera Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50231,Archer Guardian Egg,Archer Guardian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50232,Knight Guardian Egg,Knight Guardian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50233,Soldier Guardian Egg,Soldier Guardian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50234,Emperium Egg,Emperium Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50235,Maya Purple Egg,Maya Purple Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50236,Skeleton General Egg,Skeleton General Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50237,Wraith Dead Egg,Wraith Dead Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50238,Mini Demon Egg,Mini Demon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50239,Creamy Fear Egg,Creamy Fear Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50240,Killer Mantis Egg,Killer Mantis Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50241,Owl Baron Egg,Owl Baron Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50242,Kobold Leader Egg,Kobold Leader Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50243,Ancient Mummy Egg,Ancient Mummy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50244,Zombie Master Egg,Zombie Master Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50245,Goblin Leader Egg,Goblin Leader Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50246,Caterpillar Egg,Caterpillar Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50247,Am Mut Egg,Am Mut Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50248,Dark Illusion Egg,Dark Illusion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50249,Giant Hornet Egg,Giant Hornet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50250,Giant Spider Egg,Giant Spider Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50251,Ancient Worm Egg,Ancient Worm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50252,Leib Olmai Egg,Leib Olmai Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50253,Cat o' Nine Tails Egg,Cat o' Nine Tails Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50254,Panzer Goblin Egg,Panzer Goblin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50255,Gajomart Egg,Gajomart Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50256,Majoruros Egg,Majoruros Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50257,Gullinbursti Egg,Gullinbursti Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50258,Turtle General Egg,Turtle General Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50259,Mobster Egg,Mobster Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50260,Permeter Egg,Permeter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50261,Assaulter Egg,Assaulter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50262,Solider Egg,Solider Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50263,Seal Egg,Seal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50264,Heater Egg,Heater Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50265,Freezer Egg,Freezer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50266,Owl Duke Egg,Owl Duke Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50267,Dragon Tail Egg,Dragon Tail Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50268,Spring Rabbit Egg,Spring Rabbit Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50269,Sea Otter Egg,Sea Otter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50310,Apocalypse Egg,Apocalypse Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50311,Lava Golem Egg,Lava Golem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50312,Blazer Egg,Blazer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50313,Geographer Egg,Geographer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50314,Grand Peco Egg,Grand Peco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50315,Succubus Egg,Succubus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50316,False Angel Egg,False Angel Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50317,Goat Egg,Goat Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50318,Lord of the Dead Egg,Lord of the Dead Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50319,Incubus Egg,Incubus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50320,The Paper Egg,The Paper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50321,Harpy Egg,Harpy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50322,Elder Egg,Elder Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50323,Demon Pungus Egg,Demon Pungus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50324,Nightmare Terror Egg,Nightmare Terror Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50325,Driller Egg,Driller Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50326,Grizzly Egg,Grizzly Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50327,Explosion Egg,Explosion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50328,Sleeper Egg,Sleeper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50329,Gig Egg,Gig Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50330,Arc Angeling Egg,Arc Angeling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50331,Dracula Egg,Dracula Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50332,Violy Egg,Violy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50333,Galapago Egg,Galapago Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50334,Rotar Zairo Egg,Rotar Zairo Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50335,Wind Crystal Egg,Wind Crystal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50336,Earth Crystal Egg,Earth Crystal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50337,Fire Crystal Egg,Fire Crystal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50338,Water Crystal Egg,Water Crystal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50339,Baphomet Egg_,Baphomet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50340,Karakasa Egg,Karakasa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50341,Shinobi Egg,Shinobi Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50342,Poison Toad Egg,Poison Toad Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50343,Firelock Soldier Egg,Firelock Soldier Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50344,Miyabi Doll Egg,Miyabi Doll Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50345,Tengu Egg,Tengu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50346,Kapha Egg,Kapha Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50347,Bloody Butterfly Egg,Bloody Butterfly Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50348,Dumpling Child Egg,Dumpling Child Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50349,Enchanted Peach Tree Egg,Enchanted Peach Tree Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50350,Taoist Hermit Egg,Taoist Hermit Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50351,Hermit Plant Egg,Hermit Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50352,Baby Leopard Egg,Baby Leopard Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50353,Evil Nymph Egg,Evil Nymph Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50354,Zipper Bear Egg,Zipper Bear Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50355,Evil Snake Lord Egg,Evil Snake Lord Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50356,Samurai Specter Egg,Samurai Specter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50357,Dryad Egg,Dryad Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50358,Beetle King Egg,Beetle King Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50359,Stone Shooter Egg,Stone Shooter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50360,Wooden Golem Egg,Wooden Golem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50361,Wootan Shooter Egg,Wootan Shooter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50362,Wootan Fighter Egg,Wootan Fighter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50363,Parasite Egg,Parasite Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50364,Bring it on! Egg,Bring it on! Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50365,Gibbet Egg,Gibbet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50366,Dullahan Egg,Dullahan Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50367,Loli Ruri Egg,Loli Ruri Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50368,Disguise Egg,Disguise Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50369,Bloody Murderer Egg,Bloody Murderer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50370,Quve Egg,Quve Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50371,Lude Egg,Lude Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50372,Heirozoist Egg,Heirozoist Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50373,Amon Ra Egg,Amon Ra Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50374,Yao Jun Egg,Yao Jun Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50375,Mao Guai Egg,Mao Guai Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50376,Zhu Po Long Egg,Zhu Po Long Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50377,Garm Baby Egg,Garm Baby Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50378,Mi Gao Egg,Mi Gao Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50379,Jing Guai Egg,Jing Guai Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50380,White Lady Egg,White Lady Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50381,Boiled Rice Egg,Boiled Rice Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50382,Deviling Egg,Deviling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50383,Tao Gunka Egg,Tao Gunka Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50384,Tamruan Egg,Tamruan Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50385,Mime Monkey Egg,Mime Monkey Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50386,Leaf Cat Egg,Leaf Cat Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50387,Kraben Egg,Kraben Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50388,Christmas Orc Egg,Christmas Orc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50389,Lunatic Egg,Lunatic Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50390,Gangster Egg,Gangster Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50391,Ancient Mummy Egg_,Ancient Mummy Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50392,Munak Egg,Munak Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50393,Bongun Egg,Bongun Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50394,Yao Jun Egg_,Yao Jun Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50395,Metaling Egg,Metaling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50396,Mineral Egg,Mineral Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50397,Obsidian Egg,Obsidian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50398,Pitman Egg,Pitman Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50399,Old Stove Egg,Old Stove Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50400,Ungoliant Egg,Ungoliant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50401,Porcellio Egg,Porcellio Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50402,Noxious Egg,Noxious Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50403,Venomous Egg,Venomous Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50404,Teddy Bear Egg,Teddy Bear Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50405,RSX-0806 Egg,RSX-0806 Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50406,Anopheles Egg,Anopheles Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50407,Holden Egg,Holden Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50408,Hill Wind Egg,Hill Wind Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50409,White Lady Egg_,White Lady Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50410,Green Maiden Egg,Green Maiden Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50411,Gremlin Egg,Gremlin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50412,Beholder Egg,Beholder Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50413,Seyren Windsor Egg,Seyren Windsor Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50414,Eremes Guile Egg,Eremes Guile Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50415,Howard Alt-Eisen Egg,Howard Alt-Eisen Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50416,Margaretha Sorin Egg,Margaretha Sorin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50417,Cecil Damon Egg,Cecil Damon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50418,Kathryne Keyron Egg,Kathryne Keyron Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50419,Lord Knight Seyren Egg,Lord Knight Seyren Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50420,Assassin Cross Eremes Egg,Assassin Cross Eremes Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50421,Whitesmith Howard Egg,Whitesmith Howard Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50422,High Priest Margaretha Egg,High Priest Margaretha Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50423,Sniper Cecil Egg,Sniper Cecil Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50424,High Wizard Kathryne Egg,High Wizard Kathryne Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50425,Egnigem Cenia Egg,Egnigem Cenia Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50426,Wickebine Tres Egg,Wickebine Tres Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50427,Armeyer Dinze Egg,Armeyer Dinze Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50428,Errende Ebecee Egg,Errende Ebecee Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50429,Kavach Icarus Egg,Kavach Icarus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50430,Laurell Weinder Egg,Laurell Weinder Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50431,Egnigem Cenia Egg_,Egnigem Cenia Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50432,Photon Cannon Egg,Photon Cannon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50433,Photon Cannon Egg_,Photon Cannon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50434,Photon Cannon Egg__,Photon Cannon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50435,Photon Cannon Egg___,Photon Cannon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50436,Archdam Egg,Archdam Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50437,Dimik Egg,Dimik Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50438,Dimik Egg_,Dimik Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50439,Dimik Egg__,Dimik Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50440,Dimik Egg___,Dimik Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50441,Dimik Egg____,Dimik Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50442,Monemus Egg,Monemus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50443,Venatu Egg,Venatu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50444,Venatu Egg_,Venatu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50445,Venatu Egg__,Venatu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50446,Venatu Egg___,Venatu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50447,Venatu Egg____,Venatu Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50448,Hill Wind Egg_,Hill Wind Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50449,Gemini-S58 Egg,Gemini-S58 Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50450,Remover Egg,Remover Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50451,Vesper Egg,Vesper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50452,Orc Baby Egg,Orc Baby Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50453,Grove Egg,Grove Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50454,Lady Tanee Egg,Lady Tanee Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50455,Breeze Egg,Breeze Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50456,Plasma Egg,Plasma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50457,Plasma Egg_,Plasma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50458,Plasma Egg__,Plasma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50459,Plasma Egg___,Plasma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50460,Plasma Egg____,Plasma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50461,Death Word Egg,Death Word Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50462,Ancient Mimic Egg,Ancient Mimic Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50463,Dame of Sentinel Egg,Dame of Sentinel Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50464,Mistress of Shelter Egg,Mistress of Shelter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50465,Retribution Egg,Retribution Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50466,Lady Solace Egg,Lady Solace Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50467,Odium of Thanatos Egg,Odium of Thanatos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50468,Despero of Thanatos Egg,Despero of Thanatos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50469,Maero of Thanatos Egg,Maero of Thanatos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50470,Dolor of Thanatos Egg,Dolor of Thanatos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50471,Memory of Thanatos Egg,Memory of Thanatos Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50472,Acidus Egg,Acidus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50473,Ferus Egg,Ferus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50474,Novus Egg,Novus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50475,Acidus Egg_,Acidus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50476,Ferus Egg_,Ferus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50477,Novus Egg_,Novus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50478,Detardeurus Egg,Detardeurus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50479,Hydrolancer Egg,Hydrolancer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50480,Dragon Egg Egg,Dragon Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50481,Jakk Egg_,Jakk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50482,Cecil Damon Egg_,Cecil Damon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50483,Photon Cannon Egg____,Photon Cannon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50484,Poring Egg,Poring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50485,Lunatic Egg_,Lunatic Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50486,Savage Babe Egg,Savage Babe Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50487,Baby Desert Wolf Egg,Baby Desert Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50488,Baphomet Jr. Egg,Baphomet Jr. Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50489,Deviruchi Egg,Deviruchi Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50490,Kiehl Egg,Kiehl Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50491,Kiel D-01 Egg,Kiel D-01 Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50492,Alicel Egg,Alicel Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50493,Aliot Egg,Aliot Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50494,Aliza Egg,Aliza Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50495,Constant Egg,Constant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50496,Valkyrie Randgris Egg,Valkyrie Randgris Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50497,Skogul Egg,Skogul Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50498,Frus Egg,Frus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50499,Skeggiold Egg,Skeggiold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50500,Skeggiold Egg_,Skeggiold Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50501,Angeling Egg_,Angeling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50502,Deviling Egg_,Deviling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50503,Gloom Under Night Egg,Gloom Under Night Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50504,Agav Egg,Agav Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50505,Echio Egg,Echio Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50506,Vanberk Egg,Vanberk Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50507,Isilla Egg,Isilla Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50508,Hodremlin Egg,Hodremlin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50509,Seeker Egg,Seeker Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50510,Snowier Egg,Snowier Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50511,Siroma Egg,Siroma Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50512,Ice Titan Egg,Ice Titan Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50513,Gazeti Egg,Gazeti Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50514,Ktullanux Egg,Ktullanux Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50515,Muscipular Egg,Muscipular Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50516,Drosera Egg,Drosera Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50517,Roween Egg,Roween Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50518,Galion Egg,Galion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50519,Stapo Egg,Stapo Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50520,Atroce Egg,Atroce Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50521,Iceicle Egg,Iceicle Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50522,Soccer Ball Egg,Soccer Ball Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50523,Bloody Knight Egg_,Bloody Knight Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50524,Aunoe Egg,Aunoe Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50525,Fanat Egg,Fanat Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50526,Treasure Chest Egg,Treasure Chest Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50527,Lord Knight Seyren Egg_,Lord Knight Seyren Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50528,Assassin Cross Eremes Egg_,Assassin Cross Eremes Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50529,Mastersmith Howard Egg,Mastersmith Howard Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50530,High Priest Margaretha Egg_,High Priest Margaretha Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50531,Sniper Cecil Egg_,Sniper Cecil Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50532,High Wizard Kathryne Egg_,High Wizard Kathryne Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50533,Delightful Lude Egg,Delightful Lude Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50534,Hydrolancer Egg_,Hydrolancer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50535,Moonlight Flower Egg_,Moonlight Flower Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50536,Gourd Egg,Gourd Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50537,Detarderous Egg,Detarderous Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50538,Alarm Egg_,Alarm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50539,Bathory Egg_,Bathory Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50540,Bigfoot Egg_,Bigfoot Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50541,Desert Wolf Egg__,Desert Wolf Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50542,Deviruchi Egg_,Deviruchi Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50543,Freezer Egg_,Freezer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50544,Garm Baby Egg_,Garm Baby Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50545,Chistmas Goblin Egg,Chistmas Goblin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50546,Myst Egg_,Myst Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50547,Sasquatch Egg_,Sasquatch Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50548,Gullinbrusti Egg,Gullinbrusti Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50549,Sword Master Egg,Sword Master Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50550,Bow Master Egg,Bow Master Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50551,Salamander Egg,Salamander Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50552,Ifrit Egg,Ifrit Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50553,Kasa Egg,Kasa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50554,Magmaring Egg,Magmaring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50555,Fire Imp Egg,Fire Imp Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50556,Knocker Egg,Knocker Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50557,Byorgue Egg,Byorgue Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50558,Golden Savage Egg,Golden Savage Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50559,Treasure Box Egg,Treasure Box Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50560,Dream Metal Egg,Dream Metal Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50561,Poring Egg_,Poring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50562,Baphomet Egg__,Baphomet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50563,Osiris Egg_,Osiris Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50564,Orc Hero Egg_,Orc Hero Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50565,Mobster Egg_,Mobster Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50566,Angeling Egg__,Angeling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50567,Deviling Egg__,Deviling Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50568,Muka Egg_,Muka Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50569,Poison Spore Egg_,Poison Spore Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50570,Magnolia Egg_,Magnolia Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50571,Marin Egg_,Marin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50572,Plankton Egg_,Plankton Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50573,Mandragora Egg_,Mandragora Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50574,Coco Egg_,Coco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50575,Choco Egg__,Choco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50576,Martin Egg_,Martin Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50577,Spring Rabbit Egg_,Spring Rabbit Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50578,Zombie Slaughter Egg,Zombie Slaughter Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50579,Ragged Zombie Egg,Ragged Zombie Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50580,Hell Poodle Egg,Hell Poodle Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50581,Banshee Egg,Banshee Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50582,Flame Skull Egg,Flame Skull Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50583,Necromancer Egg,Necromancer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50584,Fallen Bishop Hibram Egg,Fallen Bishop Hibram Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50585,Hell Fly Egg,Hell Fly Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50586,Beelzebub Egg,Beelzebub Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50587,Beelzebub Egg_,Beelzebub Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50588,Dead King Egg,Dead King Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50589,Lord of the Dead Egg_,Lord of the Dead Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50590,Shining Plant Egg_,Shining Plant Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50591,Leshij Egg,Leshij Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50592,Mavka Egg,Mavka Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50593,Baba-Yaga Egg,Baba-Yaga Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50594,Kikimora Egg,Kikimora Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50595,Lesavka Egg,Lesavka Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50596,Zmey Gorynych Egg,Zmey Gorynych Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50597,Freezer Egg__,Freezer Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50598,Garm Baby Egg__,Garm Baby Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50599,Garm Egg_,Garm Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50600,Gopinich Egg,Gopinich Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50601,Pouring Egg,Pouring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50602,Seyren Windsor Egg_,Seyren Windsor Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50603,Kathryne Keyron Egg_,Kathryne Keyron Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50604,Baphomet Egg___,Baphomet Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50605,Sword Guardian Egg,Sword Guardian Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50606,Condor Egg_,Condor Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50607,Treasure Box Egg_,Treasure Box Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50608,Treasure Box Egg__,Treasure Box Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50609,Bomb Poring Egg,Bomb Poring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50610,Satan Morroc Egg,Satan Morroc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50611,Satan Morroc Egg_,Satan Morroc Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50612,Morroc Shadow Egg,Morroc Shadow Egg (Valkyrie),7,20,6,0,,,,,,,,,,,,,{},{},{}
+50613,Morroc Shadow Egg_,Morroc Shadow Egg (Mud Pud),7,20,6,0,,,,,,,,,,,,,{},{},{}
+50614,Morroc Shadow Egg__,Morroc Shadow Egg (Crawler),7,20,6,0,,,,,,,,,,,,,{},{},{}
+50615,Morroc Shadow Egg___,Morroc Shadow Egg (Blue Ghost),7,20,6,0,,,,,,,,,,,,,{},{},{}
+50616,Naght Seiger Egg,Naght Seiger Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50617,Entweihen Egg,Entweihen Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50619,Dandelion Egg,Dandelion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50620,Tatacho Egg,Tatacho Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50621,Centipede Egg,Centipede Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50622,Nepenthes Egg,Nepenthes Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50623,Hills Lion Egg,Hills Lion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50624,Hardrock Mammoth Egg,Hardrock Mammoth Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50625,Tendril Lion Egg,Tendril Lion Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50626,Cornus Egg,Cornus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50627,Naga Egg,Naga Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50628,Luciola Vespa Egg,Luciola Vespa Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50629,Pinguicula Egg,Pinguicula Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50675,Draco Egg,Draco Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50631,Dark Pinguicula Egg,Dark Pinguicula Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50632,Aqua Elemental Egg,Aqua Elemental Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50633,Rata Egg,Rata Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50634,Duneyrr Egg,Duneyrr Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50635,Ancient Tree Egg,Ancient Tree Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50636,Rhyncho Egg,Rhyncho Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50637,Phylla Egg,Phylla Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50638,Nidhoggr's Shadow Egg,Nidhoggr's Shadow Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50639,Dark Shadow Egg,Dark Shadow Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50640,Bradium Golem Egg,Bradium Golem Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50643,Boitata Egg,Boitata Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50644,Iara Egg,Iara Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50645,Piranha Egg,Piranha Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50646,Headless Mule Egg,Headless Mule Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50647,Jaguar Egg,Jaguar Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50648,Toucan Egg,Toucan Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50649,Curupira Egg,Curupira Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50655,One-Horned Scaraba Egg,One-Horned Scaraba Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50656,Two-Horned Scaraba Egg,Two-Horned Scaraba Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50657,Antler Scaraba Egg,Antler Scaraba Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50658,Rake Scaraba Egg,Rake Scaraba Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50659,Scaraba Queen Egg,Scaraba Queen Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50660,Antler Scaraba Egg Egg,Antler Scaraba Egg Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50664,Angra Mantis Egg,Angra Mantis Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50661,Botaring Egg,Botaring Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50662,Lost Dragon Egg,Lost Dragon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50663,Pom Spider Egg,Pom Spider Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50665,Parus Egg,Parus Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50666,Creeper Egg,Creeper Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50667,Little Fatum Egg,Little Fatum Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50668,Miming Egg,Miming Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50669,Watermelon Egg,Watermelon Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50670,Rafflesia Alnoldi Egg,Rafflesia Alnoldi Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50671,Cendrawasih Egg,Cendrawasih Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50672,Banaspaty Egg,Banaspaty Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50673,Butoijo Egg,Butoijo Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+50674,Leak Egg,Leak Egg,7,20,6,0,,,,,,,,,,,,,{},{},{}
+30027,Ragnamania_Lootbox,Ragnamania Lootbox,3,20,6,10,,,,,,,,,,,,,{},{},{}
+18851,ValentineHeart,Valentine Heart,4,20,6,0,,,,0,4294967295,63,2,256,,1,1,397,{ bonus bMaxHPrate,5+(getrefine()/2); bonus bAllStats,7; },{},{}
+31531,C_Lovely_Heart_Cap,C Lovely Heart Cap,4,0,0,0,,0,,0,4294967295,63,2,1024,,1,0,1770,{},{},{}
+20504,C_Cupids_Pink_Wings,Costume Cupid's Pink Wings,4,0,0,0,,0,,0,4294967295,63,2,8192,,1,0,14,{},{},{}
+31538,C_Lovely_Feeling,C Lovely Feeling,4,0,0,0,,0,,0,4294967295,63,2,2048,,1,0,1717,{},{},{}
+31624,Costume_Heart_Of_Cat,C Heart of Cat,4,0,0,0,,,,,4294967295,63,2,1024,,1,0,1822,{},{},{}
+18917,LoveLove_Balloon,LoveLove Balloon,4,10,3,200,,5,,0,4294967295,63,2,1,,1,0,1039,{ bonus bAllStats,1; bonus bUnbreakableHelm; },{},{}
+31630,Costume_Baphomet_Balloon,C Baphomet Balloon,4,0,0,0,,,,,4294967295,63,2,4096,,1,0,1746,{},{},{}
+22777,Romantic_Lootbox,Romantic Lootbox,11,0,0,0,,,,0,4294967295,63,2,,,1,,,{ callfunc "F_Romantic_LootBox";delitem 22777,1; },{},{}
+6814,Swordman_Soul,Swordman Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6815,Merchant_Soul,Merchant Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6816,Thief_Soul,Thief Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6817,Mage_Soul,Mage Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6818,Archer_Soul,Archer Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6819,Acolyte_Soul,Acolyte Soul,3,10,3,10,,,,,,,,,,,,,{},{},{}
+6860,Piece_Of_Soul_Cow,Piece Of Soul Cow,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6862,Piece_Of_Soul_Tiger,Piece Of Soul Tiger,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6866,Piece_Of_Soul_Rabbit,Piece Of Soul Rabbit,3,0,0,0,,,,,,,,,,,,,{},{},{}
+6837,Piece_Of_Soul_Mouse,Piece Of Soul Mouse,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6904,Piece_Of_Soul_Snake,Piece Of Soul Snake,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6907,Piece_Of_Soul_Horse,Piece Of Soul Horse,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6912,Piece_Of_Soul_Sheep,Piece Of Soul Sheep,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6916,Piece_Of_Soul_Monkey,Piece Of Soul Monkey,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6917,Piece_Of_Soul_Chicken,Piece Of Soul Chicken,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6954,Piece_Of_Soul_Dog,Piece Of Soul Dog,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6955,Piece_Of_Soul_Pig,Piece Of Soul Pig,3,10,3,0,,,,,,,,,,,,,{},{},{}
+6885,Piece_Of_Soul_Dragon,Piece Of Soul Dragon,3,10,3,0,,,,,,,,,,,,,{},{},{}
+24501,Logbook,Logbook,11,0,0,0,,,,,4294967295,7,2,,,,,,{ callfunc "RM_DiarioDeBordo"; },{},{}
+25433,C_Golden_Wreath,Golden Laurel,4,0,0,0,,0,,0,4294967295,7,2,1024,,0,0,434,{},{},{}
+25432,F_PvP_Reward_Box,PvP Weekly Reward Box,18,20,6,10,,,,,4294967295,7,2,0,,,0,,{ rentitem 25433,604800; },{},{}

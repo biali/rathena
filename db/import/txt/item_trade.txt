@@ -22,7 +22,7 @@
 
 
 //Ragnamania
-24501,507,100	// Diario de bordo
+//24501,507,100	// Diario de bordo
 27232,475,100	// Visual Kaho Horns
 30000,475,100	// Booster
 30001,475,100	// Booster Box

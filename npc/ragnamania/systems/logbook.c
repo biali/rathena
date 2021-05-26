@@ -55,59 +55,45 @@ L_Menu:
 	mes "Voting Event ends in ^FF0000" + .@days + "^000000 days.";
 	next;
 
-	L_Loop:
+L_Loop:
 	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Cities Flags:^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
-			mes "^0000FF[ Logbook ]^000000";
-			if( !vip_status(1) && getgmlevel() < 10) {
-				mes "Do you want to activate ^f5b041Premium^000000 on your account?";
-				next;
-				if(select("Not now:Yes, please") == 2) {
-					callfunc "F_Premmy";
-					end;
-				} else {
-					mes "^0000FF[ Logbook ]^000000";
-					mes "I am afraid the options in this menu are for ^f5b041Premium^000000 players only.";
-					next;
-					goto L_Menu;
+			if( vip_status(1) || getgmlevel() >= 10) {
+				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
+					mes "^0000FF[ Premium Services ]^000000";
+					mes "Sorry, this service is not available now.";
+					close;
 				}
-			} 
-
-			switch(select("Open storage:Open guild storage:Repair:Purify Ores:Utility store")){
-				case 1: // Open storage
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					}
-					mes "Connecting to Sweetie system...";
-					close2;
-					doevent "Sweetie::OnOpenStorage";
-					end;
-					break;
-				case 2: // Open Guild Storage
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					}
-					mes "Connecting to Sweetie system...";
-					close2;
-					doevent "Sweetie::OnOpenGuildStorage";
-					end;
-					break;
-				case 3: // Repair all
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					} else {
+L_PremmyMenu:
+				switch(select("Activate/Extend Premium:Repairs:Purify Ore:Utility Stores:Close")) {
+					case 1:
+						mes "^0000FF[ Premium Services ]^000000";
+						mes "Do you want to activate or extend ^f5b041Premium^000000 on your account?";
+						next;
+						if(select("Not now:Yes, please") == 2) {
+							callfunc "F_Premmy";
+							end;
+						} else {
+							mes "^0000FF[ Premium Services ]^000000";
+							mes "Not a problem. Have a good day.";
+							next;
+							goto L_PremmyMenu;
+						}
+						break;
+					case 2: // Repair all
 						if(getbrokenid(1) == 0) {
+							mes "^0000FF[ Premium Services ]^000000";
 							mes "All your equipments seem fine. No repairs are needed.";
-							close;
-						} 
+							next;
+							goto L_PremmyMenu;
+						}
+						mes "^0000FF[ Premium Services ]^000000";
 						mes "We have some equipments in the inventory that need repairing. Repairs cost ^ff0000500z^000000 per equipment. Do you want to continue?";
 						next;
-						if(select("Yes, please:No, cancel it") == 2)
-							close;
-						else {
+						if(select("Yes, please:No, cancel it") == 2) {
+							close2;
+							goto L_PremmyMenu;
+						} else {
 							while (.@id = getbrokenid(1)) {
 								if(Zeny < 500) {
 									dispbottom "Logbook: Not enough Zeny to continue. Aborting";
@@ -121,19 +107,17 @@ L_Menu:
 							}
 							if (.@i) dispbottom "Logbook: " + .@i + " equipments repaired. Total cost: " + callfunc("F_InsertComma",.@cost)+"z.";
 						}
-						end;
-					}
-					break;
-				case 4: //Refine ores
-					mes "Connecting to the Legendary Smith system...";
-					next;
-					callfunc "massPurify","Legenday Smith";
-					break;
-				case 5:
-					if( inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 ) {  
-						mes "Sorry, this service is not available now.";
-						close;
-					} else {
+						next;
+						goto L_PremmyMenu;
+						break;
+					case 3: // Purify ores
+						mes "^0000FF[ Premium Services ]^000000";
+						mes "Connecting to the Legendary Smith system...";
+						next;
+						callfunc "massPurify","Legenday Smith";
+						break;
+					case 4: // Utility Stores
+						mes "^0000FF[ Premium Services ]^000000";
 						mes "Select the store.";
 						next;
 						switch(select("^FF0000Sell Items^000000:Consumables:Miscellaneous:Arrows:Kunais:Ammo:Pet Foods:Pet Accessories")) {
@@ -148,11 +132,13 @@ L_Menu:
 							case 8: callshop "Pet Accessories", 1; end;
 						}
 						end;
-					}
-					break;
-				default:
-					close;
-				break;
+						break;
+				}
+			} else {
+				mes "I am afraid these options are available for ^f5b041Premium^000000 accounts only.";
+				mes "Find more about our ^f5b041Premium^000000 system in our website.";
+				next;
+				goto L_Menu;
 			}
 		case 2: // TELEPORTE
 			if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 

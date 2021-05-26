@@ -614,6 +614,10 @@ void pc_setknockedtimer(struct map_session_data* sd, int val) {
 		delete_timer(sd->state.knocked,pc_knocked_timer);
 
 	sd->state.knocked = add_timer(gettick()+val,pc_knocked_timer,sd->bl.id,0);
+	
+	if(battle_config.prevent_logout_trigger&PLT_DAMAGE)
+		sd->canlog_tick = gettick() + battle_config.pc_knocked_time;
+
 }
 
 //Biali Blackzone

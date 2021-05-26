@@ -139,7 +139,6 @@ Body:
       sc_end SC_Poison;
       sc_end SC_Silence;
       sc_end SC_Blind;
-      sc_end SC_Confusion;
   - Id: 507
     AegisName: Red_Herb
     Name: Red Herb
@@ -1030,16 +1029,16 @@ Body:
     Weight: 10
     Script: |
       itemheal rand(105,145),0;
-  - Id: 601
-    AegisName: Wing_Of_Fly
-    Name: Fly Wing
-    Type: Delayconsume
-    Buy: 60
-    Weight: 50
-    Flags:
-      BuyingStore: true
-    Script: |
-      itemskill "AL_TELEPORT",1;
+  # - Id: 601
+  #   AegisName: Wing_Of_Fly
+  #   Name: Fly Wing
+  #   Type: Delayconsume
+  #   Buy: 60
+  #   Weight: 50
+  #   Flags:
+  #     BuyingStore: true
+  #   Script: |
+  #     itemskill "AL_TELEPORT",1;
   - Id: 602
     AegisName: Wing_Of_Butterfly
     Name: Butterfly Wing
@@ -5103,7 +5102,7 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      set .@type,getiteminfo(getequipid(EQI_HAND_R),11);
+      set .@type,getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW);
       if (.@type == W_1HAXE || .@type == W_2HAXE || .@type == W_MACE) {
          skilleffect "BS_ADRENALINE",0;
          sc_start SC_ADRENALINE,150000,5;
@@ -9949,8 +9948,11 @@ Body:
     Weight: 10
     Trade:
       Override: 100
+      NoTrade: true
+      NoTradePartner: true
       NoDrop: true
       NoSell: true
+      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -9964,8 +9966,11 @@ Body:
     Weight: 10
     Trade:
       Override: 100
+      NoTrade: true
+      NoTradePartner: true
       NoDrop: true
       NoSell: true
+      NoCart: true
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
@@ -11803,6 +11808,16 @@ Body:
     Type: Cash
     Buy: 20
     Weight: 10
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
       getitem 12209,30;
   - Id: 13581
@@ -11811,6 +11826,16 @@ Body:
     Type: Cash
     Buy: 20
     Weight: 10
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
       getitem 12209,50;
   - Id: 13582
@@ -11819,6 +11844,18 @@ Body:
     Type: Cash
     Buy: 20
     Weight: 10
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    NoMail: true
+    NoAuction: true
     Script: |
       getitem 12214,5;
   - Id: 13583
@@ -11827,6 +11864,18 @@ Body:
     Type: Cash
     Buy: 20
     Weight: 10
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    NoMail: true
+    NoAuction: true
     Script: |
       getitem 12214,30;
   - Id: 13584

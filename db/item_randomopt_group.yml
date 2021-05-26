@@ -49,4 +49,6 @@ Footer:
   Imports:
   - Path: db/re/item_randomopt_group.yml
     Mode: Renewal
+  - Path: db/pre-re/item_randomopt_group.yml
+    Mode: Pre-Renewal
   - Path: db/import/item_randomopt_group.yml

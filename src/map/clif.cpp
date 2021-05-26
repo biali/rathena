@@ -11001,19 +11001,16 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	if(battle_config.pc_invincible_time > 0) {
 		if(mapdata_flag_gvg(mapdata))
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
-		else if(mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER) { //Biali blackzone
+		else if(mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER && sd->state.pmap != sd->bl.m) { //Biali blackzone
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 			pc_setinvincibletimerreset(sd,battle_config.pc_invincible_time_reset);
-		} else
+		} else if(!mapdata->flag[MF_RPK])
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	}
 
-	// if(battle_config.pc_invincible_time > 0) {
-	// 	if(mapdata_flag_gvg(mapdata))
-	// 		pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
-	// 	else
-	// 		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-	// }
+	//Biali blackzone... just to be on the safeside:
+	if(sd->state.knocked > INVALID_TIMER)
+		pc_delknockedtimer(sd);
 
 	if( mapdata->users++ == 0 && battle_config.dynamic_mobs )
 		map_spawnmobs(sd->bl.m);
@@ -11330,7 +11327,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				clif_broadcast2(&sd->bl, output, (int)strlen(output)+1, strtol("0x00ffff", (char **)NULL, 0), FW_BOLD, 14, 0, 0, SELF);
 				
 				if(mapdata->rpk.info[RPK_MAP_TIER]) {
-					sprintf(output,"%s is a PK Map Tier %d",mapdata->name, mapdata->rpk.info[RPK_MAP_TIER] );
+					sprintf(output,"This is a PK Map Tier %d %s", mapdata->rpk.info[RPK_MAP_TIER], mapdata->rpk.info[RPK_MAP_TIER]? "(Full loot)" : "" );
 					clif_displaymessage(fd, output);
 				}
 			}
