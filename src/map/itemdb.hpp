@@ -15,9 +15,6 @@
 #include "script.hpp"
 #include "status.hpp"
 
-//biali
-#include "mob.hpp"
-
 enum e_ammo_type : uint8;
 
 ///Use apple for unknown items.
@@ -1037,34 +1034,6 @@ public:
 	uint64 parseBodyNode(const YAML::Node& node);
 	void loadingFinished();
 };
-
-//biali blackzone world drops
-static struct world_drops {	
-	int drops_headgears[MAX_DROPS] = {};
-	int drops_shields[MAX_DROPS] = {};
-	int drops_armors[MAX_DROPS] = {};
-	int drops_shoes[MAX_DROPS] = {};
-	int drops_garments[MAX_DROPS] = {};
-	int drops_sories[MAX_DROPS] = {};
-	int drops_staves[MAX_DROPS] = {};
-	int drops_ranged[MAX_DROPS] = {};
-	int drops_swords[MAX_DROPS] = {};
-	int drops_daggers[MAX_DROPS] = {};
-	int drops_katars[MAX_DROPS] = {};
-	int c_hg = 0;
-	int c_sd = 0;
-	int c_ar = 0;
-	int c_sh = 0;
-	int c_ga = 0;
-	int c_ac = 0;
-	int c_st = 0;
-	int c_rg = 0;
-	int c_sw = 0;
-	int c_dg = 0;
-	int c_kt = 0;
-	struct mob_data drops_moblist[1000] = {}; // keeps the  unique mobs read
-	int drops_m_c = 0; // mobs counter
-} world_drops;
 
 extern ItemDatabase item_db;
 
