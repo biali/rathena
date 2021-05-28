@@ -434,6 +434,9 @@ void mob_clear_spawninfo();
 void do_init_mob(void);
 void do_final_mob(bool is_reload);
 
+//biali world drops
+void do_init_world_drops(void);
+
 TIMER_FUNC(mob_timer_delete);
 int mob_deleteslave(struct mob_data *md);
 

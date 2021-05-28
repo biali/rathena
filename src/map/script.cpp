@@ -23980,17 +23980,25 @@ BUILDIN_FUNC(recalculatestat) {
 BUILDIN_FUNC(hateffect){
 #if PACKETVER_MAIN_NUM >= 20150507 || PACKETVER_RE_NUM >= 20150429 || defined(PACKETVER_ZERO)
 	struct map_session_data* sd;
+	struct block_list* bl;
 
-	if( !script_rid2sd(sd) )
+	if (script_hasdata(st, 4))
+	{
+		sd = map_id2sd(script_getnum(st, 4));
+
+		if (!sd)
+			return SCRIPT_CMD_FAILURE;
+	}
+	else if (!script_rid2sd(sd))
 		return SCRIPT_CMD_FAILURE;
 
 	int16 effectID = script_getnum(st,2);
 	bool enable = script_getnum(st,3) ? true : false;
 
-	if( effectID <= HAT_EF_MIN || effectID >= HAT_EF_MAX ){
-		ShowError( "buildin_hateffect: unsupported hat effect id %d\n", effectID );
-		return SCRIPT_CMD_FAILURE;
-	}
+	//if( effectID <= HAT_EF_MIN || effectID >= HAT_EF_MAX ){
+	//	ShowError( "buildin_hateffect: unsupported hat effect id %d\n", effectID );
+	//	return SCRIPT_CMD_FAILURE;
+	//}
 
 	auto it = util::vector_get( sd->hatEffects, effectID );
 
@@ -24009,7 +24017,7 @@ BUILDIN_FUNC(hateffect){
 	}
 
 	if( !sd->state.connect_new ){
-		clif_hat_effect_single( sd, effectID, enable );
+		clif_hat_effect_single(&sd->bl, effectID, enable );
 	}
 
 #endif
@@ -27153,7 +27161,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(adopt,"vv"),
 	BUILDIN_DEF(getexp2,"ii?"),
 	BUILDIN_DEF(recalculatestat,""),
-	BUILDIN_DEF(hateffect,"ii"),
+	BUILDIN_DEF(hateffect,"ii?"),
 	BUILDIN_DEF(getrandomoptinfo, "i"),
 	BUILDIN_DEF(getequiprandomoption, "iii?"),
 	BUILDIN_DEF(setrandomoption,"iiiii?"),

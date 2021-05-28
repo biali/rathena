@@ -174,8 +174,11 @@ const t_itemid WEDDING_RING_F = 2635;
 #define MAX_ACHIEVEMENT_DEPENDENTS 20 /// Maximum different dependents in achievement_db.yml
 #define ACHIEVEMENT_NAME_LENGTH 50 /// Max Achievement Name length
 
-// Max factions
+// Max factions biali
 #define MAX_FACTION 5
+// Max drops lists biali blackzone
+#define MAX_DROPS 50
+
 // Max effects for faction aura
 #define MAX_AURA_EFF 3
 // Castle Ranking biali damage log

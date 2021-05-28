@@ -683,7 +683,7 @@ struct mob_data *mob_once_spawn_sub(struct block_list *bl, int16 m, int16 x, int
 /*==========================================
  * Spawn a single mob on the specified coordinates.
  *------------------------------------------*/
-int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir /*= 0*/,int roam) //Biali spawn monster facing direction
+int mob_once_spawn(struct map_session_data* sd, int16 m, int16 x, int16 y, const char* mobname, int mob_id, int amount, const char* event, unsigned int size, enum mob_ai ai, uint8 dir,int roam) //Biali spawn monster facing direction
 {
 	struct mob_data* md = nullptr;
 	int count, lv;
@@ -1568,10 +1568,19 @@ int mob_unlocktarget(struct mob_data *md, t_tick tick)
 		if (status_has_mode(&md->status,MD_ANGRY) && !md->state.aggressive)
 			md->state.aggressive = 1; //Restore angry state when switching to idle
 		md->state.skillstate = MSS_IDLE;
-		if(battle_config.mob_ai&0x8) //Walk instantly after dropping target
-			md->next_walktime = tick+rnd()%1000;
-		else
-			md->next_walktime = tick+rnd()%1000+MIN_RANDOMWALKTIME;
+
+		//biali blackzone - dungeons mob, if you loose your target, go back to your respawn point!
+		if (md->roam < 1) {
+			md->next_walktime = tick+5000;
+			// unit_walktoxy(&md->bl, md->spawn->x, md->spawn->y, 4); // it crashes the server
+			unit_movepos(&md->bl, md->spawnx,md->spawny,0,0);
+			mob_spawn(md);
+		} else {
+			if(battle_config.mob_ai&0x8) //Walk instantly after dropping target
+				md->next_walktime = tick+rnd()%1000;
+			else
+				md->next_walktime = tick+rnd()%1000+MIN_RANDOMWALKTIME;
+		}
 		break;
 	}
 	if (md->target_id) {
@@ -1598,17 +1607,18 @@ int mob_randomwalk(struct mob_data *md,t_tick tick)
 
 	nullpo_ret(md);
 
-	//biali black zone dungeons mob will not random walk but stand in their spawn position
-	//if(map_getmapflag(md->bl.m,MF_BZ_DUNGEON))
-	if(md->roam < 1)
-		return 0;
-
 	if(DIFF_TICK(md->next_walktime,tick)>0 ||
 	   status_has_mode(&md->status,MD_NORANDOMWALK) ||
 	   !unit_can_move(&md->bl) ||
 	   !status_has_mode(&md->status,MD_CANMOVE))
 		return 0;
 
+	
+	//biali black zone dungeons mob will not random walk but stand in their spawn position
+	//if(map_getmapflag(md->bl.m,MF_BZ_DUNGEON))
+	if(md->roam < 1 ) 
+		return 0;
+		
 	r=rnd();
 	rdir=rnd()%4; // Randomize direction in which we iterate to prevent monster cluttering up in one corner
 	dx=r%(d*2+1)-d;
@@ -1786,7 +1796,8 @@ static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 			&&  md->state.attacked_count++ >= RUDE_ATTACKED_COUNT
 			&&  !mobskill_use(md, tick, MSC_RUDEATTACKED) // If can't rude Attack
 			&&  can_move && unit_escape(&md->bl, tbl, rnd()%10 +1)) // Attempt escape
-			{	//Escaped
+			{	
+				//Escaped
 				md->attacked_id = md->norm_attacked_id = 0;
 				return true;
 			}
@@ -1814,7 +1825,8 @@ static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 				&& md->state.attacked_count++ >= RUDE_ATTACKED_COUNT				
 				&& !mobskill_use(md, tick, MSC_RUDEATTACKED) && can_move
 				&& !tbl && unit_escape(&md->bl, abl, rnd()%10 +1))
-				{	//Escaped.
+				{	
+					//Escaped.
 					//TODO: Maybe it shouldn't attempt to run if it has another, valid target?
 					md->attacked_id = md->norm_attacked_id = 0;
 					return true;
@@ -1876,7 +1888,12 @@ static bool mob_ai_sub_hard(struct mob_data *md, t_tick tick)
 	{
 		int search_size;
 		search_size = view_range<md->status.rhw.range ? view_range:md->status.rhw.range;
-		map_foreachinallrange (mob_ai_sub_hard_changechase, &md->bl, search_size, DEFAULT_ENEMY_TYPE(md), md, &tbl);
+		if(!map_foreachinallrange (mob_ai_sub_hard_changechase, &md->bl, search_size, DEFAULT_ENEMY_TYPE(md), md, &tbl) &&
+			md->roam <= 0) { //Biali blackzone
+				md->next_walktime = tick+5000;
+				unit_movepos(&md->bl, md->spawnx,md->spawny,0,0);
+				mob_spawn(md);
+			}
 	}
 
 	if (!tbl) { //No targets available.
@@ -2162,6 +2179,58 @@ void mob_setitem_option(s_item_randomoption &item_option, const std::shared_ptr<
 void mob_setdropitem_option(item *item, s_mob_drop *mobdrop) {
 	if (!item || !mobdrop)
 		return;
+
+	// Biali blackzone trying to automate the creation of random option items droped 
+	// in RPK and Fullloot maps
+	// if(force == true) {
+	if(item) { // biali TODO FIX ME
+		struct item_data *id = itemdb_search(item->nameid);
+
+		if(id == NULL)
+			return;
+
+		switch(id->type) {
+			case IT_WEAPON:
+				switch(id->subtype) {
+					case W_STAFF:	case W_2HSTAFF:
+						mobdrop->randomopt_group = 7; // Staff
+						break;
+					case W_WHIP:	case W_BOW:	case W_REVOLVER:	case W_RIFLE:	case W_GATLING:	case W_SHOTGUN:	case W_MUSICAL:
+						mobdrop->randomopt_group = 8; // Bow, Pistol, Instrument, Whip
+						break;
+					case W_1HSWORD:	case W_1HAXE:	case W_2HAXE:	case W_MACE:	case W_2HMACE:
+						mobdrop->randomopt_group = 9; // 1H Sword, Mace, Axe
+						break;
+					case W_DAGGER:	case W_BOOK:	case W_HUUMA:
+						mobdrop->randomopt_group = 10; // Daggers, Books, Huuma
+						break;
+					case W_1HSPEAR:	case W_2HSWORD:	case W_2HSPEAR:	case W_KATAR:	case W_KNUCKLE:
+						mobdrop->randomopt_group = 11; //  One-handed spear, Two-handed spear, Two-handed sword, Katar, Knuckle
+						break;
+				}
+			case IT_ARMOR:
+				if(id->equip&(EQP_HEAD_TOP)) { // Headgear (top only!)
+					mobdrop->randomopt_group = 2;
+				}
+				else if(id->equip&(EQP_HAND_L)) { // Shield
+					mobdrop->randomopt_group = 14;
+				}
+				else if(id->equip&(EQP_ARMOR)) { // Armor
+					mobdrop->randomopt_group = 6;
+				}
+				else if(id->equip&(EQP_SHOES)) { // Shoes
+					mobdrop->randomopt_group = 6;
+				}
+				else if(id->equip&(EQP_GARMENT)) { // Garment
+					mobdrop->randomopt_group = 3;
+				}
+				else if(id->equip&(EQP_ACC_RL)) { // Accessories
+					mobdrop->randomopt_group = 1;
+				}
+				break;	
+		}
+	}
+	// pronto
 
 	std::shared_ptr<s_random_opt_group> group = random_option_group.find(mobdrop->randomopt_group);
 
@@ -2520,6 +2589,23 @@ void mob_damage(struct mob_data *md, struct block_list *src, int damage)
 		}
 	}
 #endif
+}
+
+// Biali Random World Drops (equips) for the Blackzone
+void mob_worlddrop(map_session_data *sd) {
+
+	// struct item *item = NULL;
+	// struct item_data *id = NULL;
+	// struct s_mob_drop *mobdrop = NULL;
+	// int group_id;
+
+	
+
+	// mob_setdropitem_option(&item, &mdrop[i], true);
+
+	// itemdb_pc_get_itemgroup(group_id, 1, sd);
+
+	return;
 }
 
 /*==========================================
@@ -2985,6 +3071,73 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 					mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, drop_rate, homkillonly || merckillonly);
 				}
 			}
+
+			// //Biali blackzone random world drops
+			// if(map_getmapdata(md->bl.m)->rpk.info[RPK_FULLLOOT]) {
+			// 	struct s_mob_drop mobdrop;
+			// 	switch(rand() % 11 + 1) {
+			// 		case 1: // headgear
+			// 			mobdrop.nameid = world_drops.drops_headgears[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_head;
+			// 			break;
+			// 		case 2: // shelds
+			// 			mobdrop.nameid = world_drops.drops_shields[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_shield;
+			// 			break;
+			// 		case 3: // armor
+			// 			mobdrop.nameid = world_drops.drops_armors[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_armor;
+			// 			break;
+			// 		case 4: // shoes
+			// 			mobdrop.nameid = world_drops.drops_shoes[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_shoes;
+			// 			break;
+			// 		case 5: // garments
+			// 			mobdrop.nameid = world_drops.drops_garments[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_garment;
+			// 			break;
+			// 		case 6: // accessories
+			// 			mobdrop.nameid = world_drops.drops_sories[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_accessory;
+			// 			break;
+			// 		case 7: // staff
+			// 			mobdrop.nameid = world_drops.drops_staves[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_staff;
+			// 			break;
+			// 		case 8: // ranged
+			// 			mobdrop.nameid = world_drops.drops_ranged[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_ranged;
+			// 			break;
+			// 		case 9: // sword
+			// 			mobdrop.nameid = world_drops.drops_swords[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_sword;
+			// 			break;
+			// 		case 10: // dagger
+			// 			mobdrop.nameid = world_drops.drops_daggers[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_dagger;
+			// 			break;
+			// 		case 11: // katar
+			// 			mobdrop.nameid = world_drops.drops_katars[rand() % MAX_DROPS]->nameid;
+			// 			if(mobdrop.nameid > 0)
+			// 				mobdrop.randomopt_group = battle_config.random_options_katar;
+			// 			break;
+			// 	}
+
+			// 	if(mobdrop.nameid > 0)
+			// 		mobdrop.rate = 10000; // BIALI TODO work on rates
+
+			// 	mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, 10000, homkillonly || merckillonly);
+			// }
 
 			// process script-granted zeny bonus (get_zeny_num) [Skotlex]
 			if( sd->bonus.get_zeny_num && rnd()%100 < sd->bonus.get_zeny_rate ) {
@@ -6485,4 +6638,25 @@ void do_final_mob(bool is_reload){
 		ers_destroy(item_drop_ers);
 		ers_destroy(item_drop_list_ers);
 	}
+}
+
+//biali World drops
+void do_init_world_drops(void) {
+	int i;
+	for(i=0;i<world_drops.drops_m_c;i++) {
+		npc_world_drops_sub(&world_drops.drops_moblist[i]);
+	}
+
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' headgears to the pool \n",world_drops.c_hg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shields to the pool \n",world_drops.c_sd);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' armors to the pool \n",world_drops.c_ar);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shoes to the pool \n",world_drops.c_sh);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' garments to the pool \n",world_drops.c_ga);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' accessories to the pool \n",world_drops.c_ac);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' staves to the pool \n",world_drops.c_st);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' ranged/musical to the pool \n",world_drops.c_rg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' swords/axes/maces to the pool \n",world_drops.c_sw);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' daggers/books to the pool \n",world_drops.c_dg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' katars/spears/knuckles to the pool \n",world_drops.c_kt);
+	ShowStatus("World Drop : Read '" CL_WHITE "%d" CL_RESET "' mobs \n",world_drops.drops_m_c);
 }

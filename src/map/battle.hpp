@@ -234,6 +234,17 @@ struct Battle_Config
 	int woe_log;// Biali black zone
 	int break_chance;// Biali RPK fullloot equips break chance
 	int remove_deadbody_timer; // time in ticks to automatically unload a deadbody npc
+	int random_options_staff; //Biali blackzone random word drops
+	int random_options_ranged;
+	int random_options_sword;
+	int random_options_dagger;
+	int random_options_katar;
+	int random_options_head;	
+	int random_options_shield;
+	int random_options_armor;
+	int random_options_shoes;
+	int random_options_garment;
+	int random_options_accessory; //Biali blackzone random word drops
 
 	int pet_catch_rate;
 	int pet_rename;

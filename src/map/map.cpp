@@ -36,6 +36,7 @@
 #include "guild.hpp"
 #include "homunculus.hpp"
 #include "instance.hpp"
+#include "itemdb.hpp" // biali world drop
 #include "intif.hpp"
 #include "log.hpp"
 #include "mapreg.hpp"
@@ -3728,10 +3729,10 @@ void map_flags_init(void){
 
 		// Biali Contested Territories
 		mapdata->contested = {};
-		mapdata->contested.info[CONTESTED_OWNER_ID] = NULL;
-		mapdata->contested.info[CONTESTED_BASE_BONUS] = NULL;
-		mapdata->contested.info[CONTESTED_JOB_BONUS] = NULL;
-		mapdata->contested.info[CONTESTED_DROP_BONUS] = NULL;
+		mapdata->contested.info[CONTESTED_OWNER_ID] = 0;
+		mapdata->contested.info[CONTESTED_BASE_BONUS] = 0;
+		mapdata->contested.info[CONTESTED_JOB_BONUS] = 0;
+		mapdata->contested.info[CONTESTED_DROP_BONUS] = 0;
 
 		// Biali FvF Maps (ON for all maps except the ones in ragnamania/mapflags/fvf.c)
 		map_setmapflag_sub(i, MF_FVF, true, &args);
@@ -5486,6 +5487,9 @@ int do_init(int argc, char *argv[])
 	do_init_duel();
 	do_init_vending();
 	do_init_buyingstore();
+
+	//biali
+	do_init_world_drops();
 
 	npc_event_do_oninit();	// Init npcs (OnInit)
 

@@ -9438,6 +9438,18 @@ static const struct _battle_data {
 // Ragnamania RPK full loot settings
 	{ "rpk_equips_break_chance",            &battle_config.break_chance,           		     70,    0,    100,              },
 	{ "rpk_remove_deadbody_timer",          &battle_config.remove_deadbody_timer,  	    1800000,    0,    INT_MAX,          },
+// Ragnamania Random Options for RPK maps
+	{ "random_options_staff",          		&battle_config.random_options_staff,  	    	  7,    0,    INT_MAX,          },
+	{ "random_options_ranged",         		&battle_config.random_options_ranged,  	    	  8,    0,    INT_MAX,          },
+	{ "random_options_sword",          		&battle_config.random_options_sword,  	    	  9,    0,    INT_MAX,          },
+	{ "random_options_dagger",          	&battle_config.random_options_dagger,  	    	 10,    0,    INT_MAX,          },
+	{ "random_options_katar",          		&battle_config.random_options_katar,  	    	 11,    0,    INT_MAX,          },
+	{ "random_options_head",          		&battle_config.random_options_head,  	    	  2,    0,    INT_MAX,          },
+	{ "random_options_shield",          	&battle_config.random_options_shield,  	    	 14,    0,    INT_MAX,          },
+	{ "random_options_armor",          		&battle_config.random_options_armor,  	    	  6,    0,    INT_MAX,          },
+	{ "random_options_shoes",          		&battle_config.random_options_shoes,  	    	  6,    0,    INT_MAX,          },
+	{ "random_options_garment",          	&battle_config.random_options_garment,  	      3,    0,    INT_MAX,          },
+	{ "random_options_accessory",          	&battle_config.random_options_accessory,  	      1,    0,    INT_MAX,          },
 	
 #include "../custom/battle_config_init.inc"
 };
