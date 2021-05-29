@@ -245,6 +245,8 @@ struct Battle_Config
 	int random_options_shoes;
 	int random_options_garment;
 	int random_options_accessory; //Biali blackzone random word drops
+	int random_options_qualrates;
+	int random_drop_chances;
 
 	int pet_catch_rate;
 	int pet_rename;
