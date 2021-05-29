@@ -3148,7 +3148,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 					mobdrop.rate = battle_config.random_options_qualrates; // Rates to improve the slots number and quality
 
 				// create the item. The rates here defines how frequently mobs should drop random equips (with or without random options)
-				mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, battle_config.random_options_drop_chances, homkillonly || merckillonly); 
+				mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, battle_config.random_drop_chances, homkillonly || merckillonly); 
 			}
 
 			// process script-granted zeny bonus (get_zeny_num) [Skotlex]
