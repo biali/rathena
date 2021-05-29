@@ -821,6 +821,9 @@ struct map_session_data {
 	std::vector<int16> hatEffects;
 #endif
 
+	int lastEffectID;
+	int lastEffectID2;
+	
 	struct{
 		int tid;
 		uint16 skill_id;

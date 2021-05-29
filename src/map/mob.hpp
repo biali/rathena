@@ -317,8 +317,36 @@ struct mob_data {
 	 * MvP Tombstone NPC ID
 	 **/
 	int tomb_nid;
+	int lastEffectID;
+	int lastEffectID2;
 
 	int faction_id; // biali faction system
+
+	//biali blackzone world drops
+	static 	int drops_headgears[MAX_DROPS];
+	static 	int drops_shields[MAX_DROPS];
+	static 	int drops_armors[MAX_DROPS];
+	static 	int drops_shoes[MAX_DROPS];
+	static 	int drops_garments[MAX_DROPS];
+	static 	int drops_sories[MAX_DROPS];
+	static 	int drops_staves[MAX_DROPS];
+	static 	int drops_ranged[MAX_DROPS];
+	static 	int drops_swords[MAX_DROPS];
+	static 	int drops_daggers[MAX_DROPS];
+	static 	int drops_katars[MAX_DROPS];
+	static 	int c_hg;
+	static 	int c_sd;
+	static 	int c_ar;
+	static 	int c_sh;
+	static 	int c_ga;
+	static 	int c_ac;
+	static 	int c_st;
+	static 	int c_rg;
+	static 	int c_sw;
+	static 	int c_dg;
+	static 	int c_kt;
+	static int drops_moblist[1000]; // keeps the  unique mobs read
+	static int drops_m_c; // mobs counter
 
 	e_mob_bosstype get_bosstype();
 };
@@ -469,7 +497,7 @@ TIMER_FUNC(mvptomb_delayspawn);
 void mvptomb_create(struct mob_data *md, char *killer, time_t time);
 void mvptomb_destroy(struct mob_data *md);
 
-void mob_setdropitem_option(struct item *itm, struct s_mob_drop *mobdrop);
+void mob_setdropitem_option(struct item *itm, struct s_mob_drop *mobdrop, bool force = false);
 
 #define CHK_MOBSIZE(size) ((size) >= SZ_SMALL && (size) < SZ_MAX) /// Check valid Monster Size
 

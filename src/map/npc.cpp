@@ -4149,15 +4149,17 @@ static const char* npc_parse_function(char* w1, char* w2, char* w3, char* w4, co
 
 
 // Biali blackzone World Drops
-void npc_world_drops_sub(mob_data *md) {
+void npc_world_drops_sub(int mob_id) {
 
 	struct item_data *id = NULL;
+	std::shared_ptr<s_mob_db> md = mob_db.find(mob_id);
+
 	int i,k;
 
 	for (i = 0; i < MAX_MOB_DROP; i++) {
-		if(md->db->dropitem[i].rate > 0) {
+		if(md->dropitem[i].rate > 0) {
 
-			if((id = itemdb_search(md->db->dropitem[i].nameid)) == NULL)
+			if((id = itemdb_search(md->dropitem[i].nameid)) == NULL)
 				continue;
 
 			if(id->type != 4 && id->type != 5)
@@ -4167,81 +4169,81 @@ void npc_world_drops_sub(mob_data *md) {
 
 			if(id->type == 4) { //Armors
 				if(id->equip&(EQP_HEAD_TOP)) { // Headgear (top only!)
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_headgears[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_headgears[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_headgears[world_drops.c_hg] = nameid;
-						++world_drops.c_hg;
+						mob_data::drops_headgears[mob_data::c_hg] = nameid;
+						++mob_data::c_hg;
 					}
 				} else if(id->equip&(EQP_HAND_L)) { // Shield
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_shields[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_shields[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_shields[world_drops.c_sd] = nameid;
-						++world_drops.c_sd;
+						mob_data::drops_shields[mob_data::c_sd] = nameid;
+						++mob_data::c_sd;
 					}
 				}
 				else if(id->equip&(EQP_ARMOR)) { // Armor
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_armors[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_armors[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_armors[world_drops.c_ar] = nameid;
-						++world_drops.c_ar;
+						mob_data::drops_armors[mob_data::c_ar] = nameid;
+						++mob_data::c_ar;
 					}
 				}
 				else if(id->equip&(EQP_SHOES)) { // Shoes
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_shoes[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_shoes[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_shoes[world_drops.c_sh] = nameid;
-						++world_drops.c_sh;
+						mob_data::drops_shoes[mob_data::c_sh] = nameid;
+						++mob_data::c_sh;
 					}
 				}
 				else if(id->equip&(EQP_GARMENT)) { // Garment
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_garments[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_garments[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_garments[world_drops.c_ga] = nameid;
-						++world_drops.c_ga;
+						mob_data::drops_garments[mob_data::c_ga] = nameid;
+						++mob_data::c_ga;
 					}
 				}
 				else if(id->equip&(EQP_ACC_RL)) { // Accessories
-					ARR_FIND(0,MAX_DROPS,k, world_drops.drops_sories[k] == nameid);
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_sories[k] == nameid);
 					if(k == MAX_DROPS ) {
-						world_drops.drops_sories[world_drops.c_ac] = nameid;
-						++world_drops.c_ac;
+						mob_data::drops_sories[mob_data::c_ac] = nameid;
+						++mob_data::c_ac;
 					}
 				}
 			} else if(id->type == 5) {
 				switch(id->subtype) {
 					case W_STAFF:	case W_2HSTAFF:
-						ARR_FIND(0,MAX_DROPS,k, world_drops.drops_staves[k] == nameid);
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_staves[k] == nameid);
 						if(k == MAX_DROPS ) {
-							world_drops.drops_staves[world_drops.c_st] = nameid;
-							++world_drops.c_st;
+							mob_data::drops_staves[mob_data::c_st] = nameid;
+							++mob_data::c_st;
 						}
 						break;
 					case W_WHIP:	case W_BOW:	case W_REVOLVER:	case W_RIFLE:	case W_GATLING:	case W_SHOTGUN:	case W_MUSICAL:
-						ARR_FIND(0,MAX_DROPS,k, world_drops.drops_ranged[k] == nameid);
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_ranged[k] == nameid);
 						if(k == MAX_DROPS ) {
-							world_drops.drops_ranged[world_drops.c_rg] = nameid;
-							++world_drops.c_rg;
+							mob_data::drops_ranged[mob_data::c_rg] = nameid;
+							++mob_data::c_rg;
 						}
 						break;
 					case W_1HSWORD:	case W_1HAXE:	case W_2HAXE:	case W_MACE:	case W_2HMACE:
-						ARR_FIND(0,MAX_DROPS,k, world_drops.drops_swords[k] == nameid);
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_swords[k] == nameid);
 						if(k == MAX_DROPS ) {
-							world_drops.drops_swords[world_drops.c_sw] = nameid;
-							++world_drops.c_sw;
+							mob_data::drops_swords[mob_data::c_sw] = nameid;
+							++mob_data::c_sw;
 						}
 						break;
 					case W_DAGGER:	case W_BOOK:	case W_HUUMA:
-						ARR_FIND(0,MAX_DROPS,k, world_drops.drops_daggers[k] == nameid);
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_daggers[k] == nameid);
 						if(k == MAX_DROPS ) {
-							world_drops.drops_daggers[world_drops.c_dg] = nameid;
-							++world_drops.c_dg;
+							mob_data::drops_daggers[mob_data::c_dg] = nameid;
+							++mob_data::c_dg;
 						}
 						break;
 					case W_1HSPEAR:	case W_2HSWORD:	case W_2HSPEAR:	case W_KATAR:	case W_KNUCKLE:
-						ARR_FIND(0,MAX_DROPS,k, world_drops.drops_katars[k] == nameid);
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_katars[k] == nameid);
 						if(k == MAX_DROPS ) {
-							world_drops.drops_katars[world_drops.c_kt] = nameid;
-							++world_drops.c_kt;
+							mob_data::drops_katars[mob_data::c_kt] = nameid;
+							++mob_data::c_kt;
 						}
 						break;
 				}
@@ -4255,21 +4257,22 @@ void npc_world_drops_sub(mob_data *md) {
 
 
 void npc_world_drops(mob_data *md){
+	
 	int j;
 	int mobid = md->mob_id;
 
-	ARR_FIND(0,2000,j,world_drops.drops_moblist[j].mob_id == mobid);
+	ARR_FIND(0,2000,j,mob_data::drops_moblist[j] == mobid);
 	if(j < 2000 )
 		return;
 
 	if( md->state.boss )
 		return;
 
-	ShowWarning("Working on mob %d ... \n",mobid);
+	if(mob_data::drops_m_c > 1999)
+		return;
 
-	//world_drops.drops_moblist[world_drops.drops_m_c] = md;
-	memcpy(&world_drops.drops_moblist[world_drops.drops_m_c], &md, sizeof(struct mob_data));
-	++world_drops.drops_m_c;
+	mob_data::drops_moblist[mob_data::drops_m_c] = mobid;
+	mob_data::drops_m_c++;
 
 	return;
 }
@@ -4312,9 +4315,10 @@ static const char* npc_parse_mob(char* w1, char* w2, char* w3, char* w4, const c
 	char mapname[MAP_NAME_LENGTH_EXT], mobname[NAME_LENGTH];
 	struct spawn_data mob, *data;
 	int ai = AI_NONE; // mob_ai
-
+	
 	int faction_id = 0;
 	struct faction_data *fdb = NULL;
+
 	memset(&mob, 0, sizeof(struct spawn_data));
 
 	mob.state.boss = !strcmpi(w2,"boss_monster");

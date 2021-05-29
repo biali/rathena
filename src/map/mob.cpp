@@ -113,6 +113,34 @@ struct s_randomsummon_group {
 
 static DBMap *mob_summon_db; /// Random Summon DB. struct s_randomsummon_group -> group_id
 
+
+//biali world drops
+int mob_data::drops_m_c = 0;
+int mob_data::drops_moblist[1000] = {0};
+int mob_data::drops_headgears[MAX_DROPS] = {0};
+int mob_data::drops_shields[MAX_DROPS] = {0};
+int mob_data::drops_armors[MAX_DROPS] = {0};
+int mob_data::drops_shoes[MAX_DROPS] = {0};
+int mob_data::drops_garments[MAX_DROPS] = {0};
+int mob_data::drops_sories[MAX_DROPS] = {0};
+int mob_data::drops_staves[MAX_DROPS] = {0};
+int mob_data::drops_ranged[MAX_DROPS] = {0};
+int mob_data::drops_swords[MAX_DROPS] = {0};
+int mob_data::drops_daggers[MAX_DROPS] = {0};
+int mob_data::drops_katars[MAX_DROPS] = {0};
+int mob_data::c_hg = 0;
+int mob_data::c_sd = 0;
+int mob_data::c_ar = 0;
+int mob_data::c_sh = 0;
+int mob_data::c_ga = 0;
+int mob_data::c_ac = 0;
+int mob_data::c_st = 0;
+int mob_data::c_rg = 0;
+int mob_data::c_sw = 0;
+int mob_data::c_dg = 0;
+int mob_data::c_kt = 0;
+
+
 /*==========================================
  * Local prototype declaration   (only required thing)
  *------------------------------------------*/
@@ -1613,12 +1641,12 @@ int mob_randomwalk(struct mob_data *md,t_tick tick)
 	   !status_has_mode(&md->status,MD_CANMOVE))
 		return 0;
 
-	
+
 	//biali black zone dungeons mob will not random walk but stand in their spawn position
 	//if(map_getmapflag(md->bl.m,MF_BZ_DUNGEON))
 	if(md->roam < 1 ) 
 		return 0;
-		
+
 	r=rnd();
 	rdir=rnd()%4; // Randomize direction in which we iterate to prevent monster cluttering up in one corner
 	dx=r%(d*2+1)-d;
@@ -2176,14 +2204,14 @@ void mob_setitem_option(s_item_randomoption &item_option, const std::shared_ptr<
  * @param mobdrop: Drop data
  * @author [Cydh]
  **/
-void mob_setdropitem_option(item *item, s_mob_drop *mobdrop) {
+void mob_setdropitem_option(item *item, s_mob_drop *mobdrop, bool force) {
 	if (!item || !mobdrop)
 		return;
 
 	// Biali blackzone trying to automate the creation of random option items droped 
 	// in RPK and Fullloot maps
 	// if(force == true) {
-	if(item) { // biali TODO FIX ME
+	if(force) { 
 		struct item_data *id = itemdb_search(item->nameid);
 
 		if(id == NULL)
@@ -2585,27 +2613,10 @@ void mob_damage(struct mob_data *md, struct block_list *src, int damage)
 		for(i = 0; i < DAMAGELOG_SIZE; i++){ // must show hp bar to all char who already hit the mob.
 			struct map_session_data *sd = map_charid2sd(md->dmglog[i].id);
 			if( sd && check_distance_bl(&md->bl, &sd->bl, AREA_SIZE) ) // check if in range
-				clif_monster_hp_bar(md, sd->fd);
+				clif_monster_hp_bar(md, sd);
 		}
 	}
 #endif
-}
-
-// Biali Random World Drops (equips) for the Blackzone
-void mob_worlddrop(map_session_data *sd) {
-
-	// struct item *item = NULL;
-	// struct item_data *id = NULL;
-	// struct s_mob_drop *mobdrop = NULL;
-	// int group_id;
-
-	
-
-	// mob_setdropitem_option(&item, &mdrop[i], true);
-
-	// itemdb_pc_get_itemgroup(group_id, 1, sd);
-
-	return;
 }
 
 /*==========================================
@@ -3072,72 +3083,73 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				}
 			}
 
-			// //Biali blackzone random world drops
-			// if(map_getmapdata(md->bl.m)->rpk.info[RPK_FULLLOOT]) {
-			// 	struct s_mob_drop mobdrop;
-			// 	switch(rand() % 11 + 1) {
-			// 		case 1: // headgear
-			// 			mobdrop.nameid = world_drops.drops_headgears[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_head;
-			// 			break;
-			// 		case 2: // shelds
-			// 			mobdrop.nameid = world_drops.drops_shields[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_shield;
-			// 			break;
-			// 		case 3: // armor
-			// 			mobdrop.nameid = world_drops.drops_armors[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_armor;
-			// 			break;
-			// 		case 4: // shoes
-			// 			mobdrop.nameid = world_drops.drops_shoes[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_shoes;
-			// 			break;
-			// 		case 5: // garments
-			// 			mobdrop.nameid = world_drops.drops_garments[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_garment;
-			// 			break;
-			// 		case 6: // accessories
-			// 			mobdrop.nameid = world_drops.drops_sories[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_accessory;
-			// 			break;
-			// 		case 7: // staff
-			// 			mobdrop.nameid = world_drops.drops_staves[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_staff;
-			// 			break;
-			// 		case 8: // ranged
-			// 			mobdrop.nameid = world_drops.drops_ranged[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_ranged;
-			// 			break;
-			// 		case 9: // sword
-			// 			mobdrop.nameid = world_drops.drops_swords[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_sword;
-			// 			break;
-			// 		case 10: // dagger
-			// 			mobdrop.nameid = world_drops.drops_daggers[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_dagger;
-			// 			break;
-			// 		case 11: // katar
-			// 			mobdrop.nameid = world_drops.drops_katars[rand() % MAX_DROPS]->nameid;
-			// 			if(mobdrop.nameid > 0)
-			// 				mobdrop.randomopt_group = battle_config.random_options_katar;
-			// 			break;
-			// 	}
+			//Biali blackzone random world drops
+			if(map_getmapdata(md->bl.m)->rpk.info[RPK_FULLLOOT]) {
+				struct s_mob_drop mobdrop;
+				switch(rand() % 11 + 1) {
+					case 1: // headgear
+						mobdrop.nameid = mob_data::drops_headgears[rand() % mob_data::c_hg];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_head;
+						break;
+					case 2: // shelds
+						mobdrop.nameid = mob_data::drops_shields[rand() % mob_data::c_sd];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_shield;
+						break;
+					case 3: // armor
+						mobdrop.nameid = mob_data::drops_armors[rand() % mob_data::c_ar];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_armor;
+						break;
+					case 4: // shoes
+						mobdrop.nameid = mob_data::drops_shoes[rand() % mob_data::c_sh];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_shoes;
+						break;
+					case 5: // garments
+						mobdrop.nameid = mob_data::drops_garments[rand() % mob_data::c_ga];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_garment;
+						break;
+					case 6: // accessories
+						mobdrop.nameid = mob_data::drops_sories[rand() % mob_data::c_ac];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_accessory;
+						break;
+					case 7: // staff
+						mobdrop.nameid = mob_data::drops_staves[rand() % mob_data::c_st];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_staff;
+						break;
+					case 8: // ranged
+						mobdrop.nameid = mob_data::drops_ranged[rand() % mob_data::c_rg];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_ranged;
+						break;
+					case 9: // sword
+						mobdrop.nameid = mob_data::drops_swords[rand() % mob_data::c_sw];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_sword;
+						break;
+					case 10: // dagger
+						mobdrop.nameid = mob_data::drops_daggers[rand() % mob_data::c_dg];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_dagger;
+						break;
+					case 11: // katar
+						mobdrop.nameid = mob_data::drops_katars[rand() % mob_data::c_kt];
+						if(mobdrop.nameid > 0)
+							mobdrop.randomopt_group = battle_config.random_options_katar;
+						break;
+				}
 
-			// 	if(mobdrop.nameid > 0)
-			// 		mobdrop.rate = 10000; // BIALI TODO work on rates
+				if(mobdrop.nameid > 0)
+					mobdrop.rate = battle_config.random_options_qualrates; // Rates to improve the slots number and quality
 
-			// 	mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, 10000, homkillonly || merckillonly);
-			// }
+				// create the item. The rates here defines how frequently mobs should drop random equips (with or without random options)
+				mob_item_drop(md, dlist, mob_setdropitem(&mobdrop,1,md->mob_id), 0, battle_config.random_options_drop_chances, homkillonly || merckillonly); 
+			}
 
 			// process script-granted zeny bonus (get_zeny_num) [Skotlex]
 			if( sd->bonus.get_zeny_num && rnd()%100 < sd->bonus.get_zeny_rate ) {
@@ -3635,7 +3647,7 @@ void mob_heal(struct mob_data *md,unsigned int heal)
 			if( md->dmglog[i].id ) {
 				struct map_session_data *sd = map_charid2sd(md->dmglog[i].id);
 				if( sd && check_distance_bl(&md->bl, &sd->bl, AREA_SIZE) ) // check if in range
-					clif_monster_hp_bar(md, sd->fd);
+					clif_monster_hp_bar(md, sd);
 			}
 	}
 #endif
@@ -6643,20 +6655,20 @@ void do_final_mob(bool is_reload){
 //biali World drops
 void do_init_world_drops(void) {
 	int i;
-	for(i=0;i<world_drops.drops_m_c;i++) {
-		npc_world_drops_sub(&world_drops.drops_moblist[i]);
+	for(i=0;i<mob_data::drops_m_c;i++) {
+		npc_world_drops_sub(mob_data::drops_moblist[i]);
 	}
 
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' headgears to the pool \n",world_drops.c_hg);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shields to the pool \n",world_drops.c_sd);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' armors to the pool \n",world_drops.c_ar);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shoes to the pool \n",world_drops.c_sh);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' garments to the pool \n",world_drops.c_ga);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' accessories to the pool \n",world_drops.c_ac);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' staves to the pool \n",world_drops.c_st);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' ranged/musical to the pool \n",world_drops.c_rg);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' swords/axes/maces to the pool \n",world_drops.c_sw);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' daggers/books to the pool \n",world_drops.c_dg);
-	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' katars/spears/knuckles to the pool \n",world_drops.c_kt);
-	ShowStatus("World Drop : Read '" CL_WHITE "%d" CL_RESET "' mobs \n",world_drops.drops_m_c);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' headgears to the pool \n",mob_data::c_hg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shields to the pool \n",mob_data::c_sd);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' armors to the pool \n",mob_data::c_ar);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' shoes to the pool \n",mob_data::c_sh);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' garments to the pool \n",mob_data::c_ga);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' accessories to the pool \n",mob_data::c_ac);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' staves to the pool \n",mob_data::c_st);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' ranged/musical to the pool \n",mob_data::c_rg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' swords/axes/maces to the pool \n",mob_data::c_sw);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' daggers/books to the pool \n",mob_data::c_dg);
+	ShowStatus("World Drop : Loaded '" CL_WHITE "%d" CL_RESET "' katars/spears/knuckles to the pool \n",mob_data::c_kt);
+	ShowStatus("World Drop : Read '" CL_WHITE "%d" CL_RESET "' mobs \n",mob_data::drops_m_c);
 }

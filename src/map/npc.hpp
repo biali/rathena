@@ -1370,8 +1370,8 @@ int npc_cashshop_buy(struct map_session_data *sd, t_itemid nameid, int amount, i
 int npc_unload_dup_sub(struct npc_data *nd, va_list args);
 
 //biali world drops
-void npc_world_drops(mob_data *md);
-void npc_world_drops_sub(mob_data *md);
+void npc_world_drops(int mob_id);
+void npc_world_drops_sub(int mob_id);
 
 // biali dynmaic npc customization
 struct npc_data* npc_createdeadbody(const char *sourcename, const char *new_shown_name, const char *mapname, int x, int y, int dir);
