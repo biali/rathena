@@ -9,6 +9,8 @@ ars_fild01	mapflag	bexp	120,120
 ars_fild01	mapflag	jexp	120,120
 ars_fild01	mapflag	loadevent
 
+ars_fild01	mapflag	atk_rate	1,200,200,200,200,200
+
 
 ars_fild02	mapflag	noteleport
 ars_fild02	mapflag	nomemo
