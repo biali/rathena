@@ -9450,8 +9450,11 @@ static const struct _battle_data {
 	{ "random_options_shoes",          		&battle_config.random_options_shoes,  	    	  6,    0,    INT_MAX,          },
 	{ "random_options_garment",          	&battle_config.random_options_garment,  	      3,    0,    INT_MAX,          },
 	{ "random_options_accessory",          	&battle_config.random_options_accessory,  	      1,    0,    INT_MAX,          },
-	{ "random_options_quality_rates",      	&battle_config.random_options_qualrates,  	      1,    0,        100,          },
-	{ "random_options_drop_changes",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
+	{ "random_options_4thslot_chance",    	&battle_config.random_options_4thslot_chance,     1,    0,      10000,          },
+	{ "random_options_3rdslot_chance",    	&battle_config.random_options_3rdslot_chance,    10,    0,      10000,          },
+	{ "random_options_2ndslot_chance",    	&battle_config.random_options_2ndslot_chance,   100,    0,      10000,          },
+	{ "random_options_1stslot_chance",    	&battle_config.random_options_1stslot_chance,  1000,    0,      10000,          },
+	{ "random_options_drop_chances",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
 	
 #include "../custom/battle_config_init.inc"
 };

@@ -294,7 +294,8 @@ struct mob_data {
 	int target_id,attacked_id,norm_attacked_id;
 	int areanpc_id; //Required in OnTouchNPC (to avoid multiple area touchs)
 	int bg_id; // BattleGround System
-	int spawnx,spawny,roam; // Biali
+	int spawnx,spawny,roam; // Biali blackzone
+	bool roam_moved; //biali blackzone
 
 	t_tick next_walktime,last_thinktime,last_linktime,last_pcneartime,dmgtick;
 	short move_fail_count;
@@ -497,7 +498,7 @@ TIMER_FUNC(mvptomb_delayspawn);
 void mvptomb_create(struct mob_data *md, char *killer, time_t time);
 void mvptomb_destroy(struct mob_data *md);
 
-void mob_setdropitem_option(struct item *itm, struct s_mob_drop *mobdrop, bool force = false);
+void mob_setdropitem_option(struct item *itm, struct s_mob_drop *mobdrop);
 
 #define CHK_MOBSIZE(size) ((size) >= SZ_SMALL && (size) < SZ_MAX) /// Check valid Monster Size
 
