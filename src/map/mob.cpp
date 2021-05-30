@@ -1589,7 +1589,6 @@ int mob_unlocktarget(struct mob_data *md, t_tick tick)
 	case MSS_IDLE:
 		//Biali move blackzone dg mobs to their respawn point after chasing and loosing targets
 		if (md->roam < 1 && md->roam_moved == true) {
-			ShowWarning("Entrou aki no idle; \n");
 			unit_movepos(&md->bl, md->spawnx,md->spawny,0,0);
 			mob_spawn(md);
 			md->roam_moved = false;
@@ -1606,10 +1605,8 @@ int mob_unlocktarget(struct mob_data *md, t_tick tick)
 		break;
 	default:
 		//biali blackzone
-		if(md->roam < 1){
+		if(md->roam < 1)
 			md->roam_moved = true;
-			ShowWarning("Entrou aqui e seto u roam como true\n");
-		}
 		mob_stop_attack(md);
 		mob_stop_walking(md,1); //Stop chasing.
 		if (status_has_mode(&md->status,MD_ANGRY) && !md->state.aggressive)
