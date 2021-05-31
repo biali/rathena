@@ -29,6 +29,31 @@ function	script	F_isVSmap	{
 }
 
 
+function	script	F_rep	{
+	.@totalfac 		= getvariableofnpc(.totalfac, "reputation");
+	.@min 			= getvariableofnpc(.min, "reputation");
+	.@hated  		= getvariableofnpc(.hated, "reputation");
+	.@unfriendly  	= getvariableofnpc(.unfriendly, "reputation");
+	.@normal  		= getvariableofnpc(.normal, "reputation");
+	.@friendly  	= getvariableofnpc(.friendly, "reputation");
+	.@honored  		= getvariableofnpc(.honored, "reputation");
+	.@max  			= getvariableofnpc(.max, "reputation");
+
+	.@faction = getarg(0,0);
+
+	if(.@faction == 0)
+		return -999;
+
+	.@rep = getreputation(.@faction);
+	debugmes "aaa " + .@rep;
+	if(.@rep >= .@honored) return 2;
+	else if(.@rep >= .@friendly) return 1;
+	else if(.@rep > .@unfriendly && .@rep < .@friendly) return 0;
+	else if(.@rep <= .@hated) return -2;
+	else if(.@rep <= .@unfriendly) return -1;
+}
+
+
 // function	script	F_GmBlessAsBars	{
 // 	.@bars		= 15;
 // 	.@totalxp 	= getvariableofnpc(.KickOff,"Gms_Blessing");

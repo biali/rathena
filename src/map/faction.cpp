@@ -479,6 +479,7 @@ void faction_leave( struct map_session_data *sd) {
 	clif_name_area(&sd->bl);
 	// clif_refresh(sd);
 	clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,sd->vd.cloth_color,AREA);
+	clif_refresh(sd); //TODO this is just to remove the auras... should have a better way
 	// clif_guild_emblem_area(&sd->bl);
 
 	return;

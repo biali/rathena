@@ -1,7 +1,7 @@
 // Dummy shop to insert items into:
 -	shop	dyn_shop1	-1,501:50.
 
-prontera,181,200,4	script	Traveler Merchant	123,{
+-	script	repDealer	-1,{
 	function delete_arrays;
 	@default$ = .default$;
     switch(getcharid(6)) {
@@ -9,12 +9,24 @@ prontera,181,200,4	script	Traveler Merchant	123,{
         case 2:
         case 3:
         case 4:
-            for(.@i=0;.@i<getarraysize(getd("$@rare_" + getcharid(6)));.@i=.@i+3 ) {
-                @default$ += ",";
-                @default$ += getd("$@rare_"+getcharid(6)+"["+.@i+"]"); // id
-                @default$ += ":";
-                @default$ += getd("$@rare_"+getcharid(6)+"["+(.@i+1)+"]"); // price
-            }
+			.@rep = callfunc("F_rep",getcharid(6));
+			debugmes ""+.@rep;
+			if( .@rep > 0 ) {
+				for(.@i=0;.@i<getarraysize(getd("$@unc_" + getcharid(6)+strnpcinfo(2)));.@i=.@i+3 ) {
+					@default$ += ",";
+					@default$ += getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+.@i+"]"); // id
+					@default$ += ":";
+					@default$ += getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+(.@i+1)+"]"); // price
+				}
+			}
+			if( .@rep > 1 ) {
+				for(.@i=0;.@i<getarraysize(getd("$@rare_" + getcharid(6)+strnpcinfo(2)));.@i=.@i+3 ) {
+					@default$ += ",";
+					@default$ += getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+.@i+"]"); // id
+					@default$ += ":";
+					@default$ += getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+(.@i+1)+"]"); // price
+				}
+			}
             break;
     }
 	
@@ -36,21 +48,40 @@ prontera,181,200,4	script	Traveler Merchant	123,{
 	end;
 
 OnBuyItem:
-	mes .n$;
 	for (.@i = 0; .@i < getarraysize(@bought_nameid); .@i++){
 		if (@bought_quantity[.@i] <= 0){
+			mes .n$;
 			mes "Oops! Is everything alright with you?!";
 			close;
 		} else {
 			// lets check if the item being sold is a limited-amount item or not:
 			// We dont need to validade faction_id again here because it we've
 			// done that already when creating the menu/shop list
-			.@rindex = inarray(getd("$@rare_"+getcharid(6)), @bought_nameid[.@i]);
-			if(.@rindex > -1) {
-				.@qtt = .@rindex + 2;
-				if (@bought_quantity[.@i] > getd("$@rare_"+getcharid(6)+"["+.@qtt+"]")) {
+			
+			// Uncommon Items - Friendly
+			.@idx = inarray(getd("$@unc_"+getcharid(6)+strnpcinfo(2)), @bought_nameid[.@i]);
+			if(.@idx> -1) {
+				.@qtt = .@idx+ 2;
+				if (@bought_quantity[.@i] > getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]")) {
+					if(!.@uncOk && !.@rareOk)
+						mes .n$;
 					mes getitemname(@bought_nameid[.@i]) + " ^CC0000 out of stock.^000000";
-					mes "^0000FF"+getd("$@rare_"+getcharid(6)+"["+.@qtt+"]")+"x left.^000000";
+					mes "^0000FF"+getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]")+"x left.^000000";
+					continue;
+				}
+				// lets mark this check as passed:
+				.@uncOk = true;
+			}
+			
+			// Rare Items - Honored
+			.@idx = inarray(getd("$@rare_"+getcharid(6)+strnpcinfo(2)), @bought_nameid[.@i]);
+			if(.@idx> -1) {
+				.@qtt = .@idx+ 2;
+				if (@bought_quantity[.@i] > getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]")) {
+					if(!.@uncOk && !.@rareOk)
+						mes .n$;
+					mes getitemname(@bought_nameid[.@i]) + " ^CC0000 out of stock.^000000";
+					mes "^0000FF"+getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]")+"x left.^000000";
 					continue;
 				}
 				// lets mark this check as passed:
@@ -66,10 +97,16 @@ OnBuyItem:
 
 			if(.@zenyOk) {
 				Zeny -= .@totalCost;
-				if(.@rareOk)
-					set getd("$@rare_"+getcharid(6)+"["+.@qtt+"]"), getd("$@rare_"+getcharid(6)+"["+.@qtt+"]") - @bought_quantity[.@i];
+				if(.@rareOk){
+					set getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]"), getd("$@rare_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]") - @bought_quantity[.@i];
+					getitembound @bought_nameid[.@i],@bought_quantity[.@i],Bound_Account;
+					continue;
+				} else if (.@uncOk) {
+					set getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]"), getd("$@unc_"+getcharid(6)+strnpcinfo(2)+"["+.@qtt+"]") - @bought_quantity[.@i];
+				}
 				getitem @bought_nameid[.@i], @bought_quantity[.@i];
 			} else {
+				mes .n$;
 				mes "I am sorry,";
 				mes "It seems you don't have enough zeny to complete the transaction.";
 				delete_arrays();
@@ -77,10 +114,13 @@ OnBuyItem:
 			}
 		}
 	}
-	mes "All done,";
-	mes "Thank you very much!";
+	// mes "All done,";
+	// mes "Thank you very much!";
 	delete_arrays();
-	close;
+	if(.@rareOk && .@uncOk)
+		close;
+	else
+		end;
 
 OnClock0400:
 OnInit:
@@ -88,12 +128,19 @@ OnInit:
     //TODO : maybe set a timer OnInit to randomize when the rare items will actually become available?
 
     //nameid, price, qtty of rare items available in limited qualities daily to honored players with their factions
-    setarray $@rare_1[0],27232,100000,1,4048,5000,10;
-    setarray $@rare_2[0],27232,100000,1,4048,5000,10;
-    setarray $@rare_3[0],27232,100000,1,4048,5000,10;
-    setarray $@rare_4[0],27232,100000,1,4048,5000,10;
+    //Honored
+	setarray getd("$@rare_1"+strnpcinfo(2)+"["+0+"]"),27232,100000,1;
+    setarray getd("$@rare_2"+strnpcinfo(2)+"["+0+"]"),27232,100000,1;
+    setarray getd("$@rare_3"+strnpcinfo(2)+"["+0+"]"),27232,100000,1;
+    setarray getd("$@rare_4"+strnpcinfo(2)+"["+0+"]"),27232,100000,1;
 
-    set .default$,"1750:2,611:100,501:100,502:100,506:100,645:100,601:100,602:100"; 
+	//Friendly
+	setarray getd("$@unc_1"+strnpcinfo(2)+"["+0+"]"),12004,500,500,12005,500,500,12008,500,300,12009,500,300;
+    setarray getd("$@unc_2"+strnpcinfo(2)+"["+0+"]"),12004,500,500,12005,500,500,12008,500,300,12009,500,300;
+    setarray getd("$@unc_3"+strnpcinfo(2)+"["+0+"]"),12004,500,500,12005,500,500,12008,500,300,12009,500,300;
+    setarray getd("$@unc_4"+strnpcinfo(2)+"["+0+"]"),12004,500,500,12005,500,500,12008,500,300,12009,500,300;
+
+    set .default$,"1750:2,611:100,645:100,601:100,602:100"; 
 	end;
 
 	function delete_arrays {
@@ -104,3 +151,19 @@ OnInit:
 		return;
 	}
 }
+
+
+prontera,57,194,0	duplicate(repDealer)	Traveller Merchant#prt1	654
+prontera,270,193,0	duplicate(repDealer)	Traveller Merchant#prt2	654
+morocc,172,51,4	duplicate(repDealer)	Traveller Merchant#moc1	654
+payon,67,154,5	duplicate(repDealer)	Traveller Merchant#pay1	654
+pay_arche,141,34,2	duplicate(repDealer)	Traveller Merchant#pay2	654
+gef_fild07,295,206,5	duplicate(repDealer)	Traveller Merchant#gef1	654
+comodo,114,258,4	duplicate(repDealer)	Traveller Merchant#cmd1	654
+moc_fild13,155,259,7	duplicate(repDealer)	Traveller Merchant#moc2	654
+
+// brasilis,155,175,4	duplicate(repDealer)	Duplicate Test2	654
+// ayothaya,155,175,4	duplicate(repDealer)	Duplicate Test2	654
+// yuno,155,175,4	duplicate(repDealer)	Duplicate Test2	654
+// izlude,155,175,4	duplicate(repDealer)	Duplicate Test2	654
+// alberta,155,175,4	duplicate(repDealer)	Duplicate Test2	654

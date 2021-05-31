@@ -3,7 +3,6 @@
 	end;
 
 OnShowReputationAll:
-	debugmes "ENtrou";
 	for(.@i=1;.@i<=.totalfac;.@i++) {
 		.@rep$ = CalcRep(.@i);
 		mes factioninfo(.@i,0) + " : " + .@rep$;

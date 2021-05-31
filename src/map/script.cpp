@@ -5593,7 +5593,7 @@ BUILDIN_FUNC(warp)
 	else
 		ret = pc_setpos(sd,mapindex_name2id(str),x,y,CLR_OUTSIGHT);
 
-	if( ret ) {
+	if( ret && !sd->status.faction_id) { //biali workaround to avoid spamming errors in the console
 		ShowError("buildin_warp: moving player '%s' to \"%s\",%d,%d failed.\n", sd->status.name, str, x, y);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -25983,7 +25983,8 @@ BUILDIN_FUNC(getreputation)
 
 	int i = script_getnum(st,2);
 
-	return sd->status.rep[i].value;
+	script_pushint(st, sd->status.rep[i].value);
+	return SCRIPT_CMD_SUCCESS;
 
 }
 
