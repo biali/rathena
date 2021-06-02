@@ -6936,6 +6936,7 @@ static int script_countitem_sub(struct item *items, struct item_data *id, int si
 	nullpo_retr(-1, st);
 
 	int count = 0;
+	int char_id = 0; //Biali Ancient Woe
 
 	if (!expanded) { // For non-expanded functions
 		t_itemid nameid = id->nameid;
@@ -6991,6 +6992,23 @@ static int script_countitem_sub(struct item *items, struct item_data *id, int si
 						break;
 				}
 				if (j != MAX_ITEM_RDM_OPT)
+					continue;
+			}
+			// biali bg, woe, pvp, ancient, rpk, fvf reserved items
+			if( items[i].card[0] == CARD0_CREATE )
+			{
+				char_id = MakeDWord(items[i].card[2],items[i].card[3]);
+				if( battle_config.bg_reserved_char_id && char_id == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m,MF_BATTLEGROUND) )
+					continue;
+				if( battle_config.pvp_reserved_char_id && char_id == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m,MF_PVP) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m,MF_ANCIENT) )
+					continue;
+				if( battle_config.woe_reserved_char_id && char_id == battle_config.woe_reserved_char_id && !map_getmapflag(sd->bl.m,MF_GVG) && !map_getmapflag(sd->bl.m,MF_GVG_DUNGEON) && !map_getmapflag(sd->bl.m,MF_GVG_CASTLE) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m,MF_RPK) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m,MF_FVF) )
 					continue;
 			}
 
@@ -8167,6 +8185,22 @@ static bool buildin_delitem_search(struct map_session_data* sd, struct item* it,
 					if (j != MAX_ITEM_RDM_OPT)
 						continue;
 				}
+			}
+			else if( itm->card[0] == CARD0_CREATE ) //Biali
+			{
+				int char_id = MakeDWord(items[i].card[2],items[i].card[3]);
+				if( battle_config.bg_reserved_char_id && char_id == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m,MF_BATTLEGROUND) )
+					continue;
+				if( battle_config.pvp_reserved_char_id && char_id == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m,MF_PVP) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m,MF_ANCIENT) )
+					continue;
+				if( battle_config.woe_reserved_char_id && char_id == battle_config.woe_reserved_char_id && !map_getmapflag(sd->bl.m,MF_GVG) && !map_getmapflag(sd->bl.m,MF_GVG_DUNGEON) && !map_getmapflag(sd->bl.m,MF_GVG_CASTLE) )
+					continue;
+				if( battle_config.rpk_reserved_char_id && char_id == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m,MF_RPK) )
+					continue;
+				if( battle_config.fvf_reserved_char_id && char_id == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m,MF_FVF) )
+					continue;
 			}
 			else
 			{

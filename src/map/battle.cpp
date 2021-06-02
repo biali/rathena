@@ -9388,6 +9388,8 @@ static const struct _battle_data {
  	{ "bg_reserved_char_id",                &battle_config.bg_reserved_char_id,             999996, 0,      INT_MAX,        },
  	{ "woe_reserved_char_id",				&battle_config.woe_reserved_char_id,            999997, 0,      INT_MAX,        },
 	{ "pvp_reserved_char_id",               &battle_config.pvp_reserved_char_id,            999998, 0,      INT_MAX,        },
+	{ "rpk_reserved_char_id",               &battle_config.rpk_reserved_char_id,            999990, 0,      INT_MAX,        },
+	{ "fvf_reserved_char_id",               &battle_config.fvf_reserved_char_id,            999991, 0,      INT_MAX,        },
  	{ "bg_can_trade",						&battle_config.bg_can_trade,                    1,      0,      1,              },
  	{ "bg_double_login",					&battle_config.bg_double_login,                 1,      0,      1,              },
 #endif

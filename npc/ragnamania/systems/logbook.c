@@ -172,9 +172,9 @@ L_PremmyMenu:
 					T36: warp "yuno",157,51; end;
 					break;
 				case 2:
-					menu "^f5b041Premium^000000 Room",X1,"Timeless Dungeons",X2;
+					menu "^f5b041Premium^000000 Room";//,X1,"Timeless Dungeons",X2;
 					X1: warp "sala_premmy",40,38; end;
-					X2: warp "yuno",282,288; end;
+					//X2: warp "yuno",282,288; end;
 					break;
 			}
 		case 3: // Battlelog

@@ -6409,6 +6409,7 @@ int pc_useitem(struct map_session_data *sd,int n)
 	t_tick tick = gettick();
 	int amount;
 	t_itemid nameid;
+	int char_id = 0; //Biali Ancient WoE
 	struct script_code *script;
 	struct item item;
 	struct item_data *id;
@@ -6477,6 +6478,23 @@ int pc_useitem(struct map_session_data *sd,int n)
 		return 0;/* regardless, effect is not run */
 	}
 
+	// biali bg, woe, pvp, ancient, rpk, fvf reserved items
+	if( sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE) {
+		char_id = MakeDWord(item.card[2],item.card[3]);
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m, MF_BATTLEGROUND))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m, MF_ANCIENT))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.woe_reserved_char_id && !mapdata_flag_gvg(map_getmapdata(sd->bl.m)))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m, MF_PVP))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m, MF_RPK))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m, MF_FVF))
+			return 0;
+	}
+
 	sd->itemid = item.nameid;
 	sd->itemindex = n;
 	if(sd->catch_target_class != PET_CATCH_FAIL) //Abort pet catching.
@@ -6497,7 +6515,7 @@ int pc_useitem(struct map_session_data *sd,int n)
 		else
 			clif_useitemack(sd, n, 0, false);
 	}
-	if (item.card[0]==CARD0_CREATE && pc_famerank(MakeDWord(item.card[2],item.card[3]), MAPID_ALCHEMIST))
+	if( !map_getmapflag(sd->bl.m,MF_ANCIENT) && item.card[0] == CARD0_CREATE && char_id && (char_id == battle_config.bg_reserved_char_id || char_id == battle_config.woe_reserved_char_id || pc_famerank(MakeDWord(item.card[2],item.card[3]), MAPID_ALCHEMIST)) )
 	    potion_flag = 2; // Famous player's potions have 50% more efficiency
 
 	//Update item use time.

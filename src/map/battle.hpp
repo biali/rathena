@@ -767,6 +767,8 @@ struct Battle_Config
  	int bg_eAmod_mode;
  	int bg_reserved_char_id;
  	int woe_reserved_char_id;
+	int fvf_reserved_char_id; //biali
+	int rpk_reserved_char_id;
  	int bg_can_trade;
  	int bg_double_login;
 #endif
