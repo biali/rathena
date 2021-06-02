@@ -2979,6 +2979,12 @@ static bool is_attack_hitting(struct Damage* wd, struct block_list *src, struct 
 	hitrate = 80; //Default hitrate
 #endif
 
+	//Biali boosting hitrates for MF_ATK_RATE
+	if (map_getmapdata(src->m)->atk_rate.rate[DMGRATE_HIT]) {
+		if(src->type == map_getmapdata(src->m)->atk_rate.rate[DMGRATE_BL])
+			hitrate *= map_getmapdata(src->m)->atk_rate.rate[DMGRATE_HIT]/100;
+	}
+
 	if(battle_config.agi_penalty_type && battle_config.agi_penalty_target&target->type) {
 		unsigned char attacker_count = unit_counttargeted(target); //256 max targets should be a sane max
 

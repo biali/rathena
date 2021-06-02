@@ -12976,9 +12976,9 @@ BUILDIN_FUNC(setmapflag)
 			args.nightmaredrop.drop_type = NMDT_EQUIP;
 			break;
 		case MF_ATK_RATE:
-			if (script_hasdata(st, 4) && script_hasdata(st, 5))
-				args.atk_rate.rate[script_getnum(st, 5)] = script_getnum(st, 4);
-			else {
+			if (script_hasdata(st, 4) && script_hasdata(st, 5)) {
+				args.atk_rate.rate[script_getnum(st, 4)] = script_getnum(st, 5);
+			} else {
 				ShowWarning("buildin_setmapflag: Unable to set atk_rate mapflag as flag data is missing.\n");
 				return SCRIPT_CMD_FAILURE;
 			}

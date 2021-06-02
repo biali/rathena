@@ -4670,6 +4670,7 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 				case DMGRATE_WEAPON:
 				case DMGRATE_MAGIC:
 				case DMGRATE_MISC:
+				case DMGRATE_HIT:
 					return mapdata->atk_rate.rate[args->flag_val];
 				default:
 					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
@@ -5045,12 +5046,16 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 			else {
 				nullpo_retr(false, args);
 
-				if (!args->atk_rate.rate[DMGRATE_BL]) {
+				for (int i = 0; i < DMGRATE_MAX; i++) 
+					if(args->atk_rate.rate[i])
+						mapdata->atk_rate.rate[i] = args->atk_rate.rate[i];
+
+				if (!mapdata->atk_rate.rate[DMGRATE_BL]) {
 					ShowError("map_setmapflag: atk_rate without attacker type for map %s.\n", mapdata->name);
 					return false;
 				}
 
-				memcpy(&mapdata->atk_rate, &args->atk_rate, sizeof(struct s_global_damage_rate));
+				// memcpy(&mapdata->atk_rate, &args->atk_rate, sizeof(struct s_global_damage_rate));
 			}
 			mapdata->flag[mapflag] = status;
 			break;

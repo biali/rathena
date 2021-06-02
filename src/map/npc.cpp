@@ -4691,10 +4691,11 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 			if (!state)
 				map_setmapflag_sub(m, MF_ATK_RATE, false, &args);
 			else {
-				if (sscanf(w4, "%d,%d,%d,%d,%d,%d",
+				if (sscanf(w4, "%d,%d,%d,%d,%d,%d,%d",
 					&args.atk_rate.rate[DMGRATE_BL], &args.atk_rate.rate[DMGRATE_SHORT], &args.atk_rate.rate[DMGRATE_LONG],
-					&args.atk_rate.rate[DMGRATE_WEAPON], &args.atk_rate.rate[DMGRATE_MAGIC], &args.atk_rate.rate[DMGRATE_MISC]
-				) == 6)
+					&args.atk_rate.rate[DMGRATE_WEAPON], &args.atk_rate.rate[DMGRATE_MAGIC], &args.atk_rate.rate[DMGRATE_MISC],
+					&args.atk_rate.rate[DMGRATE_HIT]
+				) == 7)
 				{
 					map_setmapflag_sub(m, MF_ATK_RATE, true, &args);
 				}

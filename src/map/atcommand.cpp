@@ -4272,12 +4272,14 @@ ACMD_FUNC(mapinfo) {
 	if (map_getmapflag_sub(m_id, MF_ATK_RATE, NULL)) {
 		sprintf(atcmd_output,"Damage Adjustment for: %s", atcommand_mapinfo_globaldamage_sub(mapdata->atk_rate.rate[DMGRATE_BL]).c_str());
 		clif_displaymessage(fd,atcmd_output);
-		sprintf(atcmd_output," > Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%%",
+		sprintf(atcmd_output," > Bl: %d%% | Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%% | Hit: %d%%",
+			mapdata->atk_rate.rate[DMGRATE_BL],
 			mapdata->atk_rate.rate[DMGRATE_SHORT],
 			mapdata->atk_rate.rate[DMGRATE_LONG],
 			mapdata->atk_rate.rate[DMGRATE_WEAPON],
 			mapdata->atk_rate.rate[DMGRATE_MAGIC],
-			mapdata->atk_rate.rate[DMGRATE_MISC]);
+			mapdata->atk_rate.rate[DMGRATE_MISC],
+			mapdata->atk_rate.rate[DMGRATE_HIT]);
 		clif_displaymessage(fd,atcmd_output);
 	}
 
