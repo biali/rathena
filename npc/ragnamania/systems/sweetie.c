@@ -454,7 +454,7 @@
 			// --------------------------------------------------
 				Specials:
 			// --------------------------------------------------
-			menu	"^f5b041Premium^000000 Room";//,X1,"Timeless Dungeons",X2;//, "Novice Grounds",X2;
+			menu	"^f5b041Premium^000000 Room",X1;//,"Timeless Dungeons",X2;//, "Novice Grounds",X2;
 
 			X1: Restrict("VIP",getcharid(0));
 				Go("sala_premmy",40,38);

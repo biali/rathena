@@ -1262,6 +1262,34 @@ int chrif_buildfamelist(void) {
 	return 0;
 }
 
+//biali damage log
+int chrif_recvfamelist_single(int fd, int type)
+{
+	struct fame_list* list;
+	int i, len = 6, size;
+
+	switch( type )
+	{
+		case 1: memset(smith_fame_list, 0, sizeof(smith_fame_list)); list = smith_fame_list;   break;
+		case 2: memset(chemist_fame_list, 0, sizeof(chemist_fame_list)); list = chemist_fame_list; break;
+		case 3: memset(taekwon_fame_list, 0, sizeof(taekwon_fame_list)); list = taekwon_fame_list; break;
+		case 4: memset(pvprank_fame_list, 0, sizeof(pvprank_fame_list)); list = pvprank_fame_list; break;
+		case 5: memset(bgrank_fame_list, 0, sizeof(bgrank_fame_list)); list = bgrank_fame_list;  break;
+		case 6: memset(bg_fame_list, 0, sizeof(bg_fame_list)); list = bg_fame_list;  break;
+		default: return 0;
+	}
+
+	size = RFIFOW(fd,2);
+	for( i = 0; len < size && i < MAX_FAME_LIST; i++ )
+	{
+		memcpy(&list[i],RFIFOP(fd,len),sizeof(struct fame_list));
+		len += sizeof(struct fame_list);
+	}
+
+	return 0;
+}
+//fim biali damage log
+
 int chrif_recvfamelist(int fd) {
 	int num, size;
 	int total = 0, len = 8;
@@ -1269,6 +1297,35 @@ int chrif_recvfamelist(int fd) {
 	memset (smith_fame_list, 0, sizeof(smith_fame_list));
 	memset (chemist_fame_list, 0, sizeof(chemist_fame_list));
 	memset (taekwon_fame_list, 0, sizeof(taekwon_fame_list));
+	//biali damage log
+	memset(pvprank_fame_list, 0, sizeof(pvprank_fame_list));
+	memset(bgrank_fame_list, 0, sizeof(bgrank_fame_list));
+	memset(bg_fame_list, 0, sizeof(bg_fame_list));
+
+	size = RFIFOW(fd,12); //BGRank block size
+	for( num = 0; len < size && num < MAX_FAME_LIST; num++ )
+	{
+		memcpy(&bg_fame_list[num],RFIFOP(fd,len),sizeof(struct fame_list));
+		len += sizeof(struct fame_list);
+	}
+	total += num;
+
+	size = RFIFOW(fd,10); //BGRank block size
+	for( num = 0; len < size && num < MAX_FAME_LIST; num++ )
+	{
+		memcpy(&bgrank_fame_list[num],RFIFOP(fd,len),sizeof(struct fame_list));
+		len += sizeof(struct fame_list);
+	}
+	total += num;
+
+	size = RFIFOW(fd,8); //PvPRank block size
+	for( num = 0; len < size && num < MAX_FAME_LIST; num++ )
+	{
+		memcpy(&pvprank_fame_list[num],RFIFOP(fd,len),sizeof(struct fame_list));
+		len += sizeof(struct fame_list);
+	}
+	total += num;
+	//biali fim damage log
 
 	size = RFIFOW(fd, 6); //Blacksmith block size
 

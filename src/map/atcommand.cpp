@@ -11597,6 +11597,12 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(leader),
 		ACMD_DEF(reportafk),
 		ACMD_DEF(bgskill),
+		// Biali damage log
+		ACMD_DEF(bgranked),
+		ACMD_DEF(bgregular),
+		ACMD_DEF(battleinfo),
+		ACMD_DEF(rankreset),
+		ACMD_DEF(char2dump),
 #endif
 	};
 	AtCommandInfo* atcommand;

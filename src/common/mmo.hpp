@@ -1219,7 +1219,10 @@ enum e_rank {
 	RANK_BLACKSMITH = 0,
 	RANK_ALCHEMIST = 1,
 	RANK_TAEKWON = 2,
-	RANK_KILLER = 3
+	RANK_KILLER = 3,
+	RANK_PVPRANK = 4,
+	RANK_BGRANK = 5,
+	RANK_BG = 6
 };
 
 struct clan_alliance {

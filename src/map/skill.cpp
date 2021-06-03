@@ -3483,7 +3483,7 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 		nbl = battle_getenemyarea(bl,bl->x,bl->y,2,BL_CHAR,bl->id);
 		if( nbl ){ // Only one target is chosen.
 			damage = damage / 2; // Deflect half of the damage to a target nearby
-			clif_skill_damage(bl, nbl, tick, status_get_amotion(src), 0, status_fix_damage(bl,nbl,damage,0,0), dmg.div_, OB_OBOROGENSOU_TRANSITION_ATK, -1, DMG_SINGLE);
+			clif_skill_damage(bl, nbl, tick, status_get_amotion(src), 0, status_fix_damage(bl,nbl,damage,0,skill_id), dmg.div_, OB_OBOROGENSOU_TRANSITION_ATK, -1, DMG_SINGLE);// Biali Damage log
 		}
 	}
 
@@ -3746,7 +3746,7 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			{
 				if (!rmdamage) {
 					clif_damage(d_bl, d_bl, gettick(), 0, 0, damage, 0, DMG_NORMAL, 0, false);
-					status_fix_damage(NULL, d_bl, damage, 0, 0);
+					status_fix_damage(NULL, d_bl, damage, 0, skill_id); // Biali Damage log
 				} else {
 					bool isDevotRdamage = false;
 
@@ -3756,12 +3756,12 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 					// This check is only for magical skill.
 					// For BF_WEAPON skills types track var rdamage and function battle_calc_return_damage
 					clif_damage(bl, (!isDevotRdamage) ? bl : d_bl, gettick(), 0, 0, damage, 0, DMG_NORMAL, 0, false);
-					status_fix_damage(bl, (!isDevotRdamage) ? bl : d_bl, damage, 0, 0);
+					status_fix_damage(bl, (!isDevotRdamage) ? bl : d_bl, damage, 0, 0);// Biali Damage log
 				}
 			} else {
 				status_change_end(bl, SC_DEVOTION, INVALID_TIMER);
 				if (!dmg.amotion)
-					status_fix_damage(src, bl, damage, dmg.dmotion, 0);
+					status_fix_damage(src, bl, damage, dmg.dmotion, 0);// Biali Damage log
 			}
 		}
 		if (tsc->data[SC_WATER_SCREEN_OPTION]) {
@@ -3771,10 +3771,10 @@ int64 skill_attack (int attack_type, struct block_list* src, struct block_list *
 			if (e_bl) {
 				if (!rmdamage) {
 					clif_skill_damage(e_bl, e_bl, gettick(), 0, 0, damage, dmg.div_, skill_id, -1, skill_get_hit(skill_id));
-					status_fix_damage(NULL, e_bl, damage, 0, 0);
+					status_fix_damage(NULL, e_bl, damage, 0, skill_id);// Biali Damage log
 				} else {
 					clif_skill_damage(bl, bl, gettick(), 0, 0, damage, dmg.div_, skill_id, -1, skill_get_hit(skill_id));
-					status_fix_damage(bl, bl, damage, 0, 0);
+					status_fix_damage(bl, bl, damage, 0, skill_id);// Biali Damage log
 				}
 			}
 		}
@@ -4613,7 +4613,7 @@ static int skill_tarotcard(struct block_list* src, struct block_list *target, ui
 	}
 	case 4: // THE CHARIOT - 1000 damage, random armor destroyed
 	{
-		status_fix_damage(src, target, 1000, 0, skill_id);
+		status_fix_damage(src, target, 1000, 0, skill_id);// Biali Damage log
 		clif_damage(src, target, tick, 0, 0, 1000, 0, DMG_NORMAL, 0, false);
 		if (!status_isdead(target))
 		{
@@ -4663,7 +4663,7 @@ static int skill_tarotcard(struct block_list* src, struct block_list *target, ui
 	}
 	case 11: // THE DEVIL - 6666 damage, atk and matk halved, cursed
 	{
-		status_fix_damage(src, target, 6666, 0, skill_id);
+		status_fix_damage(src, target, 6666, 0, skill_id);// Biali Damage log
 		clif_damage(src, target, tick, 0, 0, 6666, 0, DMG_NORMAL, 0, false);
 		sc_start(src, target, SC_INCATKRATE, 100, -50, skill_get_time2(skill_id, skill_lv));
 		sc_start(src, target, SC_INCMATKRATE, 100, -50, skill_get_time2(skill_id, skill_lv));
@@ -4672,7 +4672,7 @@ static int skill_tarotcard(struct block_list* src, struct block_list *target, ui
 	}
 	case 12: // THE TOWER - 4444 damage
 	{
-		status_fix_damage(src, target, 4444, 0, skill_id);
+		status_fix_damage(src, target, 4444, 0, skill_id);// Biali Damage log
 		clif_damage(src, target, tick, 0, 0, 4444, 0, DMG_NORMAL, 0, false);
 		break;
 	}
@@ -7661,7 +7661,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 			map_freeblock_unlock();
 			return 1;
 		}
-		status_damage(src, src, sstatus->max_hp,0,0,1, skill_id);
+		status_damage(src, src, sstatus->max_hp,0,0,1,skill_id); //Biali damage log
 		break;
 	case AL_ANGELUS:
 #ifdef RENEWAL
@@ -8053,7 +8053,7 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 		if( mer && mer->master )
 		{
 			status_heal(&mer->master->bl, mer->battle_status.hp, 0, 2);
-			status_damage(src, src, mer->battle_status.max_hp, 0, 0, 1, skill_id);
+			status_damage(src, src, mer->battle_status.max_hp, 0, 0, 1, skill_id); //Biali damage log
 		}
 		break;
 

@@ -96,7 +96,7 @@ Body:
     Flags:
       BuyingStore: true
     Script: |
-      itemskill "AL_TELEPORT",1;
+      if (getmapflag(strcharinfo(3),mf_noteleport) || getcharid(6) > 0 || getmapflag(strcharinfo(3),MF_RPK) ) { dispbottom "Unable to warp on this map."; end; } else { if(!vip_status(VIP_STATUS_ACTIVE)) delitem 601,1; warp strcharinfo(3),0,0; }
   - Id: 26558
     AegisName: Premmy Wing
     Name: Premmy Wing
@@ -107,7 +107,7 @@ Body:
       Baby: true
       All_Upper: true
     Script: |
-      if(vip_status(VIP_STATUS_ACTIVE) == true) {if( getmapflag(strcharinfo(3),33) == 1 ) end; if( getmapflag(strcharinfo(3),6) == 1 ) end; if( getmapflag(strcharinfo(3),9) == 1 ) end; warp "sala_premmy",41,38; end;} else { mes "[Voz do Além]"; mes "Somente doadores podem usar este item."; close; }
+      if(vip_status(VIP_STATUS_ACTIVE) == true) {if( getmapflag(strcharinfo(3),33) == 1 ) end; if( getmapflag(strcharinfo(3),6) == 1 ) end; if( getmapflag(strcharinfo(3),9) == 1 ) end; warp "sala_premmy",41,38; end;} else { mes "[Unknown Voice]"; mes "This item is reserved to be used by premium accounts only."; close; }
   - Id: 26560
     AegisName: Apprentice Scribe Book
     Name: Apprentice Scribe Book

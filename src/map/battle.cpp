@@ -327,7 +327,7 @@ TIMER_FUNC(battle_delay_damage_sub){
 				battle_damage(src, target, dat->damage, dat->delay, dat->skill_lv, dat->skill_id, dat->dmg_lv, dat->attack_type, dat->additional_effects, tick, dat->isspdamage);
 			} else if( !src && dat->skill_id == CR_REFLECTSHIELD ) { // it was monster reflected damage, and the monster died, we pass the damage to the character as expected
 				map_freeblock_lock();
-				status_fix_damage(target, target, dat->damage, dat->delay, dat->skill_id);
+				status_fix_damage(target, target, dat->damage, dat->delay, dat->skill_id);// Biali Damage log
 				map_freeblock_unlock();
 			}
 		}
@@ -5776,7 +5776,7 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 		)
 	{
 		ATK_RATER(wd->damage, 50)
-		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false),ST_REJECTSWORD);
+		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false), skill_id); //biali damage log
 		clif_skill_nodamage(target,target,ST_REJECTSWORD,tsc->data[SC_REJECTSWORD]->val1,1);
 		if( --(tsc->data[SC_REJECTSWORD]->val3) <= 0 )
 			status_change_end(target, SC_REJECTSWORD, INVALID_TIMER);
@@ -7845,7 +7845,7 @@ int battle_damage_area(struct block_list *bl, va_list ap) {
 		if( amotion )
 			battle_delay_damage(tick, amotion,src,bl,0,CR_REFLECTSHIELD,0,damage,ATK_DEF,0,true,false);
 		else
-			status_fix_damage(src,bl,damage,0,LG_REFLECTDAMAGE);
+			status_fix_damage(src,bl,damage,0,0);// Biali Damage log
 		clif_damage(bl,bl,tick,amotion,dmotion,damage,1,DMG_ENDURE,0,false);
 		skill_additional_effect(src, bl, CR_REFLECTSHIELD, 1, BF_WEAPON|BF_SHORT|BF_NORMAL,ATK_DEF,tick);
 		map_freeblock_unlock();
@@ -8151,7 +8151,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 					}
 
 					clif_damage(d_bl, d_bl, gettick(), wd.amotion, wd.dmotion, damage, 1, DMG_NORMAL, 0, false);
-					status_fix_damage(NULL, d_bl, damage, 0, CR_DEVOTION);
+					status_fix_damage(NULL, d_bl, damage, 0,0);// Biali Damage log
 				}
 			}
 			else
@@ -8170,7 +8170,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 			if (e_bl && !status_isdead(e_bl)) {
 				clif_damage(e_bl, e_bl, tick, 0, 0, damage, wd.div_, DMG_NORMAL, 0, false);
-				status_fix_damage(NULL, e_bl, damage, 0, EL_WATER_SCREEN);
+				status_fix_damage(NULL, e_bl, damage, 0, 0);// biali damage log
 			}
 		}
 	}

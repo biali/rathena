@@ -27116,7 +27116,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getpartyshare,"i"),
 	BUILDIN_DEF(costume, "i"),
 	BUILDIN_DEF(getcostumeitem, "v"),
-	BUILDIN_DEF(rankreset,"i"),
+	BUILDIN_DEF(rankreset,"i"), // biali damage log
 
 	/**
 	 * rAthena and beyond!

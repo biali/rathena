@@ -1121,7 +1121,41 @@ void pc_inventory_rental_add(struct map_session_data *sd, unsigned int seconds)
 		sd->rental_timer = add_timer(gettick() + i64min(tick,3600000), pc_inventory_rental_end, sd->bl.id, 0);
 }
 
-// Biali - Damage Log
+//Biali damage log
+/*==========================================
+	Ranking Reset
+ *------------------------------------------*/
+void pc_ranking_reset(int type, bool char_server)
+{
+	struct map_session_data *sd;
+	struct s_mapiterator* iter;
+
+	iter = mapit_getallusers();
+	for( sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); sd = (TBL_PC*)mapit_next(iter) )
+	{
+		switch( type )
+		{
+		case 0: // WoE Ranking Reset
+			memset(&sd->status.wstats, 0, sizeof(struct s_woestats));
+			memset(&sd->status.skillcount, 0, sizeof(struct s_skillcount));
+			sd->status.wstats.score = 2000;
+			break;
+		case 1: // Battleground Stats
+			memset(&sd->status.bgstats, 0, sizeof(struct s_battleground_stats));
+			memset(&sd->status.bg_skillcount, 0, sizeof(struct s_skillcount));
+			sd->status.bgstats.score = 2000;
+			break;
+		case 2: // PVP Event Ranking
+			memset(&sd->status.pvp, 0, sizeof(struct s_killrank));
+			sd->status.pvp.score = 2000;
+			break;
+		}
+	}
+	mapit_free(iter);
+
+	if( char_server ) chrif_ranking_reset(type);
+}
+
 void pc_record_mobkills(struct map_session_data *sd, struct mob_data *md)
 {
 	struct guild *g;
@@ -1327,10 +1361,6 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 	if( !tsd || !ssd || tsd == ssd )
 		return;
 
-	// biali faction system
-	if(tsd->status.faction_id > 0 || ssd->status.faction_id > 0)
-		return;
-
 	m = ssd->bl.m;
 
 	if( map_allowed_woe(m) )
@@ -1346,7 +1376,6 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 
 		if( (tg = guild_search(tsd->status.guild_id)) == NULL || (sg = guild_search(ssd->status.guild_id)) == NULL )
 			return;
-
 
 		i = gc->castle_id;
 		Elo = (int)(10. / (1 + pow(10., (int)(sg->castle[i].offensive_score - tg->castle[i].offensive_score) / 2000.)));
@@ -1406,7 +1435,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 		int sc = 1, tc = 1, s_Elo, t_Elo, diff_lv, cash = 0;
 
 		// Source
-		if( ssd->status.party_id && (p = party_search(ssd->status.party_id)) != NULL )
+		if( (p = party_search(ssd->status.party_id)) != NULL )
 		{
 			for( i = sc = 0; i < MAX_PARTY; i++ )
 			{
@@ -1414,7 +1443,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 					continue;
 				if( pc_isdead(s_pl[sc]) && s_pl[sc] != ssd )
 					continue;
-				if( !check_distance_bl(&ssd->bl,&s_pl[sc]->bl,30) )
+				if( !check_distance_bl(&ssd->bl,&s_pl[sc]->bl,DAMAGELOG_SIZE) )
 					continue; // Party member not on Area
 				
 				s_rate += s_pl[sc]->status.pvp.score;
@@ -1434,7 +1463,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 			log_pvp_kill(ssd,tsd,skill_id,sc-1); //Biali
 
 		// Target
-		if( tsd->status.party_id && (p = party_search(tsd->status.party_id)) != NULL )
+		if( (p = party_search(tsd->status.party_id)) != NULL )
 		{
 			for( i = tc = 0; i < MAX_PARTY; i++ )
 			{
@@ -1442,7 +1471,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 					continue;
 				if( pc_isdead(t_pl[tc]) && t_pl[tc] != tsd )
 					continue;
-				if( !check_distance_bl(&tsd->bl,&t_pl[sc]->bl,30) )
+				if( !check_distance_bl(&tsd->bl,&t_pl[tc]->bl,DAMAGELOG_SIZE) )
 					continue; // Party member not on Area
 				t_rate += t_pl[tc]->status.pvp.score;
 				tc++;
@@ -1505,9 +1534,9 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 			i = 0;
 			while( i < MAX_FAME_LIST && pvprank_fame_list[i].id )
 			{
-				mapreg_setregstr(add_str("$pvprank_name$")+(i<<24), pvprank_fame_list[i].name);
-				mapreg_setreg(add_str("$pvprank_id")+(i<<24), pvprank_fame_list[i].id);
-				mapreg_setreg(add_str("$pvprank_fame")+(i<<24), pvprank_fame_list[i].fame);
+				mapreg_setregstr(reference_uid(add_str("$pvprank_name$"),(i<<24)), pvprank_fame_list[i].name);
+				mapreg_setreg(reference_uid(add_str("$pvprank_id"),(i<<24)), pvprank_fame_list[i].id);
+				mapreg_setreg(reference_uid(add_str("$pvprank_fame"),(i<<24)), pvprank_fame_list[i].fame);
 				i++;
 			}
 
@@ -1666,40 +1695,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 	}
 }
 
-/*==========================================
-	Ranking Reset
- *------------------------------------------*/
-void pc_ranking_reset(int type, bool char_server)
-{
-	struct map_session_data *sd;
-	struct s_mapiterator* iter;
-
-	iter = mapit_getallusers();
-	for( sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); sd = (TBL_PC*)mapit_next(iter) )
-	{
-		switch( type )
-		{
-		case 0: // WoE Ranking Reset
-			memset(&sd->status.wstats, 0, sizeof(struct s_woestats));
-			memset(&sd->status.skillcount, 0, sizeof(struct s_skillcount));
-			sd->status.wstats.score = 2000;
-			break;
-		case 1: // Battleground Stats
-			memset(&sd->status.bgstats, 0, sizeof(struct s_battleground_stats));
-			memset(&sd->status.bg_skillcount, 0, sizeof(struct s_skillcount));
-			sd->status.bgstats.score = 2000;
-			break;
-		case 2: // PVP Event Ranking
-			memset(&sd->status.pvp, 0, sizeof(struct s_killrank));
-			sd->status.pvp.score = 2000;
-			break;
-		}
-	}
-	mapit_free(iter);
-
-	if( char_server ) chrif_ranking_reset(type);
-}
-//fim biali damage log
+// Biali fim damage log
 
 /**
  * Check if the player can sell the current item
@@ -9340,7 +9336,7 @@ void pc_close_npc(struct map_session_data *sd,int flag)
 /*==========================================
  * Invoked when a player has negative current hp
  *------------------------------------------*/
-int pc_dead(struct map_session_data *sd,struct block_list *src)
+int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id) // biali damage log
 {
 	int i=0,k=0,infamy=0;;
 	t_tick tick = gettick();
@@ -9504,6 +9500,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 
 	if (src && src->type == BL_PC) {
 		struct map_session_data *ssd = (struct map_session_data *)src;
+		pc_calc_ranking(sd, ssd, skill_id); // Ranking System biali damage log
 		pc_setparam(ssd, SP_KILLEDRID, sd->bl.id);
 		npc_script_event(ssd, NPCE_KILLPC);
 
