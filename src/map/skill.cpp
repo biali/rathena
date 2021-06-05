@@ -9482,6 +9482,8 @@ int skill_castend_nodamage_id (struct block_list *src, struct block_list *bl, ui
 							continue;
 						if (map_getmapflag(dstsd->bl.m, MF_RPK)) //biali
 							continue;
+						if( map_getmapflag(dstsd->bl.m, MF_ANCIENT) && (!pc_class2ancientwoe(dstsd->status.class_) || dstsd->md) )
+							continue; // Ancient WoE Biali
 						if(map_getcell(src->m,src->x+dx[j],src->y+dy[j],CELL_CHKNOREACH))
 							dx[j] = dy[j] = 0;
 						if (!pc_setpos(dstsd, map_id2index(src->m), src->x+dx[j], src->y+dy[j], CLR_RESPAWN))

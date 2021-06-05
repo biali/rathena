@@ -2,12 +2,12 @@
 //		  				Ragnarok Brasil Service
 // ======================================================================
 //
-// Versões:
-// 1.0 - Versão inicial.
-// 1.1 - Adicionada configuração de bonus de doação e nome do servidor.
+// Versï¿½es:
+// 1.0 - Versï¿½o inicial.
+// 1.1 - Adicionada configuraï¿½ï¿½o de bonus de doaï¿½ï¿½o e nome do servidor.
 //
-//	OBS: Anexado ao fim do NPC a tabela de log necessária, instale no seu
-//	banco de dados caso a tabela não exista.
+//	OBS: Anexado ao fim do NPC a tabela de log necessï¿½ria, instale no seu
+//	banco de dados caso a tabela nï¿½o exista.
 //
 // ======================================================================
 
@@ -19,12 +19,12 @@ OnPCLoginEvent:
 	if( .promo > 0 && .@balance >= .promo ) {
 		set .@bonusPromo,(.@balance*.bonus)/100;
 		set #CASHPOINTS,#CASHPOINTS+.@bonusPromo;
-		dispbottom "[^9810c1 Ragnamania Chronos ^000000]";
+		dispbottom "[^9810c1 Ragnamania Enliven ^000000]";
 		dispbottom "You've received ^1042c1"+.@bonusPromo+"^000000 bonus in Manias from your donation to the server.";
 		logmes "Received "+.@bonusPromo+" Manias for his donation.";
 	} else {
 		set #CASHPOINTS,#CASHPOINTS+.@balance;
-		dispbottom "[^9810c1 Ragnamania Chronos ^000000]";
+		dispbottom "[^9810c1 Ragnamania Enliven ^000000]";
 		dispbottom "You've received "+.@balance+" Manias for your donation to the server.";
 		logmes "Received "+.@balance+" Manias for his donation.";
 	}
@@ -33,9 +33,9 @@ OnPCLoginEvent:
 	query_sql "INSERT INTO  `cashlog` (`id` , `time` ,`char_id` ,`type` ,`cash_type` ,`amount` ,`map`) VALUES ( NULL , NOW( ) ,  '"+getcharid(0)+"',  'N',  'C',  '"+.@bonusPromo+"',  'NPC_CASH_AUTO')";
 	end;
 	
-// CONFIGURAÇÕES
+// CONFIGURAï¿½ï¿½ES
 OnInit:
-	set .promo,50000;						// Promoção ativa para doações de 50.000 cash ou mais. 0 = Desativado.
+	set .promo,50000;						// Promoï¿½ï¿½o ativa para doaï¿½ï¿½es de 50.000 cash ou mais. 0 = Desativado.
 	set .bonus,110;							// 120 = 20% de bonus de cash.
 											// 130 = 30%
 											// 140 = 40%
@@ -48,7 +48,7 @@ OnInit:
 
 
 /*			  ANEXO - Tabela de LOG
- *	Instale caso não tenha no seu banco de dados.
+ *	Instale caso nï¿½o tenha no seu banco de dados.
  *
  *	Tabela:
  *

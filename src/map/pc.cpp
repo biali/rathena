@@ -6910,6 +6910,15 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 	struct map_data *mapdata = map_getmapdata(m);
 	status_change *sc = status_get_sc(&sd->bl);
 
+	// Biali Ancient WoE
+	if( (map_getmapflag(m,MF_BLOCKED) && !pc_has_permission(sd,PC_PERM_WARP_ANYWHERE)) || (map_getmapflag(m,MF_ANCIENT) && (sd->md || !pc_class2ancientwoe(sd->status.class_))) )
+	{
+		mapindex = sd->status.save_point.map;
+		x = sd->status.save_point.x;
+		y = sd->status.save_point.y;
+		m = map_mapindex2mapid(mapindex);
+	}
+
 	sd->state.changemap = (sd->mapindex != mapindex);
 	sd->state.warping = 1;
 	sd->state.workinprogress = WIP_DISABLE_NONE;

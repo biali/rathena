@@ -1090,6 +1090,9 @@ enum e_mado_type : uint16 {
 )
 #define pcdb_checkid(class_) pcdb_checkid_sub((unsigned int)class_)
 
+//Ancient WoE Check
+#define pc_class2ancientwoe(class_) ( (class_ >= JOB_NOVICE && class_ <= JOB_SUPER_NOVICE && class_ != JOB_WEDDING) )
+
 // clientside display macros (values to the left/right of the "+")
 #ifdef RENEWAL
 	#define pc_leftside_atk(sd) ((sd)->battle_status.batk)

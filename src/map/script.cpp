@@ -13216,7 +13216,8 @@ static int buildin_maprespawnguildid_sub_pc(struct map_session_data* sd, va_list
 	if(
 		(sd->status.guild_id == g_id && flag&1) || //Warp out owners
 		(sd->status.guild_id != g_id && flag&2) || //Warp out outsiders
-		(sd->status.guild_id == 0 && flag&2)	// Warp out players not in guild
+		(sd->status.guild_id == 0 && flag&2) ||	// Warp out players not in guild
+		(map_getmapflag(sd->bl.m,MF_ANCIENT) && !pc_class2ancientwoe(sd->status.class_)) // Not ancient woe users
 	)
 		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,CLR_TELEPORT);
 	return 1;
@@ -19916,6 +19917,50 @@ BUILDIN_FUNC(readbook)
 
 	clif_readbook(sd->fd, book_id, page);
 	return SCRIPT_CMD_SUCCESS;
+}
+
+//Biali
+BUILDIN_FUNC(flooritem2area)
+{
+	struct item_data *item_data;
+	struct item item_tmp;
+	int nameid, amount;
+	struct map_session_data *sd;
+
+	if (script_rid2sd(sd) == NULL)
+		return SCRIPT_CMD_SUCCESS;
+
+	nameid = script_getnum(st,2);
+	if( (item_data = itemdb_search(nameid)) == NULL )
+		return 0;
+
+	amount = script_getnum(st,3);
+	if( amount < 1 )
+		return 0;
+
+	memset(&item_tmp,0,sizeof(item_tmp));
+	item_tmp.nameid = nameid;
+	item_tmp.identify = 1;
+	item_tmp.amount = 1;
+
+	map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0,0,0);
+	return 0;
+}
+
+// Biali Ancient WoE
+BUILDIN_FUNC(class2ancientwoe)
+{
+	struct map_session_data* sd;
+
+	if(!script_charid2sd(5, sd))
+		return SCRIPT_CMD_SUCCESS;
+
+	if( sd && pc_class2ancientwoe(sd->status.class_) && !sd->md )
+		script_pushint(st,1); // Cannot Access Ancient WoE with Mercenaries
+	else
+		script_pushint(st,0);
+
+	return 0;
 }
 
 /******************
@@ -27002,6 +27047,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(mercenary_set_calls,"ii"),
 	BUILDIN_DEF(mercenary_set_faith,"ii"),
 	BUILDIN_DEF(readbook,"ii"),
+	BUILDIN_DEF(flooritem2area,"ii"), //Biali
+	BUILDIN_DEF(class2ancientwoe,""),
 	BUILDIN_DEF(setfont,"i"),
 	BUILDIN_DEF(areamobuseskill,"siiiiviiiii"),
 	BUILDIN_DEF(progressbar,"si"),

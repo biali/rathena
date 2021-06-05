@@ -141,8 +141,9 @@ L_PremmyMenu:
 				goto L_Menu;
 			}
 		case 2: // TELEPORTE
-			if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-				mes "Sorry, this service is not available now.";
+			if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || @instance > 0) { 
+				mes "^0000FF[ Logbook ]^000000";
+				mes "Sorry, this service is not available in this map.";
 				close;
 			}
 			switch(select("Cities:Specials")){

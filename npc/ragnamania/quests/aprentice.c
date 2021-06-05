@@ -1,12 +1,24 @@
+//Exit warp
+new_1-2,100,6,0	script	exitwarp#novice	45,2,2,{
+	end;
+OnTouch:
+	instance_destroy(@instance);
+	@instance = 0;
+	// warp "new_1-1",144,112;
+	end;
+}
+
+// Entrance Portal
 new_1-1,148,112,1	script	nq_portal#1	45,2,2,{
 OnTouch:
-OnTouch_:
-	if(instance_id(IM_CHAR) > 0) {
-		instance_destroy instance_id(IM_CHAR);
+	if(@instance > 0) {
+		instance_destroy @instance;
+		@instance = 0;
 		sleep2 500;
 	}
 		
-	.@id = instance_create("Welcome",IM_CHAR,getcharid(0));
+	@instance = instance_create("Welcome",IM_NONE);
+	save "new_1-1",140,112;
 	switch(.@id) {
 		case -1:
 			debugmes "Invalid type.";
@@ -21,11 +33,11 @@ OnTouch_:
 			debugmes "No free instances (MAX_INSTANCE exceeded).";
 			break;
 		default:
-			debugmes "Instance created : " + instance_id();
+			debugmes "Instance created : " + @instance;
 			break;
 	}
 
-	.@id = instance_enter("Welcome",100,9,getcharid(0),instance_id(IM_CHAR));
+	.@id = instance_enter("Welcome",100,9,getcharid(0),@instance);
 	switch(.@id) {
 		case IE_NOMEMBER:
 			debugmes "Party/Guild/Clan not found (for party/guild/clan modes).";
@@ -41,22 +53,7 @@ OnTouch_:
 			break;
 	}
 	end;
- }
-
-
-// new_1-1,144,119,3	script	Lazy Cat	554,{
-
-// 	// if(instance_id(IM_CHAR)){
-// 	// 	//instance_enter("Welcome",100,9,getcharid(0),instence_id(IM_CHAR));
-// 	// 	instance_destroy;
-// 	// 	end;
-// 	// }
-// 	instance_destroy;
-// 	//INTRO_QUEST = 0;
-// 	#INTRO_QUEST = 0;
-// 	debugmes "Instance ID : " + instance_id();
-// 	end;
-//  }
+}
 
 
 // --------------- PRIMEIRA SALA ------------------
@@ -65,13 +62,12 @@ new_1-2,102,12,3	script	Stuart#room1	2073,5,5,{
 end;
 
 OnTouch:
-OnTouch_:
-	if('INTRO_QUEST > 0)
+	if(intro_quest > 0) {
+		npctalk "Hello again," + strcharinfo(0) + "! Are you lost or something?!";
 		end;
-
-	if('INTRO_QUEST == 0)
-		'INTRO_QUEST = 1;
-
+	}
+	// if(intro_quest == 0)
+	// 	intro_quest = 1;
 	npcspeed 200;
 	sleep2 1000;
 	npctalk "Oh, hello, " + strcharinfo(0) + " and welcome!";
@@ -88,20 +84,22 @@ OnTouch_:
 	sleep2 2000;
 	npcwalkto 99,30;
 	sleep2 1000;
-	'INTRO_QUEST = 2;
-	//donpcevent "nq_portal#2::OnContinue";
+	intro_quest = 2;
 	disablenpc instance_npcname(strnpcinfo(0));
 	end;
  }
 
+
+// Portal to the second room
 new_1-2,99,31,1	script	nq_portal#2	45,2,2,{
  end;
 
 OnTouch:
-OnTouch_:
-	if('INTRO_QUEST < 2){
+	if(intro_quest < 2) {
 		end;
 	} else {
+		if(intro_quest > 2)
+			disablenpc instance_npcname("Stuart#room2");
 		instance_warpall "new_1-2",99,72,instance_id();
 		end;
 	}
@@ -115,11 +113,10 @@ new_1-2,102,75,3	script	Stuart#room2	2073,5,5,{
 end;
 
 OnTouch:
-OnTouch_:
-	if('INTRO_QUEST > 2)
-		end;
-	else
-		'INTRO_QUEST = 3;
+	// if(intro_quest > 2)
+	// 	end;
+	// else
+		// intro_quest = 3;
 
 	npcspeed 200;
 	sleep2 1000;
@@ -144,21 +141,21 @@ OnTouch_:
 	sleep2 5000;
 	npctalk "Bye now!";
 	sleep2 2000;
-	'INTRO_QUEST = 4;
+	intro_quest = 4;
 	npcwalkto 97,85;
 	disablenpc instance_npcname(strnpcinfo(0));
 	end;
  }
 
 new_1-2,99,113,4	script	Arthur#room2	405,{
-	if('INTRO_QUEST < 4) {
+	if(intro_quest < 4) {
 		mes "^0000FF[ Arthur ]^000000";
 		mes "Just one minute please...";
 		close;
 	}
 	mes "^0000FF[ Arthur ]^000000";
 	if(countitem(24501) < 1) {
-	//if('INTRO_QUEST < 5) {
+	//if(intro_quest < 5) {
 		mes "... Smart bird, isn't he?";
 		mes "he he";
 		mes "Hello, "+strcharinfo(0)+"! It is a pleasure to have you here.";
@@ -180,7 +177,7 @@ new_1-2,99,113,4	script	Arthur#room2	405,{
 			mes "Go ahead, check it out... it is in your inventory.";
 			mes "Come back to me when you are finished.";
 			mes "^0000FFDouble-Click the ^5500AA"+getitemname(24501)+"^0000FF in your inventory^000000";
-		//	'INTRO_QUEST = 5;
+		//	intro_quest = 5;
 			close;
 		} else {
 			mes "Hello mate! A new char, huh?";
@@ -196,6 +193,12 @@ new_1-2,99,113,4	script	Arthur#room2	405,{
 			close;
 		}
 	} else if(countitem(24501) > 0) {
+		if(intro_quest > 5) {
+			mes "Hello again!";
+			mes "Have you spoken to my collegues already?";
+			mes "Go ahead... no reason to be shy";
+			close;
+		}
 		mes "Great! How did you like it?";
 		next;
 		mes "^0000FF[ Arthur ]^000000";
@@ -207,7 +210,7 @@ new_1-2,99,113,4	script	Arthur#room2	405,{
 		mes "Oh! That reminds me...";
 		next;
 		mes "^0000FF[ Arthur ]^000000";
-		mes "As a new player you'll get ^f5b0415 Days of Premium^000000!";
+		mes "As a new player you'll get ^f5b0413 Days of Premium^000000!";
 		mes "That is great isn't that?";
 		next;
 		mes "^0000FF[ Arthur ]^000000";
@@ -218,18 +221,18 @@ new_1-2,99,113,4	script	Arthur#room2	405,{
 		mes "She is a representative of the Premium Central.";
 		next;
 		mes "^0000FF[ Arthur ]^000000";
-		mes "Talk to her and claim your ^f5b0415 Days of Premium^000000!";
+		mes "Talk to her and claim your ^f5b0413 Days of Premium^000000!";
 		next;
 		mes "^0000FF[ Arthur ]^000000";
 		mes "Well, "+strcharinfo(0)+", I guess this is all I got for you at the moment.";
 		mes "Wish you have a great time here at Ragnamania Chronos!";
-		'INTRO_QUEST = 6;
+		intro_quest = 6;
 		close;
 	} 
  }
 
 new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
-	if('INTRO_QUEST < 6) {
+	if(intro_quest < 6) {
 		mes .n$;
 		mes "Just one minute please...";
 		close;
@@ -276,7 +279,7 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				mes "Ragnamania depends on donations to keep itself running, and retributes its players with Mania$ on each donation they make.";
 				next;
 				mes .n$;
-				mes "For every US Dollar donated you get 1000 Mania$.";
+				mes "For every Brazilian Real (BRL) donated you get 1000 Mania$.";
 				next;
 				mes .n$;
 				mes "These Mania$ are put into your account the moment you login ingame after the donation's got confirmed. It is automatic and you will receive a message confirming the transaction went through.";
@@ -319,14 +322,14 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 	}
 	if(#FREE_PREMMY == 0 && checkquest(64505) < 0) {
 		mes .n$;
-		mes "Ah! I almost forgot! I am sure you've heard we offer 5 days worth of ^f5b041Premium^000000 Account for newcomers, right?";
+		mes "Ah! I almost forgot! I am sure you've heard we offer 3 days worth of ^f5b041Premium^000000 Account for newcomers, right?";
 		next;
 		mes .n$;
 		mes "Please bear with me as I setup that for you.... It won't take a second!";
 		next;
 		setquest 64505;
 		mes .n$;
-		mes "Sorry, I am a litle busy here... Please meet me in Prontera when you are done here and I will give you your 5 days of free ^f5b041Premium^000000.";
+		mes "Sorry, I am a litle busy here... Please meet me in Prontera when you are done here and I will give you your 3 days of free ^f5b041Premium^000000.";
 		next;
 		mes .n$;
 		mes "I've included a note in your quest log so you won't forget. See you there!";
@@ -336,7 +339,7 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 		mes "Thank you very much!";
 		close2;
 	}
-	'INTRO_QUEST = 7;
+	intro_quest = 7;
 	end;
 	
 OnInit:
@@ -346,7 +349,7 @@ OnInit:
 
 
 new_1-2,120,101,3	script	Sophie#new	894,{
-	if('INTRO_QUEST < 7){
+	if(intro_quest < 7){
 		mes .n$;
 		mes "Just one minute please...";
 		close;
@@ -456,10 +459,10 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "^FFA500"+getitemname(675)+"s^000000";
 	next;
 	mes .n$;
-	mes "Later on in the game you will find out that you can also get them from our colleague ^0000FFGeferus^000000 in Geffen.";
+	mes "Later on in the game you will find out that you can also get them from other sources too.";
 	next;
 	mes .n$;
-	mes "And also from the ^0000FFBatalhas Territoriais^000000... a GvG event that happens Monday to Saturday at 2pm and then again at 7pm.";
+	mes "And also from holding a territory in the ^0000FFFort Defensing^000000... a GvG event I don't know much about I am afraid.";
 	next;
 	mes .n$;
 	mes "But that is all I know... To hear more about our PvP Events please refer to my friend accross the room...";
@@ -481,7 +484,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 		setquest 64500;
 		setquest 64503;
 	}
-	'INTRO_QUEST = 8; 
+	intro_quest = 8; 
 	close;
 
 OnInit:
@@ -492,7 +495,7 @@ OnInit:
 
 
 new_1-2,79,101,6	script	Arena Master#new	430,{
-	if('INTRO_QUEST < 8){
+	if(intro_quest < 8){
 		mes .n$;
 		mes "Just one minute please...";
 		close;
@@ -527,10 +530,9 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 	mes .n$;
 	mes "There is a lot going on:";
 	mes "PvP Arena";
-	mes "GvG Arena";
 	mes "War of the Emperium";
 	mes "Battlegrounds Arenas";
-	mes "Batalhas Territoriais";
+	mes "Fort Defensing...";
 	next;
 	mes .n$;
 	mes "I can exmplain them one by one to you, if you want...";
@@ -539,7 +541,7 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 		mes .n$;
 		mes "Want to hear more about something in particular?";
 		next;
-		switch(.@op = select("PvP Arena:GvG Arena:War of the Emperium:Battlegrounds Arenas:Batalhas Territoriais:No, I am fine, thanks")){
+		switch(.@op = select("PvP Arena:War of the Emperium:Battlegrounds Arenas:Fort Defensing:No, I am fine, thanks")){
 			case 1:
 				mes .n$;
 				mes "We count with one PvP Arena free for wall. I guard its entrance, in Prontera. You need to be at least level 180 in order to enter the arena, though.";
@@ -558,17 +560,6 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 				break;
 			case 2:
 				mes .n$;
-				mes "We count with one single GvG Arena. I guard its entrance, in Prontera. You need to be at least level 180 in order to enter the arena.";
-				next;
-				mes .n$;
-				mes "Killing other players in the GvG arena as well as in the WoE or during the Batalhas Territoriais will grant you "+getitemname(7773)+" which can be used to buy stuff you can use in GvG arenas and the WoE from specialized sellers in Prontera (in the shop to the left of the Central Plaza)";
-				next;
-				mes .n$;
-				mes "You can also use these badges to buy PvP specialized equipments from our friend ^0000FFErundek^000000 in Prontera. Only good stuff!";
-				next;
-				break;
-			case 3:
-				mes .n$;
 				mes "In the War of the Emperium, you know, it is all about breaking the damn stone!";
 				next;
 				mes .n$;
@@ -583,7 +574,7 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 				mes "Again, you can use these badges to buy WoE stuff from the specialized sellers in Prontera (in the shop to left of the Central Plaza) or from ^0000FFErunked^000000, also in Prontera.";
 				next;
 				break;
-			case 4:
+			case 3:
 				mes .n$;
 				mes "We have at least two different modalities of Battlegrounds running simultaneously. You need to be at least level 160 to join them.";
 				next;
@@ -597,32 +588,18 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 				mes "You can also use these badges to buy PvP specialized equipments from our friend ^0000FFErundek^000000 in Prontera. Only good stuff!";
 				next;
 				break;
-			case 5:
+			case 4:
 				mes .n$;
-				mes "Batalhas Territoriais is custom content exclusive to Ragnamania Chronos.";
+				mes "Fort Defensing are something new even for me...";
 				next;
 				mes .n$;
-				mes "Every day, from Monday to Saturday, at 2pm and at 7pm a new region become contested and the guilds fight for ownage.";
+				mes "I can't say much right now but I know your Guild Leader will know everything about it, when you get your ass in a guild.";
 				next;
 				mes .n$;
-				mes "The mechanics are similar to woe: Break the stone, defend the stone... But it all happens in the open field.";
-				next;
-				mes .n$;
-				mes "The winner guild will have some bonuses in EXP from mobs in certain fields and dungeons related to the respective region.";
-				mes " ";
-				mes "^0000FFFor more on Batalhas Terriotorias please refer to our website.^000000";
-				next;
-				mes .n$;
-				mes "Killing other players during the Batalhas Territoriais will grant you "+getitemname(7773)+" which can be used to buy stuff you can use in Battlegrounds from specialized sellers in Prontera (in the shop to the left of the Central Plaza)";
-				next;
-				mes .n$;
-				mes "It will also grant you the chance to drop "+getitemname(675)+"s from monsters in the fields and dungeons of the contested region.";
-				next;
-				mes .n$;
-				mes "You can also use these badges to buy PvP specialized equipments from our friend ^0000FFErundek^000000 in Prontera. Only good stuff!";
+				mes "That I know for sure because it is a very rentable business they say.";
 				next;
 				break;
-			case 6:
+			case 5:
 			default:
 				next;
 				mes .n$;
@@ -639,7 +616,7 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 	mes .n$;
 	mes "Actually, meet me in Prontera once you are finnished here... I might have a thing or two for you there to help you in your journey.";
 	setquest 64501;
-	'INTRO_QUEST = 9;
+	intro_quest = 9;
 	close;
 
 OnInit:
@@ -651,13 +628,14 @@ OnInit:
 
 
 new_1-2,84,115,4	script	Sweetie#new	4_F_KAFRA2,{
+	function endThis;
 	// if(#INTRO_QUEST == 1)
 	// 	goto OnContinue;
 
-	if('INTRO_QUEST == 10)
+	if(intro_quest == 10)
 		goto OnContinue;
 
-	if('INTRO_QUEST < 9){
+	if(intro_quest < 9){
 		mes .n$;
 		mes "Just one minute please...";
 		next;
@@ -712,7 +690,7 @@ new_1-2,84,115,4	script	Sweetie#new	4_F_KAFRA2,{
 	mes "remove cards, identify items,";
 	mes "exchange coins, phew!";
 	mes "literaly dozens of services!";
-	'INTRO_QUEST = 10;
+	intro_quest = 10;
 	next;
 OnContinue:
 	mes .n$;
@@ -729,10 +707,7 @@ OnContinue:
 				setquest 64502;
 			#INTRO_QUEST = 1;
 			close2;
-			savepoint "prontera",162,189;
-			warp "prontera",155,54;
-			//sleep2 1000;
-			instance_destroy;
+			endThis();
 			end;
 		} else {
 			mes .n$;
@@ -751,7 +726,7 @@ OnContinue:
 			mes .n$;
 			mes "Sure! Have fun!";
 			close2;
-			warp "prontera",155,54;
+			endThis();
 			instance_destroy;
 			end;
 		} else {
@@ -764,4 +739,13 @@ OnContinue:
 OnInit:
 	.n$ = "^DD00DD[Sweetie]^000000";
 	end;
+
+	function endThis {
+		intro_quest = 0;
+			savepoint "prontera",162,189;
+			warp "prontera",155,54;
+			instance_destroy;
+			return;
+
+	}
 }
