@@ -1076,25 +1076,9 @@ rush_cas04
 region_8
 maze
 
-rent_m
-//rent_ma
 rent_mb
-rent1
-//renta1
 rentb1
-rentc1
-rentd1
-rente1
-rentf1
-rentg1
-rentin1
-//rentina1
 rentinb1
-rentinc1
-rentind1
-rentine1
-rentinf1
-renting1
 
 event_01
 
