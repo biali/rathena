@@ -4269,17 +4269,16 @@ ACMD_FUNC(mapinfo) {
 	}
 
 	//Global Damage adjustment. [Cydh]
-	if (map_getmapflag_sub(m_id, MF_ATK_RATE, NULL)) {
+	if (map_getmapflag(m_id, MF_ATK_RATE) == true && battle_config.atk_adjustment_map & 16) {
 		sprintf(atcmd_output,"Damage Adjustment for: %s", atcommand_mapinfo_globaldamage_sub(mapdata->atk_rate.rate[DMGRATE_BL]).c_str());
 		clif_displaymessage(fd,atcmd_output);
-		sprintf(atcmd_output," > Bl: %d%% | Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%% | Hit: %d%%",
-			mapdata->atk_rate.rate[DMGRATE_BL],
-			mapdata->atk_rate.rate[DMGRATE_SHORT],
-			mapdata->atk_rate.rate[DMGRATE_LONG],
-			mapdata->atk_rate.rate[DMGRATE_WEAPON],
-			mapdata->atk_rate.rate[DMGRATE_MAGIC],
-			mapdata->atk_rate.rate[DMGRATE_MISC],
-			mapdata->atk_rate.rate[DMGRATE_HIT]);
+		sprintf(atcmd_output," > Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%% | Hit: %d%%",
+			mapdata->atk_rate.rate[DMGRATE_SHORT] - 100,
+			mapdata->atk_rate.rate[DMGRATE_LONG] - 100,
+			mapdata->atk_rate.rate[DMGRATE_WEAPON] - 100,
+			mapdata->atk_rate.rate[DMGRATE_MAGIC] - 100,
+			mapdata->atk_rate.rate[DMGRATE_MISC] - 100,
+			mapdata->atk_rate.rate[DMGRATE_HIT]) - 100;
 		clif_displaymessage(fd,atcmd_output);
 	}
 

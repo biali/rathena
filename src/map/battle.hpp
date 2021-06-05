@@ -582,6 +582,7 @@ struct Battle_Config
 	int atk_weapon_damage_rate;
 	int atk_magic_damage_rate;
 	int atk_misc_damage_rate;
+	int atk_hit_damage_rate;
 
 	// rAthena
 	int max_third_parameter;

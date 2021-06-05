@@ -3722,10 +3722,12 @@ void map_flags_init(void){
 		mapdata->atk_rate = {}; //Global Damage Adjustment [Cydh]
 		mapdata->atk_rate.rate[DMGRATE_BL] = BL_ALL;
 		mapdata->atk_rate.rate[DMGRATE_WEAPON] = 100;
+		mapdata->atk_rate.rate[DMGRATE_SHORT] = 100;
 		mapdata->atk_rate.rate[DMGRATE_LONG] = 100;
 		mapdata->atk_rate.rate[DMGRATE_WEAPON] = 100;
 		mapdata->atk_rate.rate[DMGRATE_MAGIC] = 100;
 		mapdata->atk_rate.rate[DMGRATE_MISC] = 100;
+		mapdata->atk_rate.rate[DMGRATE_HIT] = 100;
 
 		// Biali Contested Territories
 		mapdata->contested = {};

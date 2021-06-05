@@ -9197,6 +9197,7 @@ static const struct _battle_data {
  	{ "atk_weapon_attack_damage_rate",      &battle_config.atk_weapon_damage_rate,          100,    1,      UINT16_MAX,     },
  	{ "atk_magic_attack_damage_rate",       &battle_config.atk_magic_damage_rate,           100,    1,      UINT16_MAX,     },
  	{ "atk_misc_attack_damage_rate",        &battle_config.atk_misc_damage_rate,            100,    1,      UINT16_MAX,     },
+	{ "atk_hit_attack_damage_rate",         &battle_config.atk_hit_damage_rate,             100,    1,      UINT16_MAX,     },
 // BattleGround Settings
 	{ "bg_update_interval",                 &battle_config.bg_update_interval,              1000,   100,    INT_MAX,        },
 	{ "bg_short_attack_damage_rate",        &battle_config.bg_short_damage_rate,            80,     0,      INT_MAX,        },

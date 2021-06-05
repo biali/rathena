@@ -678,38 +678,38 @@ rent_mb,161,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#23	45,2,2
 // rent_mb,134,62,4	duplicate(StreetDealer)	Midgardian Manager#Mng::ManagerMid	5500,4,4
 //rentb1,34,17,4	duplicate(Gardener)	Maia#rentb1	1903	
 
-renta1,4,17,4	duplicate(#Housekeeper)	#HousekeeperB	5502
-rentina1,31,26,0	duplicate(#Storage)	#StorageB	844
-rentina1,42,26,0	duplicate(#Beds)	#BedsB	844
-rentina1,10,14,0	duplicate(#Oven)	#OvenB	844
+// renta1,4,17,4	duplicate(#Housekeeper)	#HousekeeperB	5502
+// rentina1,31,26,0	duplicate(#Storage)	#StorageB	844
+// rentina1,42,26,0	duplicate(#Beds)	#BedsB	844
+// rentina1,10,14,0	duplicate(#Oven)	#OvenB	844
 
-// Weed
-//rentb1,30,15,0	duplicate(weed)	weed#1	1083
-rentb1,33,13,0	duplicate(weed)	weed#2	1078
-rentb1,29,11,0	duplicate(weed)	weed#3	1081
-rentb1,32,10,0	duplicate(weed)	weed#4	1084
-rentb1,34,6,0	duplicate(weed)	weed#5	1083
-rentb1,31,6,0	duplicate(weed)	weed#6	1118
-//rentb1,15,10,0	duplicate(seaweed)	seaweed#1	1579
-rentb1,15,10,0	duplicate(seaweed)	seaweed#2	1216
-rentb1,13,8,0	duplicate(seaweed)	seaweed#3	1161
-rentb1,9,9,0	duplicate(seaweed)	seaweed#4	1579
-rentb1,7,10,0	duplicate(seaweed)	seaweed#5	1216
-rentb1,7,6,0	duplicate(seaweed)	seaweed#6	1161
+// // Weed
+// //rentb1,30,15,0	duplicate(weed)	weed#1	1083
+// rentb1,33,13,0	duplicate(weed)	weed#2	1078
+// rentb1,29,11,0	duplicate(weed)	weed#3	1081
+// rentb1,32,10,0	duplicate(weed)	weed#4	1084
+// rentb1,34,6,0	duplicate(weed)	weed#5	1083
+// rentb1,31,6,0	duplicate(weed)	weed#6	1118
+// //rentb1,15,10,0	duplicate(seaweed)	seaweed#1	1579
+// rentb1,15,10,0	duplicate(seaweed)	seaweed#2	1216
+// rentb1,13,8,0	duplicate(seaweed)	seaweed#3	1161
+// rentb1,9,9,0	duplicate(seaweed)	seaweed#4	1579
+// rentb1,7,10,0	duplicate(seaweed)	seaweed#5	1216
+// rentb1,7,6,0	duplicate(seaweed)	seaweed#6	1161
 
-renta1,30,15,0	duplicate(weed)	weed#b1	1083
-renta1,33,13,0	duplicate(weed)	weed#b2	1078
-renta1,29,11,0	duplicate(weed)	weed#b3	1081
-renta1,32,10,0	duplicate(weed)	weed#b4	1084
-renta1,34,6,0	duplicate(weed)	weed#b5	1083
-renta1,31,6,0	duplicate(weed)	weed#b6	1118
-renta1,6,12,0	duplicate(seaweed)	seaweed#b1	1579
-renta1,9,14,0	duplicate(seaweed)	seaweed#b2	1216
-renta1,7,16,0	duplicate(seaweed)	seaweed#b3	1161
-renta1,7,14,0	duplicate(seaweed)	seaweed#b4	1579
-renta1,7,10,0	duplicate(seaweed)	seaweed#b5	1216
-renta1,7,6,0	duplicate(seaweed)	seaweed#b6	1161
-rentina1,4,4,0	duplicate(#rentb1)	#renta1	-1
+// renta1,30,15,0	duplicate(weed)	weed#b1	1083
+// renta1,33,13,0	duplicate(weed)	weed#b2	1078
+// renta1,29,11,0	duplicate(weed)	weed#b3	1081
+// renta1,32,10,0	duplicate(weed)	weed#b4	1084
+// renta1,34,6,0	duplicate(weed)	weed#b5	1083
+// renta1,31,6,0	duplicate(weed)	weed#b6	1118
+// renta1,6,12,0	duplicate(seaweed)	seaweed#b1	1579
+// renta1,9,14,0	duplicate(seaweed)	seaweed#b2	1216
+// renta1,7,16,0	duplicate(seaweed)	seaweed#b3	1161
+// renta1,7,14,0	duplicate(seaweed)	seaweed#b4	1579
+// renta1,7,10,0	duplicate(seaweed)	seaweed#b5	1216
+// renta1,7,6,0	duplicate(seaweed)	seaweed#b6	1161
+// rentina1,4,4,0	duplicate(#rentb1)	#renta1	-1
 
 
 
@@ -719,8 +719,8 @@ rentina1,4,4,0	duplicate(#rentb1)	#renta1	-1
 
 
 // Intro Only NPCs
-renta1,24,10,4	duplicate(#b1)	#a1	5500,4,4	
-rentina1,30,12,4	duplicate(Manager#inb)	Manager#ina	5500,4,4
+// renta1,24,10,4	duplicate(#b1)	#a1	5500,4,4	
+// rentina1,30,12,4	duplicate(Manager#inb)	Manager#ina	5500,4,4
 
 
 
