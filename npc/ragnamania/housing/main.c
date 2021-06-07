@@ -314,32 +314,13 @@ OnInit:
 
 
 
-// ********************************************
-// Housing PostBox
-// ********************************************
--	script	MailBox#Mid	-1,{
-	
-	if(((getcharid(5) < 4) && (strnpcinfo(4) == "rent_ma")) || ((getcharid(5) > 3) && (strnpcinfo(4) == "rent_mb"))) {
-		dispbottom "I have no interest in these bastards mails...";
-		end;
-	}
-	
-	if(HOUSING$[0] != strnpcinfo(2)) {
-		dispbottom "I cannot read other people's mails... Shame on me!";
-		end;
-	}
-  openmail;
-  end;
-}
-
-
 // ********************************************************************
 // Housing Warps 
 
 // ********************************************************************
 // House Entrance (door steps, outside -> in)
 // ********************************************************************
-rentb1,19,22,0	script	PortaDeCasa#b1	45,2,2,{
+rentb1,19,24,0	script	PortaDeCasa#b1	45,2,2,{
 	end;
 
 OnInstanceInit:
@@ -348,7 +329,7 @@ OnInstanceInit:
 
 OnTouch:
 	.@map$ = "rentin"+strnpcinfo(2);
-	warp instance_mapname(.@map$,instance_id(IM_CHAR)),26,7;
+	warp instance_mapname(.@map$,@instance),26,7;
 	end;
 }
 
@@ -364,25 +345,20 @@ OnInstanceInit:
 
 OnTouch:
 	.@map$ = "rent"+strnpcinfo(2);
-	warp instance_mapname("rentb1",instance_id(IM_CHAR)),20,17;
+	warp instance_mapname("rentb1",@instance),20,17;
 	end;
 }
 
 // ********************************************************************
 // Front Gate of the House (inside -> out)
 // ********************************************************************
-rentb1,25,2,0	script	FrontGate#rent_mb	45,2,2,{
-	end;
-
-OnInstanceInit:
-	enablenpc instance_npcname(strnpcinfo(0));
+rentb1,22,2,0	script	FrontGate#rent_mb	45,2,2,{
 	end;
 
 OnTouch:
 	warp strnpcinfo(2),$@HDRespMx[atoi(#HOUSING$[0])-1],$@HDRespMy[atoi(#HOUSING$[0])-1];
-	if (instance_id(IM_CHAR))
-		instance_destroy;
-
+	instance_destroy;
+	@instance = 0;
 	end;
 }
 
@@ -404,65 +380,6 @@ OnTouch:
 
 	end;
 }
-
-
-
-
-
-
-
-
-// ********************************************************************
-// Weed, Seaweed and Pest
-// ********************************************************************
-
-rentb1,30,15,0	script	weed	1083,{
-end;
-
-OnInstanceInit:
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-//OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-rentb1,16,12,0	script	seaweed	1579,{
-end;
-
-OnInstanceInit:
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-//OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-rentinb1,4,4,0	script	#rentb1	-1,{
-	end;
-OnInstanceInit:
-	areamonster instance_mapname(strnpcinfo(4)),4,12,14,23,"Slug",1007,1,instance_npcname("#"+strnpcinfo(2))+"::OnMobDead";
-	end;
-
-OnMobDead:
-	areamonster instance_mapname(strnpcinfo(4)),4,12,14,23,"Slug",1007,1,instance_npcname("#"+strnpcinfo(2))+"::OnMobDead";
-	end;
-	
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
 
 
 // ********************************************************************
@@ -609,33 +526,6 @@ rent_mb,222,53,1	duplicate(House Plate#1)	House Plate#21	837
 rent_mb,193,45,1	duplicate(House Plate#1)	House Plate#22	837
 rent_mb,165,45,1	duplicate(House Plate#1)	House Plate#23	837
 
-// Caixas de Correio
-// ******************************************************************
-
-// *** Midgardian Village
-rent_mb,102,45,0	duplicate(MailBox#Mid)	Mailbox#1	888
-rent_mb,74,45,0	duplicate(MailBox#Mid)	Mailbox#2	888
-rent_mb,43,44,0	duplicate(MailBox#Mid)	Mailbox#3	888
-rent_mb,43,81,0	duplicate(MailBox#Mid)	Mailbox#4	888
-rent_mb,44,109,0	duplicate(MailBox#Mid)	Mailbox#5	888
-rent_mb,43,137,0	duplicate(MailBox#Mid)	Mailbox#6	888
-rent_mb,43,165,0	duplicate(MailBox#Mid)	Mailbox#7	888
-rent_mb,43,193,0	duplicate(MailBox#Mid)	Mailbox#8	888
-rent_mb,53,222,0	duplicate(MailBox#Mid)	Mailbox#9	888
-rent_mb,81,222,0	duplicate(MailBox#Mid)	Mailbox#10	888
-rent_mb,109,222,0	duplicate(MailBox#Mid)	Mailbox#11	888
-rent_mb,137,222,0	duplicate(MailBox#Mid)	Mailbox#12	888
-rent_mb,165,222,0	duplicate(MailBox#Mid)	Mailbox#13	888
-rent_mb,193,222,0	duplicate(MailBox#Mid)	Mailbox#14	888
-rent_mb,221,222,0	duplicate(MailBox#Mid)	Mailbox#15	888
-rent_mb,222,184,0	duplicate(MailBox#Mid)	Mailbox#16	888
-rent_mb,222,156,0	duplicate(MailBox#Mid)	Mailbox#17	888
-rent_mb,222,128,0	duplicate(MailBox#Mid)	Mailbox#18	888
-rent_mb,222,100,0	duplicate(MailBox#Mid)	Mailbox#19	888
-rent_mb,222,72,0	duplicate(MailBox#Mid)	Mailbox#20	888
-rent_mb,222,44,0	duplicate(MailBox#Mid)	Mailbox#21	888
-rent_mb,184,45,0	duplicate(MailBox#Mid)	Mailbox#22	888
-rent_mb,156,45,0	duplicate(MailBox#Mid)	Mailbox#23	888
 
 // Portao da casa (main entrance warp)
 // ******************************************************************
@@ -665,466 +555,6 @@ rent_mb,225,48,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#21	45,2,2
 rent_mb,189,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#22	45,2,2
 rent_mb,161,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#23	45,2,2
 
-
-// Portas e Portoes das casas
-// ******************************************************************
-// rentb1,19,23,0	duplicate(PortaDeCasa#a1)	PortaDeCasa#b1	45,2,2
-// rentinb1,33,3,0	duplicate(FrontDoorIn#a1)	FrontDoorIn#b1	45,2,2
-// rentb1,25,2,0	duplicate(FrontGate#rent_ma)	FrontGate#rent_mb	45,2,2
-
-
-// Properties Manager and House Appliances
-// ******************************************************************
-// rent_mb,134,62,4	duplicate(StreetDealer)	Midgardian Manager#Mng::ManagerMid	5500,4,4
-//rentb1,34,17,4	duplicate(Gardener)	Maia#rentb1	1903	
-
-// renta1,4,17,4	duplicate(#Housekeeper)	#HousekeeperB	5502
-// rentina1,31,26,0	duplicate(#Storage)	#StorageB	844
-// rentina1,42,26,0	duplicate(#Beds)	#BedsB	844
-// rentina1,10,14,0	duplicate(#Oven)	#OvenB	844
-
-// // Weed
-// //rentb1,30,15,0	duplicate(weed)	weed#1	1083
-// rentb1,33,13,0	duplicate(weed)	weed#2	1078
-// rentb1,29,11,0	duplicate(weed)	weed#3	1081
-// rentb1,32,10,0	duplicate(weed)	weed#4	1084
-// rentb1,34,6,0	duplicate(weed)	weed#5	1083
-// rentb1,31,6,0	duplicate(weed)	weed#6	1118
-// //rentb1,15,10,0	duplicate(seaweed)	seaweed#1	1579
-// rentb1,15,10,0	duplicate(seaweed)	seaweed#2	1216
-// rentb1,13,8,0	duplicate(seaweed)	seaweed#3	1161
-// rentb1,9,9,0	duplicate(seaweed)	seaweed#4	1579
-// rentb1,7,10,0	duplicate(seaweed)	seaweed#5	1216
-// rentb1,7,6,0	duplicate(seaweed)	seaweed#6	1161
-
-// renta1,30,15,0	duplicate(weed)	weed#b1	1083
-// renta1,33,13,0	duplicate(weed)	weed#b2	1078
-// renta1,29,11,0	duplicate(weed)	weed#b3	1081
-// renta1,32,10,0	duplicate(weed)	weed#b4	1084
-// renta1,34,6,0	duplicate(weed)	weed#b5	1083
-// renta1,31,6,0	duplicate(weed)	weed#b6	1118
-// renta1,6,12,0	duplicate(seaweed)	seaweed#b1	1579
-// renta1,9,14,0	duplicate(seaweed)	seaweed#b2	1216
-// renta1,7,16,0	duplicate(seaweed)	seaweed#b3	1161
-// renta1,7,14,0	duplicate(seaweed)	seaweed#b4	1579
-// renta1,7,10,0	duplicate(seaweed)	seaweed#b5	1216
-// renta1,7,6,0	duplicate(seaweed)	seaweed#b6	1161
-// rentina1,4,4,0	duplicate(#rentb1)	#renta1	-1
-
-
-
-// // Inscription books in the house;
-// rentina1,32,7,0	duplicate(Books#inscription)	Inscription Books#Mid	844
-// rentinb1,17,33,0	duplicate(Books#inscription)	Inscription Books#Bal	844
-
-
-// Intro Only NPCs
-// renta1,24,10,4	duplicate(#b1)	#a1	5500,4,4	
-// rentina1,30,12,4	duplicate(Manager#inb)	Manager#ina	5500,4,4
-
-
-
-
-
-// ********************************************************************
-// Properties Manager - Inside House
-// ********************************************************************
-
-rentb1,24,12,4	script	#b1	1902,3,5,{
-end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-	set 'name$, instance_npcname(strnpcinfo(0));
-	setnpcdisplay('name$, "??");
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnTouch:
-//	if(intro < 6) intro = 2; // intro is 2 after the Misty Woods introduction
-	switch('intro) {
-	case 0:
-//		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-//		set 'name$, instance_npcname(strnpcinfo(0));
-		pcblockmove getcharid(3),1; // impede o char de se mover
-//		setnpcdisplay('name$, "??");
-		sleep2 2000;
-		npctalk "Welcome "+strcharinfo(0);
-		sleep2 3000;
-		unittalk getcharid(3), "... Sorry, do I know you?";
-		sleep2 3000;
-		npctalk "Pardon me.. I am Moreth, the Properties Manager. Nice to meet you!";
-		sleep2 5000;
-		unittalk getcharid(3), "Oh, of course! Sorry... Nice to meet you too, Mr. Moreth!";
-		setnpcdisplay('name$, "Manager");
-		sleep2 4000;
-		npctalk "No Problem! Here... come closer, please...";
-		sleep2 3000;
-		pcblockmove getcharid(3),0;
-		////unitwalk getcharid(3),'gid; TODO
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "How are you doing?";
-		mes "I mean, It must have been";
-		mes "very difficult for you";
-		mes "as it has been for the others";
-		mes "to be forced to move";
-		mes "to a new place, new house.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "But you will be allright!";
-		mes "You are better here. Safer.";
-		next;
-		select("Thank you Mr. Moreth");
-		mes "^0000FF[ Manager ]^000000";
-		mes "No Worries...";
-		mes "We take care of each other here.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "And the neighbourhood";
-		mes "is really nice and welcomming.";
-		mes (getcharid(5)<4)?"They are also ^0000FFMidgardians^000000, just like you.":"They are also ^0000FFBaldurians^000000 just like you.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Ok! Lests move on!";
-		mes "There are a couple of things";
-		mes "I'd like to show you";
-		mes "before I go and also";
-		mes "you must be really tired.";
-		close2;
-		'intro = 1;
-		pcblockmove getcharid(3),1;
-		npcwalkto 32,15; //31,19
-		sleep2 2000;
-		pcblockmove getcharid(3),0;
-		
-		// if(getcharid(5)<4)
-		// 	//unitwalk getcharid(3),30,16;
-		// else
-		//  	pcfollow getcharid(3), 'gid;
-		
-		end;
-		break;
-	case 1:
-		pcblockmove getcharid(3),1;
-		npctalk "Oh! Hello Maia! You still here?";
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Maia is a ^990066Gardener^000000. A good one.";
-		mes "She used to work for the previous";
-		mes "owner of this house before he";
-		mes "err...";
-		mes "...died?!";
-		next;
-		donpcevent instance_npcname((getcharid(5)<4)?"Maia#rentb1":"Maia#renta1")+"::OnTalk";
-		sleep2 4000;
-		npctalk "That's what I've said, dear Maia...";
-		sleep2 3000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well, you'd may consider";
-		mes "to hire a gardener to take care";
-		mes "of your house...";
-		mes "They are really handy.";
-		next;
-		npctalk "Maia... May I ask you to leave? Talk to you later.";
-		sleep2 3000;
-		donpcevent instance_npcname((getcharid(5)<4)?"Maia#rentb1":"Maia#renta1")+"::OnWalkAway";
-		mes "^0000FF[ Manager ]^000000";
-		mes "In case you're interested";
-		mes "Come talk to me when it's";
-		mes "convenient for you.";
-		mes " ";
-		mes "I am always around";
-		mes "at the Village Centre.";
-		close2;
-		'intro = 2; // Pq ele passa pelo char enqto ta indo pra piscina. Senao buga tudo.
-		npcwalkto 18,14;
-		sleep2 1000;
-		npctalk "The pool! What a lovely pool, huh? Do you like pool parties?";
-		sleep2 1000;
-		pcstopfollow getcharid(3); // Senao ele para antes de tocar no OnTouch
-		pcblockmove getcharid(3),0;
-		//unitwalk getcharid(3),20,13;
-//		//unitwalk getcharid(3), 'gid;
-		'intro = 3;
-		end;
-		break;
-	
-	case 2:
-		end;
-	break;
-	
-	case 3:
-		pcblockmove getcharid(3),1;
-		pcfollow getcharid(3), 'gid;  //so pra teste. qqr coisa deleta
-		unittalk getcharid(3), "Oh yes! Sure thing!! Who doesn't, huh?";
-//		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well, the gardeners don't";
-		mes "mantain pools. So you'll need";
-		mes "a ^990066Housekeeper^000000 for that";
-		mes "... we can also provide it, though.";
-//		next;
-		close2;
-		npcwalkto 7,14;
-		sleep2 1000;
-		'intro = 4;
-		pcblockmove getcharid(3),0;
-//		//unitwalk getcharid(3), 'gid;
-		//unitwalk getcharid(3),10,14;
-//		pcfollow getcharid(3), 'gid;
-
-		end;
-		break;
-		
-	case 4:
-		mes "^0000FF[ Manager ]^000000";
-		mes "Err... That is Borba.";
-		next;
-		donpcevent instance_npcname((getcharid(5)<4)?"#Housekeeper":"#HousekeeperB")+"::OnTalk";
-		mes "^0000FF[ Manager ]^000000";
-		mes "...";
-		emotion ET_HNG;
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "What can I say...";
-		mes "The housekeeper, he does his job.";
-		mes "He will keep your pool clean";
-		mes "and also the patio.";
-		next;
-		npctalk "Borba! I want you gone when I am back, got it?";
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "If you want to hire a housekeeper,";
-		mes "again, look for me at the";
-		mes "Village's plaza.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Now, come with me...";
-		mes "Let's see inside the house.";
-		close2;
-		'intro = 5;
-		pcstopfollow getcharid(3);
-		pcblockmove getcharid(3),1;
-		//npcwalkto 19,20;
-		////unitwalk 'gid, getnpcid(0,instance_npcname((getcharid(5)<4)?"PortaDeCasa#b1":"PortaDeCasa#a1")); TODO
-		sleep2 2000;
-		'intro = 6;
-		pcblockmove getcharid(3),0;
-		//unitwalk getcharid(3), getnpcid(0,instance_npcname((getcharid(5)<4)?"PortaDeCasa#b1":"PortaDeCasa#a1"));
-		end;
-
-	case 5:
-		end;
-		break;
-	
-	case 6:
-//		pcstopfollow getcharid(3);
-//		warp instance_mapname("rentinb1"),26,7;
-//		setnpcdisplay(instance_npcname("Manager"), 'name$);
-		disablenpc instance_npcname((getcharid(5)<4)?"#Housekeeper":"#HousekeeperB");
-		disablenpc 'name$;
-		end;
-	}
-}
-
-// ********************************************************************
-// Properties Manager - Inside House - Cont.
-// ********************************************************************
-
-rentinb1,30,12,4	script	Manager#inb	5500,3,3,{
-end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-	
-OnTouch:
-	switch('intro) {
-	case 6:
-		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-		pcfollow getcharid(3),'gid; 
-		mes "^0000FF[ Manager ]^000000";
-		mes "Look at this place!";
-		mes "Wonderful, isn't it?";
-		mes "Are you impressed?";
-		next;
-		select("One could say so...");
-		mes "^0000FF[ Manager ]^000000";
-		mes "These new houses are imaculate!";
-		mes "Hope you take care of yours";
-		mes "specially during paries, huh?";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Is is still missing some pieces";
-		mes "of furniture though";
-		mes " ";
-		mes "Let me show you very quckily.";
-		close2;
-		
-		if(getcharid(5)<4)
-//		if(strnpcinfo(4) == "rentinb1")
-			npcwalkto 10,5;
-		else
-			npcwalkto 31,26;
-			
-		sleep2 3000;
-		'intro = 7;
-	//	pcblockmove getcharid(3),1;
-		end;
-		break;
-		
-	case 7:
-		'intro = 8; // O npc vai passar pelo char
-		mes "^0000FF[ Manager ]^000000";
-		mes "Here you have some enough space";
-		mes "to install a ^990066Storage^000000";
-		mes " ";
-		mes "We can provide that. Just come";
-		mes "and talk to me later if you want.";
-		if(getcharid(5)<4){
-//		if(strnpcinfo(4) == "rentinb1") {
-			next;
-			npcwalkto 6,8;	
-		} else {
-			next;
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,37,23;
-			sleep2 2000;
-			mes "^0000FF[ Manager ]^000000";
-			mes "These beds need to be replaced.";
-			mes "We still have some in stock.";
-			next;
-			mes "^0000FF[ Manager ]^000000";
-			mes "There is no illness that";
-			mes "resist to a good sleeping,";
-			mes "don't you agree?";
-			next;
-			emotion ET_SMILE;
-			close2;
-			
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid, 25,23;
-			sleep2 2000;
-			//unitwalk 'gid,11,15;
-//			sleep2 1000;
-			pcfollow getcharid(3),'gid; 
-			sleep2 4000;
-		}
-
-		mes "^0000FF[ Manager ]^000000";
-		mes "Here you can install an ^990066Oven^000000.";
-		mes "I highly recommend that!";
-		mes "With the famine at our door";
-		mes "it is always good to stock";
-		mes "suplies and cook your own food.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Ah! We sell those too.";
-		close2;
-//		'intro = 8;
-		
-		if(getcharid(5)<4) {
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,17,10;
-			sleep2 2000;
-			//unitwalk 'gid,21,22;
-			sleep2 1000;
-			//unitwalk 'gid,28,28;
-			
-		} else {
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,29,32;
-		}
-		sleep2 3000;
-		'intro = 9;
-		end;
-		break;
-		
-	case 8:
-		end;
-		break;
-		
-	case 9:
-		if(getcharid(5)<4){
-//		if(strnpcinfo(4) == "rentinb1") {
-			mes "^0000FF[ Manager ]^000000";
-			mes "These beds need to be replaced.";
-			mes "We still have some in stock.";
-			next;
-			mes "^0000FF[ Manager ]^000000";
-			mes "There is no illness that";
-			mes "resist to a good sleeping,";
-			mes "don't you agree?";
-			next;
-			emotion ET_SMILE;
-		}
-		mes "^0000FF[ Manager ]^000000";
-		mes "I think that is it, "+strcharinfo(0)+".";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "I shall leave now";
-		mes "and visit the other new";
-		mes "villagers that just arrived.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Wish you all the best";
-		mes "and that you enjoy your stay";
-		mes "to its must!";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "If is there anything I can do";
-		mes "for you, please, don't ";
-		mes "hesitate to contact me.";
-		mes "I am aways at the Village Plaza.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well... not aways.";
-		mes " ";
-		mes "^FF0000If you hear the sirens";
-		mes "run to your house!!";
-		mes "That means we are being atacked";
-		mes (getcharid(5)<4)?"by the Baldurians.^000000":"by the Midgardians.^000000";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "You can help the ^990066Dandelions^000000";
-		mes "to defend our Village, though.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "I mean, if you feel strong and";
-		mes "confident enough for that, of course.";
-		close2;
-		'intro = 10;
-		pcstopfollow getcharid(3);
-		pcblockmove getcharid(3),1;
-		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-		if(getcharid(5)<4) {
-			//unitwalk 'gid, 20,22;
-			sleep2 2000;
-			//unitwalk 'gid, 21,12;
-		} else {
-			//unitwalk 'gid, 22,22;
-			sleep2 3000;
-			//unitwalk 'gid, 25,8;
-		}
-		sleep2 2000;
-		intro = 11;
-		pcblockmove getcharid(3),0;
-		//achieve(103);
-		disablenpc instance_npcname(strnpcinfo(0));
-		end;	
-	}
-}
 
 // Shops
 rent_mb,230,215,3	shop	McDonald	765,30033:15000,30034:15000,30035:15000,30036:15000,30037:15000,30038:15000,30039:15000,30040:15000,30041:15000,30042:15000;

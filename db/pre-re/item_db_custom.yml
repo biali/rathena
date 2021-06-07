@@ -7327,3 +7327,23 @@ Body:
       All_Upper: true
     Script: |
       rentitem 25433,604800;
+  - Id: 7193
+    AegisName: Germinating_Sprout
+    Name: Seeds
+    Type: Usable
+    Buy: 100
+    Weight: 1
+    Flags:
+      BuyingStore: true
+    Script: |
+      callfunc "farm",1,7193;
+  - Id: 7194
+    AegisName: Soft_Leaf
+    Name: Seeds
+    Type: Usable
+    Buy: 100
+    Weight: 1
+    Flags:
+      BuyingStore: true
+    Script: |
+      callfunc "farm",2,7194;

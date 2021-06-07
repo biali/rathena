@@ -70,6 +70,48 @@ Body:
   - Mob : EMPELIUM_C
     Sprite : EMPELIUM
 
+  # Properties Manager
+  - Mob: E_TREASURE1
+    Sprite: JOB_BABY_MONK
+    Sex: Male
+    HairStyle: 15
+    HairColor: 5
+    ClothColor: 5
+    HeadTop: Rabbit_Ear_Hat
+    HeadLow: Cigar
+
+  # Gardener
+  - Mob: E_TREASURE2
+    Sprite: JOB_BABY_MERCHANT
+    Sex: Female
+    HairStyle: 15
+    HairColor: 5
+    ClothColor: 0
+    Weapon: Gladius
+    HeadTop: Sombrero
+    HeadLow: 4Leaf_Clover_In_Mouth
+    
+  # Housekeeper
+  - Mob: E_MUKA
+    Sprite: JOB_BABY_THIEF
+    Sex: Male
+    HairStyle: 34
+    HairColor: 30
+    ClothColor: 0
+    HeadTop: Baseball_Cap
+    HeadMid: Sunglasses
+
+  # Transport 1816
+  - Mob: EVENT_GOURD
+    Sprite: JOB_ROYAL_GUARD_T2
+    Sex: Male
+    HairStyle: 34
+    HairColor: 0
+    ClothColor: 0
+    Options:
+      Riding: true
+
+
 #Body:
   # Examples
 #  - Mob: PORING

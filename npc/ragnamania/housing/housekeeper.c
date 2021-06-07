@@ -111,29 +111,8 @@ rentb1,5,5,6	script	Alfonso	1854,{
 
 OnEnable:
 	enablenpc instance_npcname(strnpcinfo(0));
-	donpcevent instance_npcname("#rentb1")+"::OnDisable";
-	donpcevent instance_npcname("seaweed")+"::OnDisable";
-	donpcevent instance_npcname("seaweed#2")+"::OnDisable";
-	donpcevent instance_npcname("seaweed#3")+"::OnDisable";
-	donpcevent instance_npcname("seaweed#4")+"::OnDisable";
-	donpcevent instance_npcname("seaweed#5")+"::OnDisable";
-	donpcevent instance_npcname("seaweed#6")+"::OnDisable";
 	end;
 
-// OnMinute00:
-// OnMinute05:
-// OnMinute10:
-// OnMinute15:
-// OnMinute30:
-// OnMinute45:
-// OnMinute50:
-// OnMinute55:
-// 	if('fishesOn == 0) {//'
-// 		enablenpc instance_npcname("#fishing");
-// 		donpcevent instance_npcname("#fishing",instance_id(IM_CHAR))+"::OnFishes";
-// 		set 'fishesOn,1; //'
-// 	}
-// 	end;
 
 OnInstanceInit:
 OnDisable:
@@ -142,10 +121,10 @@ OnDisable:
 }
 
 rentb1,14,9,0	script	#fishing	111,{
-	set getvariableofinstance('count,instance_id(IM_CHAR)), getvariableofinstance('count,instance_id(IM_CHAR))+1; //'
+	set getvariableofinstance('count,instance_id()), getvariableofinstance('count,instance_id())+1; //'
 	progressbar "0xFF0000",rand(3,8);
-	if(getvariableofinstance('count,instance_id(IM_CHAR)) == 3) { //'
-		set getvariableofinstance('fishesOn,instance_id(IM_CHAR)),0;//'
+	if(getvariableofinstance('count,instance_id()) == 3) { //'
+		set getvariableofinstance('fishesOn,instance_id()),0;//'
 		disablenpc instance_npcname(strnpcinfo(0));
 	}
 	end;

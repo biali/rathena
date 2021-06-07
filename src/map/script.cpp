@@ -11616,6 +11616,59 @@ BUILDIN_FUNC(getunits)
 }
 
 
+// biali
+//checknearnpc "mapname",range
+//returns true (1) if passed and 0 or -1 if it has found an npc in range
+BUILDIN_FUNC(checknonearnpc)
+{
+	struct block_list *bl = NULL;
+	struct map_session_data *sd = NULL;
+	const char *str;
+	int16 m = -1;
+	int range;
+
+
+	str = script_getstr(st, 2);
+	if ((m = map_mapname2mapid(str)) < 0) {
+		script_pushint(st, -1);
+		st->state = END;
+		ShowWarning("buildin_checknonearnpc: Unknown map '%s'.\n", str);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if(script_hasdata(st,3))
+		range = script_getnum(st,3);
+	else {
+		script_pushint(st,-1);
+		ShowError("builtin_checknonearnpc : No Range provided \m");
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	script_rid2sd(sd);
+
+
+	struct s_mapiterator *iter = mapit_alloc(MAPIT_NORMAL, bl_type(BL_NPC));
+	for (bl = (struct block_list*)mapit_first(iter); mapit_exists(iter); bl = (struct block_list*)mapit_next(iter))
+	{
+		if (m == bl->m && bl->x > 1 && bl->y > 1)
+		{
+			if(check_distance_bl(&sd->bl, bl, range)) {
+				mapit_free(iter);
+				script_pushint(st, 0);
+				return SCRIPT_CMD_SUCCESS;
+			}
+		}
+	}
+
+	mapit_free(iter);
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
+
+
 //Biali Clear Units (mobs) from a Map
 //clearunits("map name")
 //it does not remove mobs randomily spawned! only script mobs
@@ -26412,7 +26465,7 @@ BUILDIN_FUNC(duplicatenpc)
 	int map_x = script_getnum(st, 6);
 	int map_y = script_getnum(st, 7);
 	int dir = script_getnum(st, 8);
-	int spriteid, map_xs = -1, map_ys = -1, sourceid, type, mapid, i;
+	int spriteid, map_xs = -1, map_ys = -1, sourceid, type, mapid, i, x, y;
 	const char *sourcename = script_getstr(st, 2);
 	const char *new_shown_name = script_getstr(st, 3);
 	const char *new_hidden_name = script_getstr(st, 4);
@@ -26776,6 +26829,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getunits, "i?"),
 	BUILDIN_DEF2(getunits, "getmapunits", "is?"),
 	BUILDIN_DEF2(getunits, "getareaunits", "isiiii?"),
+	BUILDIN_DEF(checknonearnpc, "si"), //biali gathering system
 	BUILDIN_DEF(clearunits, "s"), //biali blackzone
 	BUILDIN_DEF(getareadropitem,"siiiiv"),
 	BUILDIN_DEF(enablenpc,"s"),

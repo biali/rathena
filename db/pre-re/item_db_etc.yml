@@ -13986,22 +13986,22 @@ Body:
     Weight: 10
     Flags:
       BuyingStore: true
-  - Id: 7193
-    AegisName: Germinating_Sprout
-    Name: Sprout
-    Type: Etc
-    Buy: 230
-    Weight: 10
-    Flags:
-      BuyingStore: true
-  - Id: 7194
-    AegisName: Soft_Leaf
-    Name: Soft Blade of Grass
-    Type: Etc
-    Buy: 400
-    Weight: 10
-    Flags:
-      BuyingStore: true
+  # - Id: 7193
+  #   AegisName: Germinating_Sprout
+  #   Name: Sprout
+  #   Type: Etc
+  #   Buy: 230
+  #   Weight: 10
+  #   Flags:
+  #     BuyingStore: true
+  # - Id: 7194
+  #   AegisName: Soft_Leaf
+  #   Name: Soft Blade of Grass
+  #   Type: Etc
+  #   Buy: 400
+  #   Weight: 10
+  #   Flags:
+  #     BuyingStore: true
   - Id: 7195
     AegisName: Air_Rifle
     Name: Slingshot

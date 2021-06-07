@@ -1315,7 +1315,7 @@ int npc_check_areanpc(int flag, int16 m, int16 x, int16 y, int16 range)
 	i = 0;
 	for (ys = y0; ys <= y1 && !i; ys++) {
 		for(xs = x0; xs <= x1 && !i; xs++){
-			if (map_getcell(m,xs,ys,CELL_CHKNPC))
+			if (map_getcell(m,xs,ys,CELL_CHKSTACK))
 				i = 1;
 		}
 	}
@@ -2349,10 +2349,10 @@ int npc_remove_map(struct npc_data* nd)
 		skill_clear_unitgroup(&nd->bl);
 	
 	//biali deadbody
-	if(nd->isdeadbody)
+	// if(nd->isdeadbody)
 		clif_clearunit_area(&nd->bl,CLR_OUTSIGHT);
-	else
-		clif_clearunit_area(&nd->bl,CLR_RESPAWN);
+	// else
+	// 	clif_clearunit_area(&nd->bl,CLR_RESPAWN);
 	npc_unsetcells(nd);
 	map_delblock(&nd->bl);
 	//Remove npc from map[].npc list. [Skotlex]

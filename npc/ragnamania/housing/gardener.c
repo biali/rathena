@@ -6,13 +6,13 @@ rentb1,27,12,4	script	Maia	1903	,{
     function    BuildPlantingMenu; function	Planta; function	Harvest;
     'gardenerwalk = 1;//'
     npcstop;
-	if (atoi(#HOUSING$[0]) != 'HouseNumber) {//'
+	if (atoi(#HOUSING$[0]) != @house) {//'
 		mes "[ Maia ]";
 		mes "Sorry, I can't speak right now...";
 		mes "... may the boss see us and I don't want problems. I get paid by hour, you know.";
 		close;
 	} else {
-	L_Start:
+L_Start:
 		mes "[ Maia ]";
 		mes "Hello, " +strcharinfo(0)+ "!";
 		mes "Can I help you?";
@@ -96,12 +96,6 @@ rentb1,27,12,4	script	Maia	1903	,{
 	
 OnEnable:
 	enablenpc instance_npcname(strnpcinfo(0));
-	donpcevent instance_npcname("weed")+"::OnDisable";
-	donpcevent instance_npcname("weed#2")+"::OnDisable";
-	donpcevent instance_npcname("weed#3")+"::OnDisable";
-	donpcevent instance_npcname("weed#4")+"::OnDisable";
-	donpcevent instance_npcname("weed#5")+"::OnDisable";
-	donpcevent instance_npcname("weed#6")+"::OnDisable";
     npcspeed 200;
 
 OnWalk:
