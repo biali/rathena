@@ -35,7 +35,7 @@ function	script	F_HouseInstancing	{
 		emotion ET_HUK;
 		close;
 	}
-	set @house, atoi(#HOUSING$[0]);
+	set @house, atoi(HOUSING$[0]);
 
 	callfunc "F_SpawnCrops";
 	callfunc "F_CheckServices";
@@ -44,22 +44,20 @@ function	script	F_HouseInstancing	{
 
 
 function	script	F_CheckServices	{
-	// #HOUSING$[0], rand(1,23);				// House Id
-	// #HOUSING$[1], gettimetick(2) + .Period;	// Rent amount
-	
-	// #HOUSING$[4], 0; 						// Claning Lady
-	// #HOUSING$[8], 0; 						// Wardrobe/Mirror
-	
-	// #HOUSING$[2], 0; // Gardener
-	if(atoi(#HOUSING$[2])) donpcevent instance_npcname("Maia",@instance)+"::OnEnable";
-	// #HOUSING$[3], 0; // Housekeeper
-	if(atoi(#HOUSING$[3])) donpcevent instance_npcname("Alfonso",@instance)+"::OnEnable";
-	// #HOUSING$[6], 0; // Storage
-	if (HOUSE_STORAGE) donpcevent instance_npcname("#Storage",@instance)+"::OnEnable";
-	// #HOUSING$[7], 0; // Beds
-	if (HOUSE_BEDS) donpcevent instance_npcname("#Beds",@instance)+"::OnEnable";
-	// #HOUSING$[5], 0; // Oven
-	if (HOUSE_OVEN) donpcevent instance_npcname("#Oven",@instance)+"::OnEnable";
+	// HOUSING$[0], rand(1,23);				// House Id
+	// HOUSING$[1], gettimetick(2) + .Period;	// Rent amount
+	// HOUSING$[2], Services type 
+
+	switch(atoi(HOUSING$[2])) {
+		case 2:
+			donpcevent instance_npcname("#wardrobe",@instance)+"::OnEnable";
+		case 1:
+			donpcevent instance_npcname("#housestor",@instance)+"::OnEnable";
+		case 0:
+			donpcevent instance_npcname("#Bed1",@instance)+"::OnEnable";
+			donpcevent instance_npcname("#Bed2",@instance)+"::OnEnable";
+			donpcevent instance_npcname("#Bed3",@instance)+"::OnEnable";
+	}
 
 	return;	
 }

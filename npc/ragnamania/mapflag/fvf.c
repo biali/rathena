@@ -527,3 +527,8 @@ ra_fild13	mapflag	fvf	off
 pay_fild07	mapflag	fvf	off
 hu_fild03	mapflag	fvf	off
 hell	mapflag	fvf	off
+
+// houses
+rent_mb	mapflag	fvf	off
+rentb1	mapflag	fvf	off
+rentinb1	mapflag	fvf	off

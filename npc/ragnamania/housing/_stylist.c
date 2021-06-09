@@ -1,14 +1,23 @@
-sala_premmy,49,122,4	script	Premium Stylist	878,{
-    
-    if(!vip_status(1) && getgmlevel()<10)
-        end;
+// credits to Annieruru
+function	script	ValueConvert	{
+	set .@num, atoi(""+getarg(0));
+	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
+	set .@l, getstrlen(""+.@num);
+	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
+		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
+			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
+	}
+	return .@num$;
+}
 
+rentinb1,34,24,0	script	#wardrobe	844,{
+    
     // Dont edit this bit
     setarray .@min_style,0,0,0;
     if(sex == SEX_MALE)
-    	setarray .@max_style,80,100,500;
+    	setarray .@max_style,95,127,700;
     else
-    	setarray .@max_style,80,100,500;
+    	setarray .@max_style,99,127,700;
 	
 	.@menu_size = getarraysize( .menu_name$ );
 	.@cost_size = getarraysize( .cost );
@@ -17,11 +26,11 @@ sala_premmy,49,122,4	script	Premium Stylist	878,{
 		.@npc_menu$ = .@npc_menu$ + ( ( .npc_mode & ( 1 << .@i ) )? .menu_name$[.@i]:"" ) +":";
 
 OnTalk:
-	mes "[^0055FF ::: Premium Stylist ::: ^000000]";
-	mes "I can change your appearance.";
+	mes "[^0055FF ::: " + strcharinfo(0) + " ::: ^000000]";
+	mes "Maybe I should change my look today...";
 	if( .@cost_size ){
 		mes " ";
-		mes "^777777[ PRICE LIST ]^000000";
+		mes "^777777[ Rental Price List ]^000000";
 		for( .@i = 0; .@i < .@menu_size; .@i++ )
 			if( .npc_mode & ( 1 << .@i ) )
 				mes "^0055FF"+.menu_name$[.@i]+" : ^777777"+ValueConvert( .cost[.@i] )+" z^000000";
@@ -103,9 +112,17 @@ OnTalk:
 
 
 OnCancela:
-OnPCLogoutEvent:
 	if( @select )
 		setlook .look_type[@style],@style_value;
+	end;
+
+OnEnable:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+
+OnInstanceInit:
+OnDisable:
+	disablenpc instance_npcname(strnpcinfo(0));
 	end;
 	
 OnInit:

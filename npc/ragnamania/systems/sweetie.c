@@ -454,12 +454,13 @@
 			// --------------------------------------------------
 				Specials:
 			// --------------------------------------------------
-			menu	"^f5b041Premium^000000 Room",X1;//,"Timeless Dungeons",X2;//, "Novice Grounds",X2;
+			menu	"^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4;//,"Timeless Dungeons",X2;//, "Novice Grounds",X3;
 
 			X1: Restrict("VIP",getcharid(0));
 				Go("sala_premmy",40,38);
 		//	X2: Go("yuno",282,288);
-		//	X2: Go("new_1-2",99,99);
+		//	X3: Go("new_1-2",99,99);
+			X4: Go("rent_mb",134,33);
 
 
 			// --------------------------------------------------
@@ -780,6 +781,7 @@ xmas,150,136,6	duplicate(Sweetie)	Sweetie#xmas	4_F_KAFRA5,3,3
 yuno,162,47,4	duplicate(Sweetie)	Sweetie#yuno	4_F_KAFRA3,3,3
 yuno,285,293,4	duplicate(Sweetie)	Sweetie#yuno2	4_F_KAFRA2,3,3
 sala_premmy,28,33,0	duplicate(Sweetie)	Sweetie#premmy	4_F_KAFRA8,3,3
+rent_mb,143,34,3	duplicate(Sweetie)	Sweetie#rent	4_F_KAFRA8,3,3
 //new_1-2,90,112,4	duplicate(Sweetie)	Sweetie#novice	4_F_KAFRA1
 
 // --------------------------------------------------
