@@ -15,6 +15,13 @@ function	script	ValueConvert	{
 
 -	script	Stylist	-1,{
 OnTalk:
+
+	if(getcharid(6) > 0) {
+		mes "[^0055FF ::: Adv. Stylist ::: ^000000]";
+		mes "I cannot help you while you are representing a City.";
+		close;
+	}
+	
 	mes "[^0055FF ::: Adv. Stylist ::: ^000000]";
 	mes "I can change your appearance.";
 	if( .cost_size ){

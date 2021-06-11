@@ -7998,3 +7998,103 @@ Body:
         Rate: 800
       - Item: Orange_Juice
         Rate: 20
+  - Id: 25501
+    AegisName: NPC_SPRITE01
+    Name: Npc Sprite 01
+    Level: 2
+    Hp: 45
+    BaseExp: 27
+    JobExp: 20
+    Attack: 12
+    Attack2: 13
+    Defense: 16
+    Str: 8
+    Dex: 6
+    Luk: 2
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 400
+    AttackDelay: 1372
+    AttackMotion: 672
+    DamageMotion: 480
+    Ai: 02
+  - Id: 25502
+    AegisName: NPC_SPRITE02
+    Name: Npc Sprite 02
+    Level: 2
+    Hp: 45
+    BaseExp: 27
+    JobExp: 20
+    Attack: 12
+    Attack2: 13
+    Defense: 16
+    Str: 8
+    Dex: 6
+    Luk: 2
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 400
+    AttackDelay: 1372
+    AttackMotion: 672
+    DamageMotion: 480
+    Ai: 02
+  - Id: 25503
+    AegisName: NPC_SPRITE03
+    Name: Npc Sprite 03
+    Level: 2
+    Hp: 45
+    BaseExp: 27
+    JobExp: 20
+    Attack: 12
+    Attack2: 13
+    Defense: 16
+    Str: 8
+    Dex: 6
+    Luk: 2
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 400
+    AttackDelay: 1372
+    AttackMotion: 672
+    DamageMotion: 480
+    Ai: 02
+  - Id: 25504
+    AegisName: NPC_SPRITE04
+    Name: Npc Sprite 04
+    Level: 2
+    Hp: 45
+    BaseExp: 27
+    JobExp: 20
+    Attack: 12
+    Attack2: 13
+    Defense: 16
+    Str: 8
+    Dex: 6
+    Luk: 2
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 400
+    AttackDelay: 1372
+    AttackMotion: 672
+    DamageMotion: 480
+    Ai: 02

@@ -8195,7 +8195,7 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 */
 static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_exp, struct block_list *src)
 {
-	int bonus = 0, vip_bonus_base = 0, vip_bonus_job = 0;
+	int bonus = 0, vip_bonus_base = 0, vip_bonus_job = 0, fvf_bonus = 0, motd_bonus = 0, contested_base_bonus = 0, contested_job_bonus = 0;
 
 	if (src) {
 		struct status_data *status = status_get_status_data(src);
@@ -8217,6 +8217,25 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 			vip_bonus_base = battle_config.vip_base_exp_increase;
 			vip_bonus_job = battle_config.vip_job_exp_increase;
 		}
+
+		// Biali EXP bonus for faction player
+		if (src && src->type == BL_MOB && sd->status.faction_id) { 
+			fvf_bonus = battle_config.fvf_exp_increase;
+		}
+
+		//biali Monster of the day
+		if(src && src->type == BL_MOB && ((TBL_MOB*)src)->mob_of_the_day > 0 && ((TBL_MOB*)src)->db->base_exp > 0 ) {
+			motd_bonus = battle_config.motd_exp_increase;
+		}
+
+		// Biali contested territories base xp bonus
+		if (sd && map_getmapflag(src->m, MF_CONTESTED) && sd->status.guild_id) {
+			struct map_data *mapdata = map_getmapdata(src->m);
+			if (sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
+				contested_base_bonus += mapdata->contested.info[CONTESTED_BASE_BONUS]; // base and job ar percentage. drops are different
+				contested_job_bonus += mapdata->contested.info[CONTESTED_JOB_BONUS];
+			}
+		}
 	}
 
 	// Give EXPBOOST for quests even if src is NULL.
@@ -8227,7 +8246,7 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 	}
 
 	if (*base_exp) {
-		t_exp exp = (t_exp)(*base_exp + ((double)*base_exp * ((bonus + vip_bonus_base) / 100.)));
+		t_exp exp = (t_exp)(*base_exp + ((double)*base_exp * ((bonus + vip_bonus_base + fvf_bonus + motd_bonus + contested_base_bonus) / 100.)));
 		*base_exp = cap_value(exp, 1, MAX_EXP);
 	}
 
@@ -8236,7 +8255,7 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 		bonus += sd->sc.data[SC_JEXPBOOST]->val1;
 
 	if (*job_exp) {
-		t_exp exp = (t_exp)(*job_exp + ((double)*job_exp * ((bonus + vip_bonus_job) / 100.)));
+		t_exp exp = (t_exp)(*job_exp + ((double)*job_exp * ((bonus + vip_bonus_job + fvf_bonus + motd_bonus + contested_job_bonus) / 100.)));
 		*job_exp = cap_value(exp, 1, MAX_EXP);
 	}
 
@@ -10189,10 +10208,6 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		return true;
 	case SP_FACTION:
 		sd->status.faction_id = val;
-		ShowWarning("pc_setparam : BIALI : faction_id",val);
-		// status_calc_pc(sd,SCO_NONE);
-		// if( map_getmapflag(sd->bl.m, MF_FVF) )
-		// 	pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 		return true;
 	case SP_CHARMOVE:
 		sd->status.character_moves = val;

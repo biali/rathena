@@ -14,6 +14,12 @@ function	script	farm	{
 		getitem .@item,1; 
 		end;
 	}
+
+	if(!@instance) {
+		dispbottom "You can only plant in the premisses of your house.",0xFF0000;
+		getitem .@item,1; 
+		end;
+	}
 	
 	query_sql "SELECT `plant_id` FROM `farm` WHERE `map`='"+.@map$+"' AND `x`="+.@x+" AND `y`="+.@y+"",.@ccheck;
 	
@@ -230,8 +236,8 @@ function	script	plant_type	{
 	
 	switch(getarg(0))
 	{
-		case 1: set .@PlantSet$,"1,512,100,10463,10464,10465,10466,1,1,1,1"; break;	//Planta 1 (NPC-ID-1,NPC-ID-2,NPC-ID-3)
-		case 2: set .@PlantSet$,"2,607,100,10463,10464,10465,10467,1,1,1,1"; break;	//Planta 2 (NPC-ID-1,NPC-ID-2,NPC-ID-3)
+		case 1: set .@PlantSet$,"1,512,30,10463,10464,10465,10466,180,180,180,180"; break;	//Planta 1 (NPC-ID-1,NPC-ID-2,NPC-ID-3)
+		case 2: set .@PlantSet$,"2,607,8,10463,10464,10465,10467,180,180,180,180"; break;	//Planta 2 (NPC-ID-1,NPC-ID-2,NPC-ID-3)
 	}
 	
 return (.@PlantSet$ != "" ? .@PlantSet$:"null");

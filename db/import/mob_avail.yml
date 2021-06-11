@@ -101,6 +101,14 @@ Body:
     HeadTop: Baseball_Cap
     HeadMid: Sunglasses
 
+  # Prontera Representant
+  - Mob: NPC_SPRITE01
+    Sprite: JOB_PALADIN
+    Sex: Male
+    HairStyle: 50
+    HairColor: 0
+    ClothColor: 99
+
   # Transport 1816
   - Mob: EVENT_GOURD
     Sprite: JOB_ROYAL_GUARD_T2

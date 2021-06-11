@@ -140,6 +140,9 @@ int mob_data::c_sw = 0;
 int mob_data::c_dg = 0;
 int mob_data::c_kt = 0;
 
+//biali monster of the day
+int  mob_data::mob_of_the_day = 0;
+
 
 /*==========================================
  * Local prototype declaration   (only required thing)
@@ -2620,9 +2623,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 	unsigned int mvp_damage;
 	t_tick tick = gettick();
 	bool rebirth, homkillonly, merckillonly;
-	int contested_base_bonus = 100; //Biali Contested Territories
-	int contested_job_bonus = 100; //Biali Contested Territories
-	int contested_drop_bonus = 100; //Biali Contested Territories
+	int contested_drop_bonus = 0; //Biali Contested Territories
 
 	status = &md->status;
 
@@ -2710,15 +2711,6 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 		int bonus = 100; //Bonus on top of your share (common to all attackers).
 		int pnum = 0;
 
-		// Biali contested territories base xp bonus
-		if (sd && map_getmapflag(m, MF_CONTESTED) && sd->status.guild_id) {
-			struct map_data *mapdata = map_getmapdata(m);
-			if (sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
-				contested_base_bonus += mapdata->contested.info[CONTESTED_BASE_BONUS]; // base and job ar percentage. drops are different
-				contested_job_bonus += mapdata->contested.info[CONTESTED_JOB_BONUS];
-				contested_drop_bonus = mapdata->contested.info[CONTESTED_DROP_BONUS];
-			}
-		}
 #ifndef RENEWAL
 		if (md->sc.data[SC_RICHMANKIM])
 			bonus += md->sc.data[SC_RICHMANKIM]->val2;
@@ -2789,7 +2781,6 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				double exp = apply_rate2(md->db->base_exp, per, 1);
 				exp = apply_rate(exp, bonus);
 				exp = apply_rate(exp, map_getmapflag(m, MF_BEXP));
-				exp = apply_rate(exp, contested_base_bonus);
 				base_exp = (t_exp)cap_value(exp, 1, MAX_EXP);
 			}
 
@@ -2803,25 +2794,11 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				double exp = apply_rate2(md->db->job_exp, per, 1);
 				exp = apply_rate(exp, bonus);
 				exp = apply_rate(exp, map_getmapflag(m, MF_JEXP));
-				exp = apply_rate(exp, contested_job_bonus);
 				job_exp = (t_exp)cap_value(exp, 1, MAX_EXP);
 			}
 
 			if ((base_exp > 0 || job_exp > 0) && md->dmglog[i].flag == MDLF_HOMUN && homkillonly && battle_config.hom_idle_no_share && pc_isidle_hom(tmpsd[i]))
 				base_exp = job_exp = 0;
-
-			//biali Monster of the day
-			int64 uid;
-			uid = reference_uid( add_str( "$@motd_mobid" ), 0 );
-			int value = mapreg_readreg(uid);
-			if(md->db->base_exp && value && value == md->mob_id) {
-				int64 xp = reference_uid( add_str( "$@motd_XP" ), 0 );
-				// Base
-				double exp = apply_rate2(md->db->base_exp, per, 1);
-				exp += mapreg_readreg(xp);
-				base_exp = (unsigned int)cap_value(exp, 1, UINT_MAX);
-			}
-			// pronto
 
 			if ( ( temp = tmpsd[i]->status.party_id)>0 ) {
 				int j;
@@ -2918,23 +2895,21 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				struct map_data *mapdata = map_getmapdata(m);
 				switch(mapdata->rpk.info[RPK_MAP_TIER]) {
 					case 5:
-						drop_rate = drop_rate*1.3;
+						drop_rate = drop_rate*1.03;
 						break;
 					case 6:
-						drop_rate = drop_rate*1.5;
+						drop_rate = drop_rate*1.05;
 						break;
 					case 7:
-						drop_rate = drop_rate*1.6;
+						drop_rate = drop_rate*1.06;
 						break;
 					case 8:
-						drop_rate = drop_rate*1.75;
+						drop_rate = drop_rate*1.075;
 						break;
 					default:
 						break;
 				}
-
 			}
-
 
 			// change drops depending on monsters size [Valaris]
 			if (battle_config.mob_size_influence) {
@@ -2969,15 +2944,26 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				if (sd->sc.data[SC_ITEMBOOST])
 					drop_rate_bonus += sd->sc.data[SC_ITEMBOOST]->val1;
 
-				// biali contested territories bonus
-				if(contested_drop_bonus)
-					drop_rate_bonus += contested_drop_bonus;
+				// Biali contested territories base xp bonus
+				if (sd && map_getmapflag(m, MF_CONTESTED) && sd->status.guild_id) {
+					struct map_data *mapdata = map_getmapdata(m);
+					if (sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
+						drop_rate += (int)(0.5 + drop_rate * mapdata->contested.info[CONTESTED_DROP_BONUS] / 100.);
+						drop_rate = min(drop_rate,10000); //cap it to 100%
+					}
+				}
 
 				//biali : infamy gives players a boost in drop rates (max 10%)
 				if(sd->status.infamy && map_getmapflag(sd->bl.m,MF_RPK)) {
-					int infamy = (sd->status.infamy * 10) / MAX_INFAMY;
-					drop_rate_bonus += cap_value(infamy, 1, 1000);
-					// ShowWarning("infamy %d gave Bonus : %d \n",sd->status.infamy, (sd->status.infamy * 100)/MAX_INFAMY);
+					int infamy = min((sd->status.infamy * 10) / MAX_INFAMY,1000); // cap it to 10%
+					drop_rate += (int)infamy;
+					drop_rate = min(drop_rate,10000); //cap it to 100%
+				}
+
+				//biali : hold a faction flag will grant players % drop boost
+				if(sd->status.faction_id && map_getmapflag(sd->bl.m,MF_FVF)) {
+					drop_rate += (int)(0.5 + drop_rate * battle_config.fvf_drop_increase / 100.);
+					drop_rate = min(drop_rate,10000); //cap it to 100%
 				}
 
 				drop_rate_bonus = (int)(0.5 + drop_rate * drop_rate_bonus / 100.);

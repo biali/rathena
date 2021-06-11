@@ -41,7 +41,7 @@ L_Menu:
 	mes (#CASHPOINTS)?"Mania$: ^0000FF" +#CASHPOINTS+ "^000000.":"Mania$: ^FF000000.00^000000.";
 	mes " ";
 	if(getcharid(6)) {
-		mes "^0000FFCitie Representation^000000";
+		mes "^0000FFCity Representation^000000";
 		mes factioninfo(getcharid(6),0);
 		mes " ";
 	}
@@ -56,7 +56,7 @@ L_Menu:
 	next;
 
 L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Cities Flags:^dd0000Close^000000")) {
+	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
 			if( vip_status(1) || getgmlevel() >= 10) {
 				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
@@ -214,41 +214,9 @@ L_PremmyMenu:
 				mes "Monthly: " + F_MonthlyBar();
 				next;
 				goto L_Loop;
-		case 6: // Empire Flags Options
-			if(getcharid(6)) { // player is already in a faction
-				mes "^0000FF[ Logbook ]^000000";
-				mes "Would you like to stop representing " + factioninfo(getcharid(6),0) + "?";
-				next;
-				mes "^0000FF[ Logbook ]^000000";
-				if(select("Yes:No") == 2) {
-					mes "No problem";
-					close;
-				} else {
-					factionleave();
-					mes "Changes made.";
-					close;
-				}
-			} else { // player is not in a faction yet
-				mes "^0000FF[ Cities Flags ]^000000";
-				for(.@i=1;.@i<=4;.@i++) {
-					if(factioninfo(.@i,2) == strcharinfo(3)) {
-						mes "Should we start representing ^0000FF"+strcharinfo(3)+"?";
-						if(select("Yes:No") == 2)
-							close;
-						else {
-							setfaction(.@i);
-							mes "All Done. Good luck and please read the book about the Empire Flags";
-							close;
-						}
-					}
-				}
-				mes "I am afraid you'll need to head to the town of your choice to start a representation.";
-				close;
-			}
-		case 7:	
+		case 6:
 		default:
 			close;
-			break;
 	}
 
 	function CalcRep {

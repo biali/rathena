@@ -323,6 +323,8 @@ struct mob_data {
 
 	int faction_id; // biali faction system
 
+	static int mob_of_the_day;
+
 	//biali blackzone world drops
 	static 	int drops_headgears[MAX_DROPS];
 	static 	int drops_shields[MAX_DROPS];

@@ -22,23 +22,9 @@ prontera,125,210,5	script	Connor::motdBoard	632,{
 
 OnInit:
 	setarray .mobs[0],1207,1310,1213,1206,1102,1197,1196,1278,1379,1713,1753,1777,1505,1317,1193,1408,1679,1870;
-	//$@motd_mobid 	= getelementofarray(.mobs,rand(getarraysize(.mobs)));
-	//$@motd_XP		= rand(1000000,15000000);
+
 	callfunc "ChangeMob","motdMob";
 	end;
-
-
-// OnNPCKillEvent:
-// 	if(killedrid == $@motd_mobid) {
-// 		getexp2($@motd_XP,$@motd_XP);
-// 		//BaseExp += getmonsterinfo(killedrid,MOB_BASEEXP) * rand(3);
-// 		//JobExp += getmonsterinfo(killedrid,MOB_JOBEXP) * rand(3);
-// 	}
-// 		// if(BaseLevel > 159 && getmonsterinfo(killedrid,MOB_BASEEXP) < NextBaseExp/200) {
-// 		// 	BaseExp = BaseExp + (NextBaseExp/200);
-// 		// 	JobExp = JobExp + (NextJobExp/200);
-// 		// }
-// 	end;
 
 OnBite:
 	npctalk "Wow! Careful there! Don't get that close!";
@@ -54,7 +40,6 @@ prontera,123,209,5	script	MotD::motdMob	1002,{
 	end;
 
 OnClock0001:
-	//$@motd_mobid = getelementofarray(getvariableofnpc(.mobs,"motdBoard"),rand(getarraysize(getvariableofnpc(.mobs,"motdBoard"))));
 	callfunc "ChangeMob";
 	end;
 
@@ -73,14 +58,12 @@ OnInit:
 
 
 function	script	ChangeMob	{
-	atcommand "@reloadmobdb";
 	.@npc$ = getarg(0,strnpcinfo(3));
-	$@motd_mobid = getelementofarray(getvariableofnpc(.mobs,"motdBoard"),rand(getarraysize(getvariableofnpc(.mobs,"motdBoard"))));
-	$@motd_XP = rand(1000000,15000000);
-	setnpcdisplay(.@npc$,getmonsterinfo($@motd_mobid,MOB_NAME), $@motd_mobid);
-	addmonsterdrop $@motd_mobid,30027,200;	// Ragnamania Loot Boxes
-	addmonsterdrop $@motd_mobid,30023,200;	// Ragnamania Bag of Manias
-	addmonsterdrop $@motd_mobid,675,200;	// Ragnamania Hunting Coins
+	.@id = monsteroftheday(getelementofarray(getvariableofnpc(.mobs,"motdBoard"),rand(getarraysize(getvariableofnpc(.mobs,"motdBoard")))));
+	setnpcdisplay(.@npc$,getmonsterinfo(.@id,MOB_NAME), .@id);
+	addmonsterdrop .@id,30027,200;	// Ragnamania Loot Boxes
+	addmonsterdrop .@id,30023,200;	// Ragnamania Bag of Manias
+	addmonsterdrop .@id,675,200;	// Ragnamania Hunting Coins
 
 	return;
 }

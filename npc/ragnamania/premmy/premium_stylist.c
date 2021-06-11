@@ -3,6 +3,12 @@ sala_premmy,49,122,4	script	Premium Stylist	878,{
     if(!vip_status(1) && getgmlevel()<10)
         end;
 
+	if(getcharid(6) > 0) {
+		mes "[^0055FF ::: Premium Stylist ::: ^000000]";
+		mes "I am sorry but I can't help you while you are representing a City.";
+		close;
+	}
+
     // Dont edit this bit
     setarray .@min_style,0,0,0;
     if(sex == SEX_MALE)

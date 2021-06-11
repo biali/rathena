@@ -9401,6 +9401,8 @@ static const struct _battle_data {
 	{ "fvf_hp_bar",							&battle_config.fvf_hp_bar,						1,      0,      1				},
 	{ "fvf_min_lvl",						&battle_config.fvf_min_lvl,						55,     1,      MAX_LEVEL		},
 	{ "fvf_visual_size",					&battle_config.fvf_visual_size,					1,      0,      2				},
+	{ "fvf_exp_increase",                   &battle_config.fvf_exp_increase,               10,     0,      10000,          },
+	{ "fvf_drop_increase",                  &battle_config.fvf_drop_increase,               10,     0,      10000,          },
 	{ "fvf_short_attack_damage_rate",		&battle_config.fvf_short_damage_rate,			80,     0,      INT_MAX         },
 	{ "fvf_long_attack_damage_rate",		&battle_config.fvf_long_damage_rate,			80,     0,      INT_MAX         },
 	{ "fvf_weapon_attack_damage_rate",		&battle_config.fvf_weapon_damage_rate,			60,     0,      INT_MAX         },
@@ -9420,6 +9422,7 @@ static const struct _battle_data {
 	{ "fvf_in_all_maps",					&battle_config.fvf_in_all_maps,					0,		0,      1,				},
 	{ "faction_disc_min",					&battle_config.faction_disc_min,			 -100,	 -INT_MAX,  0		        },
 	{ "faction_disc_max",					&battle_config.faction_disc_max,			  100,		0,   	INT_MAX         },
+//Biali other reserved charids
 	{ "ancient_reserved_char_id",           &battle_config.ancient_reserved_char_id,        999992, 0,      INT_MAX,        },
 	{ "normal_dg_reserved_char_id",         &battle_config.normal_dg_reserved_char_id,      999993, 0,      INT_MAX,        },
 	{ "heroic_dg_reserved_char_id",         &battle_config.heroic_dg_reserved_char_id,      999994, 0,      INT_MAX,        },
@@ -9464,6 +9467,8 @@ static const struct _battle_data {
 	{ "random_options_2ndslot_chance",    	&battle_config.random_options_2ndslot_chance,   100,    0,      10000,          },
 	{ "random_options_1stslot_chance",    	&battle_config.random_options_1stslot_chance,  1000,    0,      10000,          },
 	{ "random_options_drop_chances",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
+// Monster of the day
+	{ "motd_exp_increase",                  &battle_config.motd_exp_increase,                10,     0,     10000,          },
 	
 #include "../custom/battle_config_init.inc"
 };

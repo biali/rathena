@@ -11,6 +11,12 @@ function	script	ValueConvert	{
 }
 
 rentinb1,34,24,0	script	#wardrobe	844,{
+
+	if(getcharid(6) > 0) {
+		mes "[^0055FF ::: " + strcharinfo(0) + " ::: ^000000]";
+		mes "I cannot change my styles while you are representing a City.";
+		close;
+	}
     
     // Dont edit this bit
     setarray .@min_style,0,0,0;

@@ -554,6 +554,8 @@ struct Battle_Config
 	int fvf_hp_bar;
 	int fvf_min_lvl;
 	int fvf_visual_size;
+	int fvf_exp_increase;
+	int fvf_drop_increase;
 	int fvf_short_damage_rate;
 	int fvf_long_damage_rate;
 	int fvf_weapon_damage_rate;
@@ -573,6 +575,9 @@ struct Battle_Config
 	int fvf_in_all_maps;
 	int faction_disc_min;
 	int faction_disc_max;
+
+	// biali monster of the day
+	int motd_exp_increase;
 
 	// Global Damage adjustment. [Cydh]
 	int atk_adjustment_map;

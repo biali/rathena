@@ -20016,6 +20016,22 @@ BUILDIN_FUNC(class2ancientwoe)
 	return 0;
 }
 
+//biali monster of the day
+BUILDIN_FUNC(monsteroftheday)
+{
+	int id;
+	TBL_PC* sd;
+
+	id = script_getnum(st,2);
+
+	if (mobdb_checkid(id)) {
+		mob_data::mob_of_the_day = id;
+		script_pushint(st,id);
+	} else
+		script_pushint(st,0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /******************
 Questlog script commands
 *******************/
@@ -27103,6 +27119,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(readbook,"ii"),
 	BUILDIN_DEF(flooritem2area,"ii"), //Biali
 	BUILDIN_DEF(class2ancientwoe,""),
+	BUILDIN_DEF(monsteroftheday,"i"), // Biali
 	BUILDIN_DEF(setfont,"i"),
 	BUILDIN_DEF(areamobuseskill,"siiiiviiiii"),
 	BUILDIN_DEF(progressbar,"si"),
