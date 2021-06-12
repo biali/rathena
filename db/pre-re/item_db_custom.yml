@@ -1587,7 +1587,7 @@ Body:
     Type: Delayconsume
     Weight: 10
     Script: |
-      if(!ismounting()) progressbar "0xffffff",1;sc_start SC_ALL_RIDING,-1,1;
+      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(getcharid(0),1);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat

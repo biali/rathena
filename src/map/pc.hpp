@@ -340,7 +340,8 @@ struct map_session_data {
 		bool sale_open;
 		int deadbody_looting; // biali flags if the player is looting a body at the time (keeps deadbody gid while lootbag is open)
 		unsigned int block_action : 10;
-		int knocked; // Biali Black zone
+		int knocked; // Biali Black zone (receives an epoch time)
+		int mount; // biali mount rework (receives the mount id)
 #ifdef BGEXTENDED
 		// BG eAmod
 		unsigned bg_afk : 1;

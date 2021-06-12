@@ -42,6 +42,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp"
 #include "npc.hpp"
 #include "party.hpp"
 #include "path.hpp"
@@ -5162,6 +5163,7 @@ void do_final(void){
 	do_final_elemental();
 	do_final_cashshop();
 	do_final_faction(); 
+	do_final_mount(); // Biali mounts rework 
 	do_final_channel(); //should be called after final guild
 	do_final_vending();
 	do_final_buyingstore();
@@ -5465,6 +5467,7 @@ int do_init(int argc, char *argv[])
 	map_do_init_msg();
 	do_init_path();
 	do_init_faction(); //Biali Faction system
+	do_init_mount(); // Biali mount rework
 	do_init_atcommand();
 	do_init_battle();
 	do_init_instance();

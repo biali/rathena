@@ -54,6 +54,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp" //biali mount rework
 #include "npc.hpp"
 #include "party.hpp"
 #include "path.hpp"
@@ -22330,6 +22331,7 @@ BUILDIN_FUNC(ismounting) {
  **/
 BUILDIN_FUNC(setmounting) {
 	TBL_PC* sd;
+	struct mount_data *mdb = NULL;
 	
 	if (!script_charid2sd(2,sd))
 		return SCRIPT_CMD_FAILURE;
@@ -22339,15 +22341,68 @@ BUILDIN_FUNC(setmounting) {
 	} else if (sd->sc.data[SC_CLOAKING] || sd->sc.data[SC_CHASEWALK] || sd->sc.data[SC_CLOAKINGEXCEED] || sd->sc.data[SC_CAMOUFLAGE] || sd->sc.data[SC_STEALTHFIELD] || sd->sc.data[SC__FEINTBOMB]) {
 		// SC_HIDING, SC__INVISIBILITY, SC__SHADOWFORM, SC_SUHIDE already disable item usage
 		script_pushint(st, 0); // Silent failure
-	} else {
-		if( sd->sc.data[SC_ALL_RIDING] )
-			status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
-		else
-			sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
+	} else { //Biali mounts rework
+		if( sd->sc.data[SC_ALL_RIDING] ) {
+			mount_desmount(sd);
+			// status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
+			// sd->state.mount = 0;
+			// pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
+			// pc_setparam( sd, SP_HP, sd->status.hp );
+		} else { 
+			if (!script_hasdata(st,3))
+				mdb = mount_search(DEFAULT_MOUNT);
+			else
+				mdb = mount_search(script_getnum(st,3));
+
+			mount_setride(sd,mdb);
+
+			// sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
+			// sd->state.mount = mdb->id;
+			// pc_setparam( sd, SP_MAXHP, mdb->max_hp );
+			// pc_setparam( sd, SP_HP, mdb->max_hp );
+		}
 		script_pushint(st,1);//in both cases, return 1.
 	}
 	return SCRIPT_CMD_SUCCESS;
 }
+
+//biali mount rework
+BUILDIN_FUNC(mountinfo) 
+{
+	struct mount_data* mdb = NULL;
+	int mount_id, type, val = 0;
+
+	mount_id = script_getnum(st,2);
+
+	if( (mdb = mount_search(mount_id)) == NULL )
+	{
+		ShowWarning("mountinfo: Invalid mount id %d \n",mount_id);
+		return 0;
+	}
+
+	type = script_getnum(st,3);
+
+	switch(type)
+	{
+		//ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,speed_bonus,Cast Time{ Aura: #1 #2 #3 }
+		default: script_pushint(st,mdb->id);			break;	// mount's id
+		case 1: script_pushstrcopy(st,mdb->name);		break;	// mount's name
+		case 2: script_pushint(st,mdb->max_hp);			break;	// maximum hp
+		case 3: script_pushint(st,mdb->race);			break;	// Race
+		case 4: script_pushint(st,mdb->ele);			break;	// Element
+		case 5: script_pushint(st,mdb->ele_lvl);		break;	// Element lvl
+		case 6: script_pushint(st,mdb->size);			break;	// Size
+		case 7: script_pushint(st,mdb->skill_id);		break;	// Skill Level
+		case 8: script_pushint(st,mdb->skill_lv);		break;	// Skill Id
+		case 9: script_pushint(st,mdb->speed_bonus);	break;	// Speed
+		case 10: script_pushint(st,mdb->cast_time);		break;	// cast time
+		case 11: script_pushint(st,mdb->aura[val]);		break;	// Aura ID
+	}
+
+	return 0;
+}
+
+
 /**
  * Retrieves quantity of arguments provided to callfunc/callsub.
  * getargcount() -> amount of arguments received in a function
@@ -27201,7 +27256,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(checkdragon,"?"),//[Ind]
 	BUILDIN_DEF(setdragon,"??"),//[Ind]
 	BUILDIN_DEF(ismounting,"?"),//[Ind]
-	BUILDIN_DEF(setmounting,"?"),//[Ind]
+	BUILDIN_DEF(setmounting,"??"),//[Ind]
 	BUILDIN_DEF(checkre,"i"),
 
 	/**
@@ -27220,6 +27275,9 @@ struct script_function buildin_func[] = {
 
 	//Biali reputation system
 	BUILDIN_DEF(getreputation,"i"),
+
+	// Biali mount rework
+	BUILDIN_DEF(mountinfo, "ii"),
 
 	/**
 	* Contested System [Biali]

@@ -31,6 +31,7 @@
 #include "map.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp"
 #include "npc.hpp"
 #include "path.hpp"
 #include "pc.hpp"
@@ -2062,6 +2063,24 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 	if( status->hp || (flag&8) ) { // Still lives or has been dead before this damage.
 		if (walkdelay)
 			unit_set_walkdelay(target, gettick(), walkdelay, 0);
+		return (int)(hp+sp);
+	}
+
+	//biali mount rework
+	if(target->type == BL_PC && ((TBL_PC*)target)->sc.data[SC_ALL_RIDING]) {
+
+		struct map_session_data *sd = (TBL_PC*)target;
+
+		unit_stop_attack(src);
+		unit_skillcastcancel(src,0);
+		skill_cleartimerskill(src);
+
+		unit_stop_walking(target,4);
+		unit_stop_attack(target);
+		unit_skillcastcancel(target,0);
+
+		mount_desmount(sd);
+
 		return (int)(hp+sp);
 	}
 
@@ -7385,8 +7404,16 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 				val = 25; // Same bonus
 			else if( pc_isridingwug(sd) )
 				val = 15 + 5 * pc_checkskill(sd, RA_WUGRIDER);
-			else if( sc->data[SC_ALL_RIDING] )
-				val = battle_config.rental_mount_speed_boost;
+			// else if( sc->data[SC_ALL_RIDING] )
+			// 	val = battle_config.rental_mount_speed_boost;
+			//biali mount rework
+			else if( sc->data[SC_ALL_RIDING] ) {
+				struct mount_data *mdb = mount_search(sd->state.mount);
+				if(mdb == NULL || mdb->id == DEFAULT_MOUNT)
+					val = battle_config.rental_mount_speed_boost;
+				else
+					val = mdb->speed_bonus;
+			}
 		}
 		speed_rate -= val;
 
@@ -13942,7 +13969,7 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		type == SC__INVISIBILITY ||
 		type == SC_CAMOUFLAGE ||
 		type == SC_CLOAKINGEXCEED) )
-			clif_sendauras(sd, AREA_WOS); // Refresh Aura
+			clif_sendfactionauras(sd, AREA_WOS); // Refresh Aura
 
 	if (calc_flag) {
 		switch (type) {
