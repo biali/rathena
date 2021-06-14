@@ -1143,7 +1143,6 @@ ACMD_FUNC(hide)
 			sd->pvp_timer = INVALID_TIMER;
 		}
 		clif_clearunit_area(&sd->bl, CLR_OUTSIGHT);
-		map_foreachinrange(faction_aura_clear, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
 		clif_refresh(sd);
 	}
 	clif_changeoption(&sd->bl);

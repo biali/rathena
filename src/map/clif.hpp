@@ -677,10 +677,6 @@ void clif_lootbag_storagelist(struct map_session_data* sd, struct item* items, i
 //Biali rpk
 void clif_sendrpkswords_single(int fd, struct map_session_data *sd);
 
-//biali faction system
-void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
-void clif_sendfactionauras(struct map_session_data *sd,  enum send_target type);
-
 //biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
 void clif_sendauras(struct map_session_data *sd,  enum send_target type);
@@ -884,15 +880,9 @@ void clif_bg_queue_lobby_notify(const char *name, struct map_session_data *sd);
 void clif_bg_queue_ack_lobby(bool result, const char *name, const char *lobbyname, struct map_session_data *sd);
 
 // biali faction system
-// void clif_faction_belonginfo (struct map_session_data *sd);
-// void clif_faction_emblem (struct map_session_data *sd, struct faction_data *fdb);
-// void clif_sendfactionemblem_single(int fd, struct map_session_data *sd);
-// void clif_sendfactionemblem_area(struct map_session_data *sd);
+void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
 // eamod >>>
-void clif_sendfactionauras(struct map_session_data *sd,  enum send_target type);
 void clif_faction_hp(struct map_session_data *sd);
-void clif_faction_area(struct map_session_data *sd);
-void clif_faction_single(int fd, struct map_session_data *sd);
 
 // Instancing
 void clif_instance_create(int instance_id, int num);

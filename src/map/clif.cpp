@@ -431,40 +431,16 @@ static bool clif_session_isValid(struct map_session_data *sd) {
 	return ( sd != nullptr && session_isActive(sd->fd) );
 }
 
-//Biali faction system (from eamod)
+
+// biali faction system
 void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	// struct aura_data *ad;
 	int i;
 
-	if( sd->status.faction_id <= 0 || pc_ishiding(sd) )
-		return;
+	struct faction_data *fdb = faction_search(sd->status.faction_id);
 
-	if( battle_config.faction_aura_bl&sd->bl.type ) {
-		struct faction_data *fdb = faction_search(sd->status.faction_id);
-		for( i = 0; i < MAX_AURA_EFF; i++ )
-			if( fdb->aura[i] > 0 )
-				clif_specialeffect_single(&sd->bl,fdb->aura[i],dsd->fd); //clif_specialeffect(bl, fdb->aura[i], AREA);
-	}
-
+	clif_hat_effect_single(&sd->bl,fdb->aura,true); //Area
 }
-
-//biali faction system (from eamod)
-void clif_sendfactionauras(struct map_session_data *sd,  enum send_target type)
-{
-	int i;
-	struct faction_data *fdb = NULL;
-
-	if( sd->status.faction_id <= 0 || pc_ishiding(sd) )
-		return;
-
-	if( (fdb = faction_search(sd->status.faction_id)) != NULL )
-		for( i = 0; i < MAX_AURA_EFF; i++ )
-			if( fdb->aura[i] > 0 )
-				clif_specialeffect(&sd->bl,fdb->aura[i],type);
-
-}
-
 
 // biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
@@ -477,9 +453,7 @@ void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *d
 	struct mount_data *mdb = mount_search(sd->state.mount);
 	for( i = 0; i < MAX_AURA_EFF; i++ )
 		if( mdb->aura[i] > 0 )
-			clif_specialeffect_single(&sd->bl,mdb->aura[i],dsd->fd); //clif_specialeffect(bl, fdb->aura[i], AREA);
-
-
+			clif_specialeffect_single(&sd->bl,mdb->aura[i],dsd->fd);
 }
 
 
@@ -5050,23 +5024,19 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				clif_specialeffect_single(bl,EF_GIANTBODY2,sd->fd);
 			else if(tsd->state.size==SZ_MEDIUM)
 				clif_specialeffect_single(bl,EF_BABYBODY2,sd->fd);
-			if(sd->status.faction_id || tsd->status.faction_id) {
-				//Biali faction system (from eamod)
-				clif_sendfactionaurastoone(tsd, sd);
-				clif_name(&sd->bl,bl,FACTION_AREA_WOS);
-				clif_sendbgemblem_single(tsd->fd,sd);
-				clif_sendbgemblem_single(sd->fd,tsd);
+
+			if(tsd->status.faction_id) {
+				clif_sendfactionaurastoone(tsd,sd);
+				clif_name_area(&tsd->bl);
 				clif_guild_emblem_area(&tsd->bl);
-				clif_guild_emblem_area(&sd->bl);
+				if(sd->status.faction_id > 0 && sd->status.faction_id != tsd->status.faction_id)
+					clif_sendrpkswords_single(sd->fd, tsd);
 			}
+
 			// biali trying to show the crossed swords on top of enemy heads
 			if(map_getmapflag(tsd->bl.m,MF_RPK)) {
-				// int s_guild = status_get_guild_id(&sd->bl);
-				// int t_guild = status_get_guild_id(&tsd->bl);
-				// if(!guild_isallied(s_guild, t_guild) && (sd->status.guild_id != tsd->status.guild_id && sd->status.guild_id + tsd->status.guild_id > 0)) {
-					clif_sendrpkswords_single(tsd->fd, sd);
-					clif_sendrpkswords_single(sd->fd, tsd);
-				// }
+				clif_sendrpkswords_single(tsd->fd, sd);
+				clif_sendrpkswords_single(sd->fd, tsd);
 			}
 
 			// biali Mount rework
@@ -10080,10 +10050,7 @@ void clif_refresh(struct map_session_data *sd)
 		clif_spiritcharm_single(sd->fd, sd);
 	if (sd->soulball)
 		clif_soulball( sd, &sd->bl, SELF );
-	struct faction_data *fdb;
-	if( battle_config.fvf_change_ccolor && (fdb = faction_search(sd->status.faction_id)) != NULL )
-		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,(map_getmapflag(sd->bl.m, MF_FVF) || battle_config.fvf_change_ccolor == 2) ? fdb->ccolor : sd->vd.cloth_color,SELF);
-	else if (sd->vd.cloth_color)
+	if (sd->vd.cloth_color)
 		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,sd->vd.cloth_color,SELF);
 	if (sd->vd.body_style)
 		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_BODY2,sd->vd.body_style,SELF);
@@ -10121,8 +10088,6 @@ void clif_refresh(struct map_session_data *sd)
 	if (sd->state.buyingstore)
 		buyingstore_close(sd);
 
-	//biali Faction System (from eamod)
-	clif_sendfactionaurastoone(sd,sd);
 
 	// biali Mount rework
 	if(sd->sc.data[SC_ALL_RIDING]) {
@@ -11080,8 +11045,6 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	// biali faction system
 	// faction_getareachar_unit(sd, &sd->bl);
 	faction_spawn(sd);
-	clif_faction_area(sd);
-	clif_sendfactionauras(sd, AREA);
 
 	//biali mounts rework
 	// we have to do this for now because at this point we dont know which mount id the player was on before disconection last time

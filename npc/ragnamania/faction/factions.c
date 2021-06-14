@@ -24,53 +24,54 @@ prontera,0,0,4	duplicate(factions)	Prontera Register#4	4_F_KAFRA6
 
 
 // Flags Handler
-prontera,183,213,3	script	Registrar#Prontera	25501,{
+-	script	Registrar	-1,{
+	.@n$ = "^FF0000"+strnpcinfo(2)+" Registrar^000000";
 	if(getcharid(6)) { // player is already in a faction
-		mes .n$;
+		mes .@n$;
 		mes "I can see you are already enlisted... Good luck!";
 		close;
 	} else { // player is not in a faction yet
-		mes .n$;
+		mes .@n$;
 		mes "Hello, " + strcharinfo(0);
 		mes "I am here representing the greatest authority of our city and, soon, the greatest authority in the entire kingdom.";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "I am sure you are aware of the recent events in Rune-Middgard... We are convinced we can no longer trust anyone from the vicinity.";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "So here we are, do you want to join the army and help us hunt the traitors down and give some closure to all those who lost their beloved ones?";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "By enlisting:";
 		mes "- Gain Reputation Points";
 		mes "- Gain more XP from mobs";
 		mes "- Better drop chances from mobs";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "^AD0000You become a target to anyone representing a different city in most of the fields and dungeons.^000000";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "^AD0000Dying to another player while holding a representation means losing all the items and equips in your inventory.^000000";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "^AD0000The same way that killing anyone representing a different city will give you the oportunity to look all their belongings.^000000";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "^AD0000To cancel a representation simply logout from the game and log back in. But be aware! if you force logout, your character will still be online for about one minute and completely vulnerable.^000000";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "To learn more about City VS City and Full-Loot mechanics please visit our website/wiki.";
 		next;
-		mes .n$;
+		mes .@n$;
 		mes "Do you want to go ahead and start your representation?";
 		next;
 		if(select("Yes please:No thank you") == 2) {
-			mes .n$;
+			mes .@n$;
 			mes "I understand. This is not for the faint of the heart.";
 			close;
 		}
 		if(BaseLevel < 40) {
-			mes .n$;
+			mes .@n$;
 			mes "I am sorry but this is only to heroes at level 40 and more.";
 			close;
 		}
@@ -84,13 +85,12 @@ prontera,183,213,3	script	Registrar#Prontera	25501,{
 		mes "All Done. Good luck, and take care!";
 		close;
 	}
-
-
-OnInit:
-	questinfo QTYPE_CLICKME;
-	.n$ = "^FF0000"+strnpcinfo(2)+" Registrar^000000";
-	end;
 }
+
+prontera,183,213,3	duplicate(Registrar)	Registrar#Prontera	25501
+morocc,141,102,5	duplicate(Registrar)	Registrar#Morocc	25501
+payon,191,132,4	duplicate(Registrar)	Registrar#Payon	25501
+geffen,127,115,5	duplicate(Registrar)	Registrar#Geffen	25501
 
 
 

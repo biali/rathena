@@ -12268,23 +12268,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_SP_SHA:
 			val2 = 50; // Move speed reduction
 			break;
-		// // Faction System [Biali]
-		// case SC_HIDING:
-		// case SC_CLOAKING:
-		// case SC_CHASEWALK:
-		// case SC_CLOAKINGEXCEED:
-		// case SC__INVISIBILITY:
-		// case SC_CAMOUFLAGE:
-		// 	if( faction_get_id(bl) )
-		// 	{
-		// 		clif_clearunit_area(bl,0);
-		// 		map_foreachinrange(faction_aura_clear, bl, AREA_SIZE, BL_PC, bl);
-		// 		if( sd && battle_config.faction_aura_bl&BL_PC &&
-		// 			((battle_config.faction_aura_settings&1 && map_getmapflag(bl->m,MF_FVF) || battle_config.faction_aura_settings&2) )
-		// 			clif_refresh(sd); 
-		// 	}
-		// 	break;
-
 		default:
 			if( calc_flag == SCB_NONE && StatusSkillChangeTable[type] == -1 && StatusIconChangeTable[type] == EFST_BLANK ) {
 				// Status change with no calc, no icon, and no skill associated...?
@@ -12341,22 +12324,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				// If the player still has a clan status, but was removed from his clan
 				if( sd && sd->status.clan_id == 0 ){
 					return 0;
-				}
-				break;
-			// Faction System [Biali] TODO : This may be in the wrong place and refresh may not be the best option there
-			case SC_HIDING:
-			case SC_CLOAKING:
-			case SC_CHASEWALK:
-			case SC_CLOAKINGEXCEED:
-			case SC__INVISIBILITY:
-			case SC_CAMOUFLAGE:
-				if( faction_get_id(bl) )
-				{
-					clif_clearunit_area(bl,CLR_OUTSIGHT);
-					map_foreachinrange(faction_aura_clear, bl, AREA_SIZE, BL_PC, bl);
-					if( sd && battle_config.faction_aura_bl&BL_PC &&
-						((battle_config.faction_aura_settings&1 && map_getmapflag(bl->m,MF_FVF)) || battle_config.faction_aura_settings&2) )
-						clif_refresh(sd); 
 				}
 				break;
 		}
@@ -13961,16 +13928,6 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		}
 	}
 
-	//Biali Faction System
-	if( sd && faction_get_id(bl) && (
-		type == SC_HIDING ||
-		type == SC_CLOAKING ||
-		type == SC_CHASEWALK ||
-		type == SC__INVISIBILITY ||
-		type == SC_CAMOUFLAGE ||
-		type == SC_CLOAKINGEXCEED) )
-			clif_sendfactionauras(sd, AREA_WOS); // Refresh Aura
-
 	if (calc_flag) {
 		switch (type) {
 		case SC_MAGICPOWER:
@@ -13988,17 +13945,6 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 
 	if(opt_flag&2 && sd && !sd->state.warping && map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 		npc_touch_area_allnpc(sd,bl->m,bl->x,bl->y); // Trigger on-touch event.
-
-	// // Complete Faction System [Lilith]
-	// if( faction_get_id(bl) && (
-	// 	type == SC_HIDING ||
-	// 	type == SC_CLOAKING ||
-	// 	type == SC_CHASEWALK ||
-	// 	type == SC__INVISIBILITY ||
-	// 	type == SC_CAMOUFLAGE ||
-	// 	type == SC_CLOAKINGEXCEED) 
-	// )
-	// 	faction_show_aura(bl);
 
 	ers_free(sc_data_ers, sce);
 	return 1;

@@ -9415,8 +9415,6 @@ static const struct _battle_data {
 	{ "faction_guild_settings",				&battle_config.faction_guild_settings,			0,		0,      1,				},
 	{ "faction_heal_bl",                    &battle_config.faction_heal_bl,           	BL_PC, 		BL_NUL, BL_ALL,         },
 	{ "faction_size_bl",                    &battle_config.faction_size_bl,           	BL_CHAR, 	BL_NUL, BL_ALL,         },
-	{ "faction_aura_bl",                    &battle_config.faction_aura_bl,    		BL_CHAR|BL_NPC, BL_NUL, BL_ALL,         },
-	{ "faction_aura_settings",				&battle_config.faction_aura_settings,			0,		0,      2,				},
 	{ "faction_trade_settings",				&battle_config.faction_trade_settings,			0,		0,      1,				},
 	{ "faction_npc_settings",				&battle_config.faction_npc_settings,			0,		0,      1,				},
 	{ "fvf_in_all_maps",					&battle_config.fvf_in_all_maps,					0,		0,      1,				},

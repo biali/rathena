@@ -25971,7 +25971,6 @@ BUILDIN_FUNC(factioninfo)
 		case 7: script_pushint(st,fdb->ele_lvl);		break;	// Element lvl
 		case 8: script_pushint(st,fdb->size);			break;	// Size
 		case 9: script_pushint(st,fdb->ccolor);			break;	// Clothes Color
-		case 12: script_pushint(st,fdb->aura[val]);		break;	// Aura ID
 	}
 
 	return 0;
@@ -26002,17 +26001,9 @@ BUILDIN_FUNC(setfaction)
 	}
 
 	faction_id = script_getnum(st,2);
-	if(faction_id == 0 ) {
-		sd->status.faction_id = 0;
-		faction_update_data(sd);
-
-		clif_refresh(sd);
+	if(faction_id <= 0  || (fdb = faction_search(faction_id)) == NULL) {
+		ShowError("setfaction: Invalid faction id %d \n",faction_id);
 		return SCRIPT_CMD_SUCCESS;
-	} 
-	else if( (fdb = faction_search(faction_id)) == NULL )
-	{
-		ShowWarning("setfaction: Invalid faction id %d \n",faction_id);
-		return 0;
 	}
 
 	sd->status.faction_id = faction_id;
@@ -26021,7 +26012,8 @@ BUILDIN_FUNC(setfaction)
 	if( map_getmapflag(sd->bl.m, MF_FVF) )
 		pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 
-	clif_refresh(sd);
+	faction_spawn(sd);
+
 	return 0;
 }
 
@@ -26037,6 +26029,7 @@ BUILDIN_FUNC(factionleave)
 	else
 		ShowWarning("factionleave : tried to leave faction while not in a faction \n");
 
+	clif_hat_effect_single(&sd->bl,1,false);
 	return SCRIPT_CMD_SUCCESS;
 }
 

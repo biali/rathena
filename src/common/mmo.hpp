@@ -179,8 +179,9 @@ const t_itemid WEDDING_RING_F = 2635;
 // Max drops lists biali blackzone
 #define MAX_DROPS 50
 
-// Max effects for faction aura
+// Max effects for aura (mounts)
 #define MAX_AURA_EFF 3
+
 // Castle Ranking biali damage log
 #define RANK_CASTLES 34 
 // Infamy system
