@@ -11,13 +11,7 @@ function	script	ValueConvert	{
 }
 
 rentinb1,34,24,0	script	#wardrobe	844,{
-
-	if(getcharid(6) > 0) {
-		mes "[^0055FF ::: " + strcharinfo(0) + " ::: ^000000]";
-		mes "I cannot change my styles while you are representing a City.";
-		close;
-	}
-    
+ 
     // Dont edit this bit
     setarray .@min_style,0,0,0;
     if(sex == SEX_MALE)
@@ -46,6 +40,12 @@ OnTalk:
 	@style_value = getlook( .look_type[@style] );
 
 	.@style_number = .@min_style[@style];
+
+	if(getcharid(6) > 0 && @style == 2) { // style 2 = cloth color
+		mes "[^0055FF ::: " + strcharinfo(0) + " ::: ^000000]";
+		mes "I cannot change my styles while representing a City.";
+		close;
+	}
 
 	addtimer 1000,strnpcinfo(0)+"::OnCancela";
 	do{

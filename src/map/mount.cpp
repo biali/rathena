@@ -79,7 +79,7 @@ void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
 }
 
 void mount_desmount(struct map_session_data *sd) {
-	if(pc_readparam(sd, SP_HP >= 1))
+	if(pc_readparam(sd, SP_HP) >= 1)
 		pc_setremounttimer(sd,REMOUNT_TIMER * 1000);
 	else
 		pc_setremounttimer(sd,REMOUNT_TIMER * 6 * 1000);
@@ -110,7 +110,7 @@ void mount_pc_status(struct map_session_data *sd) {
 		pc_bonus_script(sd);
 
 	} else{
-		ShowWarning("Biali entrou aki \m");
+		ShowWarning("Biali entrou aki \n");
 		pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
 		pc_setparam( sd, SP_HP, sd->status.hp );
 		status_calc_pc(sd,SCO_NONE);

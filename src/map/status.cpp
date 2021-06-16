@@ -1165,6 +1165,9 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_IMUNITY_CD] = EFST_IMUNITY_CD;
 	StatusIconChangeTable[SC_KNOCKED] = EFST_KNOCKED;
 
+	//biali mount rework
+	StatusIconChangeTable[SC_MOUNT_CD] = EFST_MOUNT_CD;
+
 	/* Cash Items */
 	StatusIconChangeTable[SC_FOOD_STR_CASH] = EFST_FOOD_STR_CASH;
 	StatusIconChangeTable[SC_FOOD_AGI_CASH] = EFST_FOOD_AGI_CASH;
@@ -2107,7 +2110,6 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 		// clif_sitting(&sd->bl);
 		sd->state.workinprogress = WIP_DISABLE_ALL;
 		sd->state.block_action |= (PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
-		sc_start(&sd->bl,&sd->bl, SC_SLEEP, 100, 1, battle_config.pc_knocked_time);
 		sc_start(&sd->bl,&sd->bl,SC_KNOCKED,100,1,battle_config.pc_knocked_time);
 		return (int)(hp+sp);
 	} 
@@ -4781,7 +4783,12 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	}
 	status_cpy(&sd->battle_status, base_status);
 
-	mount_pc_status(sd); //biali mount rework
+	// biali mounts rework
+	if(opt&SCO_NONE || opt&SCO_FORCE)
+		mount_pc_status(sd); //biali mount rework
+
+	if(opt&SCO_FIRST)
+		sd->mount_remount_timer = INVALID_TIMER;
 
 // ----- CLIENT-SIDE REFRESH -----
 	if(!sd->bl.prev) {

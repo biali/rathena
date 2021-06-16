@@ -994,6 +994,9 @@ extern struct s_job_info job_info[CLASS_COUNT];
 #define EQP_SHADOW_ACC (EQP_SHADOW_ACC_R|EQP_SHADOW_ACC_L)
 #define EQP_SHADOW_ARMS (EQP_SHADOW_WEAPON|EQP_SHADOW_SHIELD)
 
+//Biali deadbody
+#define KNOCKED_AURA 213 // this is the hateffect id in hateffect.lub
+
 /// Equip positions that use a visible sprite
 #if PACKETVER < 20110111
 	#define EQP_VISIBLE EQP_HELM

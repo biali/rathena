@@ -551,7 +551,7 @@ static TIMER_FUNC(pc_knocked_timer){
 	sd->state.workinprogress = WIP_DISABLE_NONE;
 	sd->state.block_action &= ~(PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
 
-	status_change_end(&sd->bl, SC_SLEEP, INVALID_TIMER);
+	clif_hat_effect_single(&sd->bl,KNOCKED_AURA,false);
 	pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	sc_start(&sd->bl,&sd->bl,SC_IMUNITY,100,1,battle_config.pc_invincible_time);
 
@@ -614,6 +614,7 @@ void pc_setknockedtimer(struct map_session_data* sd, int val) {
 		delete_timer(sd->state.knocked,pc_knocked_timer);
 
 	sd->state.knocked = add_timer(gettick()+val,pc_knocked_timer,sd->bl.id,0);
+	clif_hat_effect_single(&sd->bl,KNOCKED_AURA,true);
 
 	if(battle_config.prevent_logout_trigger&PLT_DAMAGE)
 		sd->canlog_tick = gettick() + battle_config.pc_knocked_time;
@@ -629,7 +630,7 @@ void pc_delknockedtimer(struct map_session_data* sd)
 	{
 		delete_timer(sd->state.knocked,pc_knocked_timer);
 		sd->state.knocked = INVALID_TIMER;
-		status_change_end(&sd->bl, SC_SLEEP, INVALID_TIMER);
+		clif_hat_effect_single(&sd->bl,KNOCKED_AURA,false);
 		// skill_unit_move(&sd->bl,gettick(),1);
 	}
 }
@@ -658,6 +659,7 @@ void pc_setremounttimer(struct map_session_data* sd, int val) {
 		delete_timer(sd->mount_remount_timer,pc_remount_timer);
 
 	sd->mount_remount_timer = add_timer(gettick()+val,pc_remount_timer,sd->bl.id,0);
+	sc_start(&sd->bl,&sd->bl,SC_MOUNT_CD,100,1,val);
 }
 
 void pc_delremounttimer(struct map_session_data* sd)
@@ -668,6 +670,7 @@ void pc_delremounttimer(struct map_session_data* sd)
 	{
 		delete_timer(sd->mount_remount_timer,pc_remount_timer);
 		sd->mount_remount_timer = INVALID_TIMER;
+		status_change_end(&sd->bl, (sc_type)SC_MOUNT_CD, INVALID_TIMER);
 	}
 }
 
@@ -9846,7 +9849,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 	// to remove the timer in case they have died in the blackzone and were in the knocked state
 	pc_delknockedtimer(sd);
 
-	pc_delremounttimer(sd); //reset the re-mounting timer case they have one
+	pc_delremounttimer(sd); //reset the re-mounting timer case they have one biali mounts rework
 
 	//Reset "can log out" tick.
 	//Biali check this out blackzone
