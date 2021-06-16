@@ -5467,7 +5467,6 @@ int do_init(int argc, char *argv[])
 	map_do_init_msg();
 	do_init_path();
 	do_init_faction(); //Biali Faction system
-	do_init_mount(); // Biali mount rework
 	do_init_atcommand();
 	do_init_battle();
 	do_init_instance();
@@ -5479,6 +5478,7 @@ int do_init(int argc, char *argv[])
 	do_init_channel();
 	do_init_cashshop();
 	do_init_skill();
+	do_init_mount(); // Biali mount rework
 	do_init_mob();
 	do_init_pc();
 	do_init_status();

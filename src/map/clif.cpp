@@ -435,42 +435,19 @@ static bool clif_session_isValid(struct map_session_data *sd) {
 // biali faction system
 void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	int i;
-
 	struct faction_data *fdb = faction_search(sd->status.faction_id);
-
 	clif_hat_effect_single(&sd->bl,fdb->aura,true); //Area
 }
 
 // biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	int i;
-
-	if( !sd->sc.data[SC_ALL_RIDING] )
-		return;
-
-	struct mount_data *mdb = mount_search(sd->state.mount);
-	for( i = 0; i < MAX_AURA_EFF; i++ )
-		if( mdb->aura[i] > 0 )
-			clif_specialeffect_single(&sd->bl,mdb->aura[i],dsd->fd);
+	if(sd->mount > 1) { //because 1 is the default one and has no aura or skills
+		struct mount_data *mdb = mount_search(sd->mount);
+		clif_hat_effect_single(&sd->bl,mdb->aura,true); //Area
+	}
 }
 
-
-void clif_sendauras(struct map_session_data *sd,  enum send_target type)
-{
-	int i;
-	struct mount_data *mdb = NULL;
-
-	if( !sd->sc.data[SC_ALL_RIDING] )
-		return;
-
-	if( (mdb = mount_search(sd->state.mount)) != NULL )
-		for( i = 0; i < MAX_AURA_EFF; i++ )
-			if( mdb->aura[i] > 0 )
-				clif_specialeffect(&sd->bl,mdb->aura[i],type);
-
-}
 
 
 /*==========================================

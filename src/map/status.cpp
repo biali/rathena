@@ -2071,13 +2071,13 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 
 		struct map_session_data *sd = (TBL_PC*)target;
 
-		unit_stop_attack(src);
-		unit_skillcastcancel(src,0);
-		skill_cleartimerskill(src);
+		// unit_stop_attack(src);
+		// unit_skillcastcancel(src,0);
+		// skill_cleartimerskill(src);
 
-		unit_stop_walking(target,4);
-		unit_stop_attack(target);
-		unit_skillcastcancel(target,0);
+		// unit_stop_walking(target,4);
+		// unit_stop_attack(target);
+		// unit_skillcastcancel(target,0);
 
 		mount_desmount(sd);
 
@@ -4781,6 +4781,8 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	}
 	status_cpy(&sd->battle_status, base_status);
 
+	mount_pc_status(sd); //biali mount rework
+
 // ----- CLIENT-SIDE REFRESH -----
 	if(!sd->bl.prev) {
 		// Will update on LoadEndAck
@@ -7404,11 +7406,9 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 				val = 25; // Same bonus
 			else if( pc_isridingwug(sd) )
 				val = 15 + 5 * pc_checkskill(sd, RA_WUGRIDER);
-			// else if( sc->data[SC_ALL_RIDING] )
-			// 	val = battle_config.rental_mount_speed_boost;
 			//biali mount rework
 			else if( sc->data[SC_ALL_RIDING] ) {
-				struct mount_data *mdb = mount_search(sd->state.mount);
+				struct mount_data *mdb = mount_search(sd->mount);
 				if(mdb == NULL || mdb->id == DEFAULT_MOUNT)
 					val = battle_config.rental_mount_speed_boost;
 				else

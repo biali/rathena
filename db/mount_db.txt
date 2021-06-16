@@ -11,14 +11,15 @@
 //		5 = Poison, 6 = Holy, 7 = Dark, 8 = Spirit, 9 = Undead
 // * Element lvl: 1 ~ 4
 // * Size: 1 - small, 0 - normal, 2 - big
-// * Skill id
-// * skill level
 // * speed : the amount to be reduced from the standard walk speed
 // * cast time : the amount in seconds to cast mount
 // * { Aura } : see doc/effect_list.txt
-// * { Skill } : Special passive skill the mount has
+// * item : item used to summon the mount (we need this to feed id->isMount)
+// * { script } : Special passive skill the mount has
+
 
 // Mount ID: 1 - Default
-1,Default,60000,7,0,1,0,16,5,25,3,{ #200 #201 }
-2,Journeymen Ride,85000,7,0,1,0,16,5,28,4,{ #210 #411 }
-3,Master Ride,99000,7,0,1,0,16,5,30,5,{ #206 #408 }
+1,Default,12000,2,0,1,0,28,3,0,12622,{ }
+2,Journeymen Ride,18000,2,0,1,0,28,4,209,30600,{ bonus2 bAddEffWhenHit,Eff_Freeze,3000; }
+3,Master Ride,25000,2,0,1,0,30,5,210,30601,{ bonus2 bAddEffWhenHit,Eff_Silence,3000; }
+4,Collector Ride,25000,2,0,1,0,25,5,211,30602,{ bonus2 bAddEffWhenHit,Eff_Stone,3000; }

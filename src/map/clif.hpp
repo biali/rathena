@@ -679,7 +679,6 @@ void clif_sendrpkswords_single(int fd, struct map_session_data *sd);
 
 //biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
-void clif_sendauras(struct map_session_data *sd,  enum send_target type);
 
 void clif_emotion(struct block_list *bl,int type);
 void clif_talkiebox(struct block_list* bl, const char* talkie);

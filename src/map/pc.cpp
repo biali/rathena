@@ -634,6 +634,43 @@ void pc_delknockedtimer(struct map_session_data* sd)
 	}
 }
 
+//Biali mount rework
+static TIMER_FUNC(pc_remount_timer){
+	struct map_session_data *sd;
+
+	if( (sd=(struct map_session_data *)map_id2sd(id)) == NULL || sd->bl.type!=BL_PC )
+		return 1;
+
+	if(sd->mount_remount_timer != tid)
+		return 0;
+
+	sd->mount_remount_timer = INVALID_TIMER;
+	
+	skill_unit_move(&sd->bl,tick,1);
+
+	return 0;
+}
+
+void pc_setremounttimer(struct map_session_data* sd, int val) {
+	nullpo_retv(sd);
+
+	if( sd->mount_remount_timer != INVALID_TIMER )
+		delete_timer(sd->mount_remount_timer,pc_remount_timer);
+
+	sd->mount_remount_timer = add_timer(gettick()+val,pc_remount_timer,sd->bl.id,0);
+}
+
+void pc_delremounttimer(struct map_session_data* sd)
+{
+	nullpo_retv(sd);
+
+	if( sd->mount_remount_timer != INVALID_TIMER )
+	{
+		delete_timer(sd->mount_remount_timer,pc_remount_timer);
+		sd->mount_remount_timer = INVALID_TIMER;
+	}
+}
+
 static TIMER_FUNC(pc_spiritball_timer){
 	struct map_session_data *sd;
 	int i;
@@ -6449,7 +6486,8 @@ int pc_useitem(struct map_session_data *sd,int n)
 
 	/* Items with delayed consume are not meant to work while in mounts except reins of mount(12622) */
 	if( id->flag.delay_consume > 0 ) {
-		if( nameid != ITEMID_REINS_OF_MOUNT && sd->sc.data[SC_ALL_RIDING] )
+		//if( nameid != ITEMID_REINS_OF_MOUNT && sd->sc.data[SC_ALL_RIDING] )
+		if( id->flag.isMount == false && sd->sc.data[SC_ALL_RIDING] ) //biali mount rework
 			return 0;
 		else if( pc_issit(sd) )
 			return 0;
@@ -9807,6 +9845,8 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 
 	// to remove the timer in case they have died in the blackzone and were in the knocked state
 	pc_delknockedtimer(sd);
+
+	pc_delremounttimer(sd); //reset the re-mounting timer case they have one
 
 	//Reset "can log out" tick.
 	//Biali check this out blackzone
@@ -14878,6 +14918,7 @@ void do_init_pc(void) {
 	add_timer_func_list(pc_invincible_timer, "pc_invincible_timer");
 	add_timer_func_list(pc_invincible_timer_reset, "pc_invincible_timer_reset"); //biali blackzone
 	add_timer_func_list(pc_knocked_timer, "pc_knocked_timer"); //biali blackzone
+	add_timer_func_list(pc_remount_timer, "pc_remount_timer"); //biali mount rework
 	add_timer_func_list(pc_eventtimer, "pc_eventtimer");
 	add_timer_func_list(pc_inventory_rental_end, "pc_inventory_rental_end");
 	add_timer_func_list(pc_calc_pvprank_timer, "pc_calc_pvprank_timer");

@@ -67,21 +67,54 @@ int mount_sendaurastoone(struct block_list *bl,va_list ap)
 }
 
 void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
-    sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
-    sd->state.mount = mdb->id;
-    pc_setparam( sd, SP_MAXHP, mdb->max_hp );
-    pc_setparam( sd, SP_HP, mdb->max_hp );
-    clif_sendaurastoone(sd, sd);
-    map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
+	if(sd->mount_remount_timer != INVALID_TIMER) {
+		clif_messagecolor(&sd->bl,color_table[COLOR_RED],"You can't mount right now.",false,SELF);
+	} else {
+		sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
+		sd->mount = mdb->id;
+		clif_hat_effect_single(&sd->bl,mdb->aura,true);
+		mount_pc_status(sd);
+		//map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
+	}
 }
 
 void mount_desmount(struct map_session_data *sd) {
+	if(pc_readparam(sd, SP_HP >= 1))
+		pc_setremounttimer(sd,REMOUNT_TIMER * 1000);
+	else
+		pc_setremounttimer(sd,REMOUNT_TIMER * 6 * 1000);
     status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
-    sd->state.mount = 0;
-    pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
-    pc_setparam( sd, SP_HP, sd->status.hp );
-    map_foreachinrange(mount_aura_clear, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
-    clif_refresh(sd);
+	struct mount_data *mdb = mount_search(sd->mount);
+    sd->mount = 0;
+	clif_hat_effect_single(&sd->bl,mdb->aura,false); //Area
+	mount_pc_status(sd);
+    //map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
+    //clif_refresh(sd);
+}
+
+void mount_pc_status(struct map_session_data *sd) {
+
+	struct mount_data *mdb = NULL;
+	struct status_data *status = status_get_base_status(&sd->bl);
+	
+	if( (mdb = mount_search(sd->mount)) != NULL) {
+		pc_setparam( sd, SP_MAXHP, mdb->max_hp );
+    	pc_setparam( sd, SP_HP, mdb->max_hp );
+
+		status->race 	= mdb->race;
+		status->def_ele	= mdb->ele;
+		status->ele_lv 	= mdb->ele_lvl;
+		status->size	= mdb->size;
+
+		run_script(mdb->script,0,sd->bl.id,0);
+		pc_bonus_script(sd);
+
+	} else{
+		ShowWarning("Biali entrou aki \m");
+		pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
+		pc_setparam( sd, SP_HP, sd->status.hp );
+		status_calc_pc(sd,SCO_NONE);
+	}
 }
 
 
@@ -95,27 +128,26 @@ static int mount_readdb(void)
 	FILE *fp;
 	void *aChSysSave = NULL;
 
+	struct item_data *idt = NULL;
+
 	sprintf(path, "%s/%s", db_path, filename);
 	if((fp = fopen(path, "r")) == NULL ) {
 		ShowWarning("mount_readdb: File not found \"%s\", skipping.\n", path);
 		return 0;
 	}
 
-	while(fgets(line, sizeof(line), fp)) {
-		char *str[14], *p, *p_tmp, map[MAP_NAME_LENGTH], out[100];
-		int i, id, max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, k = 0;
-		int aura[MAX_AURA_EFF];
-		FILE *fp2 = NULL;
+	while(fgets(line, sizeof(line), fp)) 
+	{
+		char *str[32], *p;
+		int i, id, max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, aura, k = 0;
+		t_itemid item;
 
 		lines++;
 		if(line[0] == '/' && line[1] == '/')
 			continue;
-		memset(out, 0, sizeof(out));
-		memset(aura, 0, sizeof(aura));
 		memset(str, 0, sizeof(str));
 
 		p = line;
-
 		while( ISSPACE(*p) )
 			++p;
 		if( *p == '\0' )
@@ -179,51 +211,36 @@ static int mount_readdb(void)
 			size = 0;
 		}
 
-		skill_id = atoi(str[7]);
-		if( skill_id < 1 || skill_id > MAX_SKILL ) {
-			ShowWarning("mount_readdb : Invalid skill_id: %d, in line %d of \"%s\" (Mount id %d).\n", skill_id, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : skill must be between 1 and %d. Default to 0.\n",MAX_SKILL);
-			skill_id = 0;
-		}
-
-		skill_lv = atoi(str[8]);
-		if( skill_lv < 1 ) {
-			ShowWarning("mount_readdb : Invalid skill_lv: %d, in line %d of \"%s\" (Mount id %d).\n", skill_lv, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : skill level must be at least 1. Default to 1.\n");
-			skill_id = 1;
-		}
-
-		speed_bonus = atoi(str[9]);
+		speed_bonus = atoi(str[7]);
 		if( speed_bonus < -100 || speed_bonus > 100 ) {
 			ShowWarning("mount_readdb : Invalid speed bonus: %d, in line %d of \"%s\" (Mount id %d).\n", speed_bonus, lines, path, atoi(str[0]));
 			ShowWarning("mount_readdb : speed must be between -100 and 100. Default to 25.\n");
 			speed_bonus = 25;
 		}
 
-        cast_time = atoi(str[10]);
+        cast_time = atoi(str[8]);
 		if( cast_time < 0 || cast_time > 60 ) {
 			ShowWarning("mount_readdb : Invalid cast time: %d, in line %d of \"%s\" (Mount id %d).\n", cast_time, lines, path, atoi(str[0]));
 			ShowWarning("mount_readdb : cast time must be between 1 and 60. Default to 1.\n");
 			cast_time = 1;
 		}
 
-		if( *p != '{' ) {
-			ShowError("mount_readdb: Invalid format in line %d of \"%s\" (Mount id %d), skipping.\n", lines, path, atoi(str[0]));
+		aura = atoi(str[9]);
+		if( aura < 0 || aura > INT_MAX ) {
+			ShowWarning("mount_readdb : Invalid aura: %d, in line %d of \"%s\" (Mount id %d).\n", aura, lines, path, atoi(str[0]));
+			ShowWarning("mount_readdb : aura must be between 0 and %d. Default to 0.\n",INT_MAX);
+			aura = 0;
+		}
+
+		item = atoi(str[10]);
+		if( (idt = itemdb_search(item)) == NULL ) {
+			ShowWarning("mount_readdb : Invalid item: %d, in line %d of \"%s\" (Mount id %d). Skipping.\n", item, lines, path, atoi(str[0]));
 			continue;
-		}
-		p_tmp = p;
-		p_tmp = strchr(p_tmp+1,'#');
-		for( i = 0; i < MAX_AURA_EFF && p_tmp; i++ ) {
-			if( !sscanf(p_tmp, "%d", &aura[k]) && !sscanf(p_tmp, "#%d", &aura[k]) )
-			{
-				ShowWarning("mount_readdb: Error parsing aura effects in line %d of \"%s\" (mount id %d), skipping.\n", lines, path, atoi(str[0]));
-				p_tmp = strchr(p_tmp+1,'#');
-				continue;
-			}
-			p_tmp = strchr(p_tmp+1,'#');
-			k++;
-		}
-		p = strstr(p+1,"},");
+		} else 
+			idt->flag.isMount = true;
+
+		// // script
+		str[11] = p;
 
 		CREATE(mdb,struct mount_data,1);
 		mdb->id = id;
@@ -237,7 +254,8 @@ static int mount_readdb(void)
 		mdb->skill_lv = skill_lv;
 		mdb->speed_bonus = speed_bonus;
         mdb->cast_time = cast_time;
-		memcpy(&mdb->aura, &aura, sizeof(mdb->aura));
+		mdb->aura = aura;
+		mdb->script = parse_script(str[11],path,lines,0);
 
 		idb_put(mount_db,id,mdb);
 

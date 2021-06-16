@@ -1587,7 +1587,28 @@ Body:
     Type: Delayconsume
     Weight: 10
     Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(getcharid(0),1);
+      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(1);
+  - Id: 30600
+    AegisName: Boarding_Halter_1
+    Name: Journeymen's Ride
+    Type: Delayconsume
+    Weight: 10
+    Script: |
+      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(2);
+  - Id: 30601
+    AegisName: Boarding_Halter_2
+    Name: Master Ride
+    Type: Delayconsume
+    Weight: 10
+    Script: |
+      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(3);
+  - Id: 30602
+    AegisName: Boarding_Halter_3
+    Name: Collector Ride
+    Type: Delayconsume
+    Weight: 10
+    Script: |
+      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(4);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat

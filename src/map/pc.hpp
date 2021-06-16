@@ -341,7 +341,6 @@ struct map_session_data {
 		int deadbody_looting; // biali flags if the player is looting a body at the time (keeps deadbody gid while lootbag is open)
 		unsigned int block_action : 10;
 		int knocked; // Biali Black zone (receives an epoch time)
-		int mount; // biali mount rework (receives the mount id)
 #ifdef BGEXTENDED
 		// BG eAmod
 		unsigned bg_afk : 1;
@@ -831,6 +830,9 @@ struct map_session_data {
 		uint16 level;
 		int target;
 	} skill_keep_using;
+
+	int mount; // biali mount rework (mount id)
+	int mount_remount_timer; //biali mount rework. when will them be allowed to mount again?
 };
 
 extern struct eri *pc_sc_display_ers; /// Player's SC display table
@@ -1436,6 +1438,10 @@ void pc_lootbag_storageopen(struct map_session_data *sd, struct npc_data *nd, in
 void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, int index, int amount);
 void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
 void pc_lootbag_storageclose(struct map_session_data *sd);
+
+//biali mount rework
+void pc_setremounttimer(struct map_session_data* sd, int val);
+void pc_delremounttimer(struct map_session_data* sd);
 
 extern struct fame_list smith_fame_list[MAX_FAME_LIST];
 extern struct fame_list chemist_fame_list[MAX_FAME_LIST];

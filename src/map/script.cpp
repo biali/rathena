@@ -22332,9 +22332,13 @@ BUILDIN_FUNC(ismounting) {
 BUILDIN_FUNC(setmounting) {
 	TBL_PC* sd;
 	struct mount_data *mdb = NULL;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
 	
-	if (!script_charid2sd(2,sd))
-		return SCRIPT_CMD_FAILURE;
+	// if (!script_charid2sd(2,sd))
+	// 	return SCRIPT_CMD_FAILURE;
+
 	if( sd->sc.option&(OPTION_WUGRIDER|OPTION_RIDING|OPTION_DRAGON|OPTION_MADOGEAR) ) {
 		clif_msg(sd, NEED_REINS_OF_MOUNT);
 		script_pushint(st,0); //can't mount with one of these
@@ -22344,22 +22348,13 @@ BUILDIN_FUNC(setmounting) {
 	} else { //Biali mounts rework
 		if( sd->sc.data[SC_ALL_RIDING] ) {
 			mount_desmount(sd);
-			// status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
-			// sd->state.mount = 0;
-			// pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
-			// pc_setparam( sd, SP_HP, sd->status.hp );
 		} else { 
-			if (!script_hasdata(st,3))
+			if (!script_hasdata(st,2))
 				mdb = mount_search(DEFAULT_MOUNT);
 			else
-				mdb = mount_search(script_getnum(st,3));
+				mdb = mount_search(script_getnum(st,2));
 
 			mount_setride(sd,mdb);
-
-			// sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
-			// sd->state.mount = mdb->id;
-			// pc_setparam( sd, SP_MAXHP, mdb->max_hp );
-			// pc_setparam( sd, SP_HP, mdb->max_hp );
 		}
 		script_pushint(st,1);//in both cases, return 1.
 	}
@@ -22370,7 +22365,7 @@ BUILDIN_FUNC(setmounting) {
 BUILDIN_FUNC(mountinfo) 
 {
 	struct mount_data* mdb = NULL;
-	int mount_id, type, val = 0;
+	int mount_id, type;
 
 	mount_id = script_getnum(st,2);
 
@@ -22396,7 +22391,7 @@ BUILDIN_FUNC(mountinfo)
 		case 8: script_pushint(st,mdb->skill_lv);		break;	// Skill Id
 		case 9: script_pushint(st,mdb->speed_bonus);	break;	// Speed
 		case 10: script_pushint(st,mdb->cast_time);		break;	// cast time
-		case 11: script_pushint(st,mdb->aura[val]);		break;	// Aura ID
+		case 11: script_pushint(st,mdb->aura);			break;	// Aura ID
 	}
 
 	return 0;
@@ -25938,7 +25933,7 @@ BUILDIN_FUNC(removefactionmap)
 BUILDIN_FUNC(factioninfo) 
 {
 	struct faction_data* fdb = NULL;
-	int faction_id, type, val = 0;
+	int faction_id, type;
 
 	faction_id = script_getnum(st,2);
 
@@ -25949,15 +25944,6 @@ BUILDIN_FUNC(factioninfo)
 	}
 
 	type = script_getnum(st,3);
-
-	if( script_hasdata(st,4) )
-		val = script_getnum(st,4);
-
-	if( val < 0 || (type == 12 && val > MAX_AURA_EFF))
-	{
-		ShowWarning("factioninfo: Invalid val: %d \n",val);
-		return 0;
-	}
 
 	switch(type)
 	{
@@ -27249,13 +27235,13 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(checkdragon,"?"),//[Ind]
 	BUILDIN_DEF(setdragon,"??"),//[Ind]
 	BUILDIN_DEF(ismounting,"?"),//[Ind]
-	BUILDIN_DEF(setmounting,"??"),//[Ind]
+	BUILDIN_DEF(setmounting,"i"),//[Ind]
 	BUILDIN_DEF(checkre,"i"),
 
 	/**
 	* Faction System [Biali]
 	**/
-	BUILDIN_DEF(factioninfo, "ii?"),
+	BUILDIN_DEF(factioninfo, "ii"),
 	BUILDIN_DEF(setfaction, "i?"),
 	BUILDIN_DEF(factionleave, ""),
 	BUILDIN_DEF(factionmonster,"isiisii?"),

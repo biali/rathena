@@ -917,6 +917,7 @@ struct item_data
 		bool broadcast; ///< Will be broadcasted if someone obtain the item [Cydh]
 		bool bindOnEquip; ///< Set item as bound when equipped
 		bool ancient; // Biali Ancient WoE
+		bool isMount; // Biali used to summon a mount
 		e_item_drop_effect dropEffect; ///< Drop Effect Mode
 	} flag;
 	struct {// item stacking limitation
