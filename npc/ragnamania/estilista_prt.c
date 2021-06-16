@@ -1,16 +1,16 @@
 
 
-// credits to Annieruru
-function	script	ValueConvert	{
-	set .@num, atoi(""+getarg(0));
-	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
-	set .@l, getstrlen(""+.@num);
-	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
-		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
-			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
-	}
-	return .@num$;
-}
+// // credits to Annieruru
+// function	script	ValueConvert	{
+// 	set .@num, atoi(""+getarg(0));
+// 	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
+// 	set .@l, getstrlen(""+.@num);
+// 	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
+// 		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
+// 			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
+// 	}
+// 	return .@num$;
+// }
 
 
 -	script	Stylist	-1,{

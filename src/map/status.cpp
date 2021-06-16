@@ -2082,7 +2082,7 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 		// unit_stop_attack(target);
 		// unit_skillcastcancel(target,0);
 
-		mount_desmount(sd);
+		mount_desmount(sd,true);
 
 		return (int)(hp+sp);
 	}
@@ -4787,8 +4787,10 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	if(opt&SCO_NONE || opt&SCO_FORCE)
 		mount_pc_status(sd); //biali mount rework
 
-	if(opt&SCO_FIRST)
+	if(opt&SCO_FIRST) {
+		//biali mount rework
 		sd->mount_remount_timer = INVALID_TIMER;
+	}
 
 // ----- CLIENT-SIDE REFRESH -----
 	if(!sd->bl.prev) {

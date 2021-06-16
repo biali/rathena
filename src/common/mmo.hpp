@@ -179,7 +179,7 @@ const t_itemid WEDDING_RING_F = 2635;
 // Max drops lists biali blackzone
 #define MAX_DROPS 50
 
-// Biali mounts rework
+// Biali mount rework
 #define REMOUNT_TIMER 30 // 30 seconds (multiplied by 6 when unmounted by dmg)
 
 // Castle Ranking biali damage log

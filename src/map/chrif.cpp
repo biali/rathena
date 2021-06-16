@@ -1234,18 +1234,28 @@ int chrif_updatefamelist(struct map_session_data* sd, short flag) {
 
 	chrif_check(-1);
 
-	switch(sd->class_ & MAPID_UPPERMASK) {
-		case MAPID_BLACKSMITH: type = RANK_BLACKSMITH; break;
-		case MAPID_ALCHEMIST:  type = RANK_ALCHEMIST; break;
-		case MAPID_TAEKWON:    type = RANK_TAEKWON; break;
-		default:
-			return 0;
+	if( !flag )
+	{
+		switch(sd->class_ & MAPID_UPPERMASK) {
+			case MAPID_BLACKSMITH: type = RANK_BLACKSMITH; break;
+			case MAPID_ALCHEMIST:  type = RANK_ALCHEMIST; break;
+			case MAPID_TAEKWON:    type = RANK_TAEKWON; break;
+			default:
+				return 0;
+		}
 	}
+	else type = 3 + flag; // 4 = PK | 5 = BG Ranked | 6 = BG Normal
 
 	WFIFOHEAD(char_fd, 11);
 	WFIFOW(char_fd,0) = 0x2b10;
 	WFIFOL(char_fd,2) = sd->status.char_id;
-	WFIFOL(char_fd,6) = sd->status.fame;
+	switch( flag )
+	{
+	case 1:  WFIFOL(char_fd,6) = sd->status.pk.score; break;
+	case 2:  WFIFOL(char_fd,6) = sd->status.bgstats.rank_points; break;
+	case 3:  WFIFOL(char_fd,6) = sd->status.bgstats.points; break;
+	default: WFIFOL(char_fd,6) = sd->status.fame; break;
+	}
 	WFIFOB(char_fd,10) = type;
 	WFIFOSET(char_fd,11);
 

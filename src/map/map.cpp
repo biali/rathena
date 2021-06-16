@@ -2119,6 +2119,11 @@ int map_quit(struct map_session_data *sd) {
 	if(sd->status.faction_id)
 		sd->status.faction_id = 0;
 
+	// we have to do this for now because at this point we dont know which mount id the player was on before disconection last time
+	// Biali TODO: Store the mount id in the DB
+	if (sd->sc.data[SC_ALL_RIDING])
+		status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+
 	pc_itemcd_do(sd,false);
 
 	npc_script_event(sd, NPCE_LOGOUT);

@@ -2130,6 +2130,7 @@ static TIMER_FUNC(clif_delayquit){
 /*==========================================
  *
  *------------------------------------------*/
+// Biali TODO - This must be changed as it is not working properly
 void clif_quitsave(int fd,struct map_session_data *sd) {
 	if (!battle_config.prevent_logout ||
 		sd->canlog_tick == 0 ||
@@ -10182,9 +10183,6 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			packet.title_id = sd->status.title_id; // Title ID
 #endif
 
-			// if( sd->status.faction_id ) // Faction System [Biali]
-			// 	clif_send(&packet, sizeof(packet), &sd->bl, AREA_FVF);
-			// else
 				clif_send(&packet, sizeof(packet), src, target);
 		}
 			break;
@@ -11018,18 +11016,6 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	clif_updatestatus(sd,SP_WEIGHT);
 	clif_updatestatus(sd,SP_MAXWEIGHT);
 
-
-	// biali faction system
-	// faction_getareachar_unit(sd, &sd->bl);
-	faction_spawn(sd);
-
-	//biali mounts rework
-	// we have to do this for now because at this point we dont know which mount id the player was on before disconection last time
-	// Biali TODO: Store the mount id in the DB
-	if (sd->sc.data[SC_ALL_RIDING])
-		status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
-
-
 	// guild
 	// (needs to go before clif_spawn() to show guild emblems correctly)
 #ifdef BGEXTENDED
@@ -11308,6 +11294,10 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				clif_bg_updatescore_single(sd);
 #endif
 
+		// biali faction system
+		// faction_getareachar_unit(sd, &sd->bl);
+		faction_spawn(sd);
+
 		if( mapdata->flag[MF_ALLOWKS] && !mapdata_flag_ks(mapdata) )
 		{
 			char output[128];
@@ -11338,7 +11328,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 
 		// Biali
 		// Important announcements
-		// Faction and Full loot syste
+		// Faction and Full loot system
 
 		//Faction System 
 		if(sd->state.pmap != sd->bl.m) {

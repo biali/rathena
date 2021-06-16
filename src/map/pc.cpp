@@ -1590,10 +1590,10 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 		add2limit(ssd->status.pvp.kill_count, 1, USHRT_MAX);
 		add2limit(tsd->status.pvp.death_count, 1, USHRT_MAX);
 	}
-	else if( map_getmapflag_sub(m,MF_RPK,NULL) )
+	else if( map_getmapflag_sub(m,MF_RPK,NULL) || map_getmapflag_sub(m,MF_FVF,NULL))
 	{
 		/*==========================================
-		 * Blackzone PK Ranking
+		 * PK Ranking (Blackzone and City VS City)
 		 *------------------------------------------*/
 		struct party_data *p;
 		struct map_session_data *s_pl[MAX_PARTY], *t_pl[MAX_PARTY], *p_sd;

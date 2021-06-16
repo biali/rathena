@@ -45,6 +45,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp" //biali mount rework
 #include "npc.hpp"
 #include "party.hpp"
 #include "pc.hpp"
@@ -9511,7 +9512,8 @@ ACMD_FUNC(mount2) {
 		sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK);
 	} else {
 		clif_displaymessage(sd->fd,msg_txt(sd,1364)); // You have released your mount.
-		status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+		//status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+		mount_desmount(sd);
 	}
 	return 0;
 }

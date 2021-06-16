@@ -13,7 +13,7 @@
 
 struct mount_data *mount_search(int);
 void mount_setride(struct map_session_data *sd, struct mount_data *mdb);
-void mount_desmount(struct map_session_data *sd);
+void mount_desmount(struct map_session_data *sd, bool force = false);
 void mount_pc_status(struct map_session_data *sd);
 
 void do_init_mount(void);

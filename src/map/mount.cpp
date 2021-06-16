@@ -78,8 +78,8 @@ void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
 	}
 }
 
-void mount_desmount(struct map_session_data *sd) {
-	if(pc_readparam(sd, SP_HP) >= 1)
+void mount_desmount(struct map_session_data *sd, bool force) {
+	if(!force)
 		pc_setremounttimer(sd,REMOUNT_TIMER * 1000);
 	else
 		pc_setremounttimer(sd,REMOUNT_TIMER * 6 * 1000);
