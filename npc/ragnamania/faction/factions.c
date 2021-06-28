@@ -1,28 +1,3 @@
--	script	City Register::factions	-1,{
-	end;
-
-OnInit:
-	if(atoi(strnpcinfo(2)) > 0) { 
-		setmapflag strnpcinfo(4), mf_loadevent;
-		setfactionmap atoi(strnpcinfo(2));
-	}
-	end;
-
-OnPCLoadMapEvent:
-	if(getcharid(6) == 0)
-		if(strcharinfo(3) == strnpcinfo(4))
-			announce "Welcome to the sanctuary of " + factioninfo(atoi(strnpcinfo(2)),0),bc_blue|bc_self;
-	end;
-	
-}
-
-geffen,0,0,4	duplicate(factions)	Geffen Register#1	4_F_KAFRA6
-payon,0,0,4	duplicate(factions)	Payon Register#2	4_F_KAFRA6
-morocc,0,0,4	duplicate(factions)	Morocc Register#3	4_F_KAFRA6
-prontera,0,0,4	duplicate(factions)	Prontera Register#4	4_F_KAFRA6
-
-
-
 // Flags Handler
 -	script	Registrar	-1,{
 	.@n$ = "^FF0000"+strnpcinfo(2)+" Registrar^000000";
@@ -85,6 +60,25 @@ prontera,0,0,4	duplicate(factions)	Prontera Register#4	4_F_KAFRA6
 		mes "All Done. Good luck, and take care!";
 		close;
 	}
+
+OnInit:
+	//Add here the maps to be sanctuary for a certain faction
+	if(strnpcinfo(2) == "geffen") 			.@f = 1;
+	else if(strnpcinfo(2) == "payon") 		.@f = 2;
+	else if(strnpcinfo(2) == "morocc") 		.@f = 3;
+	else if(strnpcinfo(2) == "prontera")	.@f = 4;
+	
+	if(.@f > 0) { 
+		setmapflag strnpcinfo(4), mf_loadevent;
+		setfactionmap .@f;
+	}
+	end;
+
+OnPCLoadMapEvent:
+	if(getcharid(6) == 0)
+		if(strcharinfo(3) == strnpcinfo(4))
+			announce "Welcome to the sanctuary of " + factioninfo(getfactionmap(strcharinfo(3)),0),bc_blue|bc_self;
+	end;
 }
 
 prontera,183,213,3	duplicate(Registrar)	Registrar#Prontera	25501

@@ -22347,7 +22347,7 @@ BUILDIN_FUNC(setmounting) {
 		script_pushint(st, 0); // Silent failure
 	} else { //Biali mounts rework
 		if( sd->sc.data[SC_ALL_RIDING] ) {
-			mount_desmount(sd);
+			mount_desmount(sd,false);
 		} else { 
 			if (!script_hasdata(st,2))
 				mdb = mount_search(DEFAULT_MOUNT);

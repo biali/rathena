@@ -9513,7 +9513,7 @@ ACMD_FUNC(mount2) {
 	} else {
 		clif_displaymessage(sd->fd,msg_txt(sd,1364)); // You have released your mount.
 		//status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
-		mount_desmount(sd);
+		mount_desmount(sd,false);
 	}
 	return 0;
 }

@@ -6978,11 +6978,15 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 				instance_addusers(new_map_instance_id);
 		}
 
-		// Biali remove faction whenever steping in a non-fvf map or non-sanctuary of their faction
-		if((sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id > 0 && mapdata->faction_id != sd->status.faction_id) ||
-		  (sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id <= 0 ) )
+		// // Biali remove faction whenever steping in a non-fvf map or non-sanctuary of their faction
+		// if((sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id > 0 && mapdata->faction_id != sd->status.faction_id) ||
+		//   (sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id <= 0 ) )
+		//   	return SETPOS_NOTALLOW;
+		// 	//faction_leave(sd);
+
+		//faction system : a player holding a flag cannot enter a sanctuary map of another city
+		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) 
 		  	return SETPOS_NOTALLOW;
-			//faction_leave(sd);
 
 		if (sd->bg_id && !mapdata->flag[MF_BATTLEGROUND]) // Moving to a map that isn't a Battlegrounds
 			bg_team_leave(sd, false, true);

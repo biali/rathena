@@ -11,6 +11,10 @@ OnTouch:
 // Entrance Portal
 new_1-1,148,112,1	script	nq_portal#1	45,2,2,{
 OnTouch:
+
+	//DEBUG
+	intro_quest = 0;
+
 	if(@instance > 0) {
 		instance_destroy @instance;
 		@instance = 0;
@@ -61,18 +65,21 @@ OnTouch:
 new_1-2,102,12,3	script	Stuart#room1	2073,5,5,{
 end;
 
-OnTouch:
-	if(intro_quest > 0) {
+OnTouch_:
+	if(intro_quest > 2) {
 		npctalk "Hello again," + strcharinfo(0) + "! Are you lost or something?!";
 		end;
 	}
-	// if(intro_quest == 0)
-	// 	intro_quest = 1;
+	//this is to avoid Stuart repeting himself everytime we enter the OnTouch area
+	if(intro_quest == 1)
+		end;
+	intro_quest = 1;
+
 	npcspeed 200;
 	sleep2 1000;
 	npctalk "Oh, hello, " + strcharinfo(0) + " and welcome!";
 	sleep2 3000;
-	npctalk "I am here to introduce you to the basics of Ragnamania Chronos,";
+	npctalk "I am here to introduce you to the basics of Ragnamania Enliven,";
 	sleep2 4000;
 	npctalk "Please follow me...";
 	sleep2 1000;
@@ -100,7 +107,7 @@ OnTouch:
 	} else {
 		if(intro_quest > 2)
 			disablenpc instance_npcname("Stuart#room2");
-		instance_warpall "new_1-2",99,72,instance_id();
+		warp instance_mapname("new_1-2"),99,72;
 		end;
 	}
 	end;
@@ -112,11 +119,10 @@ OnTouch:
 new_1-2,102,75,3	script	Stuart#room2	2073,5,5,{
 end;
 
-OnTouch:
-	// if(intro_quest > 2)
-	// 	end;
-	// else
-		// intro_quest = 3;
+OnTouch_:
+	if(intro_quest > 2)
+		end;
+	intro_quest = 3;
 
 	npcspeed 200;
 	sleep2 1000;
@@ -126,7 +132,7 @@ OnTouch:
 	sleep2 2000;
 	npctalk "So, tell me, "+strcharinfo(0)+" are you excited?";
 	sleep2 4000;
-	npctalk "I am always very excited! A new friend in town... I bet you are gonna love Ragnamania Chronos!";
+	npctalk "I am always very excited! A new friend in town... I bet you are gonna love Ragnamania Enliven!";
 	npcwalkto 96,108;
 	sleep2 5000;
 	npctalk "Here we are! This is our good friend Arthur.";
@@ -141,9 +147,9 @@ OnTouch:
 	sleep2 5000;
 	npctalk "Bye now!";
 	sleep2 2000;
-	intro_quest = 4;
 	npcwalkto 97,85;
 	disablenpc instance_npcname(strnpcinfo(0));
+	intro_quest = 4;
 	end;
  }
 
@@ -225,7 +231,7 @@ new_1-2,99,113,4	script	Arthur#room2	405,{
 		next;
 		mes "^0000FF[ Arthur ]^000000";
 		mes "Well, "+strcharinfo(0)+", I guess this is all I got for you at the moment.";
-		mes "Wish you have a great time here at Ragnamania Chronos!";
+		mes "Wish you have a great time here at Ragnamania Enliven!";
 		intro_quest = 6;
 		close;
 	} 
@@ -364,7 +370,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "So, "+getitemname(675)+", right?";
 	next;
 	mes .n$;
-	mes "Here at Ragnamania Chronos these coins are worth quite a lot of zeny!";
+	mes "Here at Ragnamania Enliven these coins are worth quite a lot of zeny!";
 	next;
 	mes .n$;
 	mes "And that is because there is just so much you can do with them!";
@@ -480,10 +486,11 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "I told you this was gonna be brief!";
 	mes "All the best in your journey!";
 	mes "And see you in Prontera!";
-	if(checkquest(64500) < 0 ){
+	if(checkquest(64500) < 0 )
 		setquest 64500;
+	if(checkquest(64503) < 0 )
 		setquest 64503;
-	}
+
 	intro_quest = 8; 
 	close;
 
@@ -519,7 +526,7 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 	mes "More than never";
 	next;
 	mes .n$;
-	mes "So I am the Battle Master here in Ragnamania Chronos and I am responsible for all the PvP events...";
+	mes "So I am the Battle Master here in Ragnamania Enliven and I am responsible for all the PvP events...";
 	next;
 	mes .n$;
 	mes "You will find me in Prontera, in the Central Plaza... You should come and talk to me at certain point.";
@@ -537,7 +544,7 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 	mes .n$;
 	mes "I can exmplain them one by one to you, if you want...";
 	next;
-	while (.@op != 6){
+	while (.@op != 5){
 		mes .n$;
 		mes "Want to hear more about something in particular?";
 		next;
@@ -601,23 +608,18 @@ new_1-2,79,101,6	script	Arena Master#new	430,{
 				break;
 			case 5:
 			default:
+				mes .n$;
+				mes "See you in Prontera!";
+				mes "But no worries, that is gonna be super fast.";
 				next;
 				mes .n$;
-				mes "Stay strong! Stay focused!";
-				next;
+				mes "Actually, meet me in Prontera once you are finnished here... I might have a thing or two for you there to help you in your journey.";
+				setquest 64501;
+				intro_quest = 9;
 				break;
 		}
 	}
-	mes .n$;
-	mes "See you in Prontera!";
-	mes "179 levels from here.";
-	mes "But no worries, that is gonna be super fast.";
-	next;
-	mes .n$;
-	mes "Actually, meet me in Prontera once you are finnished here... I might have a thing or two for you there to help you in your journey.";
-	setquest 64501;
-	intro_quest = 9;
-	close;
+
 
 OnInit:
 	.n$ = "^FF0000Arena Master^000000";
@@ -708,7 +710,6 @@ OnContinue:
 			#INTRO_QUEST = 1;
 			close2;
 			endThis();
-			end;
 		} else {
 			mes .n$;
 			mes "Not a problem!";
@@ -727,8 +728,6 @@ OnContinue:
 			mes "Sure! Have fun!";
 			close2;
 			endThis();
-			instance_destroy;
-			end;
 		} else {
 			mes .n$;
 			mes "Of course! See you later then!";
@@ -745,7 +744,7 @@ OnInit:
 			savepoint "prontera",162,189;
 			warp "prontera",155,54;
 			instance_destroy;
-			return;
+			end;
 
 	}
 }

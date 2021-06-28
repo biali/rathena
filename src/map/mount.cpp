@@ -79,15 +79,18 @@ void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
 }
 
 void mount_desmount(struct map_session_data *sd, bool force) {
+	int val;
 	if(!force)
-		pc_setremounttimer(sd,REMOUNT_TIMER * 1000);
+		val = REMOUNT_TIMER * 1000;
 	else
-		pc_setremounttimer(sd,REMOUNT_TIMER * 6 * 1000);
+		val = REMOUNT_TIMER * 6 * 1000;
+
     status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
 	struct mount_data *mdb = mount_search(sd->mount);
     sd->mount = 0;
 	clif_hat_effect_single(&sd->bl,mdb->aura,false); //Area
 	mount_pc_status(sd);
+	pc_setremounttimer(sd,val);
     //map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
     //clif_refresh(sd);
 }
