@@ -8416,7 +8416,7 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 	// Biali : get infamy from killing mobs
 	// infamy is a % of the base exp given by the mob
 	// in non RPK maps infamy is a 10th of that
-	if(src->type == BL_MOB) {
+	if(src && src->type == BL_MOB) {
 		// char buf[256];
 		int infamy = pc_calcinfamy(sd,src,base_exp);
 

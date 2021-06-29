@@ -3457,6 +3457,21 @@ Body:
     Title: Collect cookies!
   - Id: 8279
     Title: Collect mustache!
+  - Id: 8366
+    Title: "Request : Hunt Poison Spore - Complete"
+    TimeLimit: +1d
+  - Id: 8367
+    Title: "Request : Hunt Smokie - Complete"
+    TimeLimit: +1d
+  - Id: 8368
+    Title: "Request : Hunt Elder Wilow - Complete"
+    TimeLimit: +1d
+  - Id: 8369
+    Title: "Request : Hunt Coco - Complete"
+    TimeLimit: +1d
+  - Id: 8390
+    Title: "Request : Hunt Thara Frog - Complete"
+    TimeLimit: +1d
   - Id: 9000
     Title: Job Change to Knight
   - Id: 9001
@@ -5250,6 +5265,54 @@ Body:
     Title: "Upper Cats: annoying guy"
   - Id: 12363
     Title: ?????? ?? ??
+  - Id: 12372
+    Title: "Request : Hunt Thara Frog - Complete"
+    TimeLimit: +1d
+  - Id: 12373
+    Title: "Request : Hunt Cruiser - Complete"
+    TimeLimit: +1d
+  - Id: 12374
+    Title: "Request : Hunt Kukre - Complete"
+    TimeLimit: +1d
+  - Id: 12375
+    Title: "Request : Hunt Orc Baby - Complete"
+    TimeLimit: +1d
+  - Id: 12376
+    Title: "Request : Hunt Orc Warrior - Complete"
+    TimeLimit: +1d
+  - Id: 12377
+    Title: "Request : Hunt Vadon - Complete"
+    TimeLimit: +1d
+  - Id: 12378
+    Title: "Request : Hunt Megalodon - Complete"
+    TimeLimit: +1d
+  - Id: 12379
+    Title: "Request : Hunt Marse - Complete"
+    TimeLimit: +1d
+  - Id: 12380
+    Title: "Request : Hunt Cornutus - Complete"
+    TimeLimit: +1d
+  - Id: 12381
+    Title: "Request : Hunt Myst - Complete"
+    TimeLimit: +1d
+  - Id: 12382
+    Title: "Request : Hunt Shellfish - Complete"
+    TimeLimit: +1d
+  - Id: 12383
+    Title: "Request : Hunt Marine Sphere - Complete"
+    TimeLimit: +1d
+  - Id: 12384
+    Title: "Request : Hunt Phen - Complete"
+    TimeLimit: +1d
+  - Id: 12385
+    Title: "Request : Hunt Orc Skeleton - Complete"
+    TimeLimit: +1d
+  - Id: 12386
+    Title: "Request : Hunt Zenorc - Complete"
+    TimeLimit: +1d
+  - Id: 12387
+    Title: "Request : Hunt Mummy - Complete"
+    TimeLimit: +1d
   - Id: 13000
     Title: RWC2011Card Gathering
   - Id: 13001
