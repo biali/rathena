@@ -7182,52 +7182,52 @@ Body:
       - Item: Sand_Man_Card
         Rate: 1
         StealProtected: true
-  - Id: 1166
-    AegisName: SAVAGE
-    Name: Savage
-    Level: 26
-    Hp: 2092
-    BaseExp: 521
-    JobExp: 248
-    Attack: 120
-    Attack2: 150
-    Defense: 10
-    MagicDefense: 5
-    Agi: 26
-    Vit: 54
-    Int: 10
-    Dex: 37
-    Luk: 15
-    AttackRange: 1
-    SkillRange: 10
-    ChaseRange: 12
-    Size: Large
-    Race: Brute
-    Element: Earth
-    ElementLevel: 2
-    WalkSpeed: 150
-    AttackDelay: 1960
-    AttackMotion: 960
-    DamageMotion: 384
-    Ai: 17
-    Drops:
-      - Item: Wild_Boar's_Mane
-        Rate: 9000
-      - Item: Grape
-        Rate: 300
-      - Item: Animal_Blood
-        Rate: 2
-      - Item: Eagle_Eyes
-        Rate: 1
-      - Item: Anodyne
-        Rate: 10
-      - Item: Elunium_Stone
-        Rate: 70
-      - Item: Royal_Jelly
-        Rate: 2
-      - Item: Savage_Card
-        Rate: 1
-        StealProtected: true
+  # - Id: 1166
+  #   AegisName: SAVAGE
+  #   Name: Savage
+  #   Level: 26
+  #   Hp: 2092
+  #   BaseExp: 521
+  #   JobExp: 248
+  #   Attack: 120
+  #   Attack2: 150
+  #   Defense: 10
+  #   MagicDefense: 5
+  #   Agi: 26
+  #   Vit: 54
+  #   Int: 10
+  #   Dex: 37
+  #   Luk: 15
+  #   AttackRange: 1
+  #   SkillRange: 10
+  #   ChaseRange: 12
+  #   Size: Large
+  #   Race: Brute
+  #   Element: Earth
+  #   ElementLevel: 2
+  #   WalkSpeed: 150
+  #   AttackDelay: 1960
+  #   AttackMotion: 960
+  #   DamageMotion: 384
+  #   Ai: 17
+  #   Drops:
+  #     - Item: Wild_Boar's_Mane
+  #       Rate: 9000
+  #     - Item: Grape
+  #       Rate: 300
+  #     - Item: Animal_Blood
+  #       Rate: 2
+  #     - Item: Eagle_Eyes
+  #       Rate: 1
+  #     - Item: Anodyne
+  #       Rate: 10
+  #     - Item: Elunium_Stone
+  #       Rate: 70
+  #     - Item: Royal_Jelly
+  #       Rate: 2
+  #     - Item: Savage_Card
+  #       Rate: 1
+  #       StealProtected: true
   - Id: 1167
     AegisName: SAVAGE_BABE
     Name: Savage Babe

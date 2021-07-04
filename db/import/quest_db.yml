@@ -1079,6 +1079,30 @@ Body:
     Title: Request - A mallet of goblin
   - Id: 3265
     Title: Request - Missing occult mania
+  - Id: 3270
+    Title: "What is this bandage for? - Complete"
+    TimeLimit: +1d
+  - Id: 3271
+    Title: "Dangerous Alligators. - Complete"
+    TimeLimit: +1d
+  - Id: 3272
+    Title: "That wasn't a mermaid... - Complete"
+    TimeLimit: +1d
+  - Id: 3275
+    Title: "Hunt Wild Boar - Complete"
+    TimeLimit: +1d
+  - Id: 3277
+    Title: "A Woman's Grudge - Complete"
+    TimeLimit: +1d
+  - Id: 3279
+    Title: "Puppet Master's Agony - Complete"
+    TimeLimit: +1d
+  - Id: 3280
+    Title: "Tiresome Flies - Complete"
+    TimeLimit: +1d
+  - Id: 3281
+    Title: "Dangerous Munak - Complete"
+    TimeLimit: +1d
   - Id: 4000
     Title: Sherin's Job Interview
   - Id: 4001
@@ -1295,94 +1319,94 @@ Body:
     TimeLimit: +3h
   - Id: 4198
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4199
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4200
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4201
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4202
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4203
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4204
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4205
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4206
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4207
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4208
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4209
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4210
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4211
     Title: 86-90 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4212
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4213
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4214
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4215
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4216
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4217
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4218
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4219
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4220
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4221
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4222
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4223
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4224
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4225
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4226
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4227
     Title: 91-99 Mission Board Timer
-    TimeLimit: +3h
+    TimeLimit: +1d
   - Id: 4229
     Title: Devil in the Cave
     TimeLimit: +23h
@@ -3974,6 +3998,57 @@ Body:
     Targets:
       - Mob: INCREASE_SOIL
         Count: 15
+  - Id: 10127
+    Title: "Request : Hunt 10 Requiems - Complete"
+    TimeLimit: +1d
+  - Id: 10128
+    Title: "Request : Hunt 10 Marduks - Complete"
+    TimeLimit: +1d
+  - Id: 10129
+    Title: "Request : Hunt 10 Pasanas - Complete"
+    TimeLimit: +1d
+  - Id: 10130
+    Title: "Request : Hunt 10 Dark Frames - Complete"
+    TimeLimit: +1d
+  - Id: 10131
+    Title: "Request : Hunt 10 Evil Druids - Complete"
+    TimeLimit: +1d
+  - Id: 10132
+    Title: "Request : Hunt 10 Wraiths - Complete"
+    TimeLimit: +1d
+  - Id: 10133
+    Title: "Request : Hunt 10 Raydric Archers - Complete"
+    TimeLimit: +1d
+  - Id: 10134
+    Title: "Request : Hunt 20 Grand Pecos - Complete"
+    TimeLimit: +1d
+  - Id: 10135
+    Title: "Request : Hunt 20 Sleepers - Complete"
+    TimeLimit: +1d
+  - Id: 10136
+    Title: "Request : Hunt 20 Goats - Complete"
+    TimeLimit: +1d
+  - Id: 10137
+    Title: "Request : Hunt 20 Harpies - Complete"
+    TimeLimit: +1d
+  - Id: 10138
+    Title: "Request : Hunt 15 Clocks before it breaks - Complete"
+    TimeLimit: +1d
+  - Id: 10139
+    Title: "Request : Hunt 15 Punks before it breaks - Complete"
+    TimeLimit: +1d
+  - Id: 10140
+    Title: "Request : Hunt 15 Ridewords before it breaks - Complete"
+    TimeLimit: +1d
+  - Id: 10141
+    Title: "Request : Hunt 15 Kikimoras in Moscovia - Complete"
+    TimeLimit: +1d
+  - Id: 10142
+    Title: "Request : Hunt 15 Miyabi Dolls in Amatsu - Complete"
+    TimeLimit: +1d
+  - Id: 10143
+    Title: "Request : Hunt 15 Mi Gaos in Luoyang - Complete"
+    TimeLimit: +1d
   - Id: 11000
     Title: Inspection of Odin Shrine
   - Id: 11001
