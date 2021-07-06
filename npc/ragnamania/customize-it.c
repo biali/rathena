@@ -11,13 +11,15 @@
 
 -	script	CostumeIT	-1,{
 	mes "[Luna]";
-	mes "Olá e bem-vindo ao Atelier da Luna.";
-	mes "Aqui você pode converter seus equipamentos de cabeça em visuais.";
-	mes "O custo do meu serviço é 10.000 Manias ou 100 "+getitemname(675)+"s.";
+	mes "Hi and welcome to my shop!";
+	mes "I can help you in changing any piece of headgear into a costume.";
 	next;
 	mes "[Luna]";
-	mes "Por favor, selecione qual equipamento você deseja converter.";
-	mes "Lembre-se que todas as cartas e qualquer refinamento serão perdidos no processo.";
+	mes "I charge 10.000 Manias or 100 "+getitemname($@HUNTING_MEDAL)+"s for that.";
+	next;
+	mes "[Luna]";
+	mes "Please chose which piece of equipement you'd want converted.";
+	mes "Please be aware that any cards or refining will get lost in the process!";
 	next;
 
 	setarray .@Position$[1],"Top","Mid","Low";
@@ -36,50 +38,50 @@
 	if( !getequipisequiped(.@Part) )
 	{
 		mes "[Luna]";
-		mes "Você não está usando nada neste slot...";
+		mes "I can't see nothing equiped there...";
 		close;
 	}
 
 	mes "[Luna]";
-	mes "Você deseja transformar o seu " + getitemname(getequipid(.@Part)) + " em um item visual?";
+	mes "Do you want to transmorth your " + getitemname(getequipid(.@Part)) + " into a Costume?";
 	next;
-	if( select("Sim, prossiga:Não, eu mudei de ideia.") == 2 )
+	if( select("Yes, please:No, thank you.") == 2 )
 	{
 		mes "[Luna]";
-		mes "Precisa de um tempo pra pensar, huh?";
-		mes "Sem problemas, eu compreendo.";
+		mes "Need some more time to think, huh?";
+		mes "No problema at all!";
 		close;
 	}
 	mes "[Luna]";
-	mes "Você pode pagar pelos meus serviços com Manias ou com "+ getitemname(675)+"s.";
-	mes "Como você gostaria de pagar?";
+	mes "You can pay using Manias or "+ getitemname($@HUNTING_MEDAL)+"s.";
+	mes "Which option you are gonna chose?";
 	next;
-	if(select("Pagar com Manias:Pagar com "+getitemname(675)+"s") == 1) {
+	if(select("Pay using Manias:Pay with "+getitemname($@HUNTING_MEDAL)+"s") == 1) {
 		if(#CASHPOINTS < 10000 ) {
 			mes "[Luna]";
-			mes "Infelizmente você não possui Manias o suficiente.";
+			mes "I am sorry but you don't seem to have enough Manias.";
 			close;
 		} else {
 			set #CASHPOINTS, #CASHPOINTS - 10000;
 			.@temp = getitemname(getequipid(.@Part));
 			costume .@Part; // Convert the Headgear
 			mes "[Luna]";
-			mes "Prontinho, espero que você goste do seu novo visual!";
-			logmes "[Luna] Criou o visual " + getitemname(.@temp) + " por Manias";
+			mes "It is all done! Hope you like it!";
+			logmes "[Luna] created  " + getitemname(.@temp) + " payment: Manias";
 			close;
 		}
 	} else {
-		if(countitem(675) < 100 ) {
+		if(countitem($@HUNTING_MEDAL) < 100 ) {
 			mes "[Luna]";
-			mes "Infelizmente você não possui "+getitemname(675)+"s o suficiente.";
+			mes "I am sorry but you don't seem to have enough "+getitemname($@HUNTING_MEDAL)+"s.";
 			close;
 		} else {
-			delitem 675, 100;
+			delitem $@HUNTING_MEDAL, 100;
 			.@temp = getitemname(getequipid(.@Part));
 			costume .@Part; // Convert the Headgear
 			mes "[Luna]";
-			mes "Prontinho, espero que você goste do seu novo visual!";
-			logmes "[Luna] Criou o visual " + getitemname(.@temp) + " por Hunting Coins";
+			mes "It's all done! Hope you like it!";
+			logmes "[Luna] created " + getitemname(.@temp) + " payment: " + getitemname($@HUNTING_MEDAL);
 			close;
 		}
 	}

@@ -69,7 +69,7 @@ function	script	F_Premmy	{
 			mes "You chose the plan of:";
 			mes "^4527A0Premmy:^000000 "+.vip_day[.@i]+" Premmy days.";
 			mes "^4527A0Cost:^000000 "+F_InsertComma(.vip_cashpoint[.@i])+" Manias, or";
-			mes "^4527A0Cost:^000000 "+.vip_hunting[.@i]+"x " + getitemname(675)+"s.";
+			mes "^4527A0Cost:^000000 "+.vip_hunting[.@i]+"x " + getitemname($@HUNTING_MEDAL)+"s.";
 			sleep2 1000;
 			mes "What do you want to do?";
 			next;
@@ -94,13 +94,13 @@ function	script	F_Premmy	{
 				}
 				end;
 				case 2:
-					if ( countitem(675) < .vip_hunting[.@i] ) {
+					if ( countitem($@HUNTING_MEDAL) < .vip_hunting[.@i] ) {
 						mes .npc$;
-						mes "You do not have enough ^008aff"+getitemname(675)+"s^000000.";
+						mes "You do not have enough ^008aff"+getitemname($@HUNTING_MEDAL)+"s^000000.";
 						close;
 					}
 					else {
-						delitem 675, .vip_hunting[.@i];
+						delitem $@HUNTING_MEDAL, .vip_hunting[.@i];
 						vip_time (.vip_day[.@i] * 1440);
 						mes .npc$;
 						mes "Congratulations you just got "+.vip_day[.@i]+" days as Premmy.";

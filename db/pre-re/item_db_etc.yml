@@ -16595,6 +16595,14 @@ Body:
     Type: Etc
     Buy: 1000
     Weight: 100
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
   - Id: 7518
     AegisName: Women's_Medal
     Name: Women's Medal

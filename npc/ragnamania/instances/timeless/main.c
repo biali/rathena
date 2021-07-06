@@ -8,7 +8,7 @@
 end;
 OnInit:
 	$@MVPI_CHESTID = 1324;
-	$@MAX_PARTY_MEMBERS = 24;
+	$@MAX_PARTY_MEMBERS = 12;
 	$@ENABLE_RESET = 0;			// 1 to activate reset using a Reset Stone (6320)
 	setarray $@eddga[0],	1277,30,1180,50,1321,40;
 	setarray $@gtb[0],		1054,20,1111,20,1209,20;

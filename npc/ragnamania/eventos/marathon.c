@@ -133,7 +133,7 @@ OnInit:
 		set .@gname$, getarg(0);
 		set .@winner$,getarg(1);
 		getitem 616,1;	 // oca
-		getitem 675,15; // hunting coin
+		getitem $@HUNTING_MEDAL,5; // hunting coin
 		getitem 7859,3; //Game ticket
 		getitem 13517,1; // Box containing 3 ygg berry
 		getitem 30023,1; // Bag of Manias
@@ -152,7 +152,7 @@ OnInit:
 					dispbottom "[Marathon] The winner is " + .@winner$,0xccff99;
 					dispbottom "[Marathon] Thank you for participating!",0xccff99;
 					getitem 7859,1; //Game ticket
-					getitem 675,2; // hunting coin
+					getitem $@HUNTING_MEDAL,2; // hunting coin
 					set @marathon,0;
 					set @gname$,0;
 					if(countitem(.Item)>0)

@@ -10,11 +10,11 @@ prontera,56,355,5	script	Stable Master	526,{
     mes "Prizes are as follow:";
     mes " ";
     if(vip_status(1)) {
-        mes "7 days rental : 200x " + getitemname(675)  +"s.";
-        mes "30 days rental : 500x" + getitemname(675) +"s."; 
+        mes "7 days rental : 200x " + getitemname($@HUNTING_MEDAL)  +"s.";
+        mes "30 days rental : 500x" + getitemname($@HUNTING_MEDAL) +"s."; 
     } else {
-        mes "7 days rental : 400x " + getitemname(675)  +"s.";
-        mes "30 days rental : 1000x " + getitemname(675) +"s."; 
+        mes "7 days rental : 400x " + getitemname($@HUNTING_MEDAL)  +"s.";
+        mes "30 days rental : 1000x " + getitemname($@HUNTING_MEDAL) +"s."; 
     }
     
     next;
@@ -28,15 +28,15 @@ prontera,56,355,5	script	Stable Master	526,{
             mes "Good choice!, let me prepare one for you.";
             next;
             mes .n$;
-            if((!vip_status(1) && countitem(675) < 400) || (vip_status(1) && countitem(675) < 200))
+            if((!vip_status(1) && countitem($@HUNTING_MEDAL) < 400) || (vip_status(1) && countitem($@HUNTING_MEDAL) < 200))
                 goto OnNoZeny;
 
             mes "Here it is!";
             mes "Please take good care of her...";
             if(!vip_status(1))
-                delitem 675,400;
+                delitem $@HUNTING_MEDAL,400;
             else 
-                delitem 675,200;
+                delitem $@HUNTING_MEDAL,200;
             rentitem 12622,604800;
             logmes strcharinfo(0) + "rented a mount at the stable master for 7 days";
             close;
@@ -45,15 +45,15 @@ prontera,56,355,5	script	Stable Master	526,{
             mes "Good choice!, let me prepare one for you.";
             next;
             mes .n$;
-            if((!vip_status(1) && countitem(675) < 1000) || (vip_status(1) && countitem(675) < 500))
+            if((!vip_status(1) && countitem($@HUNTING_MEDAL) < 1000) || (vip_status(1) && countitem($@HUNTING_MEDAL) < 500))
                 goto OnNoZeny;
 
             mes "Here it is!";
             mes "Please take good care of her...";
             if(!vip_status(1))
-                delitem 675,1000;
+                delitem $@HUNTING_MEDAL,1000;
             else
-                delitem 675,500;
+                delitem $@HUNTING_MEDAL,500;
             rentitem 12622,2592000;
             logmes strcharinfo(0) + "rented a mount at the stable master for 30 days";
             close;
@@ -62,7 +62,7 @@ prontera,56,355,5	script	Stable Master	526,{
 
 OnNoZeny:
     mes "Cat's whiskers!";
-    mes "You don't have enough "+getitemname(675)+"s!";
+    mes "You don't have enough "+getitemname($@HUNTING_MEDAL)+"s!";
     mes "Sorry but I can't help you, then";
     close;
 

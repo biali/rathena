@@ -53,11 +53,11 @@ geffen,100,72,4	script	Geferus	735,{
 		mes "Which monster will you hunt or have you finished hunting?";
 		next;
 		switch(select("^0000FFWraith Dead^000000:^0000FFMini Deamon^000000:^0000FFZombie Master^000000:^0000FFGhoul^000000:^0000FFDeviruchi^000000")) {
-			case 1: callsub L_Quest,64181,"Wraith Dead",1551150,"·¹ÀÌ½ºµ¥µåÄ«µå","Find it in ^8B4513Geffen Guild Dungeons^000000.",542700;
-			case 2: callsub L_Quest,64182,"Mini Deamon",1259400,"¹Ì´Ïµ¥¸óÄ«µå","Find it in ^8B4513Geffen Guild Dungeons^000000.",558300;
-			case 3: callsub L_Quest,64183,"Zombie Master",1141500,"Á»ºñ¸¶½ºÅÍÄ«µå","Find it in ^8B4513Geffen Guild Dungeons^000000.",423900;
-			case 4: callsub L_Quest,64184,"Ghoul",326400,"±¸¿ïÄ«µå","Find it in ^8B4513Geffen Guild Dungeons^000000.",186600;
-			case 5: callsub L_Quest,64185,"Deviruchi",798600,"µ¥ºñ·çÄ¡Ä«µå","Find it in ^8B4513Geffen Guild Dungeons^000000.",383700;
+			case 1: callsub L_Quest,64181,"Wraith Dead",1551150,"ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½","Find it in ^8B4513Geffen Guild Dungeons^000000.",542700;
+			case 2: callsub L_Quest,64182,"Mini Deamon",1259400,"ï¿½Ì´Ïµï¿½ï¿½ï¿½Ä«ï¿½ï¿½","Find it in ^8B4513Geffen Guild Dungeons^000000.",558300;
+			case 3: callsub L_Quest,64183,"Zombie Master",1141500,"ï¿½ï¿½ï¿½ñ¸¶½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½","Find it in ^8B4513Geffen Guild Dungeons^000000.",423900;
+			case 4: callsub L_Quest,64184,"Ghoul",326400,"ï¿½ï¿½ï¿½ï¿½Ä«ï¿½ï¿½","Find it in ^8B4513Geffen Guild Dungeons^000000.",186600;
+			case 5: callsub L_Quest,64185,"Deviruchi",798600,"ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡Ä«ï¿½ï¿½","Find it in ^8B4513Geffen Guild Dungeons^000000.",383700;
 		}
 	}
 	end;
@@ -114,7 +114,7 @@ L_Quest:
 		 if(BaseLevel <= 220) 
 			getexp .@bexp,.@jexp;
 
-		getitem 675,6;
+		getitem $@HUNTING_MEDAL,6;
 		close;
 	} else {
 		mes "[Geferus]";
@@ -150,7 +150,7 @@ L_Quest:
 		getmapxy(.@map$,.@x,.@y,BL_PC);
 		if(.@map$ == "gld_dun04") {
 			if(rand(0,1000) > 980)
-				makeitem 675,1,.@map$,.@x,.@y;
+				makeitem $@HUNTING_MEDAL,1,.@map$,.@x,.@y;
 		}
 	}
 }

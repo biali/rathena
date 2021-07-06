@@ -19,7 +19,7 @@
 
 
 // Mount ID: 1 - Default
-1,Default,12000,2,0,1,0,28,3,0,12622,{ }
+1,Default,12000,2,0,1,0,28,3,0,12622,{ bonus2 bAddEffWhenHit,Eff_Silence,0; }
 2,Journeymen Ride,18000,2,0,1,0,28,4,209,30600,{ bonus2 bAddEffWhenHit,Eff_Freeze,3000; }
 3,Master Ride,25000,2,0,1,0,30,5,210,30601,{ bonus2 bAddEffWhenHit,Eff_Silence,3000; }
 4,Collector Ride,25000,2,0,1,0,25,5,211,30602,{ bonus2 bAddEffWhenHit,Eff_Stone,3000; }

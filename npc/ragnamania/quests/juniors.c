@@ -3,7 +3,7 @@
 
 
 // Rops por silvercoins shop : item_id, valor
-//-	itemshop	SophieGSMshop	-1,675,5685:600,5209:600,2284:600,5302:700
+//-	itemshop	SophieGSMshop	-1,$@HUNTING_MEDAL,5685:600,5209:600,2284:600,5302:700
 
 prontera,0,0,3	script	HuntingQuestsSetup	-1,{
 	end;
@@ -319,18 +319,18 @@ prontera,164,166,3	script	Sophie	894,{
 	}
 	mes "[^FFA500Sophie^000000]";
 	mes "Hey, I'm Agent Kafra's... er... Sophie.";
-	mes "You can change your ^DD0000" +getitemname(675) +"^000000 for items and equipments.";
+	mes "You can change your ^DD0000" +getitemname($@HUNTING_MEDAL) +"^000000 for items and equipments.";
 	next;
 	mes "[^FFA500Sophie^000000]";
 	mes "Your stats:";
 	mes "- Mission Completed: ^0000FF" + HM_MISSION_COMPLETED + "^000000";
-	mes "- "+ getitemname(675)+": ^0000DD" + countitem(675) + "^000000";
+	mes "- "+ getitemname($@HUNTING_MEDAL)+": ^0000DD" + countitem($@HUNTING_MEDAL) + "^000000";
 	next;
 	switch( select("^999900Open Shop^000000:^FF0000Close^000000") )
 	{
 	case 1:
 		mes "[^FFA500Sophie^000000]";
-		mes "Let me show you what I've got for ^0000FF"+getitemname(675)+"^000000.";
+		mes "Let me show you what I've got for ^0000FF"+getitemname($@HUNTING_MEDAL)+"^000000.";
 		close2;
 		callshop .shop_name$,1;
 		npcshopattach .shop_name$;
@@ -356,13 +356,13 @@ prontera,164,166,3	script	Sophie	894,{
 
 		.shop_name$ = "Rops4coinS";
 		.npcName$ 	= strnpcinfo(1);	//Visiable name
-		.currency 	= 675;				// 0: Zeny, else Item
+		.currency 	= $@HUNTING_MEDAL;				// 0: Zeny, else Item
 						
 		InitItemShop(.items,.shop_name$,.npcName$);
 		end;
 }
 
--	itemshop	Rops4coinS	-1,675,501:50
+-	itemshop	Rops4coinS	-1,$@HUNTING_MEDAL,501:50
 
 
 
@@ -407,7 +407,7 @@ function	script	GiveRewards	{
 	// Mission Rewards...
 	// =====================================================================
 	set Zeny, Zeny + .@Mission_Zeny;
-	getitem 675,5;
+	getitem $@HUNTING_MEDAL,5;
 	specialeffect2 610;
 
 

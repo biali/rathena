@@ -6357,6 +6357,44 @@ Body:
     Name: Ment Seeds
     Type: Etc
     Weight: 50
+  - Id: 30100
+    AegisName: Adventurer_Medal
+    Name: Adventurer's Medal
+    Type: Etc
+    Buy: 1000
+    Weight: 100
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+  - Id: 30101
+    AegisName: Voter_Certificate
+    Name: Voter's Certificate
+    Type: Etc
+    Buy: 1000
+    Weight: 100
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+  - Id: 30102
+    AegisName: Hunting_Coin
+    Name: Hunter's Medal
+    Type: Etc
+    Buy: 1000
+    Weight: 100
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoGuildStorage: true
   - Id: 11059
     AegisName: WoE_TE_Rental_List
     Name: WoE TE Rental List

@@ -251,7 +251,7 @@ hell,145,159,1	script	Tartarean Chest	25005,{
 	if(!getvariableofinstance(getd("'hg_" + getcharid(0)),@hg_id)) {
 		getitem 30023,rand(1,6); //Bag of Manias
 		getitem 30027,rand(1,3); //Ragnamania Lootbox
-		getitem 675,rand(5,20); //Hunting Coins
+		getitem $@HUNTING_MEDAL,rand(3,10); //Hunting Coins
 		getitem 12134,rand(1,12);//Red Envelope
 		.@eac = eaclass();
 		switch(.@eac&EAJ_BASEMASK) {

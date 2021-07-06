@@ -74,7 +74,6 @@ void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
 		sd->mount = mdb->id;
 		clif_hat_effect_single(&sd->bl,mdb->aura,true);
 		mount_pc_status(sd);
-		//map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
 	}
 }
 
@@ -91,8 +90,6 @@ void mount_desmount(struct map_session_data *sd, bool force) {
 	clif_hat_effect_single(&sd->bl,mdb->aura,false); //Area
 	mount_pc_status(sd);
 	pc_setremounttimer(sd,val);
-    //map_foreachinrange(mount_sendaurastoone, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
-    //clif_refresh(sd);
 }
 
 void mount_pc_status(struct map_session_data *sd) {

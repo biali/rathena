@@ -1,7 +1,7 @@
 -	script	Event_Management	-1,{
 OnJoinEvent:
 	switch($@CurrentEvent){
-		default:	message strcharinfo(0),"Feira de Fim-de-Mês: Não há eventos ocorrendo no momento.";	end;
+		default:	message strcharinfo(0),"Feira de Fim-de-Mï¿½s: Nï¿½o hï¿½ eventos ocorrendo no momento.";	end;
 		case 1:	callfunc("JoinEvent","Apocalipse Zumbi",2,50,27,"silk_lair",198,189,10);	break;
 		case 2:	callfunc("JoinEvent","Dado Da Morte",2,2,16,"quiz_01",205,92,100);			break;
 		case 3:	callfunc("JoinEvent","Last Man Standing",2,120,18,"pvp_n_1-5",0,0,20);		break;
@@ -19,24 +19,24 @@ end;
 OnRunEvent:
 	if(getgmlevel() < 99) end; 
 	if($@LastEvent) { 
-		mes "Feira de Fim-de-Mês";
+		mes "Feira de Fim-de-Mï¿½s";
 		mes "ATENCAO: Existe um evento em andamento ("+$@LastEvent+")! Se voce continuar ira interromper este evento! Deseja mesmo continuar?";
-		if(select("NÃO:Sim") == 1) {
+		if(select("Nï¿½O:Sim") == 1) {
 			close;
 		}
 		next;
 	}
 	if(agitcheck()||agitcheck2()){
-		mes "Feira de Fim-de-Mês";
+		mes "Feira de Fim-de-Mï¿½s";
 		mes "Desculpa, nao posso fazer eventos durante a WoE.";  
 		close;
 	}
 	deletearray $@EventPlayers[0],getarraysize($@EventPlayers);
 	set $@CurrentEvent,0;
 	set $@LastEvent,0;
-	dispbottom "Feira de Fim-de-Mês: O evento anterior foi cancelado/interrompido.";
+	dispbottom "Feira de Fim-de-Mï¿½s: O evento anterior foi cancelado/interrompido.";
 
-	mes "Feira de Fim-de-Mês";
+	mes "Feira de Fim-de-Mï¿½s";
 	mes "Certo, chefe! Qual evento faremos agora?";
 	close2;
 	switch(select("Apocalipse Zumbi:Dado Da Morte:Last Man Standing:Labirinto Maldito:Poring Hunt:Manhunt:Clucky Cluckers")){
@@ -118,7 +118,7 @@ OnPCDieEvent:
 				warp "prontera",155,181;
 				deletearray $@EventPlayers[inarray($@EventPlayers[0],getcharid(3))],1;
 				if(isloggedin(killerrid)) {
-					announce "Feira de Fim-de-Mês: Parabéns, "+strcharinfo(0,getcharid(0,rid2name(killerrid)))+"! Um dos vencedores do evento Manhunt!",bc_all,0x00AA00;
+					announce "Feira de Fim-de-Mï¿½s: Parabï¿½ns, "+strcharinfo(0,getcharid(0,rid2name(killerrid)))+"! Um dos vencedores do evento Manhunt!",bc_all,0x00AA00;
 					getitem 7859,2,killerrid;
        			}
        			// reverte a poha toda
@@ -138,7 +138,7 @@ OnPCLogOutEvent:
 		switch($@LastEvent){
 		case 6:
 			if(getcharid(3) == $@EventPlayers[$@Target]){
-				mapannounce "pvp_n_1-5","Feira de Fim-de-Mês: Oh... Estraga prazeres! Nosso alvo deslogou. Este round sera anulado.",bc_map,0x00AAFF,0,16;
+				mapannounce "pvp_n_1-5","Feira de Fim-de-Mï¿½s: Oh... Estraga prazeres! Nosso alvo deslogou. Este round sera anulado.",bc_map,0x00AAFF,0,16;
 				set $@Target,1000;
 			}
 			break;
@@ -170,30 +170,30 @@ function	script	JoinEvent	{
 	.length		= getarg(7,0);
 
 	if($@CurrentEvent <= 0 ) { 
-		message strcharinfo(0),"Feira de Fim-de-Mês: Não há eventos disponíveis no momento."; 
+		message strcharinfo(0),"Feira de Fim-de-Mï¿½s: Nï¿½o hï¿½ eventos disponï¿½veis no momento."; 
 		close;
 	} else {
-		mes "Feira de Fim-de-Mês";
+		mes "Feira de Fim-de-Mï¿½s";
 		mes "Evento: ^0000AA[ " + .eventname$ + " ] ^000000";
-		mes "Level Mínimo: ^0000AA[ "+ .minbase +" ] ^000000";
-		mes "Mínimo de Jogadores: ^0000AA[ "+ .minplayers +" ] ^000000";
+		mes "Level Mï¿½nimo: ^0000AA[ "+ .minbase +" ] ^000000";
+		mes "Mï¿½nimo de Jogadores: ^0000AA[ "+ .minplayers +" ] ^000000";
 		mes "Ingresso: ^0000AA[ 1x " + getitemname(7539) + " ] ^000000";
 		next;
 
 		callfunc "DE_Rules", $@CurrentEvent;
 
-		mes "Feira de Fim-de-Mês";
+		mes "Feira de Fim-de-Mï¿½s";
 		mes "Mandei as regras do evento ^0000FF"+ .eventname$ +"^000000 pra voce.";
-		mes "E aí, vem brincar com a gente?";
+		mes "E aï¿½, vem brincar com a gente?";
 		next;
-		mes "Feira de Fim-de-Mês";
-		if(select("^00AA00Sim, claro!:^AA0000Não, agora não.^000000") == 2){
-			mes "Sem problemas! Vejo você mais tarde, então!";
+		mes "Feira de Fim-de-Mï¿½s";
+		if(select("^00AA00Sim, claro!:^AA0000Nï¿½o, agora nï¿½o.^000000") == 2){
+			mes "Sem problemas! Vejo vocï¿½ mais tarde, entï¿½o!";
 			close;
 		} 
 
 		if(BaseLevel < .minbase) {
-			mes "Desculpa mas este evento é apenas para jogadores com level " + .minbase + " ou superior."; 
+			mes "Desculpa mas este evento ï¿½ apenas para jogadores com level " + .minbase + " ou superior."; 
 			close;
 		} 
 
@@ -203,7 +203,7 @@ function	script	JoinEvent	{
 		} else {
 			if(.conditions&16) {
 				if(inarray($@EventPlayers[0],getcharid(3)) >= 0) {
-					mes "Voce ja está inscrito para este evento! heh."; 
+					mes "Voce ja estï¿½ inscrito para este evento! heh."; 
 					close; 
 				} else {
 					setarray $@EventPlayers[getarraysize($@EventPlayers)],getcharid(3);
@@ -238,78 +238,78 @@ function	script	JoinEvent	{
 
 function	script	DE_Rules	{
 	if(!$@CurrentEvent) {
-		mes "Feira de Fim-de-Mês";
-		mes "Oops! Parece que demoramos um pouco demais... o evento já começou!";
+		mes "Feira de Fim-de-Mï¿½s";
+		mes "Oops! Parece que demoramos um pouco demais... o evento jï¿½ comeï¿½ou!";
 		next;
-		mes "Feira de Fim-de-Mês";
-		mes "Mas não se preocupe, teremos outros! O próximo evento acontecerá dentro de uma hora.";
+		mes "Feira de Fim-de-Mï¿½s";
+		mes "Mas nï¿½o se preocupe, teremos outros! O prï¿½ximo evento acontecerï¿½ dentro de uma hora.";
 		close;
 	} else{
 		switch(getarg(0)){
 		case 1:
-			dispbottom "Feira de Fim-de-Mês: --- Apocalipse Zumbi ---";
-			dispbottom "Feira de Fim-de-Mês: Seus ítens serão enviados para o armazém e Peco, Falcao, Carrinho e Montaria removidos assim como todos os buffs.";
-			dispbottom "Feira de Fim-de-Mês: A cada minuto serão invocadas ondas de mortos-vivos,";
-			dispbottom "Feira de Fim-de-Mês: Sua missão é permanecer vivo até o final.";
-			dispbottom "Feira de Fim-de-Mês: Os vencedores ganharão três " +getitemname(7859)+" e os demais participantes ganharão um.";
-			dispbottom "Feira de Fim-de-Mês: Serão dez ondas de monstros. Não ataque os monstros";
-			dispbottom "Feira de Fim-de-Mês: Ou você perderá HP e SP.";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Apocalipse Zumbi ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: Seus ï¿½tens serï¿½o enviados para o armazï¿½m e Peco, Falcao, Carrinho e Montaria removidos assim como todos os buffs.";
+			dispbottom "Feira de Fim-de-Mï¿½s: A cada minuto serï¿½o invocadas ondas de mortos-vivos,";
+			dispbottom "Feira de Fim-de-Mï¿½s: Sua missï¿½o ï¿½ permanecer vivo atï¿½ o final.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Os vencedores ganharï¿½o trï¿½s " +getitemname(7859)+" e os demais participantes ganharï¿½o um.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Serï¿½o dez ondas de monstros. Nï¿½o ataque os monstros";
+			dispbottom "Feira de Fim-de-Mï¿½s: Ou vocï¿½ perderï¿½ HP e SP.";
 			break;
 		case 2:
-			dispbottom "Feira de Fim-de-Mês: --- Dado Da Morte ---";
-			dispbottom "Feira de Fim-de-Mês: Cada jogador escolhe uma caixa: 1, 2, 3 ou 4.";
-			dispbottom "Feira de Fim-de-Mês: Começaremos uma contagem regressiva de 10 até 0.";
-			dispbottom "Feira de Fim-de-Mês: Quando chegarmos a 0, um dado da morte com quatro lados será lançado.";
-			dispbottom "Feira de Fim-de-Mês: Aquele(s) que estiver(em) na caixa com o numero sorteado serã(o) eliminado(s)";
-			dispbottom "Feira de Fim-de-Mês: assim como todos os que estiverem nas escadas ou na plataforma.";
-			dispbottom "Feira de Fim-de-Mês: O numero de jogadores remanecentes será anunciado";
-			dispbottom "Feira de Fim-de-Mês: e o processo se repete ate que tenhamos um único vencedor.";
-			dispbottom "Feira de Fim-de-Mês: O vencedor ganha três " +getitemname(7859)+" e os participantes ganharão apenas um.";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Dado Da Morte ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: Cada jogador escolhe uma caixa: 1, 2, 3 ou 4.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Comeï¿½aremos uma contagem regressiva de 10 atï¿½ 0.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Quando chegarmos a 0, um dado da morte com quatro lados serï¿½ lanï¿½ado.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Aquele(s) que estiver(em) na caixa com o numero sorteado serï¿½(o) eliminado(s)";
+			dispbottom "Feira de Fim-de-Mï¿½s: assim como todos os que estiverem nas escadas ou na plataforma.";
+			dispbottom "Feira de Fim-de-Mï¿½s: O numero de jogadores remanecentes serï¿½ anunciado";
+			dispbottom "Feira de Fim-de-Mï¿½s: e o processo se repete ate que tenhamos um ï¿½nico vencedor.";
+			dispbottom "Feira de Fim-de-Mï¿½s: O vencedor ganha trï¿½s " +getitemname(7859)+" e os participantes ganharï¿½o apenas um.";
 			break;
 		case 3:
-			dispbottom "Feira de Fim-de-Mês: --- Last Man Standing  ---";
-			dispbottom "Feira de Fim-de-Mês: Esta é uma arena PvP livre onde o último sobrevivente será o vencedor.";
-			dispbottom "Feira de Fim-de-Mês: Há um limite de 20 minutos e se não tivermos um vencedor até lá o evento termina.";
-			dispbottom "Feira de Fim-de-Mês: O vencedor ganha três " +getitemname(7859)+" e os participantes ganharão apenas um.";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Last Man Standing  ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: Esta ï¿½ uma arena PvP livre onde o ï¿½ltimo sobrevivente serï¿½ o vencedor.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Hï¿½ um limite de 20 minutos e se nï¿½o tivermos um vencedor atï¿½ lï¿½ o evento termina.";
+			dispbottom "Feira de Fim-de-Mï¿½s: O vencedor ganha trï¿½s " +getitemname(7859)+" e os participantes ganharï¿½o apenas um.";
 			break;
 		case 4:
-			dispbottom "Feira de Fim-de-Mês: --- Labirinto Maldito  ---";
-			dispbottom "Feira de Fim-de-Mês: Seus ítens serão enviados para o armazém e Peco, Falcao, Carrinho e Montaria removidos assim como todos os buffs.";
-			dispbottom "Feira de Fim-de-Mês: As regras são símples: O primeiro a encontrar e tocar no meu ajudante, ganha.";
-			dispbottom "Feira de Fim-de-Mês: Mas para isso você precisará atravessar um labirinto insano!";
-			dispbottom "Feira de Fim-de-Mês: O vencedor ganha três " +getitemname(7859)+" e os participantes ganharão apenas um.";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Labirinto Maldito  ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: Seus ï¿½tens serï¿½o enviados para o armazï¿½m e Peco, Falcao, Carrinho e Montaria removidos assim como todos os buffs.";
+			dispbottom "Feira de Fim-de-Mï¿½s: As regras sï¿½o sï¿½mples: O primeiro a encontrar e tocar no meu ajudante, ganha.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Mas para isso vocï¿½ precisarï¿½ atravessar um labirinto insano!";
+			dispbottom "Feira de Fim-de-Mï¿½s: O vencedor ganha trï¿½s " +getitemname(7859)+" e os participantes ganharï¿½o apenas um.";
 			break;
 		case 5:
-			dispbottom "Feira de Fim-de-Mês: --- Poring Hunt ---";
-			dispbottom "Feira de Fim-de-Mês: As regras sao simples: Mate o 'Poring' com o nome certo para ser levado de volta a Prontera com seu prêmio.";
-			dispbottom "Feira de Fim-de-Mês: Mate o poring errado e você ganha apenas o prêmio de participação.";
-			dispbottom "Feira de Fim-de-Mês: Os vencedores ganham três " +getitemname(7859)+" e os participantes ganharão apenas um.";
-			dispbottom "Feira de Fim-de-Mês: Existem 2 Porings com o nome certo e um limite de 30 minutos para encontrá-los.";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Poring Hunt ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: As regras sao simples: Mate o 'Poring' com o nome certo para ser levado de volta a Prontera com seu prï¿½mio.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Mate o poring errado e vocï¿½ ganha apenas o prï¿½mio de participaï¿½ï¿½o.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Os vencedores ganham trï¿½s " +getitemname(7859)+" e os participantes ganharï¿½o apenas um.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Existem 2 Porings com o nome certo e um limite de 30 minutos para encontrï¿½-los.";
 			break;
 		case 6:
-			dispbottom "Feira de Fim-de-Mês: --- Manhunt ---";
-			dispbottom "Feira de Fim-de-Mês: O objetivo neste evento é matar o jogador alvo em 60 segundos.";
-			dispbottom "Feira de Fim-de-Mês: Aquele que der o last hit no alvo, ganha três " +getitemname(7859)+".";
-			dispbottom "Feira de Fim-de-Mês: Mas se o alvo sobreviver, ele é quem ganha o prêmio.";
-			dispbottom "Feira de Fim-de-Mês: Se o jogador alvo morrer, ele será mandado de volta para Prontera.";
-			dispbottom "Feira de Fim-de-Mês: Todos os participantes ganharão um " +getitemname(7859)+" ao entrar na arena.";
-			dispbottom "Feira de Fim-de-Mês: O evento tem duração de 10 rounds ou termina quando tivermos menos de 3 participantes.";
-			dispbottom "Feira de Fim-de-Mês: Não se esqueça de confirmar se você esta com o /ns (/noshift) ativado!!";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Manhunt ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: O objetivo neste evento ï¿½ matar o jogador alvo em 60 segundos.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Aquele que der o last hit no alvo, ganha trï¿½s " +getitemname(7859)+".";
+			dispbottom "Feira de Fim-de-Mï¿½s: Mas se o alvo sobreviver, ele ï¿½ quem ganha o prï¿½mio.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Se o jogador alvo morrer, ele serï¿½ mandado de volta para Prontera.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Todos os participantes ganharï¿½o um " +getitemname(7859)+" ao entrar na arena.";
+			dispbottom "Feira de Fim-de-Mï¿½s: O evento tem duraï¿½ï¿½o de 10 rounds ou termina quando tivermos menos de 3 participantes.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Nï¿½o se esqueï¿½a de confirmar se vocï¿½ esta com o /ns (/noshift) ativado!!";
 			break;
 		case 7:
-			dispbottom "Feira de Fim-de-Mês: --- Clucky Cluckers ---";
-			dispbottom "Feira de Fim-de-Mês: Este evento é super simples!";
-			dispbottom "Feira de Fim-de-Mês: Ao norte de Prontera voce já deve ter visto nossa galinha de estimação, a Clucky.";
-			dispbottom "Feira de Fim-de-Mês: Ela é um doce! Menos durante o evento...";
-			dispbottom "Feira de Fim-de-Mês: A idéia é tentarmos acalmá-la novamente fazendo-lhe carinho.";
-			dispbottom "Feira de Fim-de-Mês: Para isso, você clica nela.";
-			dispbottom "Feira de Fim-de-Mês: Com um pouco de sorte e prática você conseguirá e ganhará três " +getitemname(7859)+"!";
-			dispbottom "Feira de Fim-de-Mês: Mas se não der certo, só Deus sabe do que uma galinha enfurecida é capaz!";
-			dispbottom "Feira de Fim-de-Mês: O evento termina em 10 minutos ou assim que tivermos um vencedor.";
-			dispbottom "Feira de Fim-de-Mês: Todos os participantes ganham um " +getitemname(7859)+".";
+			dispbottom "Feira de Fim-de-Mï¿½s: --- Clucky Cluckers ---";
+			dispbottom "Feira de Fim-de-Mï¿½s: Este evento ï¿½ super simples!";
+			dispbottom "Feira de Fim-de-Mï¿½s: Ao norte de Prontera voce jï¿½ deve ter visto nossa galinha de estimaï¿½ï¿½o, a Clucky.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Ela ï¿½ um doce! Menos durante o evento...";
+			dispbottom "Feira de Fim-de-Mï¿½s: A idï¿½ia ï¿½ tentarmos acalmï¿½-la novamente fazendo-lhe carinho.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Para isso, vocï¿½ clica nela.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Com um pouco de sorte e prï¿½tica vocï¿½ conseguirï¿½ e ganharï¿½ trï¿½s " +getitemname(7859)+"!";
+			dispbottom "Feira de Fim-de-Mï¿½s: Mas se nï¿½o der certo, sï¿½ Deus sabe do que uma galinha enfurecida ï¿½ capaz!";
+			dispbottom "Feira de Fim-de-Mï¿½s: O evento termina em 10 minutos ou assim que tivermos um vencedor.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Todos os participantes ganham um " +getitemname(7859)+".";
 			break;
 		default:
-			dispbottom "Feira de Fim-de-Mês: Ouch! Tivemos um erro aqui! Por favor, informe a staff.";
+			dispbottom "Feira de Fim-de-Mï¿½s: Ouch! Tivemos um erro aqui! Por favor, informe a staff.";
 			logmes "ERROR: Eventos Dinamicos.";
 			end;
 		}
@@ -336,21 +336,21 @@ function	script	DE_WarmUp	{
 	set $@LastEvent,$@CurrentEvent;
 
 	for(set .@i,2; .@i > 0; .@i--){
-		announce "Feira de Fim-de-Mês: O evento " + .eventname$ + " comecará em " + .@i + " " + ((.@i > 1)?"minutos":"minuto") + ".",bc_all,0x00AAFF;
+		announce "Feira de Fim-de-Mï¿½s: O evento " + .eventname$ + " comecarï¿½ em " + .@i + " " + ((.@i > 1)?"minutos":"minuto") + ".",bc_all,0x00AAFF;
 		announce "Para participar, basta digitar agora @joinevent",bc_yellow|bc_all;
 		sleep 60000;
 	}
 
 	if(getmapusers(.eventmap$) < .minplayers) {
-		mapannounce .eventmap$,"Feira de Fim-de-Mês: Ouch... Parece que não temos jogadores o suficiente para iniciarmos o evento.",bc_yellow|bc_all;
+		mapannounce .eventmap$,"Feira de Fim-de-Mï¿½s: Ouch... Parece que nï¿½o temos jogadores o suficiente para iniciarmos o evento.",bc_yellow|bc_all;
 		sleep 3000;
-		announce "Feira de Fim-de-Mês: O evento "+ .eventname$ +" terminou. O próximo evento será em aproximadamente uma hora!",bc_all,0x00AAFF;
+		announce "Feira de Fim-de-Mï¿½s: O evento "+ .eventname$ +" terminou. O prï¿½ximo evento serï¿½ em aproximadamente uma hora!",bc_all,0x00AAFF;
 		set $@LastEvent,0;
 		deletearray $@EventPlayers[0],getarraysize($@EventPlayers);
 		mapwarp .eventmap$,"prontera",155,181;
 		.halt = 1;
 	} else {
-		announce "Feira de Fim-de-Mês: O evento "+ .eventname$ +" começou! Bom divertimento e boa sorte a todos!",bc_all,0x00AAFF;
+		announce "Feira de Fim-de-Mï¿½s: O evento "+ .eventname$ +" comeï¿½ou! Bom divertimento e boa sorte a todos!",bc_all,0x00AAFF;
 	}
 	set $@CurrentEvent,0;
 	return .halt;
@@ -364,7 +364,7 @@ function	script	DE_Rewards	{
 	.eventmap$ 	= getarg(1,"prontera");
 	.reward 	= getarg(2,2);
 
-	mapannounce .eventmap$,"Feira de Fim-de-Mês: O evento "+.eventname$+" terminou!",bc_map,0x00AAFF;
+	mapannounce .eventmap$,"Feira de Fim-de-Mï¿½s: O evento "+.eventname$+" terminou!",bc_map,0x00AAFF;
 	killmonsterall .eventmap$;
 	sleep 3000;
 	freeloop(1);
@@ -372,7 +372,7 @@ function	script	DE_Rewards	{
 		for(.@i = 0; .@i < getarraysize($@EventPlayers); .@i++){
 			if(isloggedin($@EventPlayers[.@i])) {
 				if(strcharinfo(3,getcharid(0,rid2name($@EventPlayers[.@i]))) == .eventmap$) {
-					announce "Parabéns, "+strcharinfo(0,getcharid(0,rid2name($@EventPlayers[.@i])))+"! Vencedor do evento "+ .eventname$ +".",bc_yellow|bc_all;
+					announce "Parabï¿½ns, "+strcharinfo(0,getcharid(0,rid2name($@EventPlayers[.@i])))+"! Vencedor do evento "+ .eventname$ +".",bc_yellow|bc_all;
 					getitem 7859,.reward,$@EventPlayers[.@i];
 					warp "prontera",155,181, getcharid(0,rid2name($@EventPlayers[.@i]));
 				}
@@ -381,7 +381,7 @@ function	script	DE_Rewards	{
 	}
 	freeloop(0);
 	sleep 3000;
-	announce "Feira de Fim-de-Mês: O evento "+.eventname$+" terminou. Muito obrigado a todos que participaram!",bc_all,0x00AAFF;
+	announce "Feira de Fim-de-Mï¿½s: O evento "+.eventname$+" terminou. Muito obrigado a todos que participaram!",bc_all,0x00AAFF;
 	set $@LastEvent,0;
 	deletearray $@EventPlayers[0],getarraysize($@EventPlayers);
 
@@ -396,7 +396,7 @@ function	script	DE_Failed	{
 
 	killmonsterall .eventmap$;
 	sleep 3000;
-	announce "Feira de Fim-de-Mês: O evento "+ .eventname$ +" terminou sem um vencedor. Muito obrigado a todos que participaram!",bc_all,0x00AAFF;
+	announce "Feira de Fim-de-Mï¿½s: O evento "+ .eventname$ +" terminou sem um vencedor. Muito obrigado a todos que participaram!",bc_all,0x00AAFF;
 	set $@LastEvent,0;
 	deletearray $@EventPlayers[0],getarraysize($@EventPlayers);
 
@@ -407,8 +407,8 @@ function	script	DE_Failed	{
 
 
 prontera,146,161,6	script	Feira de Fim-de-Mes	954,{
-	mes "[^FFA500Feira de Fim-de-Mês^000000]";
-	mes "Olá! Tenho chapéis maravilhosos para trocar pelos seus ^00AAFF "+getitemname(7859)+" ^000000 Venha e dê uma olhada, não custa nada!";
+	mes "[^FFA500Feira de Fim-de-Mï¿½s^000000]";
+	mes "Olï¿½! Tenho chapï¿½is maravilhosos para trocar pelos seus ^00AAFF "+getitemname(7859)+" ^000000 Venha e dï¿½ uma olhada, nï¿½o custa nada!";
 	close2;
 	callshop "EventHeadgear",1;
 	end;
@@ -421,9 +421,9 @@ OnInit:
 OnHour00:
 	if(gettime(DT_DAYOFMONTH) == 20) {
 		enablenpc strnpcinfo(0);
-		announce "A Feira de Fim-de-Mês chegou em Prontera!",bc_blue|bc_all;
+		announce "A Feira de Fim-de-Mï¿½s chegou em Prontera!",bc_blue|bc_all;
 	} else if(gettime(DT_DAYOFMONTH) == 1){
-		announce "A Feira de Fim-de-Mês se despede de Prontera. Até o mês que vem, pessoal!",bc_blue|bc_all;
+		announce "A Feira de Fim-de-Mï¿½s se despede de Prontera. Atï¿½ o mï¿½s que vem, pessoal!",bc_blue|bc_all;
 		disablenpc strnpcinfo(0);
 	}
 	end;
@@ -432,18 +432,18 @@ OnHour00:
 
 prontera,143,161,6	script	Assistente da Feira	770,{
 	mes "[^FFA500Assistente da Feira^000000]";
-	mes "Olá! Para participar da Feira de Fim-de-Mês você precisará de ^00AAFF "+getitemname(7539)+"s^000000.";
-	mes "Eu posso trocar 10x " +getitemname(7539)+ "s por 1x " + getitemname(675);
+	mes "Olï¿½! Para participar da Feira de Fim-de-Mï¿½s vocï¿½ precisarï¿½ de ^00AAFF "+getitemname(7539)+"s^000000.";
+	mes "Eu posso trocar 10x " +getitemname(7539)+ "s por 1x " + getitemname($@HUNTING_MEDAL);
 	mes "Deseja trocar?";
 	next;
-	if(select("Sim, por favor:Não, obrigado") == 1) {
+	if(select("Sim, por favor:Nï¿½o, obrigado") == 1) {
 		if(countitem(7539) < 10) {
 			mes "[^FFA500Assistente da Feira^000000]";
-			mes "Desculpa mas você não tem "+getitemname(7539)+" o suficiente.";
+			mes "Desculpa mas vocï¿½ nï¿½o tem "+getitemname(7539)+" o suficiente.";
 			close;
 		} else {
 			delitem 7539,10;
-			getitem 675,1;
+			getitem $@HUNTING_MEDAL,1;
 			next;
 			mes "[^FFA500Assistente da Feira^000000]";
 			mes "Prontinho! Muito obrigada e bom divertimento!!";
@@ -451,7 +451,7 @@ prontera,143,161,6	script	Assistente da Feira	770,{
 		}
 	} else {
 		mes "[^FFA500Assistente da Feira^000000]";
-		mes "Sem problemas! Até mais!";
+		mes "Sem problemas! Atï¿½ mais!";
 		close;
 	}
 

@@ -297,13 +297,13 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				mes "At the present, you can activate/extend your ^f5b041Premium^000000 Account by 10 days or 30 days";
 				next;
 				mes .n$;
-				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname(675)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
+				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname($@HUNTING_MEDAL)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
 				next;
 				mes .n$;
 				mes "You can find more about Hunting Quests talking to my colleague, Sophie.";
 				next;
 				mes .n$;
-				mes "As I was saying... With the Mania$ or the "+getitemname(675)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
+				mes "As I was saying... With the Mania$ or the "+getitemname($@HUNTING_MEDAL)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
 				next;
 				mes .n$;
 				mes "Ah! I almost forgot!!";
@@ -367,7 +367,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes .n$;
 	mes "I promise I will keep this as simple as it can be.";
 	mes " ";
-	mes "So, "+getitemname(675)+", right?";
+	mes "So, "+getitemname($@HUNTING_MEDAL)+", right?";
 	next;
 	mes .n$;
 	mes "Here at Ragnamania Enliven these coins are worth quite a lot of zeny!";
@@ -388,10 +388,10 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "Oh, where were we?";
 	mes " ";
 	sleep2 1000;
-	mes "Ah! Of Course! "+getitemname(675)+"s!!";
+	mes "Ah! Of Course! "+getitemname($@HUNTING_MEDAL)+"s!!";
 	next;
 	mes .n$;
-	mes "So, one can visit my shop in ^0000FFProntera^000000 and get all the items from the ^FF0000Mania Shop^000000 not with Mania$ but with..."+getitemname(675)+"!! How awesome is that?";
+	mes "So, one can visit my shop in ^0000FFProntera^000000 and get all the items from the ^FF0000Mania Shop^000000 not with Mania$ but with..."+getitemname($@HUNTING_MEDAL)+"!! How awesome is that?";
 	mes " ";
 	mes "^0000FF* That excludes Costume items *^000000";
 	next;
@@ -411,7 +411,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes .n$;
 	mes "Uh there is just so much you can do with them, I can't remember them all, sorry!";
 	mes " ";
-	mes "^0000FFVisit our website for more info on everything you can get with "+getitemname(675)+"s.^000000";
+	mes "^0000FFVisit our website for more info on everything you can get with "+getitemname($@HUNTING_MEDAL)+"s.^000000";
 	next;
 	mes .n$;
 	mes "Now you must be saying to yourself:";
@@ -462,7 +462,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "....";
 	mes "and of course:";
 	mes "shining, precious";
-	mes "^FFA500"+getitemname(675)+"s^000000";
+	mes "^FFA500"+getitemname($@HUNTING_MEDAL)+"s^000000";
 	next;
 	mes .n$;
 	mes "Later on in the game you will find out that you can also get them from other sources too.";

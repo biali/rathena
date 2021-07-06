@@ -10,7 +10,7 @@ prontera,125,210,5	script	Connor::motdBoard	632,{
 	next;
 	mes "^0000FF[ Connor ]^000000";
 	mes "Exp Bonus : ^EE00AA" + callfunc("F_InsertComma",$@motd_XP)+"^000000.";
-	mes "A chance to get ^DD0088"+getitemname(675)+"s^000000.";
+	mes "A chance to get ^DD0088"+getitemname($@HUNTING_MEDAL)+"s^000000.";
 	mes "A chance to get ^CC0066"+getitemname(30022)+"s^000000.";
 	mes "A chance to get ^BB0044"+getitemname(30027)+"es^000000.";
 	next;
@@ -63,7 +63,7 @@ function	script	ChangeMob	{
 	setnpcdisplay(.@npc$,getmonsterinfo(.@id,MOB_NAME), .@id);
 	addmonsterdrop .@id,30027,200;	// Ragnamania Loot Boxes
 	addmonsterdrop .@id,30023,200;	// Ragnamania Bag of Manias
-	addmonsterdrop .@id,675,200;	// Ragnamania Hunting Coins
+	addmonsterdrop .@id,$@HUNTING_MEDAL,200;	// Ragnamania Hunting Coins
 
 	return;
 }

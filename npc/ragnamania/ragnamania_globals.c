@@ -1,3 +1,21 @@
+
+function	script	F_getsigneditem	{
+	.@id = getarg(0,0);
+	.@qt = getarg(1,0);
+
+	if(.@id <= 0 || .@qt <= 0)
+		return;
+	
+	.@charid = getcharid(0);
+	.@card3 = .@charid & 65535;
+	.@card4 = .@charid >> 16;
+	.@card1 = 254;
+	.@card2 = 0;
+	getitem2 .@id,.@qt,1,0,0,.@card1,.@card2,.@card3,.@card4;
+	return;
+}
+
+
 //Maths
 function	script	abs	{
 	.@i = getarg(0);

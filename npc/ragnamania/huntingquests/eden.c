@@ -394,7 +394,7 @@ L_Quest:
         mes "Mission '"+ getarg(1) +"'";
         mes "Base Exp: '"+ getarg(2,0) +"'";
         mes "Job Exp: '"+ getarg(3,0) +"'";
-        mes getitemname(675) + ": '" + "1x'";
+        mes getitemname($@HUNTING_MEDAL) + ": '" + "1x'";
         for ( .@i = 4; .@i < getargcount(); .@i++ )
             mes getarg(.@i);
 
@@ -475,7 +475,7 @@ morocc,183,95,3	duplicate(#HuntingQuests)	Hunting Quests#moc	859
 payon,164,87,7	duplicate(#HuntingQuests)	Hunting Quests#pay	859
 aldebaran,131,103,5	duplicate(#HuntingQuests)	Hunting Quests#ald	859
 alberta,128,45,2	duplicate(#HuntingQuests)	Hunting Quests#alb	859
-yuno,175,75,4	duplicate(#HuntingQuests)	Hunting Quests#alb	859
+yuno,175,75,4	duplicate(#HuntingQuests)	Hunting Quests#yun	859
 hugel,100,119,1	duplicate(#HuntingQuests)	Hunting Quests#hug	859
 lighthalzen,142,112,4	duplicate(#HuntingQuests)	Hunting Quests#lhz	859
 rachel,129,145,5	duplicate(#HuntingQuests)	Hunting Quests#rac	859

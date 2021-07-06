@@ -193,16 +193,16 @@ OnInstanceInit:
 	'round = -1;
 
 	// item reward for completing each round
-	'round_item_id = 675;
+	'round_item_id = $@HUNTING_MEDAL;
 	'round_item_amount = 5;
 
 	// item reward for completing the entire ladder
-	'finish_item_id = 675;
+	'finish_item_id = $@HUNTING_MEDAL;
 	'finish_item_amount = 50;
 
 	// bonus reward if ladder completed within a certain time (in minutes)
 	'bonus_time = 30; // if completed within 45 minutes, this reward is given
-	'bonus_item_id = 675;
+	'bonus_item_id = $@HUNTING_MEDAL;
 	'bonus_item_amount = 20;
 
 	// time delay between rounds, in seconds (default: 3)
