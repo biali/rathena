@@ -294,16 +294,16 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				mes "With your Mania$ you can buy things from the ^0000AAMania Shop^000000 and also ativate your ^f5b041Premium^000000 account.";
 				next;
 				mes .n$;
-				mes "At the present, you can activate/extend your ^f5b041Premium^000000 Account by 10 days or 30 days";
+				mes "At the present, you can activate/extend your ^f5b041Premium^000000 Account by 1, 10 days or 30 days";
 				next;
 				mes .n$;
-				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname($@HUNTING_MEDAL)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
+				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname($@VOTER_CERTIFICATE)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
 				next;
 				mes .n$;
 				mes "You can find more about Hunting Quests talking to my colleague, Sophie.";
 				next;
 				mes .n$;
-				mes "As I was saying... With the Mania$ or the "+getitemname($@HUNTING_MEDAL)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
+				mes "As I was saying... With the Mania$ or the "+getitemname($@VOTER_CERTIFICATE)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
 				next;
 				mes .n$;
 				mes "Ah! I almost forgot!!";
@@ -326,27 +326,8 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				break;
 		}
 	}
-	if(#FREE_PREMMY == 0 && checkquest(64505) < 0) {
-		mes .n$;
-		mes "Ah! I almost forgot! I am sure you've heard we offer 3 days worth of ^f5b041Premium^000000 Account for newcomers, right?";
-		next;
-		mes .n$;
-		mes "Please bear with me as I setup that for you.... It won't take a second!";
-		next;
-		setquest 64505;
-		mes .n$;
-		mes "Sorry, I am a litle busy here... Please meet me in Prontera when you are done here and I will give you your 3 days of free ^f5b041Premium^000000.";
-		next;
-		mes .n$;
-		mes "I've included a note in your quest log so you won't forget. See you there!";
-		close2;
-	} else {
-		mes .n$;
-		mes "Thank you very much!";
-		close2;
-	}
 	intro_quest = 7;
-	end;
+	close;
 	
 OnInit:
 	.n$ = "^FF7F00[ Lilian ]^000000";
@@ -391,19 +372,9 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "Ah! Of Course! "+getitemname($@HUNTING_MEDAL)+"s!!";
 	next;
 	mes .n$;
-	mes "So, one can visit my shop in ^0000FFProntera^000000 and get all the items from the ^FF0000Mania Shop^000000 not with Mania$ but with..."+getitemname($@HUNTING_MEDAL)+"!! How awesome is that?";
+	mes "So, one can visit my shop in any major town and get all the items from the ^FF0000Mania Shop^000000 not with Mania$ but with..."+getitemname($@HUNTING_MEDAL)+"!! How awesome is that?";
 	mes " ";
 	mes "^0000FF* That excludes Costume items *^000000";
-	next;
-	mes .n$;
-	mes "What else... Ah!";
-	mes "You can also activate/extend your Premmy account with these coins!";
-	next;
-	mes .n$;
-	mes ".... and reset stats or skills...";
-	next;
-	mes .n$;
-	mes ".... and remove cards from equipments...";
 	next;
 	mes .n$;
 	mes "Ah! and you can also use them to convert ordinary hats in costumes!!";
@@ -422,7 +393,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "I tell you right now!";
 	next;
 	mes .n$;
-	mes "In Prontera, right next to the Central Plaza you are gonna find my...";
+	mes "You can find us in any major Town, me and my...";
 	next;
 	mes .n$;
 	mes "partner?!";
@@ -433,7 +404,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "Agent Kafra!";
 	next;
 	mes .n$;
-	mes "No no... that is not her real name but she prefers to be called just like that.";
+	mes "No no... that is not her real name but she likes to be called like that.";
 	next;
 	mes .n$;
 	mes "Anyways, I am gonna be there as well, next to her <3";
@@ -455,23 +426,12 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	next;
 	mes .n$;
 	mes "You get lots of EXP,";
-	mes "by lots I mean LOTS!";
-	next;
-	mes .n$;
-	mes "You also get some Zeny,";
-	mes "....";
 	mes "and of course:";
 	mes "shining, precious";
-	mes "^FFA500"+getitemname($@HUNTING_MEDAL)+"s^000000";
+	mes "^FFA500"+getitemname($@HUNTING_MEDAL)+"s^000000.";
 	next;
 	mes .n$;
-	mes "Later on in the game you will find out that you can also get them from other sources too.";
-	next;
-	mes .n$;
-	mes "And also from holding a territory in the ^0000FFFort Defensing^000000... a GvG event I don't know much about I am afraid.";
-	next;
-	mes .n$;
-	mes "But that is all I know... To hear more about our PvP Events please refer to my friend accross the room...";
+	mes "That is all I know... Now I guess you may want to hear more about the PvP Events... please refer to my friend accross the room...";
 	next;
 	mes .n$;
 	mes "She is the Arena Master in whole Midgard!";
@@ -485,7 +445,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "I believe this is it, "+strcharinfo(0)+".";
 	mes "I told you this was gonna be brief!";
 	mes "All the best in your journey!";
-	mes "And see you in Prontera!";
+	mes "And see you in around!";
 	if(checkquest(64500) < 0 )
 		setquest 64500;
 	if(checkquest(64503) < 0 )
