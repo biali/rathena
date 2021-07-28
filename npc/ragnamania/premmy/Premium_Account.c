@@ -30,8 +30,8 @@ prontera,159,286,5	script	Lilian#PremmyCentral	4_F_KAFRA1,{
 	end;
 
  OnInit:
- 	set $@Periodo, 60 * 24 * 3; //	5 dias em minutos
-	set $@EndTime, 60 * 60 * 24 * 3; // 5 dias em segundos 
+ 	set $@Periodo, 60 * 24 * 3; //	3 dias em minutos
+	set $@EndTime, 60 * 60 * 24 * 3; // 3 dias em segundos 
 	end;
 }
 

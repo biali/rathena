@@ -715,6 +715,7 @@ struct mmo_charstatus {
 	unsigned char hotkey_rowshift2;
 	unsigned long title_id;
 	int infamy; //Biali
+	uint32 master_id; // biali master account
 };
 
 typedef enum mail_status {

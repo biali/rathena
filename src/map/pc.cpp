@@ -5963,6 +5963,30 @@ int pc_getcash(struct map_session_data *sd, int cash, int points, e_log_pick_typ
 	return -1; //shouldn't happen but just in case
 }
 
+
+//biali master account
+int pc_get_masterid(int aid)
+{
+	TBL_PC *sd = map_id2sd(aid);
+	int master_id = 0;
+
+	if( SQL_ERROR == Sql_Query(mmysql_handle, "SELECT `user_id` FROM `cp_user_accounts` WHERE `account_id` = '%d' LIMIT 1", sd->status.account_id) )
+		Sql_ShowDebug(mmysql_handle);
+	else if( SQL_SUCCESS == Sql_NextRow(mmysql_handle) )
+	{
+		char* data;
+
+		Sql_GetData(mmysql_handle, 0, &data, NULL);
+		Sql_FreeResult(mmysql_handle);
+		master_id = atoi(data);
+		return master_id;
+
+	}
+	Sql_FreeResult(mmysql_handle);
+	return 0;
+}
+
+
 /**
  * Searching a specified itemid in inventory and return his stored index
  * @param sd Player

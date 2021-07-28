@@ -1442,6 +1442,9 @@ void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, 
 void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
 void pc_lootbag_storageclose(struct map_session_data *sd);
 
+// biali master account
+int pc_get_masterid(int aid);
+
 //biali mount rework
 void pc_setremounttimer(struct map_session_data* sd, int val);
 void pc_delremounttimer(struct map_session_data* sd);

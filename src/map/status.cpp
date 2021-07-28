@@ -4790,6 +4790,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 	if(opt&SCO_FIRST) {
 		//biali mount rework
 		sd->mount_remount_timer = INVALID_TIMER;
+		sd->status.master_id = pc_get_masterid(sd->status.account_id); // biali master account
 	}
 
 // ----- CLIENT-SIDE REFRESH -----

@@ -35,17 +35,18 @@ function	script	RM_DiarioDeBordo	{
 	getmapxy(.@mapName$,.@mapX,.@mapY,BL_PC,strcharinfo(0));
 
 L_Menu:
+	query_sql("SELECT `cashpoints` FROM `cp_users` WHERE id = " + getcharid(7) + " LIMIT 1", .@cashpoints);
 	mes "^0000FF[ Logbook ]^000000";
 	if( vip_status(1) ) mes "Account: ^00CCAA[ Premium ]^000000";
 	else mes "Account: ^00AAFF[ Regular ]^000000";
-	mes (#CASHPOINTS)?"Mania$: ^0000FF" +#CASHPOINTS+ "^000000.":"Mania$: ^FF000000.00^000000.";
+	mes (#CASHPOINTS)?"Mania$ in this Acc: ^0000FF" +callfunc("F_InsertComma", #CASHPOINTS)+ "^000000.":"Mania$: ^FF00000.0^000000.";
+	mes (.@cashpoints[0])?"Mania$ Available: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ Available: ^FF00000.0^000000.";
 	mes " ";
 	if(getcharid(6)) {
 		mes "^0000FFCity Representation^000000";
 		mes factioninfo(getcharid(6),0);
 		mes " ";
 	}
-
 	mes "Personal Vote Points: ^0000FF[" + #VP_VOTEPOINTS + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
 	if(gettime(DT_DAYOFMONTH) < getvariableofnpc(.ThirdDday,"v4p"))	
 		mes "Global VP: ^0000FF[" + $vp_totalVotePoints + "/" + getvariableofnpc(.VotePointsTarget,"v4p") + "]^000000";
@@ -56,7 +57,7 @@ L_Menu:
 	next;
 
 L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:^dd0000Close^000000")) {
+	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
 			if( vip_status(1) || getgmlevel() >= 10) {
 				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
@@ -214,7 +215,83 @@ L_PremmyMenu:
 				mes "Monthly: " + F_MonthlyBar();
 				next;
 				goto L_Loop;
-		case 6:
+		case 6: // Master Account Services
+			mes "^0000DDMaster Account Services^000000";
+			mes (.@cashpoints[0])?"Mania$ Available: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ Available: ^FF00000.0^000000.";
+			next;
+			switch(select("Send Mania$ to a Game Account:^FF0000Back^000000")) {
+				case 1:
+					if(.@cashpoints[0] <= 0) {
+						mes "^0000DDMaster Account Services^000000";
+						mes "No funds available.";
+						next;
+						goto L_Loop;
+					}
+					mes "^0000DDMaster Account Services^000000";
+					.@count = query_sql("SELECT `userid`,`account_id` FROM `login` WHERE `master_id` = " + getcharid(7),.@gameaccounts$, .@accountid);
+					if(.@count == 1 ) {
+						mes "Transfer to this account:";
+						.@destiny = getcharid(3);
+					} else {
+						mes "To which account should we make the transter to?";
+						@menu$ = implode(.@gameaccounts$,":") + "^FF0000Back^000000";
+						.@choice = select(@menu$) - 1;
+						.@destiny = .@accountid[(.@choice)];
+						mes "Transfer to: ^FF0000" + .@gameaccounts$[(.@choice)] + "^000000";
+					}
+
+					mes "Please inform the amount:";
+					input (.@amount);
+					if(.@amount <= 0 || .@amount > .@cashpoints[0] ) {
+						mes "^ff0000Amount invalid. Process stoped.^000000";
+						close;
+					}
+					mes "That is all we need. Continue?";
+					next;
+					if(select("Yes, please:No, thank you") == 2) {
+						mes "^ff0000Transfer halted.";
+						next;
+						goto L_Loop;
+					}
+
+					query_sql("SELECT `cashpoints` FROM `cp_users` WHERE id = " + getcharid(7) + " LIMIT 1", .@cashpoints);
+					if(.@cashpoints[0] < .@amount) {
+						mes "^0000DDMaster Account Services^000000";
+						mes "Something went wrong. The funds were no longer available.";
+						mes " ";
+						mes "^ff0000This incident was reported to the staff.";
+						logmes "Master Account: " + getcharid(7) + "Game Account: " + getcharid(3) + " tried to cheat the Manias Master Transfer.";
+						close;
+					}
+
+					if(.@destiny == getcharid(3)) {
+						set #CASHPOINTS, #CASHPOINTS + .@amount;
+					} else if(isloggedin(.@destiny) ) {
+						atcommand "#cash " + "\"" + rid2name(.@destiny) + "\" " + .@amount;
+					} else {
+						.@c = query_sql("SELECT `account_id` FROM `acc_reg_num` WHERE `account_id` = "+ .@destiny +" AND `key` = '#CASHPOINTS' LIMIT 1");
+						if(.@c == 0) 
+							query_sql("INSERT INTO `acc_reg_num` (`account_id`,`key`,`index`,`value`) VALUES (`"+.@destiny+"`, `#CASHPOINTS`, 0,`"+.@amount+"`)");
+						else
+							query_sql("UPDATE `acc_reg_num` SET `value` = `value + "+ .@amount +" WHERE `account_id = "+ .@destiny +" AND `key` = '#CASHPOINTS'");
+					}
+
+					query_sql("UPDATE `cp_users` SET `cashpoints` = `cashpoints - "+ .@amount +" WHERE `id = " + getcharid(7));
+					logmes .@amount + " Manias sent from master account " + getcharid(7) + " to game account " + .@destiny;
+
+					mes "^0000DDMaster Account Services^000000";
+					mes "All done. Your new balence is:";
+					mes "Master Account: " + callfunc("F_InsertComma",(.@cashpoints[0] - .@amout));
+					mes "Game Accounts: ";
+					.@count = query_sql("SELECT `login`.`userid`, `acc_reg_num`.`value` FROM `login` JOIN `acc_reg_num` ON `login`.`account_id` = `acc_reg_num`.`account_id` WHERE `acc_reg_num`.`key` = '#CASHPOINTS' AND `login`.`master_id` = " + getcharid(7),.@gameaccounts$, .@manias);
+					for(.@i=0;.@i < .@count; .@i++) {
+						mes " . " + .@gameaccounts$[.@i] + " " + callfunc("F_InsertComma",.@manias[.@i]) + " Manias";
+					}
+					close;
+				case 2: goto L_Loop; break;
+			}
+
+		case 7:
 		default:
 			close;
 	}

@@ -8561,6 +8561,7 @@ BUILDIN_FUNC(getcharid)
 	case 4: script_pushint(st,sd->bg_id); break;
 	case 5: script_pushint(st,sd->status.clan_id); break;
 	case 6: script_pushint(st,sd->status.faction_id); break;
+	case 7: script_pushint(st,sd->status.master_id); break;
 	default:
 		ShowError("buildin_getcharid: invalid parameter (%d).\n", num);
 		script_pushint(st,0);

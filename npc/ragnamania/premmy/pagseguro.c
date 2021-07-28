@@ -18,12 +18,14 @@ OnPCLoginEvent:
 	if( .@balance == 0 ) end;
 	if( .promo > 0 && .@balance >= .promo ) {
 		set .@bonusPromo,(.@balance*.bonus)/100;
-		set #CASHPOINTS,#CASHPOINTS+.@bonusPromo;
+		// set #CASHPOINTS,#CASHPOINTS+.@bonusPromo;
+		query_sql("UPDATE `cp_users` SET `cashpoints` = `cashpoints` + " + .@bonusPromo + " WHERE `id` = " + getcharid(7));
 		dispbottom "[^9810c1 Ragnamania Enliven ^000000]";
 		dispbottom "You've received ^1042c1"+.@bonusPromo+"^000000 bonus in Manias from your donation to the server.";
 		logmes "Received "+.@bonusPromo+" Manias for his donation.";
 	} else {
-		set #CASHPOINTS,#CASHPOINTS+.@balance;
+		query_sql("UPDATE `cp_users` SET `cashpoints` = `cashpoints` + " + .@balance + " WHERE `id` = " + getcharid(7));
+		// set #CASHPOINTS,#CASHPOINTS+.@balance;
 		dispbottom "[^9810c1 Ragnamania Enliven ^000000]";
 		dispbottom "You've received "+.@balance+" Manias for your donation to the server.";
 		logmes "Received "+.@balance+" Manias for his donation.";
@@ -41,7 +43,7 @@ OnInit:
 											// 140 = 40%
 											// 150 = 50%
 											// ...
-	set .nomeServidor$,"Ragnamania Chronos";	// Nome do servidor
+	set .nomeServidor$,"Ragnamania Enliven";	// Nome do servidor
 	end;
 }
 
