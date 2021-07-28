@@ -36,11 +36,13 @@
 #include "guild.hpp"
 #include "homunculus.hpp"
 #include "instance.hpp"
+#include "itemdb.hpp" // biali world drop
 #include "intif.hpp"
 #include "log.hpp"
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp"
 #include "npc.hpp"
 #include "party.hpp"
 #include "path.hpp"
@@ -2117,6 +2119,11 @@ int map_quit(struct map_session_data *sd) {
 	if(sd->status.faction_id)
 		sd->status.faction_id = 0;
 
+	// we have to do this for now because at this point we dont know which mount id the player was on before disconection last time
+	// Biali TODO: Store the mount id in the DB
+	if (sd->sc.data[SC_ALL_RIDING])
+		status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+
 	pc_itemcd_do(sd,false);
 
 	npc_script_event(sd, NPCE_LOGOUT);
@@ -3721,17 +3728,19 @@ void map_flags_init(void){
 		mapdata->atk_rate = {}; //Global Damage Adjustment [Cydh]
 		mapdata->atk_rate.rate[DMGRATE_BL] = BL_ALL;
 		mapdata->atk_rate.rate[DMGRATE_WEAPON] = 100;
+		mapdata->atk_rate.rate[DMGRATE_SHORT] = 100;
 		mapdata->atk_rate.rate[DMGRATE_LONG] = 100;
 		mapdata->atk_rate.rate[DMGRATE_WEAPON] = 100;
 		mapdata->atk_rate.rate[DMGRATE_MAGIC] = 100;
 		mapdata->atk_rate.rate[DMGRATE_MISC] = 100;
+		mapdata->atk_rate.rate[DMGRATE_HIT] = 100;
 
 		// Biali Contested Territories
 		mapdata->contested = {};
-		mapdata->contested.info[CONTESTED_OWNER_ID] = NULL;
-		mapdata->contested.info[CONTESTED_BASE_BONUS] = NULL;
-		mapdata->contested.info[CONTESTED_JOB_BONUS] = NULL;
-		mapdata->contested.info[CONTESTED_DROP_BONUS] = NULL;
+		mapdata->contested.info[CONTESTED_OWNER_ID] = 0;
+		mapdata->contested.info[CONTESTED_BASE_BONUS] = 0;
+		mapdata->contested.info[CONTESTED_JOB_BONUS] = 0;
+		mapdata->contested.info[CONTESTED_DROP_BONUS] = 0;
 
 		// Biali FvF Maps (ON for all maps except the ones in ragnamania/mapflags/fvf.c)
 		map_setmapflag_sub(i, MF_FVF, true, &args);
@@ -4659,20 +4668,21 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 				default:
 					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 			}
-		// case MF_ATK_RATE:
-		// 	nullpo_retr(-1, args);
+		case MF_ATK_RATE:
+			nullpo_retr(-1, args);
 
-		// 	switch (args->flag_val) {
-		// 		case DMGRATE_BL:
-		// 		case DMGRATE_SHORT:
-		// 		case DMGRATE_LONG:
-		// 		case DMGRATE_WEAPON:
-		// 		case DMGRATE_MAGIC:
-		// 		case DMGRATE_MISC:
-		// 			return mapdata->atk_rate.rate[args->flag_val];
-		// 		default:
-		// 			return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
-		// 	}
+			switch (args->flag_val) {
+				case DMGRATE_BL:
+				case DMGRATE_SHORT:
+				case DMGRATE_LONG:
+				case DMGRATE_WEAPON:
+				case DMGRATE_MAGIC:
+				case DMGRATE_MISC:
+				case DMGRATE_HIT:
+					return mapdata->atk_rate.rate[args->flag_val];
+				default:
+					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
+			}
 		case MF_RPK:
 			if(args == NULL)
 				return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
@@ -5044,12 +5054,16 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 			else {
 				nullpo_retr(false, args);
 
-				if (!args->atk_rate.rate[DMGRATE_BL]) {
+				for (int i = 0; i < DMGRATE_MAX; i++) 
+					if(args->atk_rate.rate[i])
+						mapdata->atk_rate.rate[i] = args->atk_rate.rate[i];
+
+				if (!mapdata->atk_rate.rate[DMGRATE_BL]) {
 					ShowError("map_setmapflag: atk_rate without attacker type for map %s.\n", mapdata->name);
 					return false;
 				}
 
-				memcpy(&mapdata->atk_rate, &args->atk_rate, sizeof(struct s_global_damage_rate));
+				// memcpy(&mapdata->atk_rate, &args->atk_rate, sizeof(struct s_global_damage_rate));
 			}
 			mapdata->flag[mapflag] = status;
 			break;
@@ -5154,6 +5168,7 @@ void do_final(void){
 	do_final_elemental();
 	do_final_cashshop();
 	do_final_faction(); 
+	do_final_mount(); // Biali mounts rework 
 	do_final_channel(); //should be called after final guild
 	do_final_vending();
 	do_final_buyingstore();
@@ -5468,6 +5483,7 @@ int do_init(int argc, char *argv[])
 	do_init_channel();
 	do_init_cashshop();
 	do_init_skill();
+	do_init_mount(); // Biali mount rework
 	do_init_mob();
 	do_init_pc();
 	do_init_status();
@@ -5486,6 +5502,9 @@ int do_init(int argc, char *argv[])
 	do_init_duel();
 	do_init_vending();
 	do_init_buyingstore();
+
+	//biali
+	do_init_world_drops();
 
 	npc_event_do_oninit();	// Init npcs (OnInit)
 

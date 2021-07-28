@@ -45,6 +45,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp" //biali mount rework
 #include "npc.hpp"
 #include "party.hpp"
 #include "pc.hpp"
@@ -1143,7 +1144,6 @@ ACMD_FUNC(hide)
 			sd->pvp_timer = INVALID_TIMER;
 		}
 		clif_clearunit_area(&sd->bl, CLR_OUTSIGHT);
-		map_foreachinrange(faction_aura_clear, &sd->bl, AREA_SIZE, BL_PC, &sd->bl);
 		clif_refresh(sd);
 	}
 	clif_changeoption(&sd->bl);
@@ -4269,15 +4269,16 @@ ACMD_FUNC(mapinfo) {
 	}
 
 	//Global Damage adjustment. [Cydh]
-	if (map_getmapflag_sub(m_id, MF_ATK_RATE, NULL)) {
+	if (map_getmapflag(m_id, MF_ATK_RATE) == true && battle_config.atk_adjustment_map & 16) {
 		sprintf(atcmd_output,"Damage Adjustment for: %s", atcommand_mapinfo_globaldamage_sub(mapdata->atk_rate.rate[DMGRATE_BL]).c_str());
 		clif_displaymessage(fd,atcmd_output);
-		sprintf(atcmd_output," > Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%%",
-			mapdata->atk_rate.rate[DMGRATE_SHORT],
-			mapdata->atk_rate.rate[DMGRATE_LONG],
-			mapdata->atk_rate.rate[DMGRATE_WEAPON],
-			mapdata->atk_rate.rate[DMGRATE_MAGIC],
-			mapdata->atk_rate.rate[DMGRATE_MISC]);
+		sprintf(atcmd_output," > Short: %d%% | Long: %d%% | Weapon: %d%% | Magic: %d%% | Misc: %d%% | Hit: %d%%",
+			mapdata->atk_rate.rate[DMGRATE_SHORT] - 100,
+			mapdata->atk_rate.rate[DMGRATE_LONG] - 100,
+			mapdata->atk_rate.rate[DMGRATE_WEAPON] - 100,
+			mapdata->atk_rate.rate[DMGRATE_MAGIC] - 100,
+			mapdata->atk_rate.rate[DMGRATE_MISC] - 100,
+			mapdata->atk_rate.rate[DMGRATE_HIT]) - 100;
 		clif_displaymessage(fd,atcmd_output);
 	}
 
@@ -9511,7 +9512,8 @@ ACMD_FUNC(mount2) {
 		sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK);
 	} else {
 		clif_displaymessage(sd->fd,msg_txt(sd,1364)); // You have released your mount.
-		status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+		//status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER);
+		mount_desmount(sd,false);
 	}
 	return 0;
 }
@@ -11595,6 +11597,12 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(leader),
 		ACMD_DEF(reportafk),
 		ACMD_DEF(bgskill),
+		// Biali damage log
+		ACMD_DEF(bgranked),
+		ACMD_DEF(bgregular),
+		ACMD_DEF(battleinfo),
+		ACMD_DEF(rankreset),
+		ACMD_DEF(char2dump),
 #endif
 	};
 	AtCommandInfo* atcommand;

@@ -33,7 +33,7 @@ function	TrouverIndice	{
 OnInit:
 	// MODIFY THE COIN ID FOR NON VIP PLAYERS
 	// -1 to disable coin requirement
-	.CoinID = 675;
+	.CoinID = $@HUNTING_MEDAL;
 	// ===================
 	bindatcmd "restock",strnpcinfo(3)+"::OnAtcommand";
 	end;

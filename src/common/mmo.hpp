@@ -73,7 +73,7 @@ typedef uint32 t_itemid;
 #define MAX_STORAGE 600 ///Max number of storage slots a player can have
 #define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
 #define MAX_PARTY 12 ///Max party member
-#define MAX_GUILD 16+10*6	///Increased max guild members +6 per 1 extension levels [Lupus]
+#define MAX_GUILD 16+10*1	///Increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	///Increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
 #define MAX_GUILDEXPULSION 32 ///Max Guild expulsion
 #define MAX_GUILDALLIANCE 16 ///Max Guild alliance
@@ -174,10 +174,14 @@ const t_itemid WEDDING_RING_F = 2635;
 #define MAX_ACHIEVEMENT_DEPENDENTS 20 /// Maximum different dependents in achievement_db.yml
 #define ACHIEVEMENT_NAME_LENGTH 50 /// Max Achievement Name length
 
-// Max factions
-#define MAX_FACTION 6
-// Max effects for faction aura
-#define MAX_AURA_EFF 3
+// Max factions biali
+#define MAX_FACTION 5
+// Max drops lists biali blackzone
+#define MAX_DROPS 50
+
+// Biali mount rework
+#define REMOUNT_TIMER 30 // 30 seconds (multiplied by 6 when unmounted by dmg)
+
 // Castle Ranking biali damage log
 #define RANK_CASTLES 34 
 // Infamy system
@@ -711,6 +715,7 @@ struct mmo_charstatus {
 	unsigned char hotkey_rowshift2;
 	unsigned long title_id;
 	int infamy; //Biali
+	uint32 master_id; // biali master account
 };
 
 typedef enum mail_status {
@@ -1216,7 +1221,10 @@ enum e_rank {
 	RANK_BLACKSMITH = 0,
 	RANK_ALCHEMIST = 1,
 	RANK_TAEKWON = 2,
-	RANK_KILLER = 3
+	RANK_KILLER = 3,
+	RANK_PVPRANK = 4,
+	RANK_BGRANK = 5,
+	RANK_BG = 6
 };
 
 struct clan_alliance {

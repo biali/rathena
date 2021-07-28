@@ -3,7 +3,7 @@ prontera,145,200,4	script	Negociador Ambulante#CoinsTrader	733,{
 	mes "Cotacao do dia:";
 	mes "Hunting Coin 1x : " +F_InsertComma(.CustoHuntingCoin)+ " Zeny";
 
-	mes "Quantas "+ getitemname(675) +" voce desejaria?";
+	mes "Quantas "+ getitemname($@HUNTING_MEDAL) +" voce desejaria?";
 	next;
 	mes .n$;
 	input(.@qt);
@@ -14,17 +14,17 @@ prontera,145,200,4	script	Negociador Ambulante#CoinsTrader	733,{
 	if(Zeny < .@cost)
 		callsub noBalance;
 	mes "Deseja continuar?";
-	if(select("Sim, por favor:Não, cancele") == 2) {
+	if(select("Sim, por favor:Nï¿½o, cancele") == 2) {
 		mes "Sem problema!";
 		close;
 	} else {
 		if(Zeny < .@cost) {
-			dispbottom "Esta ação foi reportada a staff";
+			dispbottom "Esta aï¿½ï¿½o foi reportada a staff";
 			logmes "Tentou cheatar na troca de moedas";
 			close;
 		}
 		set Zeny, Zeny - .@cost;
-		getitem 675, .@qt;
+		getitem $@HUNTING_MEDAL, .@qt;
 		mes "Prontinho, muito obrigado.";
 		close;
 	}

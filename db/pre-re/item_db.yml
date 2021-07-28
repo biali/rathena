@@ -81,7 +81,6 @@
 #   EquipScript             Script to execute when the item is equipped. (Default: null)
 #   UnEquipScript           Script to execute when the item is unequipped or when a rental item expires. (Default: null)
 ###########################################################################
-
 Header:
   Type: ITEM_DB
   Version: 1
@@ -91,3 +90,4 @@ Footer:
   - Path: db/pre-re/item_db_usable.yml
   - Path: db/pre-re/item_db_equip.yml
   - Path: db/pre-re/item_db_etc.yml
+  - Path: db/pre-re/item_db_custom.yml

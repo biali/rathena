@@ -231,6 +231,30 @@ int inter_guild_tosql(struct guild *g,int flag)
 		StringBuf_Destroy(&buf);
 	}
 
+	//biali damage log
+	if( flag&GS_RANKING )
+	{
+		strcat(t_info, " ranking");
+		for( i = 0; i < RANK_CASTLES; i++ )
+		{
+			if( g->castle[i].changed )
+			{
+				if( SQL_ERROR == Sql_Query(sql_handle, "REPLACE INTO `guild_rank` (`guild_id`, `castle_id`, "
+					"`capture`, `emperium`, `treasure`, `top_eco`, `top_def`, `invest_eco`, `invest_def`, `offensive_score`, `defensive_score`, "
+					"`posesion_time`, `zeny_eco`, `zeny_def`, `skill_battleorder`, `skill_regeneration`, `skill_restore`, `skill_emergencycall`, "
+					"`off_kill`, `off_death`, `def_kill`, `def_death`, `ext_kill`, `ext_death`, `ali_kill`, `ali_death`) "
+					"VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%u', '%u', '%u', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%d')",
+					g->guild_id, i,
+					g->castle[i].capture, g->castle[i].emperium, g->castle[i].treasure, g->castle[i].top_eco, g->castle[i].top_def, g->castle[i].invest_eco, g->castle[i].invest_def, g->castle[i].offensive_score, g->castle[i].defensive_score,
+					g->castle[i].posesion_time, g->castle[i].zeny_eco, g->castle[i].zeny_def, g->castle[i].skill_battleorder, g->castle[i].skill_regeneration, g->castle[i].skill_restore, g->castle[i].skill_emergencycall,
+					g->castle[i].off.kill_count, g->castle[i].off.death_count, g->castle[i].def.kill_count, g->castle[i].def.death_count, g->castle[i].ext.kill_count, g->castle[i].ext.death_count, g->castle[i].ali.kill_count, g->castle[i].ali.death_count) )
+					Sql_ShowDebug(sql_handle);
+
+				g->castle[i].changed = false;
+			}
+		}
+	} //biali damage log
+
 	if (flag&GS_MEMBER)
 	{
 		strcat(t_info, " members");
@@ -408,6 +432,68 @@ struct guild * inter_guild_fromsql(int guild_id)
 			*p |= *data - 'A' + 10;
 		++data;
 	}
+
+	//biali damage log
+	/* Guild Ranking */
+	for( i = 0; i < RANK_CASTLES; i++ )
+		g->castle[i].changed = true;
+
+	if( SQL_ERROR == Sql_Query(sql_handle,
+		"SELECT "
+		"`castle_id`, `capture`, `emperium`, `treasure`, `top_eco`, `top_def`, `invest_eco`, `invest_def`, `offensive_score`, `defensive_score`, "
+		"`posesion_time`, `zeny_eco`, `zeny_def`, `skill_battleorder`, `skill_regeneration`, `skill_restore`, `skill_emergencycall`, "
+		"`off_kill`, `off_death`, `def_kill`, `def_death`, `ext_kill`, `ext_death`, `ali_kill`, `ali_death` "
+		"FROM `guild_rank` WHERE `guild_id` = '%d'", g->guild_id) )
+		Sql_ShowDebug(sql_handle);
+	else
+	{
+		while( SQL_SUCCESS == Sql_NextRow(sql_handle) )
+		{
+			Sql_GetData(sql_handle, 0, &data, NULL); i = atoi(data);
+			if( i >= RANK_CASTLES || i < 0 )
+				continue;
+
+			Sql_GetData(sql_handle, 1, &data, NULL); g->castle[i].capture = atoi(data);
+			Sql_GetData(sql_handle, 2, &data, NULL); g->castle[i].emperium = atoi(data);
+			Sql_GetData(sql_handle, 3, &data, NULL); g->castle[i].treasure = atoi(data);
+			Sql_GetData(sql_handle, 4, &data, NULL); g->castle[i].top_eco = atoi(data);
+			Sql_GetData(sql_handle, 5, &data, NULL); g->castle[i].top_def = atoi(data);
+			Sql_GetData(sql_handle, 6, &data, NULL); g->castle[i].invest_eco = atoi(data);
+			Sql_GetData(sql_handle, 7, &data, NULL); g->castle[i].invest_def = atoi(data);
+			Sql_GetData(sql_handle, 8, &data, NULL); g->castle[i].offensive_score = atoi(data);
+			Sql_GetData(sql_handle, 9, &data, NULL); g->castle[i].defensive_score = atoi(data);
+
+			Sql_GetData(sql_handle,10, &data, NULL); g->castle[i].posesion_time = strtoul(data, NULL, 0);
+			Sql_GetData(sql_handle,11, &data, NULL); g->castle[i].zeny_eco = strtoul(data, NULL, 0);
+			Sql_GetData(sql_handle,12, &data, NULL); g->castle[i].zeny_def = strtoul(data, NULL, 0);
+
+			Sql_GetData(sql_handle,13, &data, NULL); g->castle[i].skill_battleorder = atoi(data);
+			Sql_GetData(sql_handle,14, &data, NULL); g->castle[i].skill_regeneration = atoi(data);
+			Sql_GetData(sql_handle,15, &data, NULL); g->castle[i].skill_restore = atoi(data);
+			Sql_GetData(sql_handle,16, &data, NULL); g->castle[i].skill_emergencycall = atoi(data);
+
+			Sql_GetData(sql_handle,17, &data, NULL); g->castle[i].off.kill_count = atoi(data);
+			Sql_GetData(sql_handle,18, &data, NULL); g->castle[i].off.death_count = atoi(data);
+			Sql_GetData(sql_handle,19, &data, NULL); g->castle[i].def.kill_count = atoi(data);
+			Sql_GetData(sql_handle,20, &data, NULL); g->castle[i].def.death_count = atoi(data);
+			Sql_GetData(sql_handle,21, &data, NULL); g->castle[i].ext.kill_count = atoi(data);
+			Sql_GetData(sql_handle,22, &data, NULL); g->castle[i].ext.death_count = atoi(data);
+			Sql_GetData(sql_handle,23, &data, NULL); g->castle[i].ali.kill_count = atoi(data);
+			Sql_GetData(sql_handle,24, &data, NULL); g->castle[i].ali.death_count = atoi(data);
+
+			g->castle[i].changed = false;
+		}
+	}
+
+	for( i = 0; i < RANK_CASTLES; i++ )
+	{
+		if( !g->castle[i].changed )
+			continue;
+
+		g->castle[i].offensive_score = 2000;
+		g->save_flag |= GS_RANKING;
+	}
+	//biali fim damage log
 
 	// load guild member info
 	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT `c`.`account_id`,`m`.`char_id`,`c`.`hair`,`c`.`hair_color`,`c`.`sex`,`c`.`class`,`c`.`base_level`,`m`.`exp`,`c`.`online`,`m`.`position`,`c`.`name`,coalesce(UNIX_TIMESTAMP(`c`.`last_login`),0) "
@@ -1119,6 +1205,17 @@ int mapif_guild_notice(struct guild *g)
 	return 0;
 }
 
+// [Zephyrus] Guild Rank biali damage log
+int mapif_Guild_Save_Score(int guild_id, int index)
+{
+	unsigned char buf[8];
+	WBUFW(buf,0) = 0x3844;
+	WBUFL(buf,2) = guild_id;
+	WBUFW(buf,6) = index;
+	chmapif_sendall(buf,8);
+	return 0;
+}
+
 // Send emblem data
 int mapif_guild_emblem(struct guild *g)
 {
@@ -1228,6 +1325,12 @@ int mapif_parse_CreateGuild(int fd,uint32 account_id,char *name,struct guild_mem
 	g->max_member=16;
 	g->average_lv=master->lv;
 	g->connect_member=1;
+	//biali damage log
+	for( i = 0; i < RANK_CASTLES; i++ )
+	{
+		g->castle[i].offensive_score = 2000;
+		g->castle[i].changed = true;
+	}
 
 	for(i=0;i<MAX_GUILDSKILL;i++)
 		g->skill[i].id=i + GD_SKILLBASE;
@@ -1909,6 +2012,20 @@ int mapif_parse_GuildEmblemVersion(int fd, int guild_id, int version)
 	mapif_guild_emblem_version(g);
 
 	return 1;
+}
+
+//biali damage log
+int mapif_parse_Guild_Save_Score(int fd, int guild_id, int index, struct guild_rank_data *grd)
+{
+	struct guild *g;
+	if( index < 0 || index >= RANK_CASTLES )
+		return 0;
+	if( (g = inter_guild_fromsql(guild_id)) == NULL )
+		return 0;
+	memcpy(&g->castle[index], grd, sizeof(struct guild_rank_data));
+	g->save_flag |= GS_RANKING;
+
+	return mapif_Guild_Save_Score(guild_id, index);
 }
 
 // Communication from the map server

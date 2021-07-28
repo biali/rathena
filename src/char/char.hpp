@@ -184,6 +184,12 @@ struct CharServ_Config {
 	unsigned short default_map_x;
 	unsigned short default_map_y;
 
+	//biali damage log
+	int guild_base_members;
+	int guild_add_members;
+	int bg_regular_rewards[3];
+	int bg_ranked_rewards[3];
+
 	int clan_remove_inactive_days;
 	int mail_return_days;
 	int mail_delete_days;
@@ -263,10 +269,18 @@ DBMap* char_get_chardb(); // uint32 char_id -> struct mmo_charstatus*
 extern int fame_list_size_chemist;
 extern int fame_list_size_smith;
 extern int fame_list_size_taekwon;
+//biali damage log
+extern int fame_list_size_pvprank;
+extern int fame_list_size_bgrank;
+extern int fame_list_size_bg;
 // Char-server-side stored fame lists [DracoRPG]
 extern struct fame_list smith_fame_list[MAX_FAME_LIST];
 extern struct fame_list chemist_fame_list[MAX_FAME_LIST];
 extern struct fame_list taekwon_fame_list[MAX_FAME_LIST];
+//biali damage log
+extern struct fame_list pvprank_fame_list[MAX_FAME_LIST];
+extern struct fame_list bgrank_fame_list[MAX_FAME_LIST];
+extern struct fame_list bg_fame_list[MAX_FAME_LIST];
 
 #define DEFAULT_AUTOSAVE_INTERVAL 300*1000
 #define MAX_CHAR_BUF 150 //Max size (for WFIFOHEAD calls)

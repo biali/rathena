@@ -31,6 +31,7 @@
 #include "map.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp"
 #include "npc.hpp"
 #include "path.hpp"
 #include "pc.hpp"
@@ -1159,6 +1160,14 @@ void initChangeTables(void)
 	StatusIconChangeTable[SC_INCREASE_MAXHP] = EFST_ATKER_ASPD;
 	StatusIconChangeTable[SC_INCREASE_MAXSP] = EFST_ATKER_MOVESPEED;
 
+	//biali blackzone
+	StatusIconChangeTable[SC_IMUNITY] = EFST_IMUNITY;
+	StatusIconChangeTable[SC_IMUNITY_CD] = EFST_IMUNITY_CD;
+	StatusIconChangeTable[SC_KNOCKED] = EFST_KNOCKED;
+
+	//biali mount rework
+	StatusIconChangeTable[SC_MOUNT_CD] = EFST_MOUNT_CD;
+
 	/* Cash Items */
 	StatusIconChangeTable[SC_FOOD_STR_CASH] = EFST_FOOD_STR_CASH;
 	StatusIconChangeTable[SC_FOOD_AGI_CASH] = EFST_FOOD_AGI_CASH;
@@ -2059,6 +2068,51 @@ int status_damage(struct block_list *src,struct block_list *target,int64 dhp, in
 			unit_set_walkdelay(target, gettick(), walkdelay, 0);
 		return (int)(hp+sp);
 	}
+
+	//biali mount rework
+	if(target->type == BL_PC && ((TBL_PC*)target)->sc.data[SC_ALL_RIDING]) {
+
+		struct map_session_data *sd = (TBL_PC*)target;
+
+		// unit_stop_attack(src);
+		// unit_skillcastcancel(src,0);
+		// skill_cleartimerskill(src);
+
+		// unit_stop_walking(target,4);
+		// unit_stop_attack(target);
+		// unit_skillcastcancel(target,0);
+
+		mount_desmount(sd,true);
+
+		return (int)(hp+sp);
+	}
+
+	//Biali final cut : players are knocked down when deadly hit by monsters (last hit)
+	if(src && src->type == BL_MOB && target->type == BL_PC && map_getmapdata(target->m)->rpk.info[RPK_FULLLOOT] ) {
+		struct map_session_data *sd = (TBL_PC*)target;
+		// sd->state.block_action |= PCBLOCK_IMMUNE;
+		
+		// lets kindly ask the mob to stop attacking target
+		unit_stop_attack(src);
+		unit_skillcastcancel(src,0);
+		skill_cleartimerskill(src);
+
+		// then lets knock the player down
+		status->hp = 1;
+		clif_specialeffect(target, EF_ANGEL2, AREA);
+		unit_stop_walking(target,4);
+		unit_stop_attack(target);
+		unit_skillcastcancel(target,0);
+		pc_close_npc(sd,1);
+		clif_cutin(sd, "", 255);
+		pc_setknockedtimer(sd,battle_config.pc_knocked_time);
+		// pc_setsit(sd);
+		// clif_sitting(&sd->bl);
+		sd->state.workinprogress = WIP_DISABLE_ALL;
+		sd->state.block_action |= (PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
+		sc_start(&sd->bl,&sd->bl,SC_KNOCKED,100,1,battle_config.pc_knocked_time);
+		return (int)(hp+sp);
+	} 
 
 	status->hp = 0;
 	/** [Skotlex]
@@ -3083,6 +3137,10 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 	if (md->master_id && battle_config.slaves_inherit_mode)
 		flag |= 32;
 
+	//Biali Blackzone Mobs Level
+	if (md->level != md->db->lv)
+		flag|=64;
+
 	if (!flag) { // No special status required.
 		if (md->base_status) {
 			aFree(md->base_status);
@@ -3123,6 +3181,23 @@ int status_calc_mob_(struct mob_data* md, enum e_status_calc_opt opt)
 		status->int_ += diff;
 		status->dex += diff;
 		status->luk += diff;
+		status->max_hp += diff * status->vit;
+		status->max_sp += diff * status->int_;
+		status->hp = status->max_hp;
+		status->sp = status->max_sp;
+		status->speed -= cap_value(diff, 0, status->speed - 10);
+	}
+
+	//Biali - Blackzone mobs level
+	if (flag&64) { // Increase from mobs 
+		int diff = md->level - md->db->lv;
+
+		status->str += diff * 2;
+		status->agi += diff;
+		status->vit += diff;
+		status->int_ += diff;
+		status->dex += diff;
+		status->luk += diff * 2;
 		status->max_hp += diff * status->vit;
 		status->max_sp += diff * status->int_;
 		status->hp = status->max_hp;
@@ -4707,6 +4782,16 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		}
 	}
 	status_cpy(&sd->battle_status, base_status);
+
+	// biali mounts rework
+	if(opt&SCO_NONE || opt&SCO_FORCE)
+		mount_pc_status(sd); //biali mount rework
+
+	if(opt&SCO_FIRST) {
+		//biali mount rework
+		sd->mount_remount_timer = INVALID_TIMER;
+		sd->status.master_id = pc_get_masterid(sd->status.account_id); // biali master account
+	}
 
 // ----- CLIENT-SIDE REFRESH -----
 	if(!sd->bl.prev) {
@@ -7331,8 +7416,14 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 				val = 25; // Same bonus
 			else if( pc_isridingwug(sd) )
 				val = 15 + 5 * pc_checkskill(sd, RA_WUGRIDER);
-			else if( sc->data[SC_ALL_RIDING] )
-				val = battle_config.rental_mount_speed_boost;
+			//biali mount rework
+			else if( sc->data[SC_ALL_RIDING] ) {
+				struct mount_data *mdb = mount_search(sd->mount);
+				if(mdb == NULL || mdb->id == DEFAULT_MOUNT)
+					val = battle_config.rental_mount_speed_boost;
+				else
+					val = mdb->speed_bonus;
+			}
 		}
 		speed_rate -= val;
 
@@ -12187,23 +12278,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 		case SC_SP_SHA:
 			val2 = 50; // Move speed reduction
 			break;
-		// // Faction System [Biali]
-		// case SC_HIDING:
-		// case SC_CLOAKING:
-		// case SC_CHASEWALK:
-		// case SC_CLOAKINGEXCEED:
-		// case SC__INVISIBILITY:
-		// case SC_CAMOUFLAGE:
-		// 	if( faction_get_id(bl) )
-		// 	{
-		// 		clif_clearunit_area(bl,0);
-		// 		map_foreachinrange(faction_aura_clear, bl, AREA_SIZE, BL_PC, bl);
-		// 		if( sd && battle_config.faction_aura_bl&BL_PC &&
-		// 			((battle_config.faction_aura_settings&1 && map_getmapflag(bl->m,MF_FVF) || battle_config.faction_aura_settings&2) )
-		// 			clif_refresh(sd); 
-		// 	}
-		// 	break;
-
 		default:
 			if( calc_flag == SCB_NONE && StatusSkillChangeTable[type] == -1 && StatusIconChangeTable[type] == EFST_BLANK ) {
 				// Status change with no calc, no icon, and no skill associated...?
@@ -12260,22 +12334,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 				// If the player still has a clan status, but was removed from his clan
 				if( sd && sd->status.clan_id == 0 ){
 					return 0;
-				}
-				break;
-			// Faction System [Biali] TODO : This may be in the wrong place and refresh may not be the best option there
-			case SC_HIDING:
-			case SC_CLOAKING:
-			case SC_CHASEWALK:
-			case SC_CLOAKINGEXCEED:
-			case SC__INVISIBILITY:
-			case SC_CAMOUFLAGE:
-				if( faction_get_id(bl) )
-				{
-					clif_clearunit_area(bl,CLR_OUTSIGHT);
-					map_foreachinrange(faction_aura_clear, bl, AREA_SIZE, BL_PC, bl);
-					if( sd && battle_config.faction_aura_bl&BL_PC &&
-						((battle_config.faction_aura_settings&1 && map_getmapflag(bl->m,MF_FVF)) || battle_config.faction_aura_settings&2) )
-						clif_refresh(sd); 
 				}
 				break;
 		}
@@ -13455,7 +13513,7 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 				struct block_list* src = map_id2bl(sce->val2);
 				if( tid == -1 || !src)
 					break; // Terminated by Damage
-				status_fix_damage(src,bl,400*sce->val1,clif_damage(bl,bl,gettick(),0,0,400*sce->val1,0,DMG_NORMAL,0,false),WL_WHITEIMPRISON);
+				status_fix_damage(src,bl,400*sce->val1,clif_damage(bl,bl,gettick(),0,0,400*sce->val1,0,DMG_NORMAL,0,false),0); // Biali Damage log
 			}
 			break;
 		case SC_WUGDASH:
@@ -13880,16 +13938,6 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 		}
 	}
 
-	//Biali Faction System
-	if( sd && faction_get_id(bl) && (
-		type == SC_HIDING ||
-		type == SC_CLOAKING ||
-		type == SC_CHASEWALK ||
-		type == SC__INVISIBILITY ||
-		type == SC_CAMOUFLAGE ||
-		type == SC_CLOAKINGEXCEED) )
-			clif_sendauras(sd, AREA_WOS); // Refresh Aura
-
 	if (calc_flag) {
 		switch (type) {
 		case SC_MAGICPOWER:
@@ -13907,17 +13955,6 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 
 	if(opt_flag&2 && sd && !sd->state.warping && map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 		npc_touch_area_allnpc(sd,bl->m,bl->x,bl->y); // Trigger on-touch event.
-
-	// // Complete Faction System [Lilith]
-	// if( faction_get_id(bl) && (
-	// 	type == SC_HIDING ||
-	// 	type == SC_CLOAKING ||
-	// 	type == SC_CHASEWALK ||
-	// 	type == SC__INVISIBILITY ||
-	// 	type == SC_CAMOUFLAGE ||
-	// 	type == SC_CLOAKINGEXCEED) 
-	// )
-	// 	faction_show_aura(bl);
 
 	ers_free(sc_data_ers, sce);
 	return 1;
@@ -14077,7 +14114,7 @@ TIMER_FUNC(status_change_timer){
 			int64 damage = 1000 + (3 * status->max_hp) / 100; // Deals fixed (1000 + 3%*MaxHP)
 			map_freeblock_lock();
 			dounlock = true;
-			status_fix_damage(bl, bl, damage, clif_damage(bl, bl, tick, 0, 1, damage, 1, DMG_NORMAL, 0, false),0);
+			status_fix_damage(bl, bl, damage, clif_damage(bl, bl, tick, 0, 1, damage, 1, DMG_NORMAL, 0, false),0);// Biali Damage log
 		}
 		break;
 		
@@ -14145,7 +14182,7 @@ TIMER_FUNC(status_change_timer){
 		if (sce->val4 >= 0) {
 			map_freeblock_lock();
 			dounlock = true;
-			status_fix_damage(bl, bl, 100, clif_damage(bl, bl, tick, status->amotion, status->dmotion + 500, 100, 1, DMG_NORMAL, 0, false),0);
+			status_fix_damage(bl, bl, 100, clif_damage(bl, bl, tick, status->amotion, status->dmotion + 500, 100, 1, DMG_NORMAL, 0, false),0);// Biali Damage log 
 		}
 		break;
 		
@@ -14154,7 +14191,7 @@ TIMER_FUNC(status_change_timer){
 			int64 damage = status->vit * (sce->val1 - 3) + (int)status->max_hp / 100; // {Target VIT x (New Poison Research Skill Level - 3)} + (Target HP/100)
 			map_freeblock_lock();
 			dounlock = true;
-			status_fix_damage(bl, bl, damage, clif_damage(bl, bl, tick, status->amotion, status->dmotion + 500, damage, 1, DMG_NORMAL, 0, false),0);
+			status_fix_damage(bl, bl, damage, clif_damage(bl, bl, tick, status->amotion, status->dmotion + 500, damage, 1, DMG_NORMAL, 0, false),0);// Biali Damage log
 			unit_skillcastcancel(bl, 2);
 		}
 		break;
@@ -14577,7 +14614,7 @@ TIMER_FUNC(status_change_timer){
 			if (damage >= status->hp)
 				damage = status->hp - 1; // Do not kill, just keep you with 1 hp minimum
 			map_freeblock_lock();
-			status_fix_damage(NULL, bl, damage, clif_damage(bl, bl, tick, 0, 0, damage, 0, DMG_NORMAL, 0, false),0);
+			status_fix_damage(NULL, bl, damage, clif_damage(bl, bl, tick, 0, 0, damage, 0, DMG_NORMAL, 0, false),0);// Biali Damage log
 			if (sc->data[type]) {
 				sc_timer_next(1000 + tick);
 			}

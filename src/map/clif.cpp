@@ -46,6 +46,7 @@
 #include "map.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp"
 #include "npc.hpp"
 #include "party.hpp"
 #include "pc.hpp"
@@ -430,59 +431,23 @@ static bool clif_session_isValid(struct map_session_data *sd) {
 	return ( sd != nullptr && session_isActive(sd->fd) );
 }
 
-//Biali faction system (from eamod)
+
+// biali faction system
+void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
+{
+	struct faction_data *fdb = faction_search(sd->status.faction_id);
+	clif_hat_effect_single(&sd->bl,fdb->aura,true); //Area
+}
+
+// biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	// struct aura_data *ad;
-	int i;
-
-	if( sd->status.faction_id <= 0 || pc_ishiding(sd) )
-		return;
-
-	if( battle_config.faction_aura_bl&sd->bl.type ) {
-		struct faction_data *fdb = faction_search(sd->status.faction_id);
-		for( i = 0; i < MAX_AURA_EFF; i++ )
-			if( fdb->aura[i] > 0 )
-				clif_specialeffect_single(&sd->bl,fdb->aura[i],dsd->fd); //clif_specialeffect(bl, fdb->aura[i], AREA);
+	if(sd->mount > 1) { //because 1 is the default one and has no aura or skills
+		struct mount_data *mdb = mount_search(sd->mount);
+		clif_hat_effect_single(&sd->bl,mdb->aura,true); //Area
 	}
-
-	// //send guild emblem too
-	// int fd = dsd->fd;
-	// nullpo_retv(sd);
-	// WFIFOHEAD(fd,32);
-	// WFIFOW(fd,0) = 0x2dd;
-	// WFIFOL(fd,2) = sd->bl.id;
-	// safestrncpy(WFIFOCP(fd,6), sd->status.name, NAME_LENGTH);
-	// WFIFOW(fd,30) = sd->status.faction_id;
-	// WFIFOSET(fd,packet_len(0x2dd));
-
 }
 
-//biali faction system (from eamod)
-void clif_sendauras(struct map_session_data *sd,  enum send_target type)
-{
-	int i;
-	struct faction_data *fdb = NULL;
-
-	if( sd->status.faction_id <= 0 || pc_ishiding(sd) )
-		return;
-
-	if( (fdb = faction_search(sd->status.faction_id)) != NULL )
-		for( i = 0; i < MAX_AURA_EFF; i++ )
-			if( fdb->aura[i] > 0 )
-				clif_specialeffect(&sd->bl,fdb->aura[i],type);
-
-	// // send guild emblem too
-	// unsigned char buf[33];
-	// nullpo_retv(sd);
-
-	// WBUFW(buf, 0) = 0x2dd;
-	// WBUFL(buf,2) = sd->bl.id;
-	// safestrncpy(WBUFCP(buf,6), sd->status.name, NAME_LENGTH); 
-	// WBUFW(buf,30) = sd->status.faction_id;
-	// clif_send(buf,packet_len(0x2dd), &sd->bl, AREA);
-
-}
 
 
 /*==========================================
@@ -1793,12 +1758,6 @@ int clif_spawn( struct block_list *bl, bool walking ){
 			else if(sd->state.size==SZ_MEDIUM)
 				clif_specialeffect(bl,EF_BABYBODY2,AREA);
 			
-			//Biali Faction System (from Eamod)
-			// if( map_getmapflag(sd->bl.m,MF_FVF) 
-			// faction_spawn(sd);
-			// clif_faction_area(sd);
-			// clif_sendauras((TBL_PC*)bl, AREA);
-
 #ifdef BGEXTENDED
 			if((battle_config.bg_eAmod_mode && sd->bg_id && map_getmapflag(sd->bl.m, MF_BATTLEGROUND)) || sd->status.faction_id )
 				clif_sendbgemblem_area(sd);
@@ -2171,6 +2130,7 @@ static TIMER_FUNC(clif_delayquit){
 /*==========================================
  *
  *------------------------------------------*/
+// Biali TODO - This must be changed as it is not working properly
 void clif_quitsave(int fd,struct map_session_data *sd) {
 	if (!battle_config.prevent_logout ||
 		sd->canlog_tick == 0 ||
@@ -3722,16 +3682,81 @@ void clif_updatestatus(struct map_session_data *sd,int type)
 			}
 			break;
 		case SP_HP:
-			if( map_getmapdata(sd->bl.m)->hpmeter_visible )
+		{
+			struct map_data* mapdata = map_getmapdata(sd->bl.id);
+			int fd;
+			int percent_hp = sd->battle_status.hp * 100 / sd->battle_status.max_hp;
+			int HP_num[] = {
+			150,150,150,150,150,
+			149,149,149,149,149,
+			148,148,148,148,148,
+			147,147,147,147,147,
+			146,146,146,146,146,
+			145,145,145,145,145,
+			144,144,144,144,144,
+			143,143,143,143,143,
+			142,142,142,142,142,
+			141,141,141,141,141,
+			140,140,140,140,140,
+			139,139,139,139,139,
+			138,138,138,138,138,
+			137,137,137,137,137,
+			136,136,136,136,136,
+			135,135,135,135,135,
+			134,134,134,134,134,
+			133,133,133,133,133,
+			132,132,132,132,132,
+			131,131,131,131,131 
+			};
+
+			if (sd->lastEffectID > 0) {
+				clif_hat_effect_single2(&sd->bl, sd->lastEffectID, false);
+			}
+			clif_hat_effect_single2(&sd->bl, HP_num[max(0, min(percent_hp, 99))], true);
+			sd->lastEffectID = HP_num[max(0, min(percent_hp, 99))];
+			fd = sd->fd;
+
+			if (map_getmapdata(sd->bl.m)->hpmeter_visible) {
 				clif_hpmeter(sd);
-			if( !battle_config.party_hp_mode && sd->status.party_id )
+			}
+			if( !battle_config.party_hp_mode && sd->status.party_id ){
 				clif_party_hp(sd);
-			if( sd->bg_id )
+			}
+			if( sd->bg_id ){
 				clif_bg_hp(sd);
+			}
 			if( map_getmapflag(sd->bl.m, MF_FVF) && battle_config.fvf_hp_bar ) // Faction System [Biali]
 				faction_hp(sd);
+		}
+		break;
+		case SP_SP:
+		{
+			struct map_data *mapdata = map_getmapdata(sd->bl.id);
+			int percent_sp = sd->battle_status.sp * 100 / sd->battle_status.max_sp;
+			int fd;
+			//sp
+			int SP_num[] = { 193,193,193,193,193,
+			194,194,194,194,194,194,194,194,194,194,194,194,194,194,194,
+			195,195,195,195,195,195,195,195,195,195,
+			196,196,196,196,196,196,196,196,196,196,
+			197,197,197,197,197,197,197,197,197,197,
+			198,198,198,198,198,198,198,198,198,198,
+			199,199,199,199,199,199,199,199,199,199,
+			200,200,200,200,200,200,200,200,200,200,
+			201,201,201,201,201,201,201,201,201,201,
+			202,202,202,202,
+			202,202,202,202,
+			203,203 };
 			
-			break;
+			if (sd->lastEffectID2 > 0) {
+			clif_hat_effect_single2(&sd->bl, sd->lastEffectID2, false);
+			}
+			clif_hat_effect_single2(&sd->bl, SP_num[max(0, min(percent_sp, 99))], true);
+			sd->lastEffectID2 = SP_num[max(0, min(percent_sp,99))];
+			fd = sd->fd;
+			
+		}
+		break;
 	}
 }
 
@@ -4977,21 +5002,25 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				clif_specialeffect_single(bl,EF_GIANTBODY2,sd->fd);
 			else if(tsd->state.size==SZ_MEDIUM)
 				clif_specialeffect_single(bl,EF_BABYBODY2,sd->fd);
-			//Biali faction system (from eamod)
-			// clif_sendaurastoone(sd, tsd);
-			clif_sendaurastoone(tsd, sd);
-			// clif_sendauras(sd,FACTION_AREA_WOS);
-			// clif_sendauras(tsd,FACTION_AREA_WOS);
 
-			clif_name(&sd->bl,bl,FACTION_AREA_WOS);
+			if(tsd->status.faction_id) {
+				clif_sendfactionaurastoone(tsd,sd);
+				clif_name_area(&tsd->bl);
+				clif_guild_emblem_area(&tsd->bl);
+				if(sd->status.faction_id > 0 && sd->status.faction_id != tsd->status.faction_id)
+					clif_sendrpkswords_single(sd->fd, tsd);
+			}
 
-				// if(sd->status.faction_id) { 
-		clif_sendbgemblem_single(tsd->fd,sd);
-		clif_sendbgemblem_single(sd->fd,tsd);
-		clif_guild_emblem_area(&tsd->bl);
-		clif_guild_emblem_area(&sd->bl);
+			// biali trying to show the crossed swords on top of enemy heads
+			if(map_getmapflag(tsd->bl.m,MF_RPK)) {
+				clif_sendrpkswords_single(tsd->fd, sd);
+				clif_sendrpkswords_single(sd->fd, tsd);
+			}
 
-	// }
+			// biali Mount rework
+			if(tsd->sc.data[SC_ALL_RIDING])
+				clif_sendaurastoone(tsd, sd);
+
 
 
 #ifdef BGEXTENDED
@@ -5036,7 +5065,7 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				int i;
 				for(i = 0; i < DAMAGELOG_SIZE; i++)// must show hp bar to all char who already hit the mob.
 					if( md->dmglog[i].id == sd->status.char_id )
-						clif_monster_hp_bar(md, sd->fd);
+						clif_monster_hp_bar(md, sd);
 			}
 #endif
 		}
@@ -6804,6 +6833,7 @@ void clif_map_property(struct block_list *bl, enum map_property property, enum s
 
 	WBUFL(buf,4) = ((mapdata->flag[MF_FVF] || mapdata->flag[MF_RPK] || mapdata->flag[MF_PVP]?1:0 || (bl->type == BL_PC && ((TBL_PC *)bl)->duel_group > 0))<<0)| // PARTY - Show attack cursor on non-party members (PvP)
 		((mapdata->flag[MF_BATTLEGROUND] || mapdata_flag_gvg2(mapdata)?1:0)<<1)|// GUILD - Show attack cursor on non-guild members (GvG)
+		((mapdata->flag[MF_RPK] || mapdata_flag_gvg2(mapdata)?1:0)<<1)| // Biali blackzone - Show attack cursor on non-guild members
 		((mapdata->flag[MF_BATTLEGROUND] || mapdata_flag_gvg2(mapdata)?1:0)<<2)|// SIEGE - Show emblem over characters heads when in GvG (WoE castle)
 		((mapdata->flag[MF_NOMINEEFFECT] || !mapdata_flag_gvg2(mapdata)?0:1)<<3)| // USE_SIMPLE_EFFECT - Automatically enable /mineffect
 		((mapdata->flag[MF_NOLOCKON] || mapdata_flag_vs(mapdata)?1:0)<<4)| // DISABLE_LOCKON - Only allow attacks on other players with shift key or /ns active
@@ -9998,10 +10028,7 @@ void clif_refresh(struct map_session_data *sd)
 		clif_spiritcharm_single(sd->fd, sd);
 	if (sd->soulball)
 		clif_soulball( sd, &sd->bl, SELF );
-	struct faction_data *fdb;
-	if( battle_config.fvf_change_ccolor && (fdb = faction_search(sd->status.faction_id)) != NULL )
-		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,(map_getmapflag(sd->bl.m, MF_FVF) || battle_config.fvf_change_ccolor == 2) ? fdb->ccolor : sd->vd.cloth_color,SELF);
-	else if (sd->vd.cloth_color)
+	if (sd->vd.cloth_color)
 		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,sd->vd.cloth_color,SELF);
 	if (sd->vd.body_style)
 		clif_refreshlook(&sd->bl,sd->bl.id,LOOK_BODY2,sd->vd.body_style,SELF);
@@ -10039,8 +10066,11 @@ void clif_refresh(struct map_session_data *sd)
 	if (sd->state.buyingstore)
 		buyingstore_close(sd);
 
-	//biali Faction System (from eamod)
-	clif_sendaurastoone(sd,sd);
+
+	// biali Mount rework
+	if(sd->sc.data[SC_ALL_RIDING]) {
+		clif_sendaurastoone(sd, sd);
+	}
 
 	mail_clear(sd);
 
@@ -10153,9 +10183,6 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			packet.title_id = sd->status.title_id; // Title ID
 #endif
 
-			// if( sd->status.faction_id ) // Faction System [Biali]
-			// 	clif_send(&packet, sizeof(packet), &sd->bl, AREA_FVF);
-			// else
 				clif_send(&packet, sizeof(packet), src, target);
 		}
 			break;
@@ -10759,6 +10786,8 @@ static bool clif_process_message(struct map_session_data* sd, bool whisperFormat
 	return true;
 }
 
+
+// BIALI TODO : CHECK THIS OUT clif_showscript
 /**
  * Displays a message if the player enters a PK Zone (during pk_mode)
  * @param sd: Player data
@@ -10987,13 +11016,6 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	clif_updatestatus(sd,SP_WEIGHT);
 	clif_updatestatus(sd,SP_MAXWEIGHT);
 
-
-	// biali faction system
-	// faction_getareachar_unit(sd, &sd->bl);
-	faction_spawn(sd);
-	clif_faction_area(sd);
-	clif_sendauras(sd, AREA);
-
 	// guild
 	// (needs to go before clif_spawn() to show guild emblems correctly)
 #ifdef BGEXTENDED
@@ -11010,15 +11032,16 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	if(battle_config.pc_invincible_time > 0) {
 		if(mapdata_flag_gvg(mapdata))
 			pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
-		else {
-			//biali blackzone
-			if(!mapdata->flag[MF_RPK] || (mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER)) {
-				pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-				if(mapdata->flag[MF_RPK])
-					pc_setinvincibletimerreset(sd,battle_config.pc_invincible_time_reset);
-			}
-		}
+		else if(mapdata->flag[MF_RPK] && sd->invincible_timer_reset == INVALID_TIMER && sd->state.pmap != sd->bl.m) { //Biali blackzone
+			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+			pc_setinvincibletimerreset(sd,battle_config.pc_invincible_time_reset);
+		} else if(!mapdata->flag[MF_RPK])
+			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
 	}
+
+	//Biali blackzone... just to be on the safeside:
+	if(sd->state.knocked > INVALID_TIMER)
+		pc_delknockedtimer(sd);
 
 	if( mapdata->users++ == 0 && battle_config.dynamic_mobs )
 		map_spawnmobs(sd->bl.m);
@@ -11271,6 +11294,10 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				clif_bg_updatescore_single(sd);
 #endif
 
+		// biali faction system
+		// faction_getareachar_unit(sd, &sd->bl);
+		faction_spawn(sd);
+
 		if( mapdata->flag[MF_ALLOWKS] && !mapdata_flag_ks(mapdata) )
 		{
 			char output[128];
@@ -11301,7 +11328,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 
 		// Biali
 		// Important announcements
-		// Faction and Full loot syste
+		// Faction and Full loot system
 
 		//Faction System 
 		if(sd->state.pmap != sd->bl.m) {
@@ -11314,7 +11341,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				if(!map_getmapflag(sd->bl.m,MF_FVF) && (mapdata->faction_id > 0 && sd->status.faction_id != mapdata->faction_id)) {
 					//Remove faction flag when moving into a pvp, battleground or gvg or non-FvF map
 					faction_leave(sd);
-					sprintf(output,"You have entered an area of the Peace Pact.\nCity representations are not allowed here");
+					sprintf(output,"You have entered an area of the Peace Pact. City representations are not allowed here");
 					clif_broadcast2(&sd->bl, output, (int)strlen(output)+1, strtol("0x00ffff", (char **)NULL, 0), FW_BOLD, 14, 0, 0, SELF);
 				} else if((fdb = faction_search(mapdata->faction_id)) != NULL) {
 					// Announce Faction Sanctuaries	
@@ -11335,7 +11362,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 				clif_broadcast2(&sd->bl, output, (int)strlen(output)+1, strtol("0x00ffff", (char **)NULL, 0), FW_BOLD, 14, 0, 0, SELF);
 				
 				if(mapdata->rpk.info[RPK_MAP_TIER]) {
-					sprintf(output,"%s is a PK Map Tier %d",mapdata->name, mapdata->rpk.info[RPK_MAP_TIER] );
+					sprintf(output,"This is a PK Map Tier %d %s", mapdata->rpk.info[RPK_MAP_TIER], mapdata->rpk.info[RPK_MAP_TIER]? "(Full loot)" : "" );
 					clif_displaymessage(fd, output);
 				}
 			}
@@ -18445,6 +18472,20 @@ void clif_faction_single(int fd, struct map_session_data *sd)
 	WFIFOSET(fd,packet_len(0x2dd));
 }
 
+void clif_sendrpkswords_single(int fd, struct map_session_data *sd)
+{
+	nullpo_retv(sd);
+	WFIFOHEAD(fd,32);
+	WFIFOW(fd,0) = 0x2dd;
+	WFIFOL(fd,2) = sd->bl.id;
+	safestrncpy(WFIFOCP(fd,6), sd->status.name, NAME_LENGTH);
+	WFIFOW(fd,30) = sd->status.char_id;
+	WFIFOSET(fd,packet_len(0x2dd));
+}
+
+
+
+// BIALI TODO : Check this out to rework/simplify the faction flags
 
 /// Battlegrounds
 ///
@@ -18576,29 +18617,6 @@ void clif_bg_emblem(struct map_session_data *sd, struct guild *g)
 	WFIFOSET(fd,WFIFOW(fd,2));
 }
 
-
-
-// void clif_faction_emblem(struct map_session_data *sd, struct faction_data *fdb)
-// {
-// 	int fd;
-
-// 	nullpo_retv(sd);
-// 	nullpo_retv(fdb);
-
-// 	if( fdb->emblem_len <= 0 )
-// 		return;
-
-// 	fd = sd->fd;
-// 	WFIFOHEAD(fd,fdb->emblem_len+12);
-// 	WFIFOW(fd,0)=0x152;
-// 	WFIFOW(fd,2)=fdb->emblem_len+12;
-// 	WFIFOL(fd,4)=fdb->id;
-// 	WFIFOL(fd,8)=fdb->emblem_id;
-// 	memcpy(WFIFOP(fd,12),fdb->emblem_data,fdb->emblem_len);
-// 	WFIFOSET(fd,WFIFOW(fd,2));
-
-// 	return;
-// }
 
 void clif_bg_leave(struct map_session_data *sd, const char *name, const char *mes)
 {
@@ -20109,17 +20127,89 @@ void clif_snap( struct block_list *bl, short x, short y ) {
 		clif_send(buf,packet_len(0x8d2),bl, AREA);
 }
 
-/// 0977 <id>.L <HP>.L <maxHP>.L (ZC_HP_INFO).
-void clif_monster_hp_bar( struct mob_data* md, int fd ) {
+#define status_has_mode(status,md) (((status)->mode&(md)) == (md))
+void clif_monster_hp_bar(struct mob_data* md, struct map_session_data *sd)
+{
+	
+	int percent_hp = md->status.hp * 100 / md->status.max_hp;
+	int fd;
+    bool is_mvp = status_has_mode(&md->db->status, MD_MVP);
+    bool is_boss = (md->status.class_ == CLASS_BOSS);
+	//mob
+	int mob_num[] = { 
+	171,171,171,
+	170,170,170,170,170,170,170,
+	169,169,169,169,169,
+	168,168,168,168,168,
+	167,167,167,167,167,
+	166,166,166,166,166,
+	165,165,165,165,165,
+	164,164,164,164,164,
+	163,163,163,163,163,
+	162,162,162,162,162,
+	161,161,161,161,161,
+	160,160,160,160,160,
+	159,159,159,159,159,
+	158,158,158,158,158,
+	157,157,157,157,157,
+	156,156,156,156,156,
+	155,155,155,155,155,
+	154,154,154,154,154,
+	153,153,153,153,153,
+	152,152,152,152,
+	151 };
+	
+	//mvp
+	int mvp_num[] = { 
+	192,192,192,
+	191,191,191,
+	190,190,190,190,
+	189,189,189,189,189,
+	188,188,188,188,188,
+	187,187,187,187,187,
+	186,186,186,186,186,
+	185,185,185,185,185,
+	184,184,184,184,184,
+	183,183,183,183,183,
+	182,182,182,182,182,
+	181,181,181,181,181,
+	180,180,180,180,180,
+	179,179,179,179,179,
+	178,178,178,178,178,
+	177,177,177,177,177,
+	176,176,176,176,176,
+	175,175,175,175,175,
+	174,174,174,174,174,
+	173,173,173,173,173,
+	173,173,
+	172,172,172 };
+
+	if (md->lastEffectID > 0){
+		clif_hat_effect_single(&md->bl, md->lastEffectID, false);
+	}
+
+	if (is_mvp || is_boss) {
+
+		clif_hat_effect_single(&md->bl, mvp_num[max(0, min(percent_hp, 99))], true);
+		md->lastEffectID = mvp_num[max(0, min(percent_hp, 99))];
+
+	}
+	else {
+
+		clif_hat_effect_single(&md->bl, mob_num[max(0, min(percent_hp, 99))], true);
+		md->lastEffectID = mob_num[max(0, min(percent_hp, 99))];
+	}
+	fd = sd->fd;
+
 #if PACKETVER >= 20120404
-	WFIFOHEAD(fd,packet_len(0x977));
+	//WFIFOHEAD(fd,packet_len(0x977));
 
-	WFIFOW(fd,0)  = 0x977;
-	WFIFOL(fd,2)  = md->bl.id;
-	WFIFOL(fd,6)  = md->status.hp;
-	WFIFOL(fd,10) = md->status.max_hp;
+	//WFIFOW(fd,0)  = 0x977;
+	//WFIFOL(fd,2)  = md->bl.id;
+	//WFIFOL(fd,6)  = md->status.hp;
+	//WFIFOL(fd,10) = md->status.max_hp;
 
-	WFIFOSET(fd,packet_len(0x977));
+	//WFIFOSET(fd,packet_len(0x977));
 #endif
 }
 
@@ -21552,19 +21642,35 @@ void clif_hat_effects( struct map_session_data* sd, struct block_list* bl, enum 
 #endif
 }
 
-void clif_hat_effect_single( struct map_session_data* sd, uint16 effectId, bool enable ){
+void clif_hat_effect_single(struct block_list* bl, uint16 effectId, bool enable) {
 #if PACKETVER_MAIN_NUM >= 20150507 || PACKETVER_RE_NUM >= 20150429 || defined(PACKETVER_ZERO)
-	nullpo_retv( sd );
+	nullpo_retv( bl );
 
 	struct PACKET_ZC_HAT_EFFECT* p = (struct PACKET_ZC_HAT_EFFECT*)packet_buffer;
 
 	p->packetType = HEADER_ZC_HAT_EFFECT;
 	p->packetLength = (int16)( sizeof( struct PACKET_ZC_HAT_EFFECT ) + sizeof( int16 ) );
-	p->aid = sd->bl.id;
+	p->aid = bl->id;
 	p->status = enable;
 	p->effects[0] = effectId;
 
-	clif_send( p, p->packetLength, &sd->bl, AREA );
+	clif_send( p, p->packetLength, bl, AREA );
+#endif
+}
+
+void clif_hat_effect_single2(struct block_list* bl, uint16 effectId, bool enable) {
+#if PACKETVER_MAIN_NUM >= 20150507 || PACKETVER_RE_NUM >= 20150429 || defined(PACKETVER_ZERO)
+	nullpo_retv( bl );
+
+	struct PACKET_ZC_HAT_EFFECT* p = (struct PACKET_ZC_HAT_EFFECT*)packet_buffer;
+
+	p->packetType = HEADER_ZC_HAT_EFFECT;
+	p->packetLength = (int16)( sizeof( struct PACKET_ZC_HAT_EFFECT ) + sizeof( int16 ) );
+	p->aid = bl->id;
+	p->status = enable;
+	p->effects[0] = effectId;
+
+	clif_send( p, p->packetLength, bl, SELF );
 #endif
 }
 

@@ -102,19 +102,20 @@ OnPCKillEvent:	//-- Adding Stats
 OnClock0000:
 	if(gettime(DT_DAYOFWEEK) == MONDAY) {
 		//Find the Winners
-		query_sql("SELECT `char_pvp`.char_id, `char_pvp`.`score`, `char`.name, `char_pvp`.`kill_count`, `char_pvp`.`death_count` FROM `char_pvp` INNER JOIN `char` ON `char`.char_id = `char_pvp`.`char_id` ORDER BY `char_pvp`.`score` DESC LIMIT 5",.@cid, .@score, .@name$, .@k, .@d);
-		//Distribute their prizes
-		for(.@i = 0; .@i< getarraysize(.@cid); .@i++)
-			mail .@cid[.@i], "Arena Master", "PvP Ranking", "Congratulations! You have placed #"+(.@i+1)+" in the PvP Ranking this Week.", .PVP_Zeny[.@i], getd(".Pitem"+.@i), getd(".Pqnt"+.@i);
-		//Announce the beginning of a new sasonal round of PvP Pit Fights
-		announce "[PVP Ranking]: Rewards have been mailed to the top "+getarraysize(.PVP_Items$)+" in the PvP Arenas!",bc_blue|bc_all;
-		// Save the winner's numbers from this week's round for the season's rank
-		query_sql("INSERT into `season_pvp_rank` VALUES ( "+.@cid[0]+","+.@score[0]+","+.@k[0]+","+.@d[0]+","+$SEASON_WEEK+","+ $SEASON_CURRENT+")");
-		// resets the pvp struct of all players online
-		rankreset(2);
-		//Remove old records and start a new Round
-		query_sql("DELETE FROM `char_pvp` WHERE 1=1");
-		end;
+		.@count = query_sql("SELECT `char_pvp`.char_id, `char_pvp`.`score`, `char`.name, `char_pvp`.`kill_count`, `char_pvp`.`death_count` FROM `char_pvp` INNER JOIN `char` ON `char`.char_id = `char_pvp`.`char_id` ORDER BY `char_pvp`.`score` DESC LIMIT 5",.@cid, .@score, .@name$, .@k, .@d);
+		if(.@count > 0) {
+			//Distribute their prizes
+			for(.@i = 0; .@i< getarraysize(.@cid); .@i++)
+				mail .@cid[.@i], "Arena Master", "PvP Ranking", "Congratulations! You have placed #"+(.@i+1)+" in the PvP Ranking this Week.", .PVP_Zeny[.@i], getd(".Pitem"+.@i), getd(".Pqnt"+.@i);
+			//Announce the beginning of a new sasonal round of PvP Pit Fights
+			announce "[PVP Ranking]: Rewards have been mailed to the top "+getarraysize(.PVP_Items$)+" in the PvP Arenas!",bc_blue|bc_all;
+			// Save the winner's numbers from this week's round for the season's rank
+			query_sql("INSERT into `season_pvp_rank` VALUES ( "+.@cid[0]+","+.@score[0]+","+.@k[0]+","+.@d[0]+","+$SEASON_WEEK+","+ $SEASON_CURRENT+")");
+			// resets the pvp struct of all players online
+			rankreset(2);
+			//Remove old records and start a new Round
+			query_sql("DELETE FROM `char_pvp` WHERE 1=1");
+		}
 	}
 	end;
 

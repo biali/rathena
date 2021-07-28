@@ -234,6 +234,22 @@ struct Battle_Config
 	int woe_log;// Biali black zone
 	int break_chance;// Biali RPK fullloot equips break chance
 	int remove_deadbody_timer; // time in ticks to automatically unload a deadbody npc
+	int random_options_staff; //Biali blackzone random word drops
+	int random_options_ranged;
+	int random_options_sword;
+	int random_options_dagger;
+	int random_options_katar;
+	int random_options_head;	
+	int random_options_shield;
+	int random_options_armor;
+	int random_options_shoes;
+	int random_options_garment;
+	int random_options_accessory; //Biali blackzone random word drops
+	int random_options_1stslot_chance;
+	int random_options_2ndslot_chance;
+	int random_options_3rdslot_chance;
+	int random_options_4thslot_chance;
+	int random_drop_chances;
 
 	int pet_catch_rate;
 	int pet_rename;
@@ -538,6 +554,8 @@ struct Battle_Config
 	int fvf_hp_bar;
 	int fvf_min_lvl;
 	int fvf_visual_size;
+	int fvf_exp_increase;
+	int fvf_drop_increase;
 	int fvf_short_damage_rate;
 	int fvf_long_damage_rate;
 	int fvf_weapon_damage_rate;
@@ -550,14 +568,14 @@ struct Battle_Config
 	int faction_party_settings;
 	int faction_guild_settings;
 	int faction_size_bl;
-	int faction_aura_bl;
-	int faction_aura_settings;
 	int faction_trade_settings;
-	int faction_ally_info_bl;
 	int faction_npc_settings;
 	int fvf_in_all_maps;
 	int faction_disc_min;
 	int faction_disc_max;
+
+	// biali monster of the day
+	int motd_exp_increase;
 
 	// Global Damage adjustment. [Cydh]
 	int atk_adjustment_map;
@@ -567,6 +585,7 @@ struct Battle_Config
 	int atk_weapon_damage_rate;
 	int atk_magic_damage_rate;
 	int atk_misc_damage_rate;
+	int atk_hit_damage_rate;
 
 	// rAthena
 	int max_third_parameter;
@@ -752,6 +771,8 @@ struct Battle_Config
  	int bg_eAmod_mode;
  	int bg_reserved_char_id;
  	int woe_reserved_char_id;
+	int fvf_reserved_char_id; //biali
+	int rpk_reserved_char_id;
  	int bg_can_trade;
  	int bg_double_login;
 #endif
@@ -762,11 +783,13 @@ struct Battle_Config
  	int pvp_reserved_char_id;
 	int reserved_costume_id;
 	// biali reputation system
+	int reputation_min;
 	int reputation_hated;
 	int reputation_unfriendly;
 	int reputation_neutral;
 	int reputation_friendly;
 	int reputation_honored;
+	int reputation_max;
 	
 
 #include "../custom/battle_config_struct.inc"

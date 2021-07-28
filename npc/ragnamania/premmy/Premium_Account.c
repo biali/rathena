@@ -14,13 +14,13 @@ prontera,159,286,5	script	Lilian#PremmyCentral	4_F_KAFRA1,{
 		mes "How are you doing? It is so good to see you!";
 		next;
 		mes "^FF7F00[ Lilian ]^000000";
-		mes "You are here for your 5 days free Premmy, right?";
+		mes "You are here for your 3 days free Premmy, right?";
 		mes "Let me sort that out for you...";
 		next;
 		completequest 64505;
 		vip_time $@Periodo;
 		#FREE_PREMMY = gettimetick(2);
-		dispbottom "^00AAAA[Premmy Central]^000000 : 5 days of Premmy Activated.";
+		dispbottom "^00AAAA[Premmy Central]^000000 : 3 days of Premmy Activated.";
 		logmes "[Premmy Central] : Free Premmy Activated.";
 		mes "^FF7F00[ Lilian ]^000000";	
 		mes "All done! Thank you!";
@@ -30,16 +30,9 @@ prontera,159,286,5	script	Lilian#PremmyCentral	4_F_KAFRA1,{
 	end;
 
  OnInit:
- 	set $@Periodo, 60 * 24 * 5; //	5 dias em minutos
-	set $@EndTime, 60 * 60 * 24 * 5; // 5 dias em segundos 
-// 	.npc$ = "^FF7F00[ Premmy Central ]^000000";						// Name of NPC;
-// 	.bcor$ = "^008aff[*]^000000 ";									// Option Button Symbol;
-// 	.rcor$ = "^ff0000[*]^000000 ";									// Cancel button symbol;
-// 	setarray .vip_day,30;										// Number of days that can be purchased;
-// 	setarray .vip_cashpoint,20000;						// Price in #CASHPOINTS;
-// 	.map$ = "sala_premmy";												// Premmy Room Map;
-// 	setarray .cord,35,36;											// X and Y Coordinate;
-// 	end;
+ 	set $@Periodo, 60 * 24 * 3; //	3 dias em minutos
+	set $@EndTime, 60 * 60 * 24 * 3; // 3 dias em segundos 
+	end;
 }
 
 
@@ -76,7 +69,7 @@ function	script	F_Premmy	{
 			mes "You chose the plan of:";
 			mes "^4527A0Premmy:^000000 "+.vip_day[.@i]+" Premmy days.";
 			mes "^4527A0Cost:^000000 "+F_InsertComma(.vip_cashpoint[.@i])+" Manias, or";
-			mes "^4527A0Cost:^000000 "+.vip_hunting[.@i]+"x " + getitemname(675)+"s.";
+			mes "^4527A0Cost:^000000 "+.vip_hunting[.@i]+"x " + getitemname($@HUNTING_MEDAL)+"s.";
 			sleep2 1000;
 			mes "What do you want to do?";
 			next;
@@ -101,13 +94,13 @@ function	script	F_Premmy	{
 				}
 				end;
 				case 2:
-					if ( countitem(675) < .vip_hunting[.@i] ) {
+					if ( countitem($@HUNTING_MEDAL) < .vip_hunting[.@i] ) {
 						mes .npc$;
-						mes "You do not have enough ^008aff"+getitemname(675)+"s^000000.";
+						mes "You do not have enough ^008aff"+getitemname($@HUNTING_MEDAL)+"s^000000.";
 						close;
 					}
 					else {
-						delitem 675, .vip_hunting[.@i];
+						delitem $@HUNTING_MEDAL, .vip_hunting[.@i];
 						vip_time (.vip_day[.@i] * 1440);
 						mes .npc$;
 						mes "Congratulations you just got "+.vip_day[.@i]+" days as Premmy.";

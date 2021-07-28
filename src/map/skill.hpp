@@ -2103,8 +2103,6 @@ enum e_skill {
 	EL_ROCK_CRUSHER,
 	EL_ROCK_CRUSHER_ATK,
 	EL_STONE_RAIN,
-
-	FACTION_AURA = 10020, // Faction System [Biali],
 };
 
 /// The client view ids for land skills.

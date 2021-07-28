@@ -54,6 +54,7 @@
 #include "mapreg.hpp"
 #include "mercenary.hpp"
 #include "mob.hpp"
+#include "mount.hpp" //biali mount rework
 #include "npc.hpp"
 #include "party.hpp"
 #include "path.hpp"
@@ -5593,7 +5594,7 @@ BUILDIN_FUNC(warp)
 	else
 		ret = pc_setpos(sd,mapindex_name2id(str),x,y,CLR_OUTSIGHT);
 
-	if( ret ) {
+	if( ret && !sd->status.faction_id) { //biali workaround to avoid spamming errors in the console
 		ShowError("buildin_warp: moving player '%s' to \"%s\",%d,%d failed.\n", sd->status.name, str, x, y);
 		return SCRIPT_CMD_FAILURE;
 	}
@@ -6936,6 +6937,7 @@ static int script_countitem_sub(struct item *items, struct item_data *id, int si
 	nullpo_retr(-1, st);
 
 	int count = 0;
+	int char_id = 0; //Biali Ancient Woe
 
 	if (!expanded) { // For non-expanded functions
 		t_itemid nameid = id->nameid;
@@ -6991,6 +6993,23 @@ static int script_countitem_sub(struct item *items, struct item_data *id, int si
 						break;
 				}
 				if (j != MAX_ITEM_RDM_OPT)
+					continue;
+			}
+			// biali bg, woe, pvp, ancient, rpk, fvf reserved items
+			if( items[i].card[0] == CARD0_CREATE )
+			{
+				char_id = MakeDWord(items[i].card[2],items[i].card[3]);
+				if( battle_config.bg_reserved_char_id && char_id == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m,MF_BATTLEGROUND) )
+					continue;
+				if( battle_config.pvp_reserved_char_id && char_id == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m,MF_PVP) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m,MF_ANCIENT) )
+					continue;
+				if( battle_config.woe_reserved_char_id && char_id == battle_config.woe_reserved_char_id && !map_getmapflag(sd->bl.m,MF_GVG) && !map_getmapflag(sd->bl.m,MF_GVG_DUNGEON) && !map_getmapflag(sd->bl.m,MF_GVG_CASTLE) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m,MF_RPK) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m,MF_FVF) )
 					continue;
 			}
 
@@ -8168,6 +8187,22 @@ static bool buildin_delitem_search(struct map_session_data* sd, struct item* it,
 						continue;
 				}
 			}
+			else if( itm->card[0] == CARD0_CREATE ) //Biali
+			{
+				int char_id = MakeDWord(items[i].card[2],items[i].card[3]);
+				if( battle_config.bg_reserved_char_id && char_id == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m,MF_BATTLEGROUND) )
+					continue;
+				if( battle_config.pvp_reserved_char_id && char_id == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m,MF_PVP) )
+					continue;
+				if( battle_config.ancient_reserved_char_id && char_id == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m,MF_ANCIENT) )
+					continue;
+				if( battle_config.woe_reserved_char_id && char_id == battle_config.woe_reserved_char_id && !map_getmapflag(sd->bl.m,MF_GVG) && !map_getmapflag(sd->bl.m,MF_GVG_DUNGEON) && !map_getmapflag(sd->bl.m,MF_GVG_CASTLE) )
+					continue;
+				if( battle_config.rpk_reserved_char_id && char_id == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m,MF_RPK) )
+					continue;
+				if( battle_config.fvf_reserved_char_id && char_id == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m,MF_FVF) )
+					continue;
+			}
 			else
 			{
 				if( itemdb_type(itm->nameid) == IT_PETEGG )
@@ -8526,6 +8561,7 @@ BUILDIN_FUNC(getcharid)
 	case 4: script_pushint(st,sd->bg_id); break;
 	case 5: script_pushint(st,sd->status.clan_id); break;
 	case 6: script_pushint(st,sd->status.faction_id); break;
+	case 7: script_pushint(st,sd->status.master_id); break;
 	default:
 		ShowError("buildin_getcharid: invalid parameter (%d).\n", num);
 		script_pushint(st,0);
@@ -11582,6 +11618,59 @@ BUILDIN_FUNC(getunits)
 }
 
 
+// biali
+//checknearnpc "mapname",range
+//returns true (1) if passed and 0 or -1 if it has found an npc in range
+BUILDIN_FUNC(checknonearnpc)
+{
+	struct block_list *bl = NULL;
+	struct map_session_data *sd = NULL;
+	const char *str;
+	int16 m = -1;
+	int range;
+
+
+	str = script_getstr(st, 2);
+	if ((m = map_mapname2mapid(str)) < 0) {
+		script_pushint(st, -1);
+		st->state = END;
+		ShowWarning("buildin_checknonearnpc: Unknown map '%s'.\n", str);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if(script_hasdata(st,3))
+		range = script_getnum(st,3);
+	else {
+		script_pushint(st,-1);
+		ShowError("builtin_checknonearnpc : No Range provided \m");
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	script_rid2sd(sd);
+
+
+	struct s_mapiterator *iter = mapit_alloc(MAPIT_NORMAL, bl_type(BL_NPC));
+	for (bl = (struct block_list*)mapit_first(iter); mapit_exists(iter); bl = (struct block_list*)mapit_next(iter))
+	{
+		if (m == bl->m && bl->x > 1 && bl->y > 1)
+		{
+			if(check_distance_bl(&sd->bl, bl, range)) {
+				mapit_free(iter);
+				script_pushint(st, 0);
+				return SCRIPT_CMD_SUCCESS;
+			}
+		}
+	}
+
+	mapit_free(iter);
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
+
+
 //Biali Clear Units (mobs) from a Map
 //clearunits("map name")
 //it does not remove mobs randomily spawned! only script mobs
@@ -12976,9 +13065,9 @@ BUILDIN_FUNC(setmapflag)
 			args.nightmaredrop.drop_type = NMDT_EQUIP;
 			break;
 		case MF_ATK_RATE:
-			if (script_hasdata(st, 4) && script_hasdata(st, 5))
-				args.atk_rate.rate[script_getnum(st, 5)] = script_getnum(st, 4);
-			else {
+			if (script_hasdata(st, 4) && script_hasdata(st, 5)) {
+				args.atk_rate.rate[script_getnum(st, 4)] = script_getnum(st, 5);
+			} else {
 				ShowWarning("buildin_setmapflag: Unable to set atk_rate mapflag as flag data is missing.\n");
 				return SCRIPT_CMD_FAILURE;
 			}
@@ -13182,7 +13271,8 @@ static int buildin_maprespawnguildid_sub_pc(struct map_session_data* sd, va_list
 	if(
 		(sd->status.guild_id == g_id && flag&1) || //Warp out owners
 		(sd->status.guild_id != g_id && flag&2) || //Warp out outsiders
-		(sd->status.guild_id == 0 && flag&2)	// Warp out players not in guild
+		(sd->status.guild_id == 0 && flag&2) ||	// Warp out players not in guild
+		(map_getmapflag(sd->bl.m,MF_ANCIENT) && !pc_class2ancientwoe(sd->status.class_)) // Not ancient woe users
 	)
 		pc_setpos(sd,sd->status.save_point.map,sd->status.save_point.x,sd->status.save_point.y,CLR_TELEPORT);
 	return 1;
@@ -19884,6 +19974,66 @@ BUILDIN_FUNC(readbook)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+//Biali
+BUILDIN_FUNC(flooritem2area)
+{
+	struct item_data *item_data;
+	struct item item_tmp;
+	int nameid, amount;
+	struct map_session_data *sd;
+
+	if (script_rid2sd(sd) == NULL)
+		return SCRIPT_CMD_SUCCESS;
+
+	nameid = script_getnum(st,2);
+	if( (item_data = itemdb_search(nameid)) == NULL )
+		return 0;
+
+	amount = script_getnum(st,3);
+	if( amount < 1 )
+		return 0;
+
+	memset(&item_tmp,0,sizeof(item_tmp));
+	item_tmp.nameid = nameid;
+	item_tmp.identify = 1;
+	item_tmp.amount = 1;
+
+	map_addflooritem(&item_tmp,amount,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0,0,0);
+	return 0;
+}
+
+// Biali Ancient WoE
+BUILDIN_FUNC(class2ancientwoe)
+{
+	struct map_session_data* sd;
+
+	if(!script_charid2sd(5, sd))
+		return SCRIPT_CMD_SUCCESS;
+
+	if( sd && pc_class2ancientwoe(sd->status.class_) && !sd->md )
+		script_pushint(st,1); // Cannot Access Ancient WoE with Mercenaries
+	else
+		script_pushint(st,0);
+
+	return 0;
+}
+
+//biali monster of the day
+BUILDIN_FUNC(monsteroftheday)
+{
+	int id;
+	TBL_PC* sd;
+
+	id = script_getnum(st,2);
+
+	if (mobdb_checkid(id)) {
+		mob_data::mob_of_the_day = id;
+		script_pushint(st,id);
+	} else
+		script_pushint(st,0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /******************
 Questlog script commands
 *******************/
@@ -22182,24 +22332,73 @@ BUILDIN_FUNC(ismounting) {
  **/
 BUILDIN_FUNC(setmounting) {
 	TBL_PC* sd;
+	struct mount_data *mdb = NULL;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
 	
-	if (!script_charid2sd(2,sd))
-		return SCRIPT_CMD_FAILURE;
+	// if (!script_charid2sd(2,sd))
+	// 	return SCRIPT_CMD_FAILURE;
+
 	if( sd->sc.option&(OPTION_WUGRIDER|OPTION_RIDING|OPTION_DRAGON|OPTION_MADOGEAR) ) {
 		clif_msg(sd, NEED_REINS_OF_MOUNT);
 		script_pushint(st,0); //can't mount with one of these
 	} else if (sd->sc.data[SC_CLOAKING] || sd->sc.data[SC_CHASEWALK] || sd->sc.data[SC_CLOAKINGEXCEED] || sd->sc.data[SC_CAMOUFLAGE] || sd->sc.data[SC_STEALTHFIELD] || sd->sc.data[SC__FEINTBOMB]) {
 		// SC_HIDING, SC__INVISIBILITY, SC__SHADOWFORM, SC_SUHIDE already disable item usage
 		script_pushint(st, 0); // Silent failure
-	} else {
-		if( sd->sc.data[SC_ALL_RIDING] )
-			status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
-		else
-			sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
+	} else { //Biali mounts rework
+		if( sd->sc.data[SC_ALL_RIDING] ) {
+			mount_desmount(sd,false);
+		} else { 
+			if (!script_hasdata(st,2))
+				mdb = mount_search(DEFAULT_MOUNT);
+			else
+				mdb = mount_search(script_getnum(st,2));
+
+			mount_setride(sd,mdb);
+		}
 		script_pushint(st,1);//in both cases, return 1.
 	}
 	return SCRIPT_CMD_SUCCESS;
 }
+
+//biali mount rework
+BUILDIN_FUNC(mountinfo) 
+{
+	struct mount_data* mdb = NULL;
+	int mount_id, type;
+
+	mount_id = script_getnum(st,2);
+
+	if( (mdb = mount_search(mount_id)) == NULL )
+	{
+		ShowWarning("mountinfo: Invalid mount id %d \n",mount_id);
+		return 0;
+	}
+
+	type = script_getnum(st,3);
+
+	switch(type)
+	{
+		//ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,speed_bonus,Cast Time{ Aura: #1 #2 #3 }
+		default: script_pushint(st,mdb->id);			break;	// mount's id
+		case 1: script_pushstrcopy(st,mdb->name);		break;	// mount's name
+		case 2: script_pushint(st,mdb->max_hp);			break;	// maximum hp
+		case 3: script_pushint(st,mdb->race);			break;	// Race
+		case 4: script_pushint(st,mdb->ele);			break;	// Element
+		case 5: script_pushint(st,mdb->ele_lvl);		break;	// Element lvl
+		case 6: script_pushint(st,mdb->size);			break;	// Size
+		case 7: script_pushint(st,mdb->skill_id);		break;	// Skill Level
+		case 8: script_pushint(st,mdb->skill_lv);		break;	// Skill Id
+		case 9: script_pushint(st,mdb->speed_bonus);	break;	// Speed
+		case 10: script_pushint(st,mdb->cast_time);		break;	// cast time
+		case 11: script_pushint(st,mdb->aura);			break;	// Aura ID
+	}
+
+	return 0;
+}
+
+
 /**
  * Retrieves quantity of arguments provided to callfunc/callsub.
  * getargcount() -> amount of arguments received in a function
@@ -23980,17 +24179,25 @@ BUILDIN_FUNC(recalculatestat) {
 BUILDIN_FUNC(hateffect){
 #if PACKETVER_MAIN_NUM >= 20150507 || PACKETVER_RE_NUM >= 20150429 || defined(PACKETVER_ZERO)
 	struct map_session_data* sd;
+	struct block_list* bl;
 
-	if( !script_rid2sd(sd) )
+	if (script_hasdata(st, 4))
+	{
+		sd = map_id2sd(script_getnum(st, 4));
+
+		if (!sd)
+			return SCRIPT_CMD_FAILURE;
+	}
+	else if (!script_rid2sd(sd))
 		return SCRIPT_CMD_FAILURE;
 
 	int16 effectID = script_getnum(st,2);
 	bool enable = script_getnum(st,3) ? true : false;
 
-	if( effectID <= HAT_EF_MIN || effectID >= HAT_EF_MAX ){
-		ShowError( "buildin_hateffect: unsupported hat effect id %d\n", effectID );
-		return SCRIPT_CMD_FAILURE;
-	}
+	//if( effectID <= HAT_EF_MIN || effectID >= HAT_EF_MAX ){
+	//	ShowError( "buildin_hateffect: unsupported hat effect id %d\n", effectID );
+	//	return SCRIPT_CMD_FAILURE;
+	//}
 
 	auto it = util::vector_get( sd->hatEffects, effectID );
 
@@ -24009,7 +24216,7 @@ BUILDIN_FUNC(hateffect){
 	}
 
 	if( !sd->state.connect_new ){
-		clif_hat_effect_single( sd, effectID, enable );
+		clif_hat_effect_single(&sd->bl, effectID, enable );
 	}
 
 #endif
@@ -25727,7 +25934,7 @@ BUILDIN_FUNC(removefactionmap)
 BUILDIN_FUNC(factioninfo) 
 {
 	struct faction_data* fdb = NULL;
-	int faction_id, type, val = 0;
+	int faction_id, type;
 
 	faction_id = script_getnum(st,2);
 
@@ -25738,15 +25945,6 @@ BUILDIN_FUNC(factioninfo)
 	}
 
 	type = script_getnum(st,3);
-
-	if( script_hasdata(st,4) )
-		val = script_getnum(st,4);
-
-	if( val < 0 || (type == 12 && val > MAX_AURA_EFF))
-	{
-		ShowWarning("factioninfo: Invalid val: %d \n",val);
-		return 0;
-	}
 
 	switch(type)
 	{
@@ -25760,7 +25958,6 @@ BUILDIN_FUNC(factioninfo)
 		case 7: script_pushint(st,fdb->ele_lvl);		break;	// Element lvl
 		case 8: script_pushint(st,fdb->size);			break;	// Size
 		case 9: script_pushint(st,fdb->ccolor);			break;	// Clothes Color
-		case 12: script_pushint(st,fdb->aura[val]);		break;	// Aura ID
 	}
 
 	return 0;
@@ -25791,17 +25988,9 @@ BUILDIN_FUNC(setfaction)
 	}
 
 	faction_id = script_getnum(st,2);
-	if(faction_id == 0 ) {
-		sd->status.faction_id = 0;
-		faction_update_data(sd);
-
-		clif_refresh(sd);
+	if(faction_id <= 0  || (fdb = faction_search(faction_id)) == NULL) {
+		ShowError("setfaction: Invalid faction id %d \n",faction_id);
 		return SCRIPT_CMD_SUCCESS;
-	} 
-	else if( (fdb = faction_search(faction_id)) == NULL )
-	{
-		ShowWarning("setfaction: Invalid faction id %d \n",faction_id);
-		return 0;
 	}
 
 	sd->status.faction_id = faction_id;
@@ -25810,7 +25999,8 @@ BUILDIN_FUNC(setfaction)
 	if( map_getmapflag(sd->bl.m, MF_FVF) )
 		pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 
-	clif_refresh(sd);
+	faction_spawn(sd);
+
 	return 0;
 }
 
@@ -25826,6 +26016,7 @@ BUILDIN_FUNC(factionleave)
 	else
 		ShowWarning("factionleave : tried to leave faction while not in a faction \n");
 
+	clif_hat_effect_single(&sd->bl,1,false);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -25958,6 +26149,26 @@ BUILDIN_FUNC(fvfoff)
 		map_foreachinmap(faction_reload_fvf_sub, m, BL_ALL);
 	}
 	return 0;
+}
+
+// biali Reputation
+BUILDIN_FUNC(getreputation)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+
+	script_pushint(st, sd->status.rep[i].value);
+	return SCRIPT_CMD_SUCCESS;
+
 }
 
 /**
@@ -26305,7 +26516,7 @@ BUILDIN_FUNC(duplicatenpc)
 	int map_x = script_getnum(st, 6);
 	int map_y = script_getnum(st, 7);
 	int dir = script_getnum(st, 8);
-	int spriteid, map_xs = -1, map_ys = -1, sourceid, type, mapid, i;
+	int spriteid, map_xs = -1, map_ys = -1, sourceid, type, mapid, i, x, y;
 	const char *sourcename = script_getstr(st, 2);
 	const char *new_shown_name = script_getstr(st, 3);
 	const char *new_hidden_name = script_getstr(st, 4);
@@ -26669,6 +26880,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getunits, "i?"),
 	BUILDIN_DEF2(getunits, "getmapunits", "is?"),
 	BUILDIN_DEF2(getunits, "getareaunits", "isiiii?"),
+	BUILDIN_DEF(checknonearnpc, "si"), //biali gathering system
 	BUILDIN_DEF(clearunits, "s"), //biali blackzone
 	BUILDIN_DEF(getareadropitem,"siiiiv"),
 	BUILDIN_DEF(enablenpc,"s"),
@@ -26940,6 +27152,9 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(mercenary_set_calls,"ii"),
 	BUILDIN_DEF(mercenary_set_faith,"ii"),
 	BUILDIN_DEF(readbook,"ii"),
+	BUILDIN_DEF(flooritem2area,"ii"), //Biali
+	BUILDIN_DEF(class2ancientwoe,""),
+	BUILDIN_DEF(monsteroftheday,"i"), // Biali
 	BUILDIN_DEF(setfont,"i"),
 	BUILDIN_DEF(areamobuseskill,"siiiiviiiii"),
 	BUILDIN_DEF(progressbar,"si"),
@@ -27021,13 +27236,13 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(checkdragon,"?"),//[Ind]
 	BUILDIN_DEF(setdragon,"??"),//[Ind]
 	BUILDIN_DEF(ismounting,"?"),//[Ind]
-	BUILDIN_DEF(setmounting,"?"),//[Ind]
+	BUILDIN_DEF(setmounting,"i"),//[Ind]
 	BUILDIN_DEF(checkre,"i"),
 
 	/**
 	* Faction System [Biali]
 	**/
-	BUILDIN_DEF(factioninfo, "ii?"),
+	BUILDIN_DEF(factioninfo, "ii"),
 	BUILDIN_DEF(setfaction, "i?"),
 	BUILDIN_DEF(factionleave, ""),
 	BUILDIN_DEF(factionmonster,"isiisii?"),
@@ -27037,6 +27252,12 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setfactionmap,"i"),
 	BUILDIN_DEF(getfactionmap,"s"),
 	BUILDIN_DEF(removefactionmap,""),
+
+	//Biali reputation system
+	BUILDIN_DEF(getreputation,"i"),
+
+	// Biali mount rework
+	BUILDIN_DEF(mountinfo, "ii"),
 
 	/**
 	* Contested System [Biali]
@@ -27051,7 +27272,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(getpartyshare,"i"),
 	BUILDIN_DEF(costume, "i"),
 	BUILDIN_DEF(getcostumeitem, "v"),
-	BUILDIN_DEF(rankreset,"i"),
+	BUILDIN_DEF(rankreset,"i"), // biali damage log
 
 	/**
 	 * rAthena and beyond!
@@ -27131,7 +27352,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(adopt,"vv"),
 	BUILDIN_DEF(getexp2,"ii?"),
 	BUILDIN_DEF(recalculatestat,""),
-	BUILDIN_DEF(hateffect,"ii"),
+	BUILDIN_DEF(hateffect,"ii?"),
 	BUILDIN_DEF(getrandomoptinfo, "i"),
 	BUILDIN_DEF(getequiprandomoption, "iii?"),
 	BUILDIN_DEF(setrandomoption,"iiiii?"),

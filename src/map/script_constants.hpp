@@ -8126,6 +8126,7 @@
 	export_constant(DMGRATE_WEAPON);
 	export_constant(DMGRATE_MAGIC);
 	export_constant(DMGRATE_MISC);
+	export_constant(DMGRATE_HIT);
 
 	// Faction System Biali
 	export_constant(MF_FVF);

@@ -327,7 +327,7 @@ TIMER_FUNC(battle_delay_damage_sub){
 				battle_damage(src, target, dat->damage, dat->delay, dat->skill_lv, dat->skill_id, dat->dmg_lv, dat->attack_type, dat->additional_effects, tick, dat->isspdamage);
 			} else if( !src && dat->skill_id == CR_REFLECTSHIELD ) { // it was monster reflected damage, and the monster died, we pass the damage to the character as expected
 				map_freeblock_lock();
-				status_fix_damage(target, target, dat->damage, dat->delay, dat->skill_id);
+				status_fix_damage(target, target, dat->damage, dat->delay, dat->skill_id);// Biali Damage log
 				map_freeblock_unlock();
 			}
 		}
@@ -1382,6 +1382,12 @@ int64 battle_calc_damage(struct block_list *src,struct block_list *bl,struct Dam
 	if( !damage )
 		return 0;
 	if( battle_config.ksprotection && mob_ksprotected(src, bl) )
+		return 0;
+
+	/*	Biali Black Zone
+		This will deny knocked players from being hit by skills
+	*/
+	if( bl->type == BL_PC && ((TBL_PC*)bl)->state.knocked != INVALID_TIMER)
 		return 0;
 
 	if( map_getcell(bl->m, bl->x, bl->y, CELL_CHKMAELSTROM) && skill_id && skill_get_type(skill_id) != BF_MISC
@@ -2972,6 +2978,12 @@ static bool is_attack_hitting(struct Damage* wd, struct block_list *src, struct 
 #else
 	hitrate = 80; //Default hitrate
 #endif
+
+	//Biali boosting hitrates for MF_ATK_RATE
+	if (map_getmapdata(src->m)->atk_rate.rate[DMGRATE_HIT]) {
+		if(src->type == map_getmapdata(src->m)->atk_rate.rate[DMGRATE_BL])
+			hitrate *= map_getmapdata(src->m)->atk_rate.rate[DMGRATE_HIT]/100;
+	}
 
 	if(battle_config.agi_penalty_type && battle_config.agi_penalty_target&target->type) {
 		unsigned char attacker_count = unit_counttargeted(target); //256 max targets should be a sane max
@@ -5764,7 +5776,7 @@ static void battle_calc_weapon_final_atk_modifiers(struct Damage* wd, struct blo
 		)
 	{
 		ATK_RATER(wd->damage, 50)
-		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false),ST_REJECTSWORD);
+		status_fix_damage(target,src,wd->damage,clif_damage(target,src,gettick(),0,0,wd->damage,0,DMG_NORMAL,0,false), skill_id); //biali damage log
 		clif_skill_nodamage(target,target,ST_REJECTSWORD,tsc->data[SC_REJECTSWORD]->val1,1);
 		if( --(tsc->data[SC_REJECTSWORD]->val3) <= 0 )
 			status_change_end(target, SC_REJECTSWORD, INVALID_TIMER);
@@ -6032,6 +6044,14 @@ static struct Damage battle_calc_weapon_attack(struct block_list *src, struct bl
 	}
 
 	wd = initialize_weapon_data(src, target, skill_id, skill_lv, wflag);
+
+	//Biali Black Zone Final Cut. Final cut is a crit with the max_hp of the fallen player
+	if(src->type == BL_PC && target->type == BL_PC && ((TBL_PC*)target)->state.knocked != INVALID_TIMER ) {
+		wd.type = DMG_CRITICAL;
+		wd.damage = ((TBL_PC*)target)->status.max_hp;
+
+		return wd;
+	}
 
 	right_element = battle_get_weapon_element(&wd, src, target, skill_id, skill_lv, EQI_HAND_R, false);
 	left_element = battle_get_weapon_element(&wd, src, target, skill_id, skill_lv, EQI_HAND_L, false);
@@ -7825,7 +7845,7 @@ int battle_damage_area(struct block_list *bl, va_list ap) {
 		if( amotion )
 			battle_delay_damage(tick, amotion,src,bl,0,CR_REFLECTSHIELD,0,damage,ATK_DEF,0,true,false);
 		else
-			status_fix_damage(src,bl,damage,0,LG_REFLECTDAMAGE);
+			status_fix_damage(src,bl,damage,0,0);// Biali Damage log
 		clif_damage(bl,bl,tick,amotion,dmotion,damage,1,DMG_ENDURE,0,false);
 		skill_additional_effect(src, bl, CR_REFLECTSHIELD, 1, BF_WEAPON|BF_SHORT|BF_NORMAL,ATK_DEF,tick);
 		map_freeblock_unlock();
@@ -8131,7 +8151,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 					}
 
 					clif_damage(d_bl, d_bl, gettick(), wd.amotion, wd.dmotion, damage, 1, DMG_NORMAL, 0, false);
-					status_fix_damage(NULL, d_bl, damage, 0, CR_DEVOTION);
+					status_fix_damage(NULL, d_bl, damage, 0,0);// Biali Damage log
 				}
 			}
 			else
@@ -8150,7 +8170,7 @@ enum damage_lv battle_weapon_attack(struct block_list* src, struct block_list* t
 
 			if (e_bl && !status_isdead(e_bl)) {
 				clif_damage(e_bl, e_bl, tick, 0, 0, damage, wd.div_, DMG_NORMAL, 0, false);
-				status_fix_damage(NULL, e_bl, damage, 0, EL_WATER_SCREEN);
+				status_fix_damage(NULL, e_bl, damage, 0, 0);// biali damage log
 			}
 		}
 	}
@@ -8516,6 +8536,9 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 
 			if( ((sd->state.block_action & PCBLOCK_IMMUNE) || (sc->data[SC_KINGS_GRACE] && s_bl->type != BL_PC)) && flag&BCT_ENEMY )
 				return 0; // Global immunity only to Attacks
+			if( s_bl->type != BL_PC && sd->state.knocked != INVALID_TIMER) //Biali Black zone. Cant use targeted attacks on a fallen player.
+				return 0;
+
 			if( sd->status.karma && s_bl->type == BL_PC && ((TBL_PC*)s_bl)->status.karma )
 				state |= BCT_ENEMY; // Characters with bad karma may fight amongst them
 			if( sd->state.killable ) {
@@ -9174,6 +9197,7 @@ static const struct _battle_data {
  	{ "atk_weapon_attack_damage_rate",      &battle_config.atk_weapon_damage_rate,          100,    1,      UINT16_MAX,     },
  	{ "atk_magic_attack_damage_rate",       &battle_config.atk_magic_damage_rate,           100,    1,      UINT16_MAX,     },
  	{ "atk_misc_attack_damage_rate",        &battle_config.atk_misc_damage_rate,            100,    1,      UINT16_MAX,     },
+	{ "atk_hit_attack_damage_rate",         &battle_config.atk_hit_damage_rate,             100,    1,      UINT16_MAX,     },
 // BattleGround Settings
 	{ "bg_update_interval",                 &battle_config.bg_update_interval,              1000,   100,    INT_MAX,        },
 	{ "bg_short_attack_damage_rate",        &battle_config.bg_short_damage_rate,            80,     0,      INT_MAX,        },
@@ -9365,6 +9389,8 @@ static const struct _battle_data {
  	{ "bg_reserved_char_id",                &battle_config.bg_reserved_char_id,             999996, 0,      INT_MAX,        },
  	{ "woe_reserved_char_id",				&battle_config.woe_reserved_char_id,            999997, 0,      INT_MAX,        },
 	{ "pvp_reserved_char_id",               &battle_config.pvp_reserved_char_id,            999998, 0,      INT_MAX,        },
+	{ "rpk_reserved_char_id",               &battle_config.rpk_reserved_char_id,            999990, 0,      INT_MAX,        },
+	{ "fvf_reserved_char_id",               &battle_config.fvf_reserved_char_id,            999991, 0,      INT_MAX,        },
  	{ "bg_can_trade",						&battle_config.bg_can_trade,                    1,      0,      1,              },
  	{ "bg_double_login",					&battle_config.bg_double_login,                 1,      0,      1,              },
 #endif
@@ -9375,6 +9401,8 @@ static const struct _battle_data {
 	{ "fvf_hp_bar",							&battle_config.fvf_hp_bar,						1,      0,      1				},
 	{ "fvf_min_lvl",						&battle_config.fvf_min_lvl,						55,     1,      MAX_LEVEL		},
 	{ "fvf_visual_size",					&battle_config.fvf_visual_size,					1,      0,      2				},
+	{ "fvf_exp_increase",                   &battle_config.fvf_exp_increase,               10,     0,      10000,          },
+	{ "fvf_drop_increase",                  &battle_config.fvf_drop_increase,               10,     0,      10000,          },
 	{ "fvf_short_attack_damage_rate",		&battle_config.fvf_short_damage_rate,			80,     0,      INT_MAX         },
 	{ "fvf_long_attack_damage_rate",		&battle_config.fvf_long_damage_rate,			80,     0,      INT_MAX         },
 	{ "fvf_weapon_attack_damage_rate",		&battle_config.fvf_weapon_damage_rate,			60,     0,      INT_MAX         },
@@ -9387,25 +9415,25 @@ static const struct _battle_data {
 	{ "faction_guild_settings",				&battle_config.faction_guild_settings,			0,		0,      1,				},
 	{ "faction_heal_bl",                    &battle_config.faction_heal_bl,           	BL_PC, 		BL_NUL, BL_ALL,         },
 	{ "faction_size_bl",                    &battle_config.faction_size_bl,           	BL_CHAR, 	BL_NUL, BL_ALL,         },
-	{ "faction_aura_bl",                    &battle_config.faction_aura_bl,    		BL_CHAR|BL_NPC, BL_NUL, BL_ALL,         },
-	{ "faction_aura_settings",				&battle_config.faction_aura_settings,			0,		0,      2,				},
 	{ "faction_trade_settings",				&battle_config.faction_trade_settings,			0,		0,      1,				},
-	{ "faction_ally_info_bl",				&battle_config.faction_ally_info_bl,  		BL_CHAR, 	BL_NUL, BL_ALL,         },
 	{ "faction_npc_settings",				&battle_config.faction_npc_settings,			0,		0,      1,				},
 	{ "fvf_in_all_maps",					&battle_config.fvf_in_all_maps,					0,		0,      1,				},
 	{ "faction_disc_min",					&battle_config.faction_disc_min,			 -100,	 -INT_MAX,  0		        },
 	{ "faction_disc_max",					&battle_config.faction_disc_max,			  100,		0,   	INT_MAX         },
+//Biali other reserved charids
 	{ "ancient_reserved_char_id",           &battle_config.ancient_reserved_char_id,        999992, 0,      INT_MAX,        },
 	{ "normal_dg_reserved_char_id",         &battle_config.normal_dg_reserved_char_id,      999993, 0,      INT_MAX,        },
 	{ "heroic_dg_reserved_char_id",         &battle_config.heroic_dg_reserved_char_id,      999994, 0,      INT_MAX,        },
 	{ "mythic_dg_reserved_char_id",         &battle_config.mythic_dg_reserved_char_id,      999995, 0,      INT_MAX,        },
 	{ "reserved_costume_id",                &battle_config.reserved_costume_id,             999999, 0,      INT_MAX,        },
 //	Reputation System Biali
+	{ "reputation_min",                 	&battle_config.reputation_min,            	 -60000000, -99999999,     99999999,},
 	{ "reputation_hated",                 	&battle_config.reputation_hated,             -45000000, -99999999,     99999999,},
 	{ "reputation_unfriendly",              &battle_config.reputation_unfriendly,        -30000000, -99999999,     99999999,},
 	{ "reputation_neutral",                 &battle_config.reputation_neutral,                   0, -99999999,     99999999,},
 	{ "reputation_friendly",                &battle_config.reputation_friendly,           60000000, -99999999,     99999999,},
 	{ "reputation_honored",                 &battle_config.reputation_honored,            80000000, -99999999,     99999999,},
+	{ "reputation_max",                 	&battle_config.reputation_max,                99999999, -99999999,     99999999,},
 //	Infamy System
 	{ "infamy_given",					 	&battle_config.infamy_given,        	          7,    0,      100,            },
 	{ "infamy_taken",						&battle_config.infamy_taken,          	         10,    0,      100,            },
@@ -9420,7 +9448,26 @@ static const struct _battle_data {
 // Ragnamania RPK full loot settings
 	{ "rpk_equips_break_chance",            &battle_config.break_chance,           		     70,    0,    100,              },
 	{ "rpk_remove_deadbody_timer",          &battle_config.remove_deadbody_timer,  	    1800000,    0,    INT_MAX,          },
-
+// Ragnamania Random Options for RPK maps
+	{ "random_options_staff",          		&battle_config.random_options_staff,  	    	  7,    0,    INT_MAX,          },
+	{ "random_options_ranged",         		&battle_config.random_options_ranged,  	    	  8,    0,    INT_MAX,          },
+	{ "random_options_sword",          		&battle_config.random_options_sword,  	    	  9,    0,    INT_MAX,          },
+	{ "random_options_dagger",          	&battle_config.random_options_dagger,  	    	 10,    0,    INT_MAX,          },
+	{ "random_options_katar",          		&battle_config.random_options_katar,  	    	 11,    0,    INT_MAX,          },
+	{ "random_options_head",          		&battle_config.random_options_head,  	    	  2,    0,    INT_MAX,          },
+	{ "random_options_shield",          	&battle_config.random_options_shield,  	    	 14,    0,    INT_MAX,          },
+	{ "random_options_armor",          		&battle_config.random_options_armor,  	    	  6,    0,    INT_MAX,          },
+	{ "random_options_shoes",          		&battle_config.random_options_shoes,  	    	  6,    0,    INT_MAX,          },
+	{ "random_options_garment",          	&battle_config.random_options_garment,  	      3,    0,    INT_MAX,          },
+	{ "random_options_accessory",          	&battle_config.random_options_accessory,  	      1,    0,    INT_MAX,          },
+	{ "random_options_4thslot_chance",    	&battle_config.random_options_4thslot_chance,     1,    0,      10000,          },
+	{ "random_options_3rdslot_chance",    	&battle_config.random_options_3rdslot_chance,    10,    0,      10000,          },
+	{ "random_options_2ndslot_chance",    	&battle_config.random_options_2ndslot_chance,   100,    0,      10000,          },
+	{ "random_options_1stslot_chance",    	&battle_config.random_options_1stslot_chance,  1000,    0,      10000,          },
+	{ "random_options_drop_chances",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
+// Monster of the day
+	{ "motd_exp_increase",                  &battle_config.motd_exp_increase,                10,     0,     10000,          },
+	
 #include "../custom/battle_config_init.inc"
 };
 

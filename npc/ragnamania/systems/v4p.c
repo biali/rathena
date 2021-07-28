@@ -116,12 +116,12 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 		case 2:
 			if(#VP_VOTEPOINTS >= .MinVotes4Reward && gettime(DT_DAYOFMONTH) >= 20 && !#VP_COLLECTED) {
 				.@qt = #VP_VOTEPOINTS * 3;
-				getitem 675, .@qt;
+				callfunc "F_getsigneditem",$@VOTER_CERTIFICATE, .@qt;
 				getitem 30023,10; // Bag of Manias
-				vip_time $@Periodo; // Extends Premmy by 5 days
+				vip_time $@Periodo; // Extends Premmy by 3 days
 				set #VP_COLLECTED,1;
 				mes .n$;
-				mes "Thank you very much for your contribution! We've given you " + .@qt + " " + getitemname(675) + "s as a gesture of appreciation and we have also given you 5 days of Premmy!";
+				mes "Thank you very much for your contribution! We've given you " + .@qt + " " + getitemname($@HUNTING_MEDAL) + "s as a gesture of appreciation and we have also given you 5 days of Premmy!";
 				next;
 				mes .n$;
 				mes "Hope you continue to do the good job as you did last month!";
@@ -206,6 +206,7 @@ OnInit:
 		set .@votes, getarg(1,0);
 		set $vp_totalVotePoints, $vp_totalVotePoints + .@votes;
 		set #VP_VOTEPOINTS, #VP_VOTEPOINTS + .@votes;
+		callfunc "F_getsigneditem",30101,.@votes;
 		query_sql("DELETE FROM `cp_v4p_voters` WHERE `account_id` = "+.@gid);
 
 		return;

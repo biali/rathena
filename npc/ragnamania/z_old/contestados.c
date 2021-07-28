@@ -155,7 +155,7 @@ OnNPCKillEvent:
 	if(getcharid(2) > 0)
 		if(getcharid(2) == getmapflag(strcharinfo(3),mf_map_owner)) 
 			if(rand(1000) > 980)
-				getitem 675,1;
+				getitem $@HUNTING_MEDAL,1;
 	end;
 
 OnPCKillEvent:

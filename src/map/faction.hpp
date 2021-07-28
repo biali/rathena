@@ -17,10 +17,8 @@ struct faction_data {
 	char pl_name[NAME_LENGTH];
 	char map[MAP_NAME_LENGTH];
 	uint16 x, y, ccolor;
-	int race, ele, ele_lvl, size;
-	int aura[MAX_AURA_EFF];
+	int race, ele, ele_lvl, size, aura;
 	unsigned long chat_color;
-	struct script_code *script;
 
 	int emblem_len, emblem_id;
 	char emblem_data[2048];
@@ -49,13 +47,10 @@ extern struct guild factions[];
 void faction_update_data(struct map_session_data *sd);
 int faction_reload_fvf_sub(struct block_list *,va_list);
 
-void faction_factionaura(struct map_session_data *);
 void faction_calc(struct block_list *);
 void faction_hp(struct map_session_data *);
 void faction_spawn(struct map_session_data *);
-void faction_show_aura(struct block_list *);
 void faction_getareachar_unit(struct map_session_data *, struct block_list *);
-int faction_aura_clear(struct block_list *,va_list);
 struct faction_data *faction_search(int);
 int faction_get_id(struct block_list *);
 void faction_leave( struct map_session_data *sd); //biali

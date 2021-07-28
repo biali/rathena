@@ -674,6 +674,12 @@ void clif_parse_GuildLeave(int fd,struct map_session_data *sd); // biali trying 
 void clif_lootbaglist( struct map_session_data* sd, struct npc_data* vnd );
 void clif_lootbag_storagelist(struct map_session_data* sd, struct item* items, int items_length, const char *storename);
 
+//Biali rpk
+void clif_sendrpkswords_single(int fd, struct map_session_data *sd);
+
+//biali mount rework
+void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
+
 void clif_emotion(struct block_list *bl,int type);
 void clif_talkiebox(struct block_list* bl, const char* talkie);
 void clif_wedding_effect(struct block_list *bl);
@@ -777,7 +783,8 @@ void clif_item_repaireffect(struct map_session_data *sd, int idx, int flag);
 void clif_item_damaged(struct map_session_data* sd, unsigned short position);
 void clif_item_refine_list(struct map_session_data *sd);
 void clif_hat_effects( struct map_session_data* sd, struct block_list* bl, enum send_target target );
-void clif_hat_effect_single( struct map_session_data* sd, uint16 effectId, bool enable );
+void clif_hat_effect_single(struct block_list* bl, uint16 effectId, bool enable);
+void clif_hat_effect_single2(struct block_list* bl, uint16 effectId, bool enable);
 
 void clif_item_skill(struct map_session_data *sd,uint16 skill_id,uint16 skill_lv);
 
@@ -872,15 +879,9 @@ void clif_bg_queue_lobby_notify(const char *name, struct map_session_data *sd);
 void clif_bg_queue_ack_lobby(bool result, const char *name, const char *lobbyname, struct map_session_data *sd);
 
 // biali faction system
-// void clif_faction_belonginfo (struct map_session_data *sd);
-// void clif_faction_emblem (struct map_session_data *sd, struct faction_data *fdb);
-// void clif_sendfactionemblem_single(int fd, struct map_session_data *sd);
-// void clif_sendfactionemblem_area(struct map_session_data *sd);
+void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_data *dsd);
 // eamod >>>
-void clif_sendauras(struct map_session_data *sd,  enum send_target type);
 void clif_faction_hp(struct map_session_data *sd);
-void clif_faction_area(struct map_session_data *sd);
-void clif_faction_single(int fd, struct map_session_data *sd);
 
 // Instancing
 void clif_instance_create(int instance_id, int num);
@@ -1106,8 +1107,8 @@ void clif_elemental_updatestatus(struct map_session_data *sd, int type);
 void clif_spiritcharm(struct map_session_data *sd);
 
 void clif_snap( struct block_list *bl, short x, short y );
-void clif_monster_hp_bar( struct mob_data* md, int fd );
-
+void clif_monster_hp_bar(struct mob_data* md, struct map_session_data* sd);
+ 
 // Clan System
 void clif_clan_basicinfo( struct map_session_data *sd );
 void clif_clan_message(struct clan *clan,const char *mes,int len);

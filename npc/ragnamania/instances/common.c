@@ -10,7 +10,7 @@
 			getmapxy(.@map$,.@x,.@y,BL_PC);
 			if(inarray(.tower$[0],.@map$)) {
 				if(rand(0,1000) > 980)
-					makeitem 675,1,.@map$,.@x,.@y;
+					makeitem $@HUNTING_MEDAL,1,.@map$,.@x,.@y;
 			}
 		}
 		end;

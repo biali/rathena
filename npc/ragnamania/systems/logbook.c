@@ -17,6 +17,7 @@ function	script	isVs	{
 }
 
 function	script	RM_DiarioDeBordo	{
+	function CalcRep; function Red; function Orange; function Green; function Acqua; function Blue;
 
 	if(inarray($@EventPlayers[0],getcharid(3)) >= 0) {
 		mes "^0000FF[ Logbook ]^000000";
@@ -34,31 +35,18 @@ function	script	RM_DiarioDeBordo	{
 	getmapxy(.@mapName$,.@mapX,.@mapY,BL_PC,strcharinfo(0));
 
 L_Menu:
+	query_sql("SELECT `cashpoints` FROM `cp_users` WHERE id = " + getcharid(7) + " LIMIT 1", .@cashpoints);
 	mes "^0000FF[ Logbook ]^000000";
 	if( vip_status(1) ) mes "Account: ^00CCAA[ Premium ]^000000";
 	else mes "Account: ^00AAFF[ Regular ]^000000";
-	mes (#CASHPOINTS)?"Mania$: ^0000FF" +#CASHPOINTS+ "^000000.":"Mania$: ^FF000000.00^000000.";
-	mes "-------------------";
+	mes (#CASHPOINTS)?"Mania$ in this Acc: ^0000FF" +callfunc("F_InsertComma", #CASHPOINTS)+ "^000000.":"Mania$: ^FF00000.0^000000.";
+	mes (.@cashpoints[0])?"Mania$ Available: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ Available: ^FF00000.0^000000.";
+	mes " ";
 	if(getcharid(6)) {
-		mes "^0000FFEmpire Flags^000000";
+		mes "^0000FFCity Representation^000000";
 		mes factioninfo(getcharid(6),0);
-		mes "-------------------";
+		mes " ";
 	}
-	mes "Infamy: ^0000FF" + callfunc("F_InsertComma",readparam(136)) + " (+"+callfunc("F_InsertComma",readparam(136)/10000)+"% bonus)^000000";
-	mes "Total PK Kills: ^0000FF" + callfunc("F_InsertComma",readparam(137)) + "^000000";
-	mes "Total PK Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(138)) + "^000000";
-	mes "Total PK Score: ^0000FF" + callfunc("F_InsertComma",readparam(139)) + "^000000";
-	mes "-------------------";
-	mes "Total PvP Kills: ^0000FF" + callfunc("F_InsertComma",readparam(140)) + "^000000";
-	mes "Total PvP Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(141)) + "^000000";
-	mes "Total PvP Score: ^0000FF" + callfunc("F_InsertComma",readparam(142)) + "^000000";
-	mes "-------------------";
-	mes "Total BG Wins: ^0000FF" + callfunc("F_InsertComma",readparam(143)) + "^000000";
-	mes "Total BG Losses: ^0000FF" + callfunc("F_InsertComma",readparam(144)) + "^000000";
-	mes "Total BG Ties: ^0000FF" + callfunc("F_InsertComma",readparam(145)) + "^000000";
-	mes "-------------------";
-	mes "Total WoE Score: ^0000FF" + callfunc("F_InsertComma",readparam(146)) + "^000000";
-	mes "-------------------";
 	mes "Personal Vote Points: ^0000FF[" + #VP_VOTEPOINTS + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
 	if(gettime(DT_DAYOFMONTH) < getvariableofnpc(.ThirdDday,"v4p"))	
 		mes "Global VP: ^0000FF[" + $vp_totalVotePoints + "/" + getvariableofnpc(.VotePointsTarget,"v4p") + "]^000000";
@@ -66,66 +54,47 @@ L_Menu:
 		mes "Global Donation: ^0000FF[" + callfunc("F_InsertComma",$vp_donations) + "/" + callfunc("F_InsertComma",getvariableofnpc(.ExtensionCost,"v4p")) + "]^000000";
 	.@days = (gettime(DT_DAYOFMONTH)>=getvariableofnpc(.ThirdDday,"v4p")?getvariableofnpc(.dayOfMonth,"v4p")-gettime(DT_DAYOFMONTH):(gettime(DT_DAYOFMONTH)>=getvariableofnpc(.SecondDday,"v4p")?getvariableofnpc(.ThirdDday,"v4p")-gettime(DT_DAYOFMONTH):getvariableofnpc(.SecondDday,"v4p")-gettime(DT_DAYOFMONTH)));
 	mes "Voting Event ends in ^FF0000" + .@days + "^000000 days.";
-	mes "-------------------";
-	mes "^0000DDAdventurer's Challenge^000000";
-	mes "Daily: " + F_DailyBar();
-	mes "Weekly: " + F_WeeklyBar();
-	mes "Monthly: " + F_MonthlyBar();
 	next;
 
-	L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Empire Flags")) {
+L_Loop:
+	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
-			mes "^0000FF[ Logbook ]^000000";
-			if( !vip_status(1) && getgmlevel() < 10) {
-				mes "Do you want to activate ^f5b041Premium^000000 on your account?";
-				next;
-				if(select("Not now:Yes, please") == 2) {
-					callfunc "F_Premmy";
-					end;
-				} else {
-					mes "^0000FF[ Logbook ]^000000";
-					mes "I am afraid the options in this menu are for ^f5b041Premium^000000 players only.";
-					next;
-					goto L_Menu;
+			if( vip_status(1) || getgmlevel() >= 10) {
+				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
+					mes "^0000FF[ Premium Services ]^000000";
+					mes "Sorry, this service is not available now.";
+					close;
 				}
-			} 
-
-			switch(select("Open storage:Open guild storage:Repair:Purify Ores:Utility store")){
-				case 1: // Open storage
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					}
-					mes "Connecting to Sweetie system...";
-					close2;
-					doevent "Sweetie::OnOpenStorage";
-					end;
-					break;
-				case 2: // Open Guild Storage
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					}
-					mes "Connecting to Sweetie system...";
-					close2;
-					doevent "Sweetie::OnOpenGuildStorage";
-					end;
-					break;
-				case 3: // Repair all
-					if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-						mes "Sorry, this service is not available now.";
-						close;
-					} else {
+L_PremmyMenu:
+				switch(select("Activate/Extend Premium:Repairs:Purify Ore:Utility Stores:Close")) {
+					case 1:
+						mes "^0000FF[ Premium Services ]^000000";
+						mes "Do you want to activate or extend ^f5b041Premium^000000 on your account?";
+						next;
+						if(select("Not now:Yes, please") == 2) {
+							callfunc "F_Premmy";
+							end;
+						} else {
+							mes "^0000FF[ Premium Services ]^000000";
+							mes "Not a problem. Have a good day.";
+							next;
+							goto L_PremmyMenu;
+						}
+						break;
+					case 2: // Repair all
 						if(getbrokenid(1) == 0) {
+							mes "^0000FF[ Premium Services ]^000000";
 							mes "All your equipments seem fine. No repairs are needed.";
-							close;
-						} 
+							next;
+							goto L_PremmyMenu;
+						}
+						mes "^0000FF[ Premium Services ]^000000";
 						mes "We have some equipments in the inventory that need repairing. Repairs cost ^ff0000500z^000000 per equipment. Do you want to continue?";
 						next;
-						if(select("Yes, please:No, cancel it") == 2)
-							close;
-						else {
+						if(select("Yes, please:No, cancel it") == 2) {
+							close2;
+							goto L_PremmyMenu;
+						} else {
 							while (.@id = getbrokenid(1)) {
 								if(Zeny < 500) {
 									dispbottom "Logbook: Not enough Zeny to continue. Aborting";
@@ -139,19 +108,17 @@ L_Menu:
 							}
 							if (.@i) dispbottom "Logbook: " + .@i + " equipments repaired. Total cost: " + callfunc("F_InsertComma",.@cost)+"z.";
 						}
-						end;
-					}
-					break;
-				case 4: //Refine ores
-					mes "Connecting to the Legendary Smith system...";
-					next;
-					callfunc "massPurify","Legenday Smith";
-					break;
-				case 5:
-					if( inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 ) {  
-						mes "Sorry, this service is not available now.";
-						close;
-					} else {
+						next;
+						goto L_PremmyMenu;
+						break;
+					case 3: // Purify ores
+						mes "^0000FF[ Premium Services ]^000000";
+						mes "Connecting to the Legendary Smith system...";
+						next;
+						callfunc "massPurify","Legenday Smith";
+						break;
+					case 4: // Utility Stores
+						mes "^0000FF[ Premium Services ]^000000";
 						mes "Select the store.";
 						next;
 						switch(select("^FF0000Sell Items^000000:Consumables:Miscellaneous:Arrows:Kunais:Ammo:Pet Foods:Pet Accessories")) {
@@ -166,15 +133,18 @@ L_Menu:
 							case 8: callshop "Pet Accessories", 1; end;
 						}
 						end;
-					}
-					break;
-				default:
-					close;
-				break;
+						break;
+				}
+			} else {
+				mes "I am afraid these options are available for ^f5b041Premium^000000 accounts only.";
+				mes "Find more about our ^f5b041Premium^000000 system in our website.";
+				next;
+				goto L_Menu;
 			}
 		case 2: // TELEPORTE
-			if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
-				mes "Sorry, this service is not available now.";
+			if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || @instance > 0) { 
+				mes "^0000FF[ Logbook ]^000000";
+				mes "Sorry, this service is not available in this map.";
 				close;
 			}
 			switch(select("Cities:Specials")){
@@ -204,47 +174,161 @@ L_Menu:
 					T36: warp "yuno",157,51; end;
 					break;
 				case 2:
-					menu "^f5b041Premium^000000 Room",X1,"Timeless Dungeons",X2;
+					menu "^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4;//,"Timeless Dungeons",X2;
 					X1: warp "sala_premmy",40,38; end;
-					X2: warp "yuno",282,288; end;
+					//X2: warp "yuno",282,288; end;
+					X4: warp "rent_mb",134,33; end;
 					break;
 			}
-		case 3: // Empire Flags Options
-			if(getcharid(6)) { // player is already in a faction
-				mes "^0000FF[ Logbook ]^000000";
-				mes "Would you like to stop representing " + factioninfo(getcharid(6),0) + "?";
-				next;
-				mes "^0000FF[ Logbook ]^000000";
-				if(select("Yes:No") == 2) {
-					mes "No problem";
-					close;
-				} else {
-					factionleave();
-					mes "Changes made.";
-					close;
-				}
-			} else { // player is not in a faction yet
-				mes "^0000FF[ Logbook ]^000000";
-				for(.@i=1;.@i<=4;.@i++) {
-					if(factioninfo(.@i,2) == strcharinfo(3)) {
-						mes "Should we start representing ^0000FF"+strcharinfo(3)+"?";
-						if(select("Yes:No") == 2)
-							close;
-						else {
-							setfaction(.@i);
-							mes "All Done. Good luck and please read the book about the Empire Flags";
-							close;
-						}
-					}
-				}
-				mes "I am afraid you'll need to head to the town of your choice to start a representation.";
-				close;
+		case 3: // Battlelog
+			mes "^0000DDBattlelog^000000";
+			mes "Infamy: ^0000FF" + callfunc("F_InsertComma",readparam(136)) + " (+"+callfunc("F_InsertComma",readparam(136)/10000)+"% bonus)^000000";
+			mes " ";
+			mes "Total PK Kills: ^0000FF" + callfunc("F_InsertComma",readparam(137)) + "^000000";
+			mes "Total PK Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(138)) + "^000000";
+			mes "Total PK Score: ^0000FF" + callfunc("F_InsertComma",readparam(139)) + "^000000";
+			mes " ";
+			mes "Total PvP Kills: ^0000FF" + callfunc("F_InsertComma",readparam(140)) + "^000000";
+			mes "Total PvP Deaths: ^0000FF" + callfunc("F_InsertComma",readparam(141)) + "^000000";
+			mes "Total PvP Score: ^0000FF" + callfunc("F_InsertComma",readparam(142)) + "^000000";
+			mes " ";
+			mes "Total BG Wins: ^0000FF" + callfunc("F_InsertComma",readparam(143)) + "^000000";
+			mes "Total BG Losses: ^0000FF" + callfunc("F_InsertComma",readparam(144)) + "^000000";
+			mes "Total BG Ties: ^0000FF" + callfunc("F_InsertComma",readparam(145)) + "^000000";
+			mes " ";
+			mes "Total WoE Score: ^0000FF" + callfunc("F_InsertComma",readparam(146)) + "^000000";
+			next;
+			goto L_Loop;
+			break;
+		case 4: // Cities Reputation
+			mes "^0000DDCities' Reputation^000000";
+			for(.@i=1;.@i<=getvariableofnpc(.totalfac,"reputation");.@i++) {
+				.@rep$ = CalcRep(.@i);
+				mes factioninfo(.@i,0) + " : " + .@rep$;
 			}
-			
+			next;
+			goto L_Loop;
+		case 5: // Adventurer's Quest
+				mes "^0000DDAdventurer's Challenge^000000";
+				mes "Daily: " + F_DailyBar();
+				mes "Weekly: " + F_WeeklyBar();
+				mes "Monthly: " + F_MonthlyBar();
+				next;
+				goto L_Loop;
+		case 6: // Master Account Services
+			mes "^0000DDMaster Account Services^000000";
+			mes (.@cashpoints[0])?"Mania$ Available: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ Available: ^FF00000.0^000000.";
+			next;
+			switch(select("Send Mania$ to a Game Account:^FF0000Back^000000")) {
+				case 1:
+					if(.@cashpoints[0] <= 0) {
+						mes "^0000DDMaster Account Services^000000";
+						mes "No funds available.";
+						next;
+						goto L_Loop;
+					}
+					mes "^0000DDMaster Account Services^000000";
+					.@count = query_sql("SELECT `userid`,`account_id` FROM `login` WHERE `master_id` = " + getcharid(7),.@gameaccounts$, .@accountid);
+					if(.@count == 1 ) {
+						mes "Transfer to this account:";
+						.@destiny = getcharid(3);
+					} else {
+						mes "To which account should we make the transter to?";
+						@menu$ = implode(.@gameaccounts$,":") + "^FF0000Back^000000";
+						.@choice = select(@menu$) - 1;
+						.@destiny = .@accountid[(.@choice)];
+						mes "Transfer to: ^FF0000" + .@gameaccounts$[(.@choice)] + "^000000";
+					}
+
+					mes "Please inform the amount:";
+					input (.@amount);
+					if(.@amount <= 0 || .@amount > .@cashpoints[0] ) {
+						mes "^ff0000Amount invalid. Process stoped.^000000";
+						close;
+					}
+					mes "That is all we need. Continue?";
+					next;
+					if(select("Yes, please:No, thank you") == 2) {
+						mes "^ff0000Transfer halted.";
+						next;
+						goto L_Loop;
+					}
+
+					query_sql("SELECT `cashpoints` FROM `cp_users` WHERE id = " + getcharid(7) + " LIMIT 1", .@cashpoints);
+					if(.@cashpoints[0] < .@amount) {
+						mes "^0000DDMaster Account Services^000000";
+						mes "Something went wrong. The funds were no longer available.";
+						mes " ";
+						mes "^ff0000This incident was reported to the staff.";
+						logmes "Master Account: " + getcharid(7) + "Game Account: " + getcharid(3) + " tried to cheat the Manias Master Transfer.";
+						close;
+					}
+
+					if(.@destiny == getcharid(3)) {
+						set #CASHPOINTS, #CASHPOINTS + .@amount;
+					} else if(isloggedin(.@destiny) ) {
+						atcommand "#cash " + "\"" + rid2name(.@destiny) + "\" " + .@amount;
+					} else {
+						.@c = query_sql("SELECT `account_id` FROM `acc_reg_num` WHERE `account_id` = "+ .@destiny +" AND `key` = '#CASHPOINTS' LIMIT 1");
+						if(.@c == 0) 
+							query_sql("INSERT INTO `acc_reg_num` (`account_id`,`key`,`index`,`value`) VALUES (`"+.@destiny+"`, `#CASHPOINTS`, 0,`"+.@amount+"`)");
+						else
+							query_sql("UPDATE `acc_reg_num` SET `value` = `value + "+ .@amount +" WHERE `account_id = "+ .@destiny +" AND `key` = '#CASHPOINTS'");
+					}
+
+					query_sql("UPDATE `cp_users` SET `cashpoints` = `cashpoints - "+ .@amount +" WHERE `id = " + getcharid(7));
+					logmes .@amount + " Manias sent from master account " + getcharid(7) + " to game account " + .@destiny;
+
+					mes "^0000DDMaster Account Services^000000";
+					mes "All done. Your new balence is:";
+					mes "Master Account: " + callfunc("F_InsertComma",(.@cashpoints[0] - .@amout));
+					mes "Game Accounts: ";
+					.@count = query_sql("SELECT `login`.`userid`, `acc_reg_num`.`value` FROM `login` JOIN `acc_reg_num` ON `login`.`account_id` = `acc_reg_num`.`account_id` WHERE `acc_reg_num`.`key` = '#CASHPOINTS' AND `login`.`master_id` = " + getcharid(7),.@gameaccounts$, .@manias);
+					for(.@i=0;.@i < .@count; .@i++) {
+						mes " . " + .@gameaccounts$[.@i] + " " + callfunc("F_InsertComma",.@manias[.@i]) + " Manias";
+					}
+					close;
+				case 2: goto L_Loop; break;
+			}
+
+		case 7:
 		default:
 			close;
-			break;
 	}
+
+	function CalcRep {
+		.@faction = getarg(0,0);
+		if(.@faction == 0)
+			return -1;
+		
+		.@rep = getreputation(.@faction);
+		if(.@rep >= getvariableofnpc(.honored,"reputation")) return Blue("[ Honored ]");
+		else if(.@rep >= getvariableofnpc(.friendly,"reputation")) return Acqua("[ Friendly ]");
+		else if(.@rep > getvariableofnpc(.unfriendly,"reputation") && .@rep < getvariableofnpc(.friendly,"reputation")) return Green("[ Normal ]");
+		else if(.@rep <= getvariableofnpc(.hated,"reputation")) return Red("[ Hated ]");
+		else if(.@rep <= getvariableofnpc(.unfriendly,"reputation")) return Orange("[ Unfriendly ]");
+	}
+
+	function Red {
+		.@t$ = getarg(0);
+		return "^cc0000" + .@t$ + "^000000";
+	} 
+	function Orange {
+		.@t$ = getarg(0);
+		return "^ff6600" + .@t$ + "^000000";
+	} 
+	function Green {
+		.@t$ = getarg(0);
+		return "^009933" + .@t$ + "^000000";
+	} 
+	function Acqua {
+		.@t$ = getarg(0);
+		return "^3399ff" + .@t$ + "^000000";
+	} 
+	function Blue {
+		.@t$ = getarg(0);
+		return "^0033cc" + .@t$ + "^000000";
+	} 
 }
 
 // Sellers are now in premmy_quickmall.c

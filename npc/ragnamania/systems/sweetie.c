@@ -312,21 +312,23 @@
 			// --------------------------------------------------
 				Dungeons:
 			// --------------------------------------------------
-			menu	(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Abyss Lakes":":"),D1,
+			menu	(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Abyss Lakes":":"),D1,
 					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Amatsu Dungeon":":"),D2, 
 					"Anthell",D3,
-					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Ayothaya Dungeon":":"),D4, 
+					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Ayothaya Dungeon":":"),D4, 
 					"Beach Dungeon",D5, 
 					// "Bifrost Tower",D41,
 					// "Bio Labs",D6, 
-					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Brasilis Dungeon":":"),D7, 
+					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Brasilis Dungeon":":"),D7, 
 					"Byalan Dungeon",D8, 
 					"Clock Tower",D9,
 					"Coal Mines",D10, 
 					"Culvert",D11, 
-					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Cursed Abbey":":"),D12, 
+					(#AQ_LastWeek==getvariableofnpc(.Month,"adventurer_quest")?"Cursed Abbey":":"),D12, 
 					// "Dewata Dungeon",D13,
-					"Einbroch Dungeon",D14, 
+					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Einbroch Dungeon":":"),D14,
+					//"Einbroch Dungeon",D14, 
+					(#AQ_LastMonth==getvariableofnpc(.Month,"adventurer_quest")?"Gefenia":":"),D15,
 					// "Gefenia",D15, 
 					"Geffen Dungeon",D16,
 					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Glast Heim":":"),D17, 
@@ -334,6 +336,7 @@
 					// "Hidden Dungeon",D19,
 					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Ice Dungeon":":"),D20, 
 					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Juperos":":"),D21, 
+					(#AQ_LastMonth==getvariableofnpc(.Month,"adventurer_quest")?"Kiel Dungeon":":"),D22,
 					// "Kiel Dungeon",D22, 
 					"Louyang Dungeon",D23,
 					"Magma Dungeon",D24, 
@@ -344,15 +347,16 @@
 					"Orc Dungeon",D29,
 					"Payon Dungeon",D30, 
 					"Pyramids",D31, 
-					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Rachel Sanctuary":":"),D32,
+					(#AQ_LastMonth==getvariableofnpc(.Month,"adventurer_quest")?"Rachel Sanctuary":":"),D32,
 					// "Scaraba Hole",D33, 
 					"Sphinx",D34, 
 					"Sunken Ship",D35, 
 					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Thanatos Tower":":"),D36,
 					(#AQ_LastWeek==getvariableofnpc(.Week,"adventurer_quest")?"Thor Volcano":":"),D37, 
 					"Toy Factory",D38, 
-					"Turtle Dungeon",D39, 
-					"Umbala Dungeon",D40;
+					"Turtle Dungeon",D39,
+					(#AQ_Yesterday==getvariableofnpc(.Day,"adventurer_quest")?"Umbala Dungeon":":"),D40;
+					//"Umbala Dungeon",D40;
 			D1: setarray @c[2],261,272;
 				Disp("Abyss Lakes",0); Pick("abyss_");
 			D2: setarray @c[2],228,11;
@@ -454,12 +458,13 @@
 			// --------------------------------------------------
 				Specials:
 			// --------------------------------------------------
-			menu	"^f5b041Premium^000000 Room",X1,"Timeless Dungeons",X2;//, "Novice Grounds",X2;
+			menu	"^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4;//,"Timeless Dungeons",X2;//, "Novice Grounds",X3;
 
 			X1: Restrict("VIP",getcharid(0));
 				Go("sala_premmy",40,38);
-			X2: Go("yuno",282,288);
-		//	X2: Go("new_1-2",99,99);
+		//	X2: Go("yuno",282,288);
+		//	X3: Go("new_1-2",99,99);
+			X4: Go("rent_mb",134,33);
 
 
 			// --------------------------------------------------
@@ -780,6 +785,7 @@ xmas,150,136,6	duplicate(Sweetie)	Sweetie#xmas	4_F_KAFRA5,3,3
 yuno,162,47,4	duplicate(Sweetie)	Sweetie#yuno	4_F_KAFRA3,3,3
 yuno,285,293,4	duplicate(Sweetie)	Sweetie#yuno2	4_F_KAFRA2,3,3
 sala_premmy,28,33,0	duplicate(Sweetie)	Sweetie#premmy	4_F_KAFRA8,3,3
+rent_mb,143,34,3	duplicate(Sweetie)	Sweetie#rent	4_F_KAFRA8,3,3
 //new_1-2,90,112,4	duplicate(Sweetie)	Sweetie#novice	4_F_KAFRA1
 
 // --------------------------------------------------

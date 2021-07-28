@@ -185,6 +185,10 @@ int npc_ontouch_event(struct map_session_data *sd, struct npc_data *nd)
 	if (pc_isdead(sd))	// Dead player don't trigger 'OnTouch_'
 		return 0;
 
+	// Biali deadbody
+	if(nd->isdeadbody)
+		return 0;
+
 	if( nd->touching_id )
 		return 0; // Attached a player already. Can't trigger on anyone else.
 
@@ -1311,7 +1315,7 @@ int npc_check_areanpc(int flag, int16 m, int16 x, int16 y, int16 range)
 	i = 0;
 	for (ys = y0; ys <= y1 && !i; ys++) {
 		for(xs = x0; xs <= x1 && !i; xs++){
-			if (map_getcell(m,xs,ys,CELL_CHKNPC))
+			if (map_getcell(m,xs,ys,CELL_CHKSTACK))
 				i = 1;
 		}
 	}
@@ -1453,8 +1457,11 @@ int npc_click(struct map_session_data* sd, struct npc_data* nd)
 	}
 
 	//Biali deadbody
-	if(nd->isdeadbody)
-		clif_skill_poseffect(&sd->bl, 152, 1, sd->bl.x, sd->bl.y, gettick());
+	if(nd->isdeadbody) {
+		clif_damage(&sd->bl, &nd->bl, gettick(), 0, 1, 0, 1, DMG_PICKUP_ITEM, 0, false);
+		clif_takeitem(&sd->bl, &nd->bl);
+	}
+		//clif_skill_poseffect(&sd->bl, 152, 1, sd->bl.x, sd->bl.y, gettick());
 
 	switch(nd->subtype) {
 		case NPCTYPE_SHOP:
@@ -2342,10 +2349,10 @@ int npc_remove_map(struct npc_data* nd)
 		skill_clear_unitgroup(&nd->bl);
 	
 	//biali deadbody
-	if(nd->isdeadbody)
+	// if(nd->isdeadbody)
 		clif_clearunit_area(&nd->bl,CLR_OUTSIGHT);
-	else
-		clif_clearunit_area(&nd->bl,CLR_RESPAWN);
+	// else
+	// 	clif_clearunit_area(&nd->bl,CLR_RESPAWN);
 	npc_unsetcells(nd);
 	map_delblock(&nd->bl);
 	//Remove npc from map[].npc list. [Skotlex]
@@ -4030,55 +4037,10 @@ struct npc_data* npc_createdeadbody(const char *sourcename, const char *new_show
 
 	strdb_put(npcname_db, nd_target->exname, nd_target);
 
-	if(type == NPCTYPE_SCRIPT) {
-
-		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
-			char* lname = nd_target->u.scr.label_list[i].name;
-			int pos = nd_target->u.scr.label_list[i].pos;
-
-			if ((lname[0] == 'O' || lname[0] == 'o') && (lname[1] == 'N' || lname[1] == 'n')) {
-				struct event_data* ev;
-				char buf[NAME_LENGTH*2+3];
-				snprintf(buf, ARRAYLENGTH(buf), "%s::%s", nd_target->exname, lname);
-
-				CREATE(ev, struct event_data, 1);
-				ev->nd = nd_target;
-				ev->pos = pos;
-				if(strdb_put(ev_db, buf, ev))
-					ShowWarning("npc_parse_duplicate : duplicate event %s (%s)\n", buf, nd_target->name);
-			}
-		}
-
-		for (i = 0; i < nd_target->u.scr.label_list_num; i++) {
-			int t = 0, k = 0;
-			char *lname = nd_target->u.scr.label_list[i].name;
-			int pos = nd_target->u.scr.label_list[i].pos;
-			if (sscanf(lname, "OnTimer%d%n", &t, &k) == 1 && lname[k] == '\0') {
-				struct npc_timerevent_list *te = nd_target->u.scr.timer_event;
-				int j, k = nd_target->u.scr.timeramount;
-				if (te == NULL)
-					te = (struct npc_timerevent_list *)aMalloc(sizeof(struct npc_timerevent_list));
-				else
-					te = (struct npc_timerevent_list *)aRealloc( te, sizeof(struct npc_timerevent_list) * (k+1) );
-				for (j = 0; j < k; j++) {
-					if (te[j].timer > t) {
-						memmove(te+j+1, te+j, sizeof(struct npc_timerevent_list)*(k-j));
-						break;
-					}
-				}
-				te[j].timer = t;
-				te[j].pos = pos;
-				nd_target->u.scr.timer_event = te;
-				nd_target->u.scr.timeramount++;
-			}
-		}
-		nd_target->u.scr.timerid = INVALID_TIMER;
-	}
+	nd_target->u.scr.timerid = INVALID_TIMER;
 
 	return nd_target;
 }
-
-
 
 
 
@@ -4186,6 +4148,137 @@ static const char* npc_parse_function(char* w1, char* w2, char* w3, char* w4, co
 }
 
 
+// Biali blackzone World Drops
+void npc_world_drops_sub(int mob_id) {
+
+	struct item_data *id = NULL;
+	std::shared_ptr<s_mob_db> md = mob_db.find(mob_id);
+
+	int i,k;
+
+	for (i = 0; i < MAX_MOB_DROP; i++) {
+		if(md->dropitem[i].rate > 0) {
+
+			if((id = itemdb_search(md->dropitem[i].nameid)) == NULL)
+				continue;
+
+			if(id->type != 4 && id->type != 5)
+				continue;
+
+			int nameid = id->nameid;
+
+			if(id->type == 4) { //Armors
+				if(id->equip&(EQP_HEAD_TOP)) { // Headgear (top only!)
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_headgears[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_headgears[mob_data::c_hg] = nameid;
+						++mob_data::c_hg;
+					}
+				} else if(id->equip&(EQP_HAND_L)) { // Shield
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_shields[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_shields[mob_data::c_sd] = nameid;
+						++mob_data::c_sd;
+					}
+				}
+				else if(id->equip&(EQP_ARMOR)) { // Armor
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_armors[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_armors[mob_data::c_ar] = nameid;
+						++mob_data::c_ar;
+					}
+				}
+				else if(id->equip&(EQP_SHOES)) { // Shoes
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_shoes[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_shoes[mob_data::c_sh] = nameid;
+						++mob_data::c_sh;
+					}
+				}
+				else if(id->equip&(EQP_GARMENT)) { // Garment
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_garments[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_garments[mob_data::c_ga] = nameid;
+						++mob_data::c_ga;
+					}
+				}
+				else if(id->equip&(EQP_ACC_RL)) { // Accessories
+					ARR_FIND(0,MAX_DROPS,k, mob_data::drops_sories[k] == nameid);
+					if(k == MAX_DROPS ) {
+						mob_data::drops_sories[mob_data::c_ac] = nameid;
+						++mob_data::c_ac;
+					}
+				}
+			} else if(id->type == 5) {
+				switch(id->subtype) {
+					case W_STAFF:	case W_2HSTAFF:
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_staves[k] == nameid);
+						if(k == MAX_DROPS ) {
+							mob_data::drops_staves[mob_data::c_st] = nameid;
+							++mob_data::c_st;
+						}
+						break;
+					case W_WHIP:	case W_BOW:	case W_REVOLVER:	case W_RIFLE:	case W_GATLING:	case W_SHOTGUN:	case W_MUSICAL:
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_ranged[k] == nameid);
+						if(k == MAX_DROPS ) {
+							mob_data::drops_ranged[mob_data::c_rg] = nameid;
+							++mob_data::c_rg;
+						}
+						break;
+					case W_1HSWORD:	case W_1HAXE:	case W_2HAXE:	case W_MACE:	case W_2HMACE:
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_swords[k] == nameid);
+						if(k == MAX_DROPS ) {
+							mob_data::drops_swords[mob_data::c_sw] = nameid;
+							++mob_data::c_sw;
+						}
+						break;
+					case W_DAGGER:	case W_BOOK:	case W_HUUMA:
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_daggers[k] == nameid);
+						if(k == MAX_DROPS ) {
+							mob_data::drops_daggers[mob_data::c_dg] = nameid;
+							++mob_data::c_dg;
+						}
+						break;
+					case W_1HSPEAR:	case W_2HSWORD:	case W_2HSPEAR:	case W_KATAR:	case W_KNUCKLE:
+						ARR_FIND(0,MAX_DROPS,k, mob_data::drops_katars[k] == nameid);
+						if(k == MAX_DROPS ) {
+							mob_data::drops_katars[mob_data::c_kt] = nameid;
+							++mob_data::c_kt;
+						}
+						break;
+				}
+			}
+		}
+	}
+
+	return;
+}
+
+
+
+void npc_world_drops(mob_data *md){
+	
+	int j;
+	int mobid = md->mob_id;
+
+	ARR_FIND(0,2000,j,mob_data::drops_moblist[j] == mobid);
+	if(j < 2000 )
+		return;
+
+	if( md->state.boss )
+		return;
+
+	if(mob_data::drops_m_c > 1999)
+		return;
+
+	mob_data::drops_moblist[mob_data::drops_m_c] = mobid;
+	mob_data::drops_m_c++;
+
+	return;
+}
+
+
+
 /*==========================================
  * Parse Mob 1 - Parse mob list into each map
  * Parse Mob 2 - Actually Spawns Mob
@@ -4222,9 +4315,10 @@ static const char* npc_parse_mob(char* w1, char* w2, char* w3, char* w4, const c
 	char mapname[MAP_NAME_LENGTH_EXT], mobname[NAME_LENGTH];
 	struct spawn_data mob, *data;
 	int ai = AI_NONE; // mob_ai
-
+	
 	int faction_id = 0;
 	struct faction_data *fdb = NULL;
+
 	memset(&mob, 0, sizeof(struct spawn_data));
 
 	mob.state.boss = !strcmpi(w2,"boss_monster");
@@ -4370,6 +4464,10 @@ static const char* npc_parse_mob(char* w1, char* w2, char* w3, char* w4, const c
 	//Now that all has been validated. We allocate the actual memory that the re-spawn data will use.
 	data = (struct spawn_data*)aMalloc(sizeof(struct spawn_data));
 	memcpy(data, &mob, sizeof(struct spawn_data));
+
+	// biali blackzone world drops
+	struct mob_data* md = mob_spawn_dataset(&mob);
+	npc_world_drops(md);
 
 	// spawn / cache the new mobs
 	if( battle_config.dynamic_mobs && map_addmobtolist(data->m, data) >= 0 )
@@ -4593,10 +4691,11 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 			if (!state)
 				map_setmapflag_sub(m, MF_ATK_RATE, false, &args);
 			else {
-				if (sscanf(w4, "%d,%d,%d,%d,%d,%d",
+				if (sscanf(w4, "%d,%d,%d,%d,%d,%d,%d",
 					&args.atk_rate.rate[DMGRATE_BL], &args.atk_rate.rate[DMGRATE_SHORT], &args.atk_rate.rate[DMGRATE_LONG],
-					&args.atk_rate.rate[DMGRATE_WEAPON], &args.atk_rate.rate[DMGRATE_MAGIC], &args.atk_rate.rate[DMGRATE_MISC]
-				) == 6)
+					&args.atk_rate.rate[DMGRATE_WEAPON], &args.atk_rate.rate[DMGRATE_MAGIC], &args.atk_rate.rate[DMGRATE_MISC],
+					&args.atk_rate.rate[DMGRATE_HIT]
+				) == 7)
 				{
 					map_setmapflag_sub(m, MF_ATK_RATE, true, &args);
 				}
@@ -4615,7 +4714,7 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 				int64 idx = -1;
 				short value = 0;
 				char index[13];
-				sscanf(w4, "%13s %6hd", &index, &value);
+				sscanf(w4, "%13[^,],%hd", index, &value);
 				script_get_constant(index,&idx);
 				args.rpk.info[idx] = value;
 				map_setmapflag_sub(m, MF_RPK, true, &args);

@@ -10,6 +10,7 @@ int chmapif_sendall(unsigned char *buf, unsigned int len);
 int chmapif_sendallwos(int sfd, unsigned char *buf, unsigned int len);
 int chmapif_send(int fd, unsigned char *buf, unsigned int len);
 int chmapif_send_fame_list(int fd);
+int chmapif_send_fame_list_single(int fd, int type); // eAmod biali damage log
 void chmapif_update_fame_list(int type, int index, int fame);
 void chmapif_sendall_playercount(int users);
 int chmapif_parse_getmapname(int fd, int id);

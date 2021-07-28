@@ -1,16 +1,16 @@
 
 
-// credits to Annieruru
-function	script	ValueConvert	{
-	set .@num, atoi(""+getarg(0));
-	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
-	set .@l, getstrlen(""+.@num);
-	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
-		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
-			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
-	}
-	return .@num$;
-}
+// // credits to Annieruru
+// function	script	ValueConvert	{
+// 	set .@num, atoi(""+getarg(0));
+// 	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
+// 	set .@l, getstrlen(""+.@num);
+// 	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
+// 		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
+// 			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
+// 	}
+// 	return .@num$;
+// }
 
 
 -	script	Stylist	-1,{
@@ -29,6 +29,13 @@ OnTalk:
 	}
 	next;
 	@style = ( select( .npc_menu$ ) - 1 );
+
+	if(getcharid(6) > 0 && @style == 2) { // style 2 = cloth color
+		mes "[^0055FF ::: Adv. Stylist ::: ^000000]";
+		mes "I cannot help you while you are representing a City.";
+		close;
+	}
+
 	@style_value = getlook( .look_type[@style] );
 	deletearray .@blacklist;
 	switch( @style ){
@@ -133,9 +140,9 @@ OnInit:
 	// Payment Currency + Cost
 	// Can be ITEM ID or Any Variable.
 	setarray .currency$,
-		"675",	//	Hairstyle - Ex. need Zeny
-		"675",	//	Hair Color - Ex. need Zeny
-		"675";	//	Cloth Color - Ex. need Zeny
+		$@HUNTING_MEDAL,	//	Hairstyle - Ex. need Zeny
+		$@HUNTING_MEDAL,	//	Hair Color - Ex. need Zeny
+		$@HUNTING_MEDAL;	//	Cloth Color - Ex. need Zeny
 		
 	setarray .cost,
 		1,	//	Hairstyle ( 10,000 Zeny )

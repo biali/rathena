@@ -294,7 +294,8 @@ struct mob_data {
 	int target_id,attacked_id,norm_attacked_id;
 	int areanpc_id; //Required in OnTouchNPC (to avoid multiple area touchs)
 	int bg_id; // BattleGround System
-	int spawnx,spawny,roam; // Biali
+	int spawnx,spawny,roam; // Biali blackzone
+	bool roam_moved; //biali blackzone
 
 	t_tick next_walktime,last_thinktime,last_linktime,last_pcneartime,dmgtick;
 	short move_fail_count;
@@ -317,8 +318,38 @@ struct mob_data {
 	 * MvP Tombstone NPC ID
 	 **/
 	int tomb_nid;
+	int lastEffectID;
+	int lastEffectID2;
 
 	int faction_id; // biali faction system
+
+	static int mob_of_the_day;
+
+	//biali blackzone world drops
+	static 	int drops_headgears[MAX_DROPS];
+	static 	int drops_shields[MAX_DROPS];
+	static 	int drops_armors[MAX_DROPS];
+	static 	int drops_shoes[MAX_DROPS];
+	static 	int drops_garments[MAX_DROPS];
+	static 	int drops_sories[MAX_DROPS];
+	static 	int drops_staves[MAX_DROPS];
+	static 	int drops_ranged[MAX_DROPS];
+	static 	int drops_swords[MAX_DROPS];
+	static 	int drops_daggers[MAX_DROPS];
+	static 	int drops_katars[MAX_DROPS];
+	static 	int c_hg;
+	static 	int c_sd;
+	static 	int c_ar;
+	static 	int c_sh;
+	static 	int c_ga;
+	static 	int c_ac;
+	static 	int c_st;
+	static 	int c_rg;
+	static 	int c_sw;
+	static 	int c_dg;
+	static 	int c_kt;
+	static int drops_moblist[1000]; // keeps the  unique mobs read
+	static int drops_m_c; // mobs counter
 
 	e_mob_bosstype get_bosstype();
 };
@@ -433,6 +464,9 @@ void mob_heal(struct mob_data *md,unsigned int heal);
 void mob_clear_spawninfo();
 void do_init_mob(void);
 void do_final_mob(bool is_reload);
+
+//biali world drops
+void do_init_world_drops(void);
 
 TIMER_FUNC(mob_timer_delete);
 int mob_deleteslave(struct mob_data *md);

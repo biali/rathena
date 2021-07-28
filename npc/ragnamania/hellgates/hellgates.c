@@ -251,7 +251,7 @@ hell,145,159,1	script	Tartarean Chest	25005,{
 	if(!getvariableofinstance(getd("'hg_" + getcharid(0)),@hg_id)) {
 		getitem 30023,rand(1,6); //Bag of Manias
 		getitem 30027,rand(1,3); //Ragnamania Lootbox
-		getitem 675,rand(5,20); //Hunting Coins
+		getitem $@HUNTING_MEDAL,rand(3,10); //Hunting Coins
 		getitem 12134,rand(1,12);//Red Envelope
 		.@eac = eaclass();
 		switch(.@eac&EAJ_BASEMASK) {
@@ -338,10 +338,10 @@ function	script	hg_create_instance	{
 	.@hg_id = instance_create("Hell",IM_NONE);
 	if (.@hg_id < 0) {
 		switch (.@hg_id) {
-			case -1: dispbottom "ERROR(instance_create): Tipo Invalido.",0x0000CC; break;
-			case -2: dispbottom "ERROR(instance_create): Party Nao Encontrada.",0x0000CC; break;
-			case -3: dispbottom "ERROR(instance_create): Instancia ja existe.",0x0000CC; break;
-			case -4: dispbottom "ERROR(instance_create): Nao ha instancias livres no momento.",0x0000CC; break;
+			case -1: dispbottom "ERROR(instance_create): Invalid Type.",0x0000CC; break;
+			case -2: dispbottom "ERROR(instance_create): Group type not found.",0x0000CC; break;
+			case -3: dispbottom "ERROR(instance_create): Instance already exists.",0x0000CC; break;
+			case -4: dispbottom "ERROR(instance_create): There are no free instances right now.",0x0000CC; break;
 		}
 		dispbottom "Dungeon creation failed",0x0000CC;
 		end;

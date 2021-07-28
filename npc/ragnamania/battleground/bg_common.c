@@ -451,265 +451,265 @@ function	script	BG_get_Rewards	{
 //============================================================
 //= Rewards scripts.
 //============================================================
-bat_room,160,150,3	script	Erundek	4_M_MANAGER,{
-	if (checkweight(1201,1) == 0) {
-		mes "- Wait a minute !! -";
-		mes "- Currently you're carrying -";
-		mes "- too many items with you. -";
-		mes "- Please try again -";
-		mes "- after you loose some weight. -";
-		close;
-	}
-	mes "[Erundek]";
-	mes "Do you have the battlefield badges?";
-	mes "I can exchange Bravery Badges and Valor Badges for reward items.";
-	next;
-	switch(select("Exchange Badges", "Check the Catalog")) {
-		case 1:
-			mes "[Erundek]";
-			mes "Which type of items would you like to exchange?";
-			mes "To check more information about the reward items, please use our ^3131FFCatalog^000000.";
-			next;
-			switch(select("Weapon", "Armor", "Accessory", "Consumable")) {
-				case 1:
-					mes "[Erundek]";
-					mes "You chose ^3131FFWeapon^000000.";
-					mes "The following weapons are available for exchange with the battlefield badges.";
-					mes "Please note that items for ^3131FFBravery Badges are indicated as (BB)^000000, and ^3131FFValor Badges as (VB)^000000.";
-					next;
-					switch(select("Dagger/OneSword/TwoSword/TwoSpear", "Staff/Mace/TwoAxe/Shuriken", "Bow/Katar/Music/Whip", "Book/Knuckle", "Revolver/Rifle/Gatling/Shotgun/Launcher")) {
-						case 1:
-							mes "[Erundek]";
-							mes "The following items are available in the ^3131FFDagger, One-Handed Sword, Two-Handed Sword, and Two-Handed Spear^000000 category.";
-							next;
-							setarray .@Weapons[0],13036,7828,13037,7829,13411,7828,13410,7829,1183,7828,1184,7829,1425,7828,1482,7829;
-							break;
-						case 2:
-							mes "[Erundek]";
-							mes "The following items are available in the ^3131FFStaff / Mace / Two-Handed Axe / Huuma Shuriken^000000 category.";
-							next;
-							setarray .@Weapons[0],1632,7828,1633,7829,1634,7828,1635,7829,1543,7828,1542,7829,1380,7828,1379,7829,13305,7828,13306,7829;
-							break;
-						case 3:
-							mes "[Erundek]";
-							mes "The following weapons are available in the ^3131FFBow / Katar / Musical Instrument / Whip^000000 category.";
-							next;
-							setarray .@Weapons[0],1739,7828,1738,7829,1279,7828,1280,7829,1924,7828,1923,7829,1978,7828,1977,7829;
-							break;
-						case 4:
-							mes "[Erundek]";
-							mes "The following weapons are available in the ^3131FFBook / Knuckle^000000 category.";
-							next;
-							setarray .@Weapons[0],1574,7828,1575,7829,1824,7828,1823,7829;
-							break;
-						case 5:
-							mes "[Erundek]";
-							mes "The following weapons are available in the ^3131FFRevolver / Rifle / Gatling Gun / Shotgun / Grenade Launcher^000000 category.";
-							next;
-							setarray .@Weapons[0],13108,7828,13171,7829,13172,7828,13173,7829,13174,7829;
-							break;
-					}
-					.@menu$ = "";
-					for (.@i = 0; .@i < getarraysize(.@Weapons); .@i += 2)
-						.@menu$ += getitemname(.@Weapons[.@i])+((.@Weapons[.@i+1]==7828)?"(BB)":"(VB)")+":";
-					.@i = (select(.@menu$)-1)*2;
-					.@type$ = ((.@Weapons[.@i+1]==7828)?"(BB)":"(VB)");
-					mes "[Erundek]";
-					mes "You chose ^3131FF"+getitemname(.@Weapons[.@i])+.@type$+"^000000.";
-					mes "You can exchange for this item with ^FF0000100 "+getitemname(.@Weapons[.@i+1])+"^000000.";
-					mes "Would you like to exchange?";
-					next;
-					switch(select("Do not exchange", "Exchange")) {
-						case 1:
-							break;
-						case 2:
-							mes "[Erundek]";
-							mes "Would you like to spend ^FF0000100 "+getitemname(.@Weapons[.@i+1])+"^000000 and receive a ^3131FF"+getitemname(.@Weapons[.@i])+.@type$+"^000000?";
-							next;
-							mes "[Erundek]";
-							mes "Remember, Battleground Reward Items are ^FF0000Character Bound^000000. Are you sure you want this item?";
-							next;
-							switch(select("Yes", "No")) {
-							case 1:
-								mes "[Erundek]";
-								if (countitem(.@Weapons[.@i+1]) >= 100) {
-									mes "Thank you for exchanging.";
-									delitem .@Weapons[.@i+1],100;
-									getitem .@Weapons[.@i],1;
-								}
-								else mes "I'm sorry, but you don't have enough badges to exchange.";
-								close;
-							case 2:
-								break;
-							}
-							break;
-					}
-					mes "[Erundek]";
-					mes "Do you need more time to check the items?";
-					close;
-				case 2:
-					mes "[Erundek]";
-					mes "You chose ^3131FFArmor^000000.";
-					mes "The following armors are available for exchange with the battlefield badges.";
-					next;
-					switch(select("Garments / Shoes", "Armor")) {
-						case 1:
-							setarray .@items[0],2538,50,2539,50,2540,50,2435,50,2436,50,2437,50;
-							break;
-						case 2:
-							setarray .@items[0],2376,80,2377,80,2378,80,2379,80,2380,80,2381,80,2382,80;
-							break;
-						}
-					break;
-				case 3:
-					mes "[Erundek]";
-					mes "You chose ^3131FFAccessory^000000.";
-					mes "You can exchange the Medal of Honors with your Badges according to the job classes, as follows:";
-					next;
-					setarray .@items[0],2733,500,2720,500,2721,500,2722,500,2723,500,2724,500,2725,500;
-					.@menu1$ = "Gunslinger:Swordman/Taekwon Master:Thief:Acolyte:Magician:Archer:Merchant";
-					break;
-				case 4:
-					mes "[Erundek]";
-					mes "You chose ^3131FFConsumable^000000.";
-					mes "The following consumable items are available for exchange with the battlefield badges:";
-					next;
-					setarray .@items[0],12269,10,12270,10,12271,5,12272,10,12273,10;
-					break;
-			}
-			break;
-		case 2:
-			mes "[Erundek]";
-			mes "We have many items, so please take a look and purchase deliberately.";
-			close2;
-			readbook 11010,1;
-			end;
-	}
-	.@menu$ = "";
-	if (.@menu1$ != "") .@menu$ = .@menu1$;
-	else for (.@i = 0; .@i < getarraysize(.@items); .@i += 2)
-		.@menu$ += getitemname(.@items[.@i])+":";
-	.@i = (select(.@menu$)-1)*2;
-	mes "[Erundek]";
-	mes "You chose ^3131FF"+getitemname(.@items[.@i])+"^000000.";
-	switch(.@items[.@i]) {
-		case 2720: mes "This item is for Swordman and Taekwon Master Class only."; break;
-		case 2721: mes "This item is for Thief Class only."; break;
-		case 2722: mes "This item is for Acolyte Class only."; break;
-		case 2723: mes "This item is for Magician Class only."; break;
-		case 2724: mes "This item is for Archer Class only."; break;
-		case 2725: mes "This item is for Merchant Class only."; break;
-		case 2733: mes "This item is for Gunslinger only."; break;
-		default: break;
-	}
-	mes "You can exchange for this item with ^FF0000"+.@items[.@i+1]+" "+getitemname(7828)+" or "+.@items[.@i+1]+" "+getitemname(7829)+"^000000.";
-	mes "Would you like to exchange?";
-	next;
-	switch(select("Do not exchange", "Exchange")) {
-		case 1:
-			mes "[Erundek]";
-			mes "Do you need more time to check the items?";
-			break;
-		case 2:
-			mes "[Erundek]";
-			mes "Which Badge do you want to exchange?";
-			mes "You need ^3131FF"+.@items[.@i+1]+" Badges^000000 to exchange.";
-			next;
-			if (.@item[0] < 12269 || .@item[0] > 12273) {
-				mes "[Erundek]";
-				mes "Remember, Battleground Reward Items are ^FF0000Character Bound^000000. Are you sure you want this item?";
-				next;
-			}
-			.@j = select("Bravery Badge", "Valor Badge", "Cancel");
-			mes "[Erundek]";
-			if (.@j == 3) {
-				mes "You cancelled the exchange.";
-				break;
-			}
-			.@cost = ((.@j==1)?7828:7829);
-			if (countitem(.@cost) >= .@items[.@i+1]) {
-				mes "Thank you for exchanging.";
-				delitem .@cost, .@items[.@i+1];
-				getitem .@items[.@i],1;
-			}
-			else mes "You do not have enough "+getitemname(.@cost)+"s.";
-			break;
-	}
-	close;
-}
+// bat_room,160,150,3	script	Erundek	4_M_MANAGER,{
+// 	if (checkweight(1201,1) == 0) {
+// 		mes "- Wait a minute !! -";
+// 		mes "- Currently you're carrying -";
+// 		mes "- too many items with you. -";
+// 		mes "- Please try again -";
+// 		mes "- after you loose some weight. -";
+// 		close;
+// 	}
+// 	mes "[Erundek]";
+// 	mes "Do you have the battlefield badges?";
+// 	mes "I can exchange Bravery Badges and Valor Badges for reward items.";
+// 	next;
+// 	switch(select("Exchange Badges", "Check the Catalog")) {
+// 		case 1:
+// 			mes "[Erundek]";
+// 			mes "Which type of items would you like to exchange?";
+// 			mes "To check more information about the reward items, please use our ^3131FFCatalog^000000.";
+// 			next;
+// 			switch(select("Weapon", "Armor", "Accessory", "Consumable")) {
+// 				case 1:
+// 					mes "[Erundek]";
+// 					mes "You chose ^3131FFWeapon^000000.";
+// 					mes "The following weapons are available for exchange with the battlefield badges.";
+// 					mes "Please note that items for ^3131FFBravery Badges are indicated as (BB)^000000, and ^3131FFValor Badges as (VB)^000000.";
+// 					next;
+// 					switch(select("Dagger/OneSword/TwoSword/TwoSpear", "Staff/Mace/TwoAxe/Shuriken", "Bow/Katar/Music/Whip", "Book/Knuckle", "Revolver/Rifle/Gatling/Shotgun/Launcher")) {
+// 						case 1:
+// 							mes "[Erundek]";
+// 							mes "The following items are available in the ^3131FFDagger, One-Handed Sword, Two-Handed Sword, and Two-Handed Spear^000000 category.";
+// 							next;
+// 							setarray .@Weapons[0],13036,7828,13037,7829,13411,7828,13410,7829,1183,7828,1184,7829,1425,7828,1482,7829;
+// 							break;
+// 						case 2:
+// 							mes "[Erundek]";
+// 							mes "The following items are available in the ^3131FFStaff / Mace / Two-Handed Axe / Huuma Shuriken^000000 category.";
+// 							next;
+// 							setarray .@Weapons[0],1632,7828,1633,7829,1634,7828,1635,7829,1543,7828,1542,7829,1380,7828,1379,7829,13305,7828,13306,7829;
+// 							break;
+// 						case 3:
+// 							mes "[Erundek]";
+// 							mes "The following weapons are available in the ^3131FFBow / Katar / Musical Instrument / Whip^000000 category.";
+// 							next;
+// 							setarray .@Weapons[0],1739,7828,1738,7829,1279,7828,1280,7829,1924,7828,1923,7829,1978,7828,1977,7829;
+// 							break;
+// 						case 4:
+// 							mes "[Erundek]";
+// 							mes "The following weapons are available in the ^3131FFBook / Knuckle^000000 category.";
+// 							next;
+// 							setarray .@Weapons[0],1574,7828,1575,7829,1824,7828,1823,7829;
+// 							break;
+// 						case 5:
+// 							mes "[Erundek]";
+// 							mes "The following weapons are available in the ^3131FFRevolver / Rifle / Gatling Gun / Shotgun / Grenade Launcher^000000 category.";
+// 							next;
+// 							setarray .@Weapons[0],13108,7828,13171,7829,13172,7828,13173,7829,13174,7829;
+// 							break;
+// 					}
+// 					.@menu$ = "";
+// 					for (.@i = 0; .@i < getarraysize(.@Weapons); .@i += 2)
+// 						.@menu$ += getitemname(.@Weapons[.@i])+((.@Weapons[.@i+1]==7828)?"(BB)":"(VB)")+":";
+// 					.@i = (select(.@menu$)-1)*2;
+// 					.@type$ = ((.@Weapons[.@i+1]==7828)?"(BB)":"(VB)");
+// 					mes "[Erundek]";
+// 					mes "You chose ^3131FF"+getitemname(.@Weapons[.@i])+.@type$+"^000000.";
+// 					mes "You can exchange for this item with ^FF0000100 "+getitemname(.@Weapons[.@i+1])+"^000000.";
+// 					mes "Would you like to exchange?";
+// 					next;
+// 					switch(select("Do not exchange", "Exchange")) {
+// 						case 1:
+// 							break;
+// 						case 2:
+// 							mes "[Erundek]";
+// 							mes "Would you like to spend ^FF0000100 "+getitemname(.@Weapons[.@i+1])+"^000000 and receive a ^3131FF"+getitemname(.@Weapons[.@i])+.@type$+"^000000?";
+// 							next;
+// 							mes "[Erundek]";
+// 							mes "Remember, Battleground Reward Items are ^FF0000Character Bound^000000. Are you sure you want this item?";
+// 							next;
+// 							switch(select("Yes", "No")) {
+// 							case 1:
+// 								mes "[Erundek]";
+// 								if (countitem(.@Weapons[.@i+1]) >= 100) {
+// 									mes "Thank you for exchanging.";
+// 									delitem .@Weapons[.@i+1],100;
+// 									getitem .@Weapons[.@i],1;
+// 								}
+// 								else mes "I'm sorry, but you don't have enough badges to exchange.";
+// 								close;
+// 							case 2:
+// 								break;
+// 							}
+// 							break;
+// 					}
+// 					mes "[Erundek]";
+// 					mes "Do you need more time to check the items?";
+// 					close;
+// 				case 2:
+// 					mes "[Erundek]";
+// 					mes "You chose ^3131FFArmor^000000.";
+// 					mes "The following armors are available for exchange with the battlefield badges.";
+// 					next;
+// 					switch(select("Garments / Shoes", "Armor")) {
+// 						case 1:
+// 							setarray .@items[0],2538,50,2539,50,2540,50,2435,50,2436,50,2437,50;
+// 							break;
+// 						case 2:
+// 							setarray .@items[0],2376,80,2377,80,2378,80,2379,80,2380,80,2381,80,2382,80;
+// 							break;
+// 						}
+// 					break;
+// 				case 3:
+// 					mes "[Erundek]";
+// 					mes "You chose ^3131FFAccessory^000000.";
+// 					mes "You can exchange the Medal of Honors with your Badges according to the job classes, as follows:";
+// 					next;
+// 					setarray .@items[0],2733,500,2720,500,2721,500,2722,500,2723,500,2724,500,2725,500;
+// 					.@menu1$ = "Gunslinger:Swordman/Taekwon Master:Thief:Acolyte:Magician:Archer:Merchant";
+// 					break;
+// 				case 4:
+// 					mes "[Erundek]";
+// 					mes "You chose ^3131FFConsumable^000000.";
+// 					mes "The following consumable items are available for exchange with the battlefield badges:";
+// 					next;
+// 					setarray .@items[0],12269,10,12270,10,12271,5,12272,10,12273,10;
+// 					break;
+// 			}
+// 			break;
+// 		case 2:
+// 			mes "[Erundek]";
+// 			mes "We have many items, so please take a look and purchase deliberately.";
+// 			close2;
+// 			readbook 11010,1;
+// 			end;
+// 	}
+// 	.@menu$ = "";
+// 	if (.@menu1$ != "") .@menu$ = .@menu1$;
+// 	else for (.@i = 0; .@i < getarraysize(.@items); .@i += 2)
+// 		.@menu$ += getitemname(.@items[.@i])+":";
+// 	.@i = (select(.@menu$)-1)*2;
+// 	mes "[Erundek]";
+// 	mes "You chose ^3131FF"+getitemname(.@items[.@i])+"^000000.";
+// 	switch(.@items[.@i]) {
+// 		case 2720: mes "This item is for Swordman and Taekwon Master Class only."; break;
+// 		case 2721: mes "This item is for Thief Class only."; break;
+// 		case 2722: mes "This item is for Acolyte Class only."; break;
+// 		case 2723: mes "This item is for Magician Class only."; break;
+// 		case 2724: mes "This item is for Archer Class only."; break;
+// 		case 2725: mes "This item is for Merchant Class only."; break;
+// 		case 2733: mes "This item is for Gunslinger only."; break;
+// 		default: break;
+// 	}
+// 	mes "You can exchange for this item with ^FF0000"+.@items[.@i+1]+" "+getitemname(7828)+" or "+.@items[.@i+1]+" "+getitemname(7829)+"^000000.";
+// 	mes "Would you like to exchange?";
+// 	next;
+// 	switch(select("Do not exchange", "Exchange")) {
+// 		case 1:
+// 			mes "[Erundek]";
+// 			mes "Do you need more time to check the items?";
+// 			break;
+// 		case 2:
+// 			mes "[Erundek]";
+// 			mes "Which Badge do you want to exchange?";
+// 			mes "You need ^3131FF"+.@items[.@i+1]+" Badges^000000 to exchange.";
+// 			next;
+// 			if (.@item[0] < 12269 || .@item[0] > 12273) {
+// 				mes "[Erundek]";
+// 				mes "Remember, Battleground Reward Items are ^FF0000Character Bound^000000. Are you sure you want this item?";
+// 				next;
+// 			}
+// 			.@j = select("Bravery Badge", "Valor Badge", "Cancel");
+// 			mes "[Erundek]";
+// 			if (.@j == 3) {
+// 				mes "You cancelled the exchange.";
+// 				break;
+// 			}
+// 			.@cost = ((.@j==1)?7828:7829);
+// 			if (countitem(.@cost) >= .@items[.@i+1]) {
+// 				mes "Thank you for exchanging.";
+// 				delitem .@cost, .@items[.@i+1];
+// 				getitem .@items[.@i],1;
+// 			}
+// 			else mes "You do not have enough "+getitemname(.@cost)+"s.";
+// 			break;
+// 	}
+// 	close;
+// }
 
-bat_room,160,148,3	script	Telma	701,{
-	mes "[Telma]";
-	mes "Welcome, mighty warrior.";
-	mes "Do you need supplies for your battles?";
-	mes "I can exchange supplies for your badges...";
-	next;
+// bat_room,160,148,3	script	Telma	701,{
+// 	mes "[Telma]";
+// 	mes "Welcome, mighty warrior.";
+// 	mes "Do you need supplies for your battles?";
+// 	mes "I can exchange supplies for your badges...";
+// 	next;
 	
-	switch(select("150 Condensed White Potion:90 Blue Potion:3 Poison Bottle:30 Fire Bottle:30 Acid Bottle:30 Plant Bottle:30 Marine Sphere Bottle:15 Glistening Coat:50 Yellow Gemstone:50 Red Gemstone:100 Blue Gemstone:5 Speed Potion:20 Cobweb")) {
-		case 1:		callsub S_BuyConsumableBG,547,150;	// Condensed White Potion
-		case 2:		callsub S_BuyConsumableBG,505,90;	// Blue Potion
-		case 3:		callsub S_BuyConsumableBG,678,3;	// Poison Bottle
-		case 4:		callsub S_BuyConsumableBG,7135,30;	// Fire Bottle
-		case 5:		callsub S_BuyConsumableBG,7136,30;	// Acid Bottle
-		case 6:		callsub S_BuyConsumableBG,7137,30;	// Plant Bottle
-		case 7:		callsub S_BuyConsumableBG,7138,30;	// Marine Sphere Bottle
-		case 8:		callsub S_BuyConsumableBG,7139,15;	// Glistening Coat
-		case 9:		callsub S_BuyConsumableBG,715,50;	// Yellow Gemstone
-		case 10:	callsub S_BuyConsumableBG,716,50;	// Red Gemstone
-		case 11:	callsub S_BuyConsumableBG,717,100;	// Blue Gemstone
-		case 12:	callsub S_BuyConsumableBG,12016,5;	// Speed Potion
-		case 13:	callsub S_BuyConsumableBG,1025,20;	// Cobweb
-	}
-	end;
+// 	switch(select("150 Condensed White Potion:90 Blue Potion:3 Poison Bottle:30 Fire Bottle:30 Acid Bottle:30 Plant Bottle:30 Marine Sphere Bottle:15 Glistening Coat:50 Yellow Gemstone:50 Red Gemstone:100 Blue Gemstone:5 Speed Potion:20 Cobweb")) {
+// 		case 1:		callsub S_BuyConsumableBG,547,150;	// Condensed White Potion
+// 		case 2:		callsub S_BuyConsumableBG,505,90;	// Blue Potion
+// 		case 3:		callsub S_BuyConsumableBG,678,3;	// Poison Bottle
+// 		case 4:		callsub S_BuyConsumableBG,7135,30;	// Fire Bottle
+// 		case 5:		callsub S_BuyConsumableBG,7136,30;	// Acid Bottle
+// 		case 6:		callsub S_BuyConsumableBG,7137,30;	// Plant Bottle
+// 		case 7:		callsub S_BuyConsumableBG,7138,30;	// Marine Sphere Bottle
+// 		case 8:		callsub S_BuyConsumableBG,7139,15;	// Glistening Coat
+// 		case 9:		callsub S_BuyConsumableBG,715,50;	// Yellow Gemstone
+// 		case 10:	callsub S_BuyConsumableBG,716,50;	// Red Gemstone
+// 		case 11:	callsub S_BuyConsumableBG,717,100;	// Blue Gemstone
+// 		case 12:	callsub S_BuyConsumableBG,12016,5;	// Speed Potion
+// 		case 13:	callsub S_BuyConsumableBG,1025,20;	// Cobweb
+// 	}
+// 	end;
 
-S_BuyConsumableBG:
-	set .@item_id, getarg(0);
-	set .@amt, getarg(1);
+// S_BuyConsumableBG:
+// 	set .@item_id, getarg(0);
+// 	set .@amt, getarg(1);
 	
-	mes "[Telma]";
-	mes "Do you want it for?...";
-	next;
-	if (select("~ Battleground:~ War of Emperium") == 1) .@bg_item = 1;
-	mes "[Telma]";
-	mes "How many sets of ^0000FF"+ .@amt +" "+ getitemname(.@item_id) +"s^000000 do you want?";
-	mes "1 = "+ .@amt   +" supplies = 1 badge";
-	mes "2 = "+ .@amt*2 +" supplies = 2 badges";
-	mes "3 = "+ .@amt*3 +" supplies = 3 badges";
-	mes "etc..";
-	next;
-	input .@sets;
-	mes "[Telma]";
-	if (.@sets < 1) {
-		mes "Enter a positive amount, greater than zero.";
-		close;
-	}
-	mes "So you want ^0000FF"+ (.@amt*.@sets) +" "+ getitemname(.@item_id) +"s^000000...";
-	mes "Remember these can only be used in "+((.@item_id)?"BattleGround":"WoE Maps");
-	mes "It will cost you "+ .@sets +" badge(s)...";
-	next;
-	switch(select("Give her "+ .@sets +" Bravery Badge(s):Give her "+ .@sets +" Valor Badge(s):Give her "+ (3*.@sets) +" Heroism Badges")) {
-		case 1: set .@badge,7828; set .@cost,1; break;
-		case 2: set .@badge,7829; set .@cost,1; break;
-		case 3: set .@badge,7773; set .@cost,3; break;
-	}
-	.@bgchar = getBattleFlag("bg_reserved_char_id");
-	.@woechar = getBattleFlag("woe_reserved_char_id");
-	mes "[Telma]";
-	if (countitem(.@badge) < (.@cost*.@sets)) {
-		mes "You do not have enough ^FF0000"+getitemname(.@badge)+"s^000000 to buy "+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s.";
-	} else if (!checkweight(.@item_id, .@amt*.@sets)) {
-		mes "You are overweight or have too many items in your inventory.";
-	} else {
-		delitem .@badge, .@cost*.@sets;
-		if (.@bg_item) // Battleground's Consumables
-			getitem2 .@item_id,(.@amt*.@sets),1,0,0, 254, 0, .@bgchar & 0xFFFF, .@bgchar >> 0x10;
-		else
-			getitem2 .@item_id,(.@amt*.@sets),1,0,0, 254, 0, .@woechar & 0xFFFF, .@woechar >> 0x10;
-		mes "Here are your: ^0000FF"+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s^000000!";
-		mes "Remember they can only be used in "+((.@item_id)?"BattleGround":"WoE Maps");
-	}
-	close;
-}
+// 	mes "[Telma]";
+// 	mes "Do you want it for?...";
+// 	next;
+// 	if (select("~ Battleground:~ War of Emperium") == 1) .@bg_item = 1;
+// 	mes "[Telma]";
+// 	mes "How many sets of ^0000FF"+ .@amt +" "+ getitemname(.@item_id) +"s^000000 do you want?";
+// 	mes "1 = "+ .@amt   +" supplies = 1 badge";
+// 	mes "2 = "+ .@amt*2 +" supplies = 2 badges";
+// 	mes "3 = "+ .@amt*3 +" supplies = 3 badges";
+// 	mes "etc..";
+// 	next;
+// 	input .@sets;
+// 	mes "[Telma]";
+// 	if (.@sets < 1) {
+// 		mes "Enter a positive amount, greater than zero.";
+// 		close;
+// 	}
+// 	mes "So you want ^0000FF"+ (.@amt*.@sets) +" "+ getitemname(.@item_id) +"s^000000...";
+// 	mes "Remember these can only be used in "+((.@item_id)?"BattleGround":"WoE Maps");
+// 	mes "It will cost you "+ .@sets +" badge(s)...";
+// 	next;
+// 	switch(select("Give her "+ .@sets +" Bravery Badge(s):Give her "+ .@sets +" Valor Badge(s):Give her "+ (3*.@sets) +" Heroism Badges")) {
+// 		case 1: set .@badge,7828; set .@cost,1; break;
+// 		case 2: set .@badge,7829; set .@cost,1; break;
+// 		case 3: set .@badge,7773; set .@cost,3; break;
+// 	}
+// 	.@bgchar = getBattleFlag("bg_reserved_char_id");
+// 	.@woechar = getBattleFlag("woe_reserved_char_id");
+// 	mes "[Telma]";
+// 	if (countitem(.@badge) < (.@cost*.@sets)) {
+// 		mes "You do not have enough ^FF0000"+getitemname(.@badge)+"s^000000 to buy "+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s.";
+// 	} else if (!checkweight(.@item_id, .@amt*.@sets)) {
+// 		mes "You are overweight or have too many items in your inventory.";
+// 	} else {
+// 		delitem .@badge, .@cost*.@sets;
+// 		if (.@bg_item) // Battleground's Consumables
+// 			getitem2 .@item_id,(.@amt*.@sets),1,0,0, 254, 0, .@bgchar & 0xFFFF, .@bgchar >> 0x10;
+// 		else
+// 			getitem2 .@item_id,(.@amt*.@sets),1,0,0, 254, 0, .@woechar & 0xFFFF, .@woechar >> 0x10;
+// 		mes "Here are your: ^0000FF"+(.@amt*.@sets)+" "+getitemname(.@item_id)+"s^000000!";
+// 		mes "Remember they can only be used in "+((.@item_id)?"BattleGround":"WoE Maps");
+// 	}
+// 	close;
+// }
 
 //============================================================
 // = Rewards Shops

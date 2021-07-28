@@ -672,6 +672,7 @@ enum e_global_damage_rate_type : uint8 {
 	DMGRATE_WEAPON,
 	DMGRATE_MAGIC,
 	DMGRATE_MISC,
+	DMGRATE_HIT,
 	DMGRATE_MAX,
 };
 

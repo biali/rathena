@@ -1431,6 +1431,12 @@ t_exp guild_getexp(struct map_session_data *sd,t_exp exp) {
 	return exp;
 }
 
+// Zephyrus biali damage log
+int guild_score_saved(int guild_id, int index)
+{
+	return 0;
+}
+
 /*====================================================
  * Ask to increase guildskill skill_id
  *---------------------------------------------------*/
@@ -2275,6 +2281,71 @@ int guild_castledataloadack(int len, struct guild_castle *gc) {
 	ShowStatus("Received '" CL_WHITE "%d" CL_RESET "' guild castles from char-server.\n", n);
 	return 0;
 }
+
+//biali damage log
+/*------------------------------------------
+ * Guild Ranking System
+ *------------------------------------------*/
+int guild_ranking_save(int flag)
+{
+	struct guild_castle *gc;
+	struct guild *g;
+	DBIterator* iter;
+	struct map_session_data *sd;
+	int i, j, m, index, cc;
+
+	iter = castle_db->iterator(castle_db);
+	for( gc = (struct guild_castle*)dbi_first(iter); dbi_exists(iter); gc = (struct guild_castle*)dbi_next(iter) )
+	{
+		if( gc->guild_id == 0 )
+			continue;
+		
+		if( woe_set && (m = map_mapindex2mapid(gc->mapindex)) >= 0 && map_getmapflag(m,MF_WOE_SET) != woe_set )
+			continue; // Not considered on this ranking
+
+		index = gc->castle_id;
+
+		if( index >= RANK_CASTLES || (flag == 1 && index >= 24) || (flag == 2 && index < 24) )
+			continue;
+
+		if( (g = guild_search(gc->guild_id)) != NULL )
+		{
+			int addtime = DIFF_TICK(last_tick, gc->capture_tick),
+				score = (addtime / 300) * (1 + (gc->economy / 25));
+
+			g->castle[index].capture++;
+			g->castle[index].posesion_time += addtime;
+			g->castle[index].defensive_score += score;
+			g->castle[index].changed = true;
+
+			// Capture counter for members
+			for( j = 0; j < MAX_GUILD; j++ )
+			{
+				if( (sd = g->member[j].sd) == NULL )
+					continue;
+
+				cc = pc_readaccountreg(sd,add_str("#GC_CAPTURES"));
+				pc_setaccountreg(sd,add_str("#GC_CAPTURES"),++cc);
+			}
+		}
+	}
+	iter->destroy(iter);
+
+	iter = guild_db->iterator(guild_db);
+	for( g = (struct guild*)dbi_first(iter); dbi_exists(iter); g = (struct guild*)dbi_next(iter) )
+	{
+		for( i = 0; i < RANK_CASTLES; i++ )
+		{
+			if( !g->castle[i].changed )
+				continue;
+
+			intif_guild_save_score(g->guild_id, i, &g->castle[i]);
+			g->castle[i].changed = false;
+		}
+	}
+	iter->destroy(iter);
+	return 0;
+}//biali fim
 
 /**
  * Start WoE:FE and triggers all npc OnAgitStart

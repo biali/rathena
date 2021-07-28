@@ -1,3 +1,21 @@
+
+function	script	F_getsigneditem	{
+	.@id = getarg(0,0);
+	.@qt = getarg(1,0);
+
+	if(.@id <= 0 || .@qt <= 0)
+		return;
+	
+	.@charid = getcharid(0);
+	.@card3 = .@charid & 65535;
+	.@card4 = .@charid >> 16;
+	.@card1 = 254;
+	.@card2 = 0;
+	getitem2 .@id,.@qt,1,0,0,.@card1,.@card2,.@card3,.@card4;
+	return;
+}
+
+
 //Maths
 function	script	abs	{
 	.@i = getarg(0);
@@ -26,6 +44,31 @@ function	script	F_isVSmap	{
 		return 1;
 	else
 		return 0;
+}
+
+
+function	script	F_rep	{
+	.@totalfac 		= getvariableofnpc(.totalfac, "reputation");
+	.@min 			= getvariableofnpc(.min, "reputation");
+	.@hated  		= getvariableofnpc(.hated, "reputation");
+	.@unfriendly  	= getvariableofnpc(.unfriendly, "reputation");
+	.@normal  		= getvariableofnpc(.normal, "reputation");
+	.@friendly  	= getvariableofnpc(.friendly, "reputation");
+	.@honored  		= getvariableofnpc(.honored, "reputation");
+	.@max  			= getvariableofnpc(.max, "reputation");
+
+	.@faction = getarg(0,0);
+
+	if(.@faction == 0)
+		return -999;
+
+	.@rep = getreputation(.@faction);
+	debugmes "aaa " + .@rep;
+	if(.@rep >= .@honored) return 2;
+	else if(.@rep >= .@friendly) return 1;
+	else if(.@rep > .@unfriendly && .@rep < .@friendly) return 0;
+	else if(.@rep <= .@hated) return -2;
+	else if(.@rep <= .@unfriendly) return -1;
 }
 
 

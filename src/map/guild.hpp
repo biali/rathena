@@ -47,6 +47,8 @@ int guild_getposition(struct map_session_data *sd);
 t_exp guild_payexp(struct map_session_data *sd,t_exp exp);
 t_exp guild_getexp(struct map_session_data *sd,t_exp exp); // [Celest]
 
+int guild_score_saved(int guild_id, int index); // biali damage log
+
 int guild_create(struct map_session_data *sd, const char *name);
 int guild_created(uint32 account_id,int guild_id);
 int guild_request_info(int guild_id);

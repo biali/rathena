@@ -21,7 +21,7 @@ OnInit:
 
 	.shop_name$ = "rops4coins";
 	.npcName$ 	= strnpcinfo(1);	//Visiable name
-	.currency 	= 675;				// 0: Zeny, else Item
+	.currency 	= $@HUNTING_MEDAL;				// 0: Zeny, else Item
 					
 	InitItemShop(.items,.shop_name$,.npcName$);
 	end;

@@ -340,7 +340,7 @@ struct map_session_data {
 		bool sale_open;
 		int deadbody_looting; // biali flags if the player is looting a body at the time (keeps deadbody gid while lootbag is open)
 		unsigned int block_action : 10;
-		bool knocked; // Biali Black zone
+		int knocked; // Biali Black zone (receives an epoch time)
 #ifdef BGEXTENDED
 		// BG eAmod
 		unsigned bg_afk : 1;
@@ -423,7 +423,7 @@ struct map_session_data {
 	int menuskill_id, menuskill_val, menuskill_val2;
 
 	int invincible_timer;
-	int invincible_timer_reset = 120000; // Biali blackzone 2 mins to reset invincibility when changing maps
+	int invincible_timer_reset = 120000; // Biali blackzone 2 mins to reset invincibility when changing maps Biali TODO: Convert to battle_config
 	t_tick canlog_tick;
 	t_tick canuseitem_tick;	// [Skotlex]
 	t_tick canusecashfood_tick;
@@ -821,12 +821,18 @@ struct map_session_data {
 	std::vector<int16> hatEffects;
 #endif
 
+	int lastEffectID;
+	int lastEffectID2;
+	
 	struct{
 		int tid;
 		uint16 skill_id;
 		uint16 level;
 		int target;
 	} skill_keep_using;
+
+	int mount; // biali mount rework (mount id)
+	int mount_remount_timer; //biali mount rework. when will them be allowed to mount again?
 };
 
 extern struct eri *pc_sc_display_ers; /// Player's SC display table
@@ -988,6 +994,9 @@ extern struct s_job_info job_info[CLASS_COUNT];
 #define EQP_SHADOW_ACC (EQP_SHADOW_ACC_R|EQP_SHADOW_ACC_L)
 #define EQP_SHADOW_ARMS (EQP_SHADOW_WEAPON|EQP_SHADOW_SHIELD)
 
+//Biali deadbody
+#define KNOCKED_AURA 213 // this is the hateffect id in hateffect.lub
+
 /// Equip positions that use a visible sprite
 #if PACKETVER < 20110111
 	#define EQP_VISIBLE EQP_HELM
@@ -1086,6 +1095,9 @@ enum e_mado_type : uint16 {
 	( (class_) >= JOB_BABY_STAR_GLADIATOR2	&& (class_) <= JOB_BABY_STAR_EMPEROR2 ) \
 )
 #define pcdb_checkid(class_) pcdb_checkid_sub((unsigned int)class_)
+
+//Ancient WoE Check
+#define pc_class2ancientwoe(class_) ( (class_ >= JOB_NOVICE && class_ <= JOB_SUPER_NOVICE && class_ != JOB_WEDDING) )
 
 // clientside display macros (values to the left/right of the "+")
 #ifdef RENEWAL
@@ -1201,7 +1213,8 @@ enum e_setpos{
 	SETPOS_OK = 0,
 	SETPOS_MAPINDEX = 1,
 	SETPOS_NO_MAPSERVER = 2,
-	SETPOS_AUTOTRADE = 3
+	SETPOS_AUTOTRADE = 3,
+	SETPOS_NOTALLOW = 4
 };
 
 enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, int x, int y, clr_type clrtype);
@@ -1311,7 +1324,7 @@ int pc_skillheal_bonus(struct map_session_data *sd, uint16 skill_id);
 int pc_skillheal2_bonus(struct map_session_data *sd, uint16 skill_id);
 
 void pc_damage(struct map_session_data *sd,struct block_list *src,unsigned int hp, unsigned int sp);
-int pc_dead(struct map_session_data *sd,struct block_list *src);
+int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id = 0); //biali damage log
 void pc_revive(struct map_session_data *sd,unsigned int hp, unsigned int sp);
 bool pc_revive_item(struct map_session_data *sd);
 void pc_heal(struct map_session_data *sd,unsigned int hp,unsigned int sp, int type);
@@ -1421,6 +1434,20 @@ void pc_setinvincibletimerreset(struct map_session_data* sd, int val);
 void pc_delinvincibletimerreset(struct map_session_data* sd);
 void pc_setknockedtimer(struct map_session_data* sd, int val);
 void pc_delknockedtimer(struct map_session_data* sd);
+//biali deadbody lootbag rework
+int8 pc_create_lootbag(struct npc_data* nd);
+//new deadbody lootbag biali
+void pc_lootbag_storageopen(struct map_session_data *sd, struct npc_data *nd, int count);
+void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, int index, int amount);
+void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
+void pc_lootbag_storageclose(struct map_session_data *sd);
+
+// biali master account
+int pc_get_masterid(int aid);
+
+//biali mount rework
+void pc_setremounttimer(struct map_session_data* sd, int val);
+void pc_delremounttimer(struct map_session_data* sd);
 
 extern struct fame_list smith_fame_list[MAX_FAME_LIST];
 extern struct fame_list chemist_fame_list[MAX_FAME_LIST];
@@ -1429,15 +1456,6 @@ extern struct fame_list taekwon_fame_list[MAX_FAME_LIST];
 extern struct fame_list pvprank_fame_list[MAX_FAME_LIST];
 extern struct fame_list bgrank_fame_list[MAX_FAME_LIST];
 extern struct fame_list bg_fame_list[MAX_FAME_LIST];
-
-//biali deadbody lootbag rework
-int8 pc_create_lootbag(struct npc_data* nd);
-
-//new deadbody lootbag biali
-void pc_lootbag_storageopen(struct map_session_data *sd, struct npc_data *nd, int count);
-void pc_lootbag_storageget(struct map_session_data *sd, struct s_storage *stor, int index, int amount);
-void pc_lootbag_storagegettocart(struct map_session_data* sd, struct s_storage *stor, int index, int amount);
-void pc_lootbag_storageclose(struct map_session_data *sd);
 
 void pc_readdb(void);
 void do_init_pc(void);

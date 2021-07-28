@@ -15,35 +15,26 @@ OnInit:
 
 	// INFOSHEET //
 
-	// #HOUSING_TIPS$[0]		: Gardener
-	// #HOUSING_TIPS$[1]		: Housekeeper
-
-	// #HOUSING$[0]				: House Id
-	// #HOUSING$[1]				: Rend amount
-	// #HOUSING$[2]				: Gardener
-	// #HOUSING$[3] 			: Housekeeper
-	// #HOUSING$[4]				: Claning Lady
-	// #HOUSING$[5] 			: Oven
-	// #HOUSING$[6] 			: Storage
-	// #HOUSING$[7] 			: Beds
-	// #HOUSING$[8]				: Wardrobe/Mirror
+	// HOUSING$[0]				: House Id
+	// HOUSING$[1]				: Rent Due Date
+	// HOUSING$[2]				: Services Level
 	end;
 }
 
 
 rent_mb,134,58,4	script	Properties Manager::mngr	1902,{
-	function	ExtendContract; function	HireService; function	WipeData;
-	if(atoi(#HOUSING$[0]) > 0 && atoi(#HOUSING$[1]) < gettimetick(2)) {
-		WipeData();
+	function BuyHouse; function ExtendContract; function ServiceType; function ExplainServices;
+	if(atoi(HOUSING$[0]) > 0 && atoi(HOUSING$[1]) < gettimetick(2)) {
 		mes .n$;
-		mes "Oh Lord, you've missed your contract renew date. I am afraid I have just rented your previous house to someone else.";
+		mes "Are you wondering why I've changed the locks at number #" + HOUSING$[0] + "? Well, you haven't paid the Maintenance Fee, that is why! Do you want to do that now?";
 		next;
-		mes .n$;
-		mes "I was ver clear the first time: Not a second late!";
-		next;
+		if(select("Yes, please.:No, I am good, thanks.") == 2)
+			goto RentHouse;
+		else
+			close;
 	} else {
 		mes .n$;
-		mes "Howdy, "+strcharinfo(0);
+		mes "Hello, "+strcharinfo(0);
 		mes "How ya' doing today?";
 		next;
 		mes .n$;
@@ -51,248 +42,259 @@ rent_mb,134,58,4	script	Properties Manager::mngr	1902,{
 		mes "Well, how can I be of your help, then?";
 		next;
 	}
-	switch(select("I'd like to rent a house:About my contract")) {
-	RentHouse:
-	case 1:
-		if(atoi(#HOUSING$[1]) > gettimetick(2)) {
-			mes .n$;
-			mes strcharinfo(0) + ", my dear, I am sorry but you can only have one house at the time.";
-			next;
-			mes .n$;
-			mes "Your place at number ^AA11AA"+#HOUSING$[0]+"^000000 is paid and yours to use for another ^AA11AA"+ callfunc("Time2Str",atoi(#HOUSING$[1]))+"^000000.";
-			mes "Do you wanna extent your contract now?";
-			next;
-			if(select("Yes, please.:No, not now. Thanks") == 2)
-				close;
-			ExtendContract();
-			mes .n$;
-			mes "All done! Thank you very much!";
-			mes "Your new contract ends in ^AA11AA" + callfunc("Time2Str",atoi(#HOUSING$[1])) + "^000000.";
-			close;
-			end;
-		}
-		mes .n$;
-		mes "Of course, why not?";
-		mes "Well, it's been pretty busy, recently...";
-		next;
-		mes .n$;
-		mes "Because of that the prices are a bit in a steep right now.";
-		next;
-		mes .n$;
-		mes "But worry not!";
-		mes "I have this lovely two-bedroom house available for a very competitive price.";
-		mes "Not sale, though. Renting.";
-		next;
-		mes .n$;
-		mes "That one will cost you "+F_InsertComma(.Rent)+"z per week.";
-		mes "What do you think?";
-		next;
-		if(select("That is fine, I will take it.:No, that is too much.") == 2) {
-			mes .n$;
-			mes "I understand... Just don't wait too much. They are limited, you know...";
-			close;
-		}
-		mes .n$;
-		mes "Fantastic!";
-		mes "It will be "+F_InsertComma(.Rent)+"z paid in advance, please.";
-		mes "I will then show you your new home!";
-		next;
-		if(select("Pay now:Cancel") == 2)
-			close;
-		ExtendContract();
-		mes .n$;
-		mes "Perfect!";
-		mes "Your new place is ^AA5500house number " + #HOUSING$[0] + "^000000.";
-		next;
-		mes .n$;
-		mes "Are you excited to meet the place? I bet you are gonna love it and this neighbourhood is so lively!";
-		next;
-		mes .n$;
-		mes "Remember! Your rent is due to renew in ^5599AA" + callfunc("Time2Str",atoi(#HOUSING$[1])) + "^000000.";
-		next;
-		mes .n$;
-		mes "I'd appreciate if you paid before the deadline. I won't tolerate any delays and will take the house back the second after the expiration time.";
-		next;
-		mes .n$;
-		mes "If you force me to do that, you are gonna lose any improvements you've carried out in the house may you want to rent it again.";
-		next;
-		mes .n$;
-		mes "You can always pay rent in advance, though. Any time, just talk to me and we can extend your contract.";
-		next;
-		mes .n$;
-		mes "Well, that covers every thing, I belive.";
-		mes "Should we meet at the house?";
-		mes "See you there!";
-		close;
-		break;
-	case 2:
-		if(getarraysize(#HOUSING$) == 0) {
-			mes .n$;
-			mes "I am afraid I could not find anything on your name in my records...";
-			close;
-		}
-		mes .n$;
-		mes "^AA0000-- Contract for House # " + #HOUSING$[0] + " --^000000";
-		mes "Rent: " + (atoi(#HOUSING$[1])<gettimetick(2)?F_InsertComma(.Rent)+"z p/w":callfunc("Expire",atoi(#HOUSING$[1]))+ " ("+.Rent+"z p/w)");
-		mes "Gardener: " + (atoi(#HOUSING$[2])<gettimetick(2)?F_InsertComma(.Gardener)+"z p/w":callfunc("Expire",atoi(#HOUSING$[2]))+ " ("+.Gardener+"z p/w)");
-		mes "Housekeeper: " + (atoi(#HOUSING$[3])<gettimetick(2)?F_InsertComma(.Housekeeper)+"z p/w":callfunc("Expire",atoi(#HOUSING$[3]))+" ("+.Housekeeper+"z p/w)");
-		.@total = callfunc("F_CalcCosts");
-		mes "Total per Week: " + F_InsertComma(.@total);
-		next;
-		switch(select("Renew Rent:Gardening Services:Housekeeping Services:Cancel")) {
+RentHouse:
+	switch(select("I'd like to buy a house:I'd like to change the services I receive:I'd like to pay the maintenance fee:Cancel")) {	
+		// Buying a house
 		case 1:
-			mes .n$;
-			if( atoi(#HOUSING$[0]) == 0 || atoi(#HOUSING$[1]) < gettimetick(2) ) {
-				// First time or after expiration
+			// already have a house
+			if(atoi(HOUSING$[0]) > 0) {
 				mes .n$;
-				mes "I am afraid we don't have any contracts in your name. You may want to rent a house, maybe?";
+				mes strcharinfo(0) + ", my dear, I am sorry but you can only have one house at the time.";
+				next;
+				mes .n$;
+				mes "Your place at number ^AA11AA"+HOUSING$[0]+"^000000.";
+				mes (atoi(HOUSING$[1]) > gettimetick(2))? " The maintenance fee is current ^AA11AA("+ callfunc("Time2Str",atoi(HOUSING$[1]))+")^000000." : "The maintenance fee is ^FF0000overdue^000000.";
 				next;
 				goto RentHouse;
-			} else if(atoi(#HOUSING$[1]) > gettimetick(2)) {
+			// dont have a house yet
+			} else {
 				mes .n$;
-				mes "Absolutely, that will be ^AA11AA"+F_InsertComma(.Rent)+"^000000z for another week of rent.";
+				mes "Of course, why not?";
+				mes "Well, it's been pretty busy, recently...";
 				next;
-				ExtendContract();
 				mes .n$;
-				mes "All done! Thank you very much!";
-				mes "Your new contract ends in ^AA11AA" + callfunc("Time2Str",atoi(#HOUSING$[1])) + "^000000.";
+				mes "Because of that the prices are a bit in a steep right now.";
+				next;
+				mes .n$;
+				mes "But worry not!";
+				mes "I have this lovely two-bedroom house available for a very competitive price.";
+				next;
+				mes .n$;
+				mes "That one will cost you "+F_InsertComma(.HousePrice)+"z one-off plus maintenance fee you'd pay weekly.";
+				mes "Maintenance fee varies as per the table below:";
+				next;
+				ExplainServices();
+				next;
+				mes .n$;
+				mes "So, what would that be?";
+				next;
+				.@idx = select(ServiceType(0)+":"+ServiceType(1)+":"+ServiceType(2)) -1;
+				mes .n$;
+				mes "Right... the total for today includes the buying of the house and the maintenance fee of the next 7 days.";
+				next;
+				mes .n$;
+				mes "I must remind you that, if you fail to pay the maintenance fee at any time, you will lose access to your house.";
+				next;
+				mes .n$;
+				mes "We will make sure to keep everything as you left at least for a period of time but you won't have access to any of your stuff in there until you pay the fee, ok?";
+				next;
+				mes .n$;
+				mes "The total is:";
+				mes "House: " + callfunc("F_InsertComma",.HousePrice) + "z";
+				mes "Maintenance Fee: " + callfunc("F_InsertComma",.Rent[.@idx]) + "z";
+				.@total = .HousePrice + .Rent[.@idx];
+				mes "Total: " + callfunc("F_InsertComma",.@total);
+				next;
+				if(select("That is fine, I will take it.:No, that is too much.") == 2) {
+					mes .n$;
+					mes "I understand... Just don't wait too much. They are limited, you know...";
+					close;
+				}
+				mes .n$;
+				mes "Fantastic!";
+				next;
+				if(select("Pay now:Cancel") == 2)
+					close;
+
+				BuyHouse();
+				mes .n$;
+				mes "Perfect!";
+				mes "Your new place is ^AA5500house number " + HOUSING$[0] + "^000000.";
+				next;
+				mes .n$;
+				mes "Are you excited to meet the place? I bet you gonna love it and this neighbourhood is so lively!";
+				next;
+				mes .n$;
+				mes "Remember! Your rent is due to renew in ^5599AA" + callfunc("Time2Str",atoi(HOUSING$[1])) + "^000000.";
+				next;
+				mes .n$;
+				mes "I'd appreciate if you paid before the deadline. I won't tolerate any delays and will take the house back the second after the expiration time.";
+				next;
+				mes .n$;
+				mes "You can always pay the fees in advance, any time, just talk to me and we can extend your contract.";
+				next;
+				mes .n$;
+				mes "Well, that covers every thing, I belive.";
+				mes "Have a good day!";
 				close;
 			}
-			break;
+		// Changing the Service
 		case 2:
 			mes .n$;
-			if(atoi(#HOUSING$[2]) < gettimetick(2)) {
-				mes "Do you wanna hire a gardener to help you with the chores and perhaps even plot the land and produce a some delicious fruits and veggies?";
-				next;
-				mes .n$;
-				mes "We have Maia available, she is very good. Reliable, hard worker...";
-				mes "She is available for " + F_InsertComma(.Gardener) + "z per week.";
-				next;
-				if(select("Hire Maia:Cancel") == 2)
-					goto Dismiss;
-				else {
-					HireService(2,.Gardener);
+			mes "Great... let me have a look...";
+			next;
+			mes .n$;
+			mes "At the moment, this is what you've got:";
+			mes "Service: " + ServiceType(atoi(HOUSING$[2])) + (atoi(HOUSING$[1])<gettimetick(2))?" ^FF0000 EXPIRED^000000" : "";
+			mes "Maintenancy Fee: " + callfunc("F_InsertComma",.rent[atoi(HOUSING$[2])]);
+			next;
+	ServicesMenu:
+			switch(select("The benefits of each service:I know what I want:Cancel")) {
+				case 1:
+					ExplainServices();
+					next;
+					goto ServicesMenu;
+				case 2:
 					mes .n$;
-					mes "All done... She is ready to start.";
-					mes "Thank you for your custom.";
+					mes "Great, which kind of house you are looking for, then?";
+					mes "Please remember: if you you have any time left from your actual Maintenancy Fee, that will be lost and a new agreement will start now, ok?";
+					next;
+					.@idx = select(ServiceType(0)+":"+ServiceType(1)+":"+ServiceType(2)) -1;
+					if(.@idx == atoi(HOUSING$[2])) {
+						mes .n$;
+						mes "So, that is the same model you actually have!";
+						mes "No changes will be made...";
+						close;
+					}
+					mes .n$;
+					mes "House Number: " + HOUSING$[0];
+					mes "Service: ^00AA00" + ServiceType(.@idx) +"^000000";
+					mes "Maintenancy Fee: " + callfunc("F_InsertComma",.rent[.@idx]);
+					mes " ";
+					mes "Is that right? Should we proceed?";
+					next;
+					if(select("Yes, please:No Thank you") == 2)
+						goto ServicesMenu;
+					// I know, it is redundant but it is necessary as the changes below cant happen if the guy doesnt have the zeny to pay for it
+					if(Zeny < .rent[.@idx])
+						goto NoZeny;
+
+					HOUSING$[1] = gettimetick(2);
+					HOUSING$[2] = .@idx;
+					ExtendContract();
+					mes .n$;
+					mes "It is all done!";
+					mes "Your address keeps the same but I hope you like the improvements we've made to your house!";
 					close;
-				}
-			} else {
-				mes "Do you want to extend your contract with ^AA00AAMaia^000000 for another week? That would be another "+ F_InsertComma(.Gardener) +"z. Payment in advance. Always.";
-				next;
-				if(select("Yes, please:No, Thank you") == 2)
-					goto Dismiss;
-				HireService(2,.Gardener);
+				case 3:
+					close;
+			}
+
+		// Paying Maintenance Fee
+		case 3:
+			if(getarraysize(HOUSING$) == 0) {
 				mes .n$;
-				mes "All done! Thank you very much!";
-				mes "Your new contract with ^AA00AAMaia^000000 ends in ^AA11AA" + callfunc("Time2Str",atoi(#HOUSING$[2])) + "^000000.";
+				mes "I am afraid I could not find anything on your name in my records...";
 				close;
 			}
-			break;
-		case 3:
 			mes .n$;
-			if(atoi(#HOUSING$[3]) < gettimetick(2)) {
-				mes "Do you wanna hire a housekeeper to help you with the pool? I bet there are a couple of very interesing things one can do with a pool around.";
-				next;
-				mes .n$;
-				mes "We have Alfonso available, he is highly recommended!";
-				mes "He is available for " + F_InsertComma(.Housekeeper) + "z per week.";
-				next;
-				if(select("Hire Alfonso:Cancel") == 2)
-					goto Dismiss;
-				else {
-					if(Zeny < .Housekeeper)
-						goto OnNoZeny;
-					set Zeny, Zeny - .Housekeeper;
-					set #HOUSING$[3],gettimetick(2)+.Period;
+			mes "House Number: " + HOUSING$[0];
+			mes "Service: " + ServiceType(atoi(HOUSING$[2])) + (atoi(HOUSING$[1])<gettimetick(2))?" ^FF0000 EXPIRED^000000" : "";
+			mes "Maintenancy Fee: " + callfunc("F_InsertComma",.rent[atoi(HOUSING$[2])]);
+			next;
+			switch(select("Pay Maintenancy Fee:Cancel")) {
+				case 1:
 					mes .n$;
-					mes "All done... He is on his way!";
-					mes "Thank you for your custom.";
+					mes "Absolutely, that will be ^AA11AA"+F_InsertComma(.Rent[atoi(HOUSING$[2])])+"^000000z.";
+					next;
+					ExtendContract();
+					mes .n$;
+					mes "All done! Thank you very much!";
+					mes "Your new contract ends in ^AA11AA" + callfunc("Time2Str",atoi(HOUSING$[1])) + "^000000.";
 					close;
-				}
+
+				case 2:
+					mes .n$;
+					mes "Understandable... See you around!";
+					close;
 			}
-			break;
 		case 4:
 			close;
-			break;
-		}
-
 	}
-	end;
+
 
 OnNoZeny:
 	mes .n$;
 	mes "Oh, " + strcharinfo(0) + ", what is going on here? You don't seem to have enough Zeny for this.";
 	close;
 
-Dismiss:
-	mes .n$;
-	mes "No problem, I understand.";
-	mes "See you around!";
-	close;
 
 OnInit:
 	.n$ 		= "^0000FF[ Properties Manager ]^000000";
-	.Rent 		= 40000;
+	.HousePrice	= 5000000;
 	.Period 	= 604800; 	// 7 dias
-	.Gardener 	= 12000;
-	.Housekeeper= 18000;
+	setarray	.Rent[0], 50000,150000,500000;
 	end;
 
-	function	ExtendContract	{
-		if(Zeny < .Rent){
+
+	// returns description of service
+	// .@service$[0] = service description
+	function ServiceType {
+		.@type = getarg(0);
+		switch(.@type) {
+			case 0: return "Working-Class";
+			case 1: return "Mid-Class";
+			case 2: return "High Standard";
+		}
+	}
+
+
+	// Paying Maintenance Fee / Extending the contract
+	function ExtendContract {
+		
+		if(Zeny < .rent[atoi(HOUSING$[2])])
 			goto OnNoZeny;
-			end;
-		}
-		set Zeny, Zeny - .Rent;
-		if(atoi(#HOUSING$[1]) < gettimetick(2)) {
-			set #HOUSING$[0], rand(1,23);				// House Id
-			set #HOUSING$[1], gettimetick(2) + .Period;	// Rent amount
-			set #HOUSING$[2], 0; 						// Gardener
-			set #HOUSING$[3], 0; 						// Housekeeper
-			set #HOUSING$[4], 0; 						// Claning Lady
-			set #HOUSING$[5], 0; 						// Oven
-			set #HOUSING$[6], 0; 						// Storage
-			set #HOUSING$[7], 0; 						// Beds
-			set #HOUSING$[8], 0; 						// Wardrobe/Mirror
-		} else {
-			set #HOUSING$[1], atoi(#HOUSING$[1]) + .Period;	// Rent amount
-		}
+
+		Zeny -= .rent[atoi(HOUSING$[2])];
+		if(atoi(HOUSING$[1]) < gettimetick(2))
+			HOUSING$[1] = gettimetick(2) + .Period;
+		else
+			HOUSING$[1] = atoi(HOUSING$[1]) + .Period;	// Rent amount
 		return;
 	}
 
-	function	HireService	{
-		.@index 	= getarg(0);
-		.@cost		= getarg(1);
-		if(Zeny < .@cost) {
+	// Buy New House
+	function BuyHouse {
+		.@type = getarg(0,0);
+		if(Zeny < .HousePrice)
 			goto OnNoZeny;
-			end;
-		}
-		set Zeny, Zeny - .@cost;
-		if(atoi(#HOUSING$[.@index]) < gettimetick(2)) { // New Service or it was expired
-			switch(atoi(#HOUSING$[.@index])) {
-			case 2: // Gardener
-				setarray #HOUSING_CROPS$[0],		"0","0","0","0","0","0","0","0","0","0";
-				setarray #HOUSING_CROPS_QTY$[0],	"0","0","0","0","0","0","0","0","0","0";
-				set #HOUSING_TIPS$[0],				"0";
-				break;
-			case 3: // Housekeeper
-				break;
-			}
-			set #HOUSING$[.@index],gettimetick(2) + .Period;
-		} else { // Renewing before expiration
-			set #HOUSING$[.@index],atoi(#HOUSING$[.@index]) + .Period;
-		}
+
+		Zeny -= .HousePrice;
+
+		set HOUSING$[0], rand(1,23);				// House Id
+		set HOUSING$[1], gettimetick(2) + .Period;	// Countdown until renewal
+		set HOUSING$[2], .@type; 					// House type (0=basic, 1=working class, 2=mid-class house)
 		return;
 	}
 
-	function	WipeData	{
-		// services array
-		deletearray #HOUSING$[0],getarraysize(#HOUSING$);
-		deletearray #HOUSING_TIPS$[0], getarraysize(#HOUSING_TIPS$);
-		// gardener-related array
-		deletearray #HOUSING_CROPS$[0],getarraysize(#HOUSING_CROPS$);
-		deletearray #HOUSING_CROPS_QTY$[0],getarraysize(#HOUSING_CROPS_QTY$);
+	function ExplainServices {
+		mes .n$;
+		mes " ";
+		mes ServiceType(0);
+		mes "A place to call home...";
+		mes " - A garden to plant,";
+		mes " - A bed to sleep,";
+		mes " ";
+		mes callfunc("F_InsertComma",.rent[0]) + "z per week";
+		next;
+		mes .n$;
+		mes ServiceType(1);
+		mes "The comfort you deserve...";
+		mes " - A garden to plant,";
+		mes " - A bed to sleep,";
+		mes " - A storage to keep your stuff";
+		mes " ";
+		mes callfunc("F_InsertComma",.rent[1]) + "z per week";
+		next;
+		mes .n$;
+		mes ServiceType(2);
+		mes "The place of your dreams...";
+		mes " - A garden to plant,";
+		mes " - A bed to sleep,";
+		mes " - A storage to keep your stuff";
+		mes " - A diversified wardrobe";
+		mes " ";
+		mes callfunc("F_InsertComma",.rent[2]) + "z per week";
 
 		return;
 	}
@@ -314,32 +316,13 @@ OnInit:
 
 
 
-// ********************************************
-// Housing PostBox
-// ********************************************
--	script	MailBox#Mid	-1,{
-	
-	if(((getcharid(5) < 4) && (strnpcinfo(4) == "rent_ma")) || ((getcharid(5) > 3) && (strnpcinfo(4) == "rent_mb"))) {
-		dispbottom "I have no interest in these bastards mails...";
-		end;
-	}
-	
-	if(HOUSING$[0] != strnpcinfo(2)) {
-		dispbottom "I cannot read other people's mails... Shame on me!";
-		end;
-	}
-  openmail;
-  end;
-}
-
-
 // ********************************************************************
 // Housing Warps 
 
 // ********************************************************************
 // House Entrance (door steps, outside -> in)
 // ********************************************************************
-rentb1,19,22,0	script	PortaDeCasa#b1	45,2,2,{
+rentb1,19,24,0	script	PortaDeCasa#b1	45,2,2,{
 	end;
 
 OnInstanceInit:
@@ -348,7 +331,7 @@ OnInstanceInit:
 
 OnTouch:
 	.@map$ = "rentin"+strnpcinfo(2);
-	warp instance_mapname(.@map$,instance_id(IM_CHAR)),26,7;
+	warp instance_mapname(.@map$,@instance),26,7;
 	end;
 }
 
@@ -364,217 +347,39 @@ OnInstanceInit:
 
 OnTouch:
 	.@map$ = "rent"+strnpcinfo(2);
-	warp instance_mapname("rentb1",instance_id(IM_CHAR)),20,17;
+	warp instance_mapname("rentb1",@instance),20,17;
 	end;
 }
 
 // ********************************************************************
 // Front Gate of the House (inside -> out)
 // ********************************************************************
-rentb1,25,2,0	script	FrontGate#rent_mb	45,2,2,{
-	end;
-
-OnInstanceInit:
-	enablenpc instance_npcname(strnpcinfo(0));
+rentb1,22,2,0	script	FrontGate#rent_mb	45,2,2,{
 	end;
 
 OnTouch:
-	warp strnpcinfo(2),$@HDRespMx[atoi(#HOUSING$[0])-1],$@HDRespMy[atoi(#HOUSING$[0])-1];
-	if (instance_id(IM_CHAR))
-		instance_destroy;
-
+	warp strnpcinfo(2),$@HDRespMx[atoi(HOUSING$[0])-1],$@HDRespMy[atoi(HOUSING$[0])-1];
+	instance_destroy;
+	@instance = 0;
 	end;
 }
 
 
 // ********************************************************************
 // Front Gate of the House (outside -> in)
-// ********************************************************************
 
 rent_mb,106,42,0	script	PortaoDaCasa#1	45,2,2,{
 	end;
 
 OnTouch:
-	if(atoi(#HOUSING$[0]) == 0)
+	if(atoi(HOUSING$[0]) == 0)
 		message strcharinfo(0),"What am I doing? I don't even have a house! ";
-	else if(#HOUSING$[0] != strnpcinfo(2))
-		message strcharinfo(0),"Omg! What am I doing? My house is number " + #HOUSING$[0];
+	else if(HOUSING$[0] != strnpcinfo(2))
+		message strcharinfo(0),"Omg! What am I doing? My house is number " + HOUSING$[0];
 	else
 		callfunc "F_HouseInstancing",atoi(strnpcinfo(2));
 
 	end;
-}
-
-
-
-
-
-
-
-
-// ********************************************************************
-// Weed, Seaweed and Pest
-// ********************************************************************
-
-rentb1,30,15,0	script	weed	1083,{
-end;
-
-OnInstanceInit:
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-//OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-rentb1,16,12,0	script	seaweed	1579,{
-end;
-
-OnInstanceInit:
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-//OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-rentinb1,4,4,0	script	#rentb1	-1,{
-	end;
-OnInstanceInit:
-	areamonster instance_mapname(strnpcinfo(4)),4,12,14,23,"Slug",1007,1,instance_npcname("#"+strnpcinfo(2))+"::OnMobDead";
-	end;
-
-OnMobDead:
-	areamonster instance_mapname(strnpcinfo(4)),4,12,14,23,"Slug",1007,1,instance_npcname("#"+strnpcinfo(2))+"::OnMobDead";
-	end;
-	
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-// ********************************************************************
-// Storage
-// ********************************************************************
-
-rentinb1,9,5,0	script	#Storage	844,{
-	if (getcharid(0) == getpartyleader(getcharid(1),2)) {
-		callfunc("F_CheckKafCode");	//check your storage password, if set
-		openstorage;
-	} else {
-		dispbottom "I shouldn't be messying with my friend's stuff...";
-	}
-	end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-// ********************************************************************
-// Beds
-// ********************************************************************
-
-rentinb1,26,34,0	script	#Beds	844,{
-	if (getcharid(0) == getpartyleader(getcharid(1),2)) {
-		switch(select("Rest:Cancel")) {
-		case 1:
-			message strnpcinfo(0), "Hope I have one of those dreams....";
-			sleep2 5000;
-			percentheal 100,100;
-			specialeffect2 EF_BLESSING; sc_start SC_BLESSING,600000,10;
-			specialeffect2 EF_INCAGILITY; sc_start SC_INCREASEAGI,600000,10;
-			if (countitem(521) >= 1){
-				delitem 521,1;
-				warp "dreamland",128,132;
-			}
-			end;
-			break;
-		case 2:
-			end;
-			break;
-		}
-	} else {
-		dispbottom "I shouldn't be messying with my friend's stuff...";
-	}
-	end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-}
-
-
-
-// ********************************************************************
-// Oven
-// ********************************************************************
-
-rentinb1,6,7,0	script	#Oven	844,{
-	if (getcharid(0) == getpartyleader(getcharid(1),2)) {
-		if(countitem(6251) > 0){
-			delitem 6251,1;
-			cooking 16;
-		} else {
-			message strcharinfo(0), "Hum... I am afraid I'll need some " + getitemname(6251) + " first.";
-		}
-		end;
-	} else {
-		dispbottom "I shouldn't be messying with my friend's stuff...";
-	}
-	end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-}
-
-
-// ********************************************************************
-// Library
-// ********************************************************************
--	script	Books#inscription	-1,{
-	callfunc "Inscription_Info",InscriptionLvl;
-	end;
-
-OnInstanceInit:
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-
 }
 
 
@@ -609,33 +414,6 @@ rent_mb,222,53,1	duplicate(House Plate#1)	House Plate#21	837
 rent_mb,193,45,1	duplicate(House Plate#1)	House Plate#22	837
 rent_mb,165,45,1	duplicate(House Plate#1)	House Plate#23	837
 
-// Caixas de Correio
-// ******************************************************************
-
-// *** Midgardian Village
-rent_mb,102,45,0	duplicate(MailBox#Mid)	Mailbox#1	888
-rent_mb,74,45,0	duplicate(MailBox#Mid)	Mailbox#2	888
-rent_mb,43,44,0	duplicate(MailBox#Mid)	Mailbox#3	888
-rent_mb,43,81,0	duplicate(MailBox#Mid)	Mailbox#4	888
-rent_mb,44,109,0	duplicate(MailBox#Mid)	Mailbox#5	888
-rent_mb,43,137,0	duplicate(MailBox#Mid)	Mailbox#6	888
-rent_mb,43,165,0	duplicate(MailBox#Mid)	Mailbox#7	888
-rent_mb,43,193,0	duplicate(MailBox#Mid)	Mailbox#8	888
-rent_mb,53,222,0	duplicate(MailBox#Mid)	Mailbox#9	888
-rent_mb,81,222,0	duplicate(MailBox#Mid)	Mailbox#10	888
-rent_mb,109,222,0	duplicate(MailBox#Mid)	Mailbox#11	888
-rent_mb,137,222,0	duplicate(MailBox#Mid)	Mailbox#12	888
-rent_mb,165,222,0	duplicate(MailBox#Mid)	Mailbox#13	888
-rent_mb,193,222,0	duplicate(MailBox#Mid)	Mailbox#14	888
-rent_mb,221,222,0	duplicate(MailBox#Mid)	Mailbox#15	888
-rent_mb,222,184,0	duplicate(MailBox#Mid)	Mailbox#16	888
-rent_mb,222,156,0	duplicate(MailBox#Mid)	Mailbox#17	888
-rent_mb,222,128,0	duplicate(MailBox#Mid)	Mailbox#18	888
-rent_mb,222,100,0	duplicate(MailBox#Mid)	Mailbox#19	888
-rent_mb,222,72,0	duplicate(MailBox#Mid)	Mailbox#20	888
-rent_mb,222,44,0	duplicate(MailBox#Mid)	Mailbox#21	888
-rent_mb,184,45,0	duplicate(MailBox#Mid)	Mailbox#22	888
-rent_mb,156,45,0	duplicate(MailBox#Mid)	Mailbox#23	888
 
 // Portao da casa (main entrance warp)
 // ******************************************************************
@@ -666,465 +444,5 @@ rent_mb,189,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#22	45,2,2
 rent_mb,161,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#23	45,2,2
 
 
-// Portas e Portoes das casas
-// ******************************************************************
-// rentb1,19,23,0	duplicate(PortaDeCasa#a1)	PortaDeCasa#b1	45,2,2
-// rentinb1,33,3,0	duplicate(FrontDoorIn#a1)	FrontDoorIn#b1	45,2,2
-// rentb1,25,2,0	duplicate(FrontGate#rent_ma)	FrontGate#rent_mb	45,2,2
-
-
-// Properties Manager and House Appliances
-// ******************************************************************
-// rent_mb,134,62,4	duplicate(StreetDealer)	Midgardian Manager#Mng::ManagerMid	5500,4,4
-//rentb1,34,17,4	duplicate(Gardener)	Maia#rentb1	1903	
-
-renta1,4,17,4	duplicate(#Housekeeper)	#HousekeeperB	5502
-rentina1,31,26,0	duplicate(#Storage)	#StorageB	844
-rentina1,42,26,0	duplicate(#Beds)	#BedsB	844
-rentina1,10,14,0	duplicate(#Oven)	#OvenB	844
-
-// Weed
-//rentb1,30,15,0	duplicate(weed)	weed#1	1083
-rentb1,33,13,0	duplicate(weed)	weed#2	1078
-rentb1,29,11,0	duplicate(weed)	weed#3	1081
-rentb1,32,10,0	duplicate(weed)	weed#4	1084
-rentb1,34,6,0	duplicate(weed)	weed#5	1083
-rentb1,31,6,0	duplicate(weed)	weed#6	1118
-//rentb1,15,10,0	duplicate(seaweed)	seaweed#1	1579
-rentb1,15,10,0	duplicate(seaweed)	seaweed#2	1216
-rentb1,13,8,0	duplicate(seaweed)	seaweed#3	1161
-rentb1,9,9,0	duplicate(seaweed)	seaweed#4	1579
-rentb1,7,10,0	duplicate(seaweed)	seaweed#5	1216
-rentb1,7,6,0	duplicate(seaweed)	seaweed#6	1161
-
-renta1,30,15,0	duplicate(weed)	weed#b1	1083
-renta1,33,13,0	duplicate(weed)	weed#b2	1078
-renta1,29,11,0	duplicate(weed)	weed#b3	1081
-renta1,32,10,0	duplicate(weed)	weed#b4	1084
-renta1,34,6,0	duplicate(weed)	weed#b5	1083
-renta1,31,6,0	duplicate(weed)	weed#b6	1118
-renta1,6,12,0	duplicate(seaweed)	seaweed#b1	1579
-renta1,9,14,0	duplicate(seaweed)	seaweed#b2	1216
-renta1,7,16,0	duplicate(seaweed)	seaweed#b3	1161
-renta1,7,14,0	duplicate(seaweed)	seaweed#b4	1579
-renta1,7,10,0	duplicate(seaweed)	seaweed#b5	1216
-renta1,7,6,0	duplicate(seaweed)	seaweed#b6	1161
-rentina1,4,4,0	duplicate(#rentb1)	#renta1	-1
-
-
-
-// // Inscription books in the house;
-// rentina1,32,7,0	duplicate(Books#inscription)	Inscription Books#Mid	844
-// rentinb1,17,33,0	duplicate(Books#inscription)	Inscription Books#Bal	844
-
-
-// Intro Only NPCs
-renta1,24,10,4	duplicate(#b1)	#a1	5500,4,4	
-rentina1,30,12,4	duplicate(Manager#inb)	Manager#ina	5500,4,4
-
-
-
-
-
-// ********************************************************************
-// Properties Manager - Inside House
-// ********************************************************************
-
-rentb1,24,12,4	script	#b1	1902,3,5,{
-end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-	set 'name$, instance_npcname(strnpcinfo(0));
-	setnpcdisplay('name$, "??");
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnTouch:
-//	if(intro < 6) intro = 2; // intro is 2 after the Misty Woods introduction
-	switch('intro) {
-	case 0:
-//		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-//		set 'name$, instance_npcname(strnpcinfo(0));
-		pcblockmove getcharid(3),1; // impede o char de se mover
-//		setnpcdisplay('name$, "??");
-		sleep2 2000;
-		npctalk "Welcome "+strcharinfo(0);
-		sleep2 3000;
-		unittalk getcharid(3), "... Sorry, do I know you?";
-		sleep2 3000;
-		npctalk "Pardon me.. I am Moreth, the Properties Manager. Nice to meet you!";
-		sleep2 5000;
-		unittalk getcharid(3), "Oh, of course! Sorry... Nice to meet you too, Mr. Moreth!";
-		setnpcdisplay('name$, "Manager");
-		sleep2 4000;
-		npctalk "No Problem! Here... come closer, please...";
-		sleep2 3000;
-		pcblockmove getcharid(3),0;
-		////unitwalk getcharid(3),'gid; TODO
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "How are you doing?";
-		mes "I mean, It must have been";
-		mes "very difficult for you";
-		mes "as it has been for the others";
-		mes "to be forced to move";
-		mes "to a new place, new house.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "But you will be allright!";
-		mes "You are better here. Safer.";
-		next;
-		select("Thank you Mr. Moreth");
-		mes "^0000FF[ Manager ]^000000";
-		mes "No Worries...";
-		mes "We take care of each other here.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "And the neighbourhood";
-		mes "is really nice and welcomming.";
-		mes (getcharid(5)<4)?"They are also ^0000FFMidgardians^000000, just like you.":"They are also ^0000FFBaldurians^000000 just like you.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Ok! Lests move on!";
-		mes "There are a couple of things";
-		mes "I'd like to show you";
-		mes "before I go and also";
-		mes "you must be really tired.";
-		close2;
-		'intro = 1;
-		pcblockmove getcharid(3),1;
-		npcwalkto 32,15; //31,19
-		sleep2 2000;
-		pcblockmove getcharid(3),0;
-		
-		// if(getcharid(5)<4)
-		// 	//unitwalk getcharid(3),30,16;
-		// else
-		//  	pcfollow getcharid(3), 'gid;
-		
-		end;
-		break;
-	case 1:
-		pcblockmove getcharid(3),1;
-		npctalk "Oh! Hello Maia! You still here?";
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Maia is a ^990066Gardener^000000. A good one.";
-		mes "She used to work for the previous";
-		mes "owner of this house before he";
-		mes "err...";
-		mes "...died?!";
-		next;
-		donpcevent instance_npcname((getcharid(5)<4)?"Maia#rentb1":"Maia#renta1")+"::OnTalk";
-		sleep2 4000;
-		npctalk "That's what I've said, dear Maia...";
-		sleep2 3000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well, you'd may consider";
-		mes "to hire a gardener to take care";
-		mes "of your house...";
-		mes "They are really handy.";
-		next;
-		npctalk "Maia... May I ask you to leave? Talk to you later.";
-		sleep2 3000;
-		donpcevent instance_npcname((getcharid(5)<4)?"Maia#rentb1":"Maia#renta1")+"::OnWalkAway";
-		mes "^0000FF[ Manager ]^000000";
-		mes "In case you're interested";
-		mes "Come talk to me when it's";
-		mes "convenient for you.";
-		mes " ";
-		mes "I am always around";
-		mes "at the Village Centre.";
-		close2;
-		'intro = 2; // Pq ele passa pelo char enqto ta indo pra piscina. Senao buga tudo.
-		npcwalkto 18,14;
-		sleep2 1000;
-		npctalk "The pool! What a lovely pool, huh? Do you like pool parties?";
-		sleep2 1000;
-		pcstopfollow getcharid(3); // Senao ele para antes de tocar no OnTouch
-		pcblockmove getcharid(3),0;
-		//unitwalk getcharid(3),20,13;
-//		//unitwalk getcharid(3), 'gid;
-		'intro = 3;
-		end;
-		break;
-	
-	case 2:
-		end;
-	break;
-	
-	case 3:
-		pcblockmove getcharid(3),1;
-		pcfollow getcharid(3), 'gid;  //so pra teste. qqr coisa deleta
-		unittalk getcharid(3), "Oh yes! Sure thing!! Who doesn't, huh?";
-//		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well, the gardeners don't";
-		mes "mantain pools. So you'll need";
-		mes "a ^990066Housekeeper^000000 for that";
-		mes "... we can also provide it, though.";
-//		next;
-		close2;
-		npcwalkto 7,14;
-		sleep2 1000;
-		'intro = 4;
-		pcblockmove getcharid(3),0;
-//		//unitwalk getcharid(3), 'gid;
-		//unitwalk getcharid(3),10,14;
-//		pcfollow getcharid(3), 'gid;
-
-		end;
-		break;
-		
-	case 4:
-		mes "^0000FF[ Manager ]^000000";
-		mes "Err... That is Borba.";
-		next;
-		donpcevent instance_npcname((getcharid(5)<4)?"#Housekeeper":"#HousekeeperB")+"::OnTalk";
-		mes "^0000FF[ Manager ]^000000";
-		mes "...";
-		emotion ET_HNG;
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "What can I say...";
-		mes "The housekeeper, he does his job.";
-		mes "He will keep your pool clean";
-		mes "and also the patio.";
-		next;
-		npctalk "Borba! I want you gone when I am back, got it?";
-		sleep2 2000;
-		mes "^0000FF[ Manager ]^000000";
-		mes "If you want to hire a housekeeper,";
-		mes "again, look for me at the";
-		mes "Village's plaza.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Now, come with me...";
-		mes "Let's see inside the house.";
-		close2;
-		'intro = 5;
-		pcstopfollow getcharid(3);
-		pcblockmove getcharid(3),1;
-		//npcwalkto 19,20;
-		////unitwalk 'gid, getnpcid(0,instance_npcname((getcharid(5)<4)?"PortaDeCasa#b1":"PortaDeCasa#a1")); TODO
-		sleep2 2000;
-		'intro = 6;
-		pcblockmove getcharid(3),0;
-		//unitwalk getcharid(3), getnpcid(0,instance_npcname((getcharid(5)<4)?"PortaDeCasa#b1":"PortaDeCasa#a1"));
-		end;
-
-	case 5:
-		end;
-		break;
-	
-	case 6:
-//		pcstopfollow getcharid(3);
-//		warp instance_mapname("rentinb1"),26,7;
-//		setnpcdisplay(instance_npcname("Manager"), 'name$);
-		disablenpc instance_npcname((getcharid(5)<4)?"#Housekeeper":"#HousekeeperB");
-		disablenpc 'name$;
-		end;
-	}
-}
-
-// ********************************************************************
-// Properties Manager - Inside House - Cont.
-// ********************************************************************
-
-rentinb1,30,12,4	script	Manager#inb	5500,3,3,{
-end;
-
-OnEnable:
-	enablenpc instance_npcname(strnpcinfo(0));
-	end;
-
-OnInstanceInit:
-OnDisable:
-	disablenpc instance_npcname(strnpcinfo(0));
-	end;
-	
-OnTouch:
-	switch('intro) {
-	case 6:
-		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-		pcfollow getcharid(3),'gid; 
-		mes "^0000FF[ Manager ]^000000";
-		mes "Look at this place!";
-		mes "Wonderful, isn't it?";
-		mes "Are you impressed?";
-		next;
-		select("One could say so...");
-		mes "^0000FF[ Manager ]^000000";
-		mes "These new houses are imaculate!";
-		mes "Hope you take care of yours";
-		mes "specially during paries, huh?";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Is is still missing some pieces";
-		mes "of furniture though";
-		mes " ";
-		mes "Let me show you very quckily.";
-		close2;
-		
-		if(getcharid(5)<4)
-//		if(strnpcinfo(4) == "rentinb1")
-			npcwalkto 10,5;
-		else
-			npcwalkto 31,26;
-			
-		sleep2 3000;
-		'intro = 7;
-	//	pcblockmove getcharid(3),1;
-		end;
-		break;
-		
-	case 7:
-		'intro = 8; // O npc vai passar pelo char
-		mes "^0000FF[ Manager ]^000000";
-		mes "Here you have some enough space";
-		mes "to install a ^990066Storage^000000";
-		mes " ";
-		mes "We can provide that. Just come";
-		mes "and talk to me later if you want.";
-		if(getcharid(5)<4){
-//		if(strnpcinfo(4) == "rentinb1") {
-			next;
-			npcwalkto 6,8;	
-		} else {
-			next;
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,37,23;
-			sleep2 2000;
-			mes "^0000FF[ Manager ]^000000";
-			mes "These beds need to be replaced.";
-			mes "We still have some in stock.";
-			next;
-			mes "^0000FF[ Manager ]^000000";
-			mes "There is no illness that";
-			mes "resist to a good sleeping,";
-			mes "don't you agree?";
-			next;
-			emotion ET_SMILE;
-			close2;
-			
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid, 25,23;
-			sleep2 2000;
-			//unitwalk 'gid,11,15;
-//			sleep2 1000;
-			pcfollow getcharid(3),'gid; 
-			sleep2 4000;
-		}
-
-		mes "^0000FF[ Manager ]^000000";
-		mes "Here you can install an ^990066Oven^000000.";
-		mes "I highly recommend that!";
-		mes "With the famine at our door";
-		mes "it is always good to stock";
-		mes "suplies and cook your own food.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Ah! We sell those too.";
-		close2;
-//		'intro = 8;
-		
-		if(getcharid(5)<4) {
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,17,10;
-			sleep2 2000;
-			//unitwalk 'gid,21,22;
-			sleep2 1000;
-			//unitwalk 'gid,28,28;
-			
-		} else {
-			set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-			//unitwalk 'gid,29,32;
-		}
-		sleep2 3000;
-		'intro = 9;
-		end;
-		break;
-		
-	case 8:
-		end;
-		break;
-		
-	case 9:
-		if(getcharid(5)<4){
-//		if(strnpcinfo(4) == "rentinb1") {
-			mes "^0000FF[ Manager ]^000000";
-			mes "These beds need to be replaced.";
-			mes "We still have some in stock.";
-			next;
-			mes "^0000FF[ Manager ]^000000";
-			mes "There is no illness that";
-			mes "resist to a good sleeping,";
-			mes "don't you agree?";
-			next;
-			emotion ET_SMILE;
-		}
-		mes "^0000FF[ Manager ]^000000";
-		mes "I think that is it, "+strcharinfo(0)+".";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "I shall leave now";
-		mes "and visit the other new";
-		mes "villagers that just arrived.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Wish you all the best";
-		mes "and that you enjoy your stay";
-		mes "to its must!";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "If is there anything I can do";
-		mes "for you, please, don't ";
-		mes "hesitate to contact me.";
-		mes "I am aways at the Village Plaza.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "Well... not aways.";
-		mes " ";
-		mes "^FF0000If you hear the sirens";
-		mes "run to your house!!";
-		mes "That means we are being atacked";
-		mes (getcharid(5)<4)?"by the Baldurians.^000000":"by the Midgardians.^000000";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "You can help the ^990066Dandelions^000000";
-		mes "to defend our Village, though.";
-		next;
-		mes "^0000FF[ Manager ]^000000";
-		mes "I mean, if you feel strong and";
-		mes "confident enough for that, of course.";
-		close2;
-		'intro = 10;
-		pcstopfollow getcharid(3);
-		pcblockmove getcharid(3),1;
-		set 'gid, getnpcid(0,instance_npcname(strnpcinfo(0)));
-		if(getcharid(5)<4) {
-			//unitwalk 'gid, 20,22;
-			sleep2 2000;
-			//unitwalk 'gid, 21,12;
-		} else {
-			//unitwalk 'gid, 22,22;
-			sleep2 3000;
-			//unitwalk 'gid, 25,8;
-		}
-		sleep2 2000;
-		intro = 11;
-		pcblockmove getcharid(3),0;
-		//achieve(103);
-		disablenpc instance_npcname(strnpcinfo(0));
-		end;	
-	}
-}
-
-// Shops
-rent_mb,230,215,3	shop	McDonald	765,30033:15000,30034:15000,30035:15000,30036:15000,30037:15000,30038:15000,30039:15000,30040:15000,30041:15000,30042:15000;
+// // Shops Old system seeds seller
+// rent_mb,230,215,3	shop	McDonald	765,30033:15000,30034:15000,30035:15000,30036:15000,30037:15000,30038:15000,30039:15000,30040:15000,30041:15000,30042:15000;

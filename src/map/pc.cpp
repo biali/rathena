@@ -543,17 +543,18 @@ static TIMER_FUNC(pc_knocked_timer){
 	if( (sd=(struct map_session_data *)map_id2sd(id)) == NULL || sd->bl.type!=BL_PC )
 		return 1;
 
-	if(sd->state.knocked != tid){
-		ShowError("knocked_timer %d != %d\n",sd->state.knocked,tid);
+	if(sd->state.knocked != tid)
 		return 0;
-	}
+
 	sd->state.knocked = INVALID_TIMER;
-	if(pc_issit(sd)) {
-		pc_setstand(sd,true);
-		clif_standing(&sd->bl);
-		pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-		sc_start(&sd->bl,&sd->bl,SC_IMUNITY,100,1,battle_config.pc_invincible_time);
-	}
+	
+	sd->state.workinprogress = WIP_DISABLE_NONE;
+	sd->state.block_action &= ~(PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_SITSTAND | PCBLOCK_COMMANDS | PCBLOCK_NPCCLICK | PCBLOCK_NPC | PCBLOCK_EMOTION);
+
+	clif_hat_effect_single(&sd->bl,KNOCKED_AURA,false);
+	pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
+	sc_start(&sd->bl,&sd->bl,SC_IMUNITY,100,1,battle_config.pc_invincible_time);
+
 	skill_unit_move(&sd->bl,tick,1);
 
 	return 0;
@@ -611,7 +612,13 @@ void pc_setknockedtimer(struct map_session_data* sd, int val) {
 
 	if( sd->state.knocked != INVALID_TIMER )
 		delete_timer(sd->state.knocked,pc_knocked_timer);
+
 	sd->state.knocked = add_timer(gettick()+val,pc_knocked_timer,sd->bl.id,0);
+	clif_hat_effect_single(&sd->bl,KNOCKED_AURA,true);
+
+	if(battle_config.prevent_logout_trigger&PLT_DAMAGE)
+		sd->canlog_tick = gettick() + battle_config.pc_knocked_time;
+
 }
 
 //Biali Blackzone
@@ -623,7 +630,47 @@ void pc_delknockedtimer(struct map_session_data* sd)
 	{
 		delete_timer(sd->state.knocked,pc_knocked_timer);
 		sd->state.knocked = INVALID_TIMER;
-		skill_unit_move(&sd->bl,gettick(),1);
+		clif_hat_effect_single(&sd->bl,KNOCKED_AURA,false);
+		// skill_unit_move(&sd->bl,gettick(),1);
+	}
+}
+
+//Biali mount rework
+static TIMER_FUNC(pc_remount_timer){
+	struct map_session_data *sd;
+
+	if( (sd=(struct map_session_data *)map_id2sd(id)) == NULL || sd->bl.type!=BL_PC )
+		return 1;
+
+	if(sd->mount_remount_timer != tid)
+		return 0;
+
+	sd->mount_remount_timer = INVALID_TIMER;
+	
+	skill_unit_move(&sd->bl,tick,1);
+
+	return 0;
+}
+
+void pc_setremounttimer(struct map_session_data* sd, int val) {
+	nullpo_retv(sd);
+
+	if( sd->mount_remount_timer != INVALID_TIMER )
+		delete_timer(sd->mount_remount_timer,pc_remount_timer);
+
+	sd->mount_remount_timer = add_timer(gettick()+val,pc_remount_timer,sd->bl.id,0);
+	sc_start(&sd->bl,&sd->bl,SC_MOUNT_CD,100,1,val);
+}
+
+void pc_delremounttimer(struct map_session_data* sd)
+{
+	nullpo_retv(sd);
+
+	if( sd->mount_remount_timer != INVALID_TIMER )
+	{
+		delete_timer(sd->mount_remount_timer,pc_remount_timer);
+		sd->mount_remount_timer = INVALID_TIMER;
+		status_change_end(&sd->bl, (sc_type)SC_MOUNT_CD, INVALID_TIMER);
 	}
 }
 
@@ -1114,7 +1161,41 @@ void pc_inventory_rental_add(struct map_session_data *sd, unsigned int seconds)
 		sd->rental_timer = add_timer(gettick() + i64min(tick,3600000), pc_inventory_rental_end, sd->bl.id, 0);
 }
 
-// Biali - Damage Log
+//Biali damage log
+/*==========================================
+	Ranking Reset
+ *------------------------------------------*/
+void pc_ranking_reset(int type, bool char_server)
+{
+	struct map_session_data *sd;
+	struct s_mapiterator* iter;
+
+	iter = mapit_getallusers();
+	for( sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); sd = (TBL_PC*)mapit_next(iter) )
+	{
+		switch( type )
+		{
+		case 0: // WoE Ranking Reset
+			memset(&sd->status.wstats, 0, sizeof(struct s_woestats));
+			memset(&sd->status.skillcount, 0, sizeof(struct s_skillcount));
+			sd->status.wstats.score = 2000;
+			break;
+		case 1: // Battleground Stats
+			memset(&sd->status.bgstats, 0, sizeof(struct s_battleground_stats));
+			memset(&sd->status.bg_skillcount, 0, sizeof(struct s_skillcount));
+			sd->status.bgstats.score = 2000;
+			break;
+		case 2: // PVP Event Ranking
+			memset(&sd->status.pvp, 0, sizeof(struct s_killrank));
+			sd->status.pvp.score = 2000;
+			break;
+		}
+	}
+	mapit_free(iter);
+
+	if( char_server ) chrif_ranking_reset(type);
+}
+
 void pc_record_mobkills(struct map_session_data *sd, struct mob_data *md)
 {
 	struct guild *g;
@@ -1320,10 +1401,6 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 	if( !tsd || !ssd || tsd == ssd )
 		return;
 
-	// biali faction system
-	if(tsd->status.faction_id > 0 || ssd->status.faction_id > 0)
-		return;
-
 	m = ssd->bl.m;
 
 	if( map_allowed_woe(m) )
@@ -1339,7 +1416,6 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 
 		if( (tg = guild_search(tsd->status.guild_id)) == NULL || (sg = guild_search(ssd->status.guild_id)) == NULL )
 			return;
-
 
 		i = gc->castle_id;
 		Elo = (int)(10. / (1 + pow(10., (int)(sg->castle[i].offensive_score - tg->castle[i].offensive_score) / 2000.)));
@@ -1399,7 +1475,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 		int sc = 1, tc = 1, s_Elo, t_Elo, diff_lv, cash = 0;
 
 		// Source
-		if( ssd->status.party_id && (p = party_search(ssd->status.party_id)) != NULL )
+		if( (p = party_search(ssd->status.party_id)) != NULL )
 		{
 			for( i = sc = 0; i < MAX_PARTY; i++ )
 			{
@@ -1407,7 +1483,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 					continue;
 				if( pc_isdead(s_pl[sc]) && s_pl[sc] != ssd )
 					continue;
-				if( !check_distance_bl(&ssd->bl,&s_pl[sc]->bl,30) )
+				if( !check_distance_bl(&ssd->bl,&s_pl[sc]->bl,DAMAGELOG_SIZE) )
 					continue; // Party member not on Area
 				
 				s_rate += s_pl[sc]->status.pvp.score;
@@ -1427,7 +1503,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 			log_pvp_kill(ssd,tsd,skill_id,sc-1); //Biali
 
 		// Target
-		if( tsd->status.party_id && (p = party_search(tsd->status.party_id)) != NULL )
+		if( (p = party_search(tsd->status.party_id)) != NULL )
 		{
 			for( i = tc = 0; i < MAX_PARTY; i++ )
 			{
@@ -1435,7 +1511,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 					continue;
 				if( pc_isdead(t_pl[tc]) && t_pl[tc] != tsd )
 					continue;
-				if( !check_distance_bl(&tsd->bl,&t_pl[sc]->bl,30) )
+				if( !check_distance_bl(&tsd->bl,&t_pl[tc]->bl,DAMAGELOG_SIZE) )
 					continue; // Party member not on Area
 				t_rate += t_pl[tc]->status.pvp.score;
 				tc++;
@@ -1498,9 +1574,9 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 			i = 0;
 			while( i < MAX_FAME_LIST && pvprank_fame_list[i].id )
 			{
-				mapreg_setregstr(add_str("$pvprank_name$")+(i<<24), pvprank_fame_list[i].name);
-				mapreg_setreg(add_str("$pvprank_id")+(i<<24), pvprank_fame_list[i].id);
-				mapreg_setreg(add_str("$pvprank_fame")+(i<<24), pvprank_fame_list[i].fame);
+				mapreg_setregstr(reference_uid(add_str("$pvprank_name$"),(i<<24)), pvprank_fame_list[i].name);
+				mapreg_setreg(reference_uid(add_str("$pvprank_id"),(i<<24)), pvprank_fame_list[i].id);
+				mapreg_setreg(reference_uid(add_str("$pvprank_fame"),(i<<24)), pvprank_fame_list[i].fame);
 				i++;
 			}
 
@@ -1514,10 +1590,10 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 		add2limit(ssd->status.pvp.kill_count, 1, USHRT_MAX);
 		add2limit(tsd->status.pvp.death_count, 1, USHRT_MAX);
 	}
-	else if( map_getmapflag_sub(m,MF_RPK,NULL) )
+	else if( map_getmapflag_sub(m,MF_RPK,NULL) || map_getmapflag_sub(m,MF_FVF,NULL))
 	{
 		/*==========================================
-		 * Blackzone PK Ranking
+		 * PK Ranking (Blackzone and City VS City)
 		 *------------------------------------------*/
 		struct party_data *p;
 		struct map_session_data *s_pl[MAX_PARTY], *t_pl[MAX_PARTY], *p_sd;
@@ -1659,40 +1735,7 @@ void pc_calc_ranking(struct map_session_data *tsd, struct map_session_data *ssd,
 	}
 }
 
-/*==========================================
-	Ranking Reset
- *------------------------------------------*/
-void pc_ranking_reset(int type, bool char_server)
-{
-	struct map_session_data *sd;
-	struct s_mapiterator* iter;
-
-	iter = mapit_getallusers();
-	for( sd = (TBL_PC*)mapit_first(iter); mapit_exists(iter); sd = (TBL_PC*)mapit_next(iter) )
-	{
-		switch( type )
-		{
-		case 0: // WoE Ranking Reset
-			memset(&sd->status.wstats, 0, sizeof(struct s_woestats));
-			memset(&sd->status.skillcount, 0, sizeof(struct s_skillcount));
-			sd->status.wstats.score = 2000;
-			break;
-		case 1: // Battleground Stats
-			memset(&sd->status.bgstats, 0, sizeof(struct s_battleground_stats));
-			memset(&sd->status.bg_skillcount, 0, sizeof(struct s_skillcount));
-			sd->status.bgstats.score = 2000;
-			break;
-		case 2: // PVP Event Ranking
-			memset(&sd->status.pvp, 0, sizeof(struct s_killrank));
-			sd->status.pvp.score = 2000;
-			break;
-		}
-	}
-	mapit_free(iter);
-
-	if( char_server ) chrif_ranking_reset(type);
-}
-//fim biali damage log
+// Biali fim damage log
 
 /**
  * Check if the player can sell the current item
@@ -2408,6 +2451,8 @@ bool pc_authok(struct map_session_data *sd, uint32 login_id2, time_t expiration_
 
 	sd->followtimer = INVALID_TIMER; // [MouseJstr]
 	sd->invincible_timer = INVALID_TIMER;
+	sd->invincible_timer_reset = INVALID_TIMER; //Biali
+	sd->state.knocked = INVALID_TIMER; //Biali
 	sd->npc_timer_id = INVALID_TIMER;
 	sd->pvp_timer = INVALID_TIMER;
 	sd->expiration_tid = INVALID_TIMER;
@@ -5918,6 +5963,30 @@ int pc_getcash(struct map_session_data *sd, int cash, int points, e_log_pick_typ
 	return -1; //shouldn't happen but just in case
 }
 
+
+//biali master account
+int pc_get_masterid(int aid)
+{
+	TBL_PC *sd = map_id2sd(aid);
+	int master_id = 0;
+
+	if( SQL_ERROR == Sql_Query(mmysql_handle, "SELECT `user_id` FROM `cp_user_accounts` WHERE `account_id` = '%d' LIMIT 1", sd->status.account_id) )
+		Sql_ShowDebug(mmysql_handle);
+	else if( SQL_SUCCESS == Sql_NextRow(mmysql_handle) )
+	{
+		char* data;
+
+		Sql_GetData(mmysql_handle, 0, &data, NULL);
+		Sql_FreeResult(mmysql_handle);
+		master_id = atoi(data);
+		return master_id;
+
+	}
+	Sql_FreeResult(mmysql_handle);
+	return 0;
+}
+
+
 /**
  * Searching a specified itemid in inventory and return his stored index
  * @param sd Player
@@ -6400,6 +6469,7 @@ int pc_useitem(struct map_session_data *sd,int n)
 	t_tick tick = gettick();
 	int amount;
 	t_itemid nameid;
+	int char_id = 0; //Biali Ancient WoE
 	struct script_code *script;
 	struct item item;
 	struct item_data *id;
@@ -6431,6 +6501,10 @@ int pc_useitem(struct map_session_data *sd,int n)
 	if( !pc_isUseitem(sd,n) )
 		return 0;
 
+	// Biali Black Zone - Fallen players cant consume items
+	if(sd->state.knocked != INVALID_TIMER)
+		return 0;
+
 	// Store information for later use before it is lost (via pc_delitem) [Paradox924X]
 	nameid = id->nameid;
 
@@ -6439,7 +6513,8 @@ int pc_useitem(struct map_session_data *sd,int n)
 
 	/* Items with delayed consume are not meant to work while in mounts except reins of mount(12622) */
 	if( id->flag.delay_consume > 0 ) {
-		if( nameid != ITEMID_REINS_OF_MOUNT && sd->sc.data[SC_ALL_RIDING] )
+		//if( nameid != ITEMID_REINS_OF_MOUNT && sd->sc.data[SC_ALL_RIDING] )
+		if( id->flag.isMount == false && sd->sc.data[SC_ALL_RIDING] ) //biali mount rework
 			return 0;
 		else if( pc_issit(sd) )
 			return 0;
@@ -6464,6 +6539,23 @@ int pc_useitem(struct map_session_data *sd,int n)
 		return 0;/* regardless, effect is not run */
 	}
 
+	// biali bg, woe, pvp, ancient, rpk, fvf reserved items
+	if( sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE) {
+		char_id = MakeDWord(item.card[2],item.card[3]);
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.bg_reserved_char_id && !map_getmapflag(sd->bl.m, MF_BATTLEGROUND))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.ancient_reserved_char_id && !map_getmapflag(sd->bl.m, MF_ANCIENT))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.woe_reserved_char_id && !mapdata_flag_gvg(map_getmapdata(sd->bl.m)))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.pvp_reserved_char_id && !map_getmapflag(sd->bl.m, MF_PVP))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.rpk_reserved_char_id && !map_getmapflag(sd->bl.m, MF_RPK))
+			return 0;
+		if (MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.fvf_reserved_char_id && !map_getmapflag(sd->bl.m, MF_FVF))
+			return 0;
+	}
+
 	sd->itemid = item.nameid;
 	sd->itemindex = n;
 	if(sd->catch_target_class != PET_CATCH_FAIL) //Abort pet catching.
@@ -6484,7 +6576,7 @@ int pc_useitem(struct map_session_data *sd,int n)
 		else
 			clif_useitemack(sd, n, 0, false);
 	}
-	if (item.card[0]==CARD0_CREATE && pc_famerank(MakeDWord(item.card[2],item.card[3]), MAPID_ALCHEMIST))
+	if( !map_getmapflag(sd->bl.m,MF_ANCIENT) && item.card[0] == CARD0_CREATE && char_id && (char_id == battle_config.bg_reserved_char_id || char_id == battle_config.woe_reserved_char_id || pc_famerank(MakeDWord(item.card[2],item.card[3]), MAPID_ALCHEMIST)) )
 	    potion_flag = 2; // Famous player's potions have 50% more efficiency
 
 	//Update item use time.
@@ -6883,6 +6975,15 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 	struct map_data *mapdata = map_getmapdata(m);
 	status_change *sc = status_get_sc(&sd->bl);
 
+	// Biali Ancient WoE
+	if( (map_getmapflag(m,MF_BLOCKED) && !pc_has_permission(sd,PC_PERM_WARP_ANYWHERE)) || (map_getmapflag(m,MF_ANCIENT) && (sd->md || !pc_class2ancientwoe(sd->status.class_))) )
+	{
+		mapindex = sd->status.save_point.map;
+		x = sd->status.save_point.x;
+		y = sd->status.save_point.y;
+		m = map_mapindex2mapid(mapindex);
+	}
+
 	sd->state.changemap = (sd->mapindex != mapindex);
 	sd->state.warping = 1;
 	sd->state.workinprogress = WIP_DISABLE_NONE;
@@ -6900,6 +7001,16 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 			if (new_map_instance_id > 0) // Update instance timer for the map on enter
 				instance_addusers(new_map_instance_id);
 		}
+
+		// // Biali remove faction whenever steping in a non-fvf map or non-sanctuary of their faction
+		// if((sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id > 0 && mapdata->faction_id != sd->status.faction_id) ||
+		//   (sd->status.faction_id && !mapdata->flag[MF_FVF] && mapdata->faction_id <= 0 ) )
+		//   	return SETPOS_NOTALLOW;
+		// 	//faction_leave(sd);
+
+		//faction system : a player holding a flag cannot enter a sanctuary map of another city
+		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) 
+		  	return SETPOS_NOTALLOW;
 
 		if (sd->bg_id && !mapdata->flag[MF_BATTLEGROUND]) // Moving to a map that isn't a Battlegrounds
 			bg_team_leave(sd, false, true);
@@ -7098,6 +7209,10 @@ char pc_randomwarp(struct map_session_data *sd, clr_type type)
 
 	if (mapdata->flag[MF_NOTELEPORT]) //Teleport forbidden
 		return 3;
+
+	// // Biali Faction / Fullloot no fly wing use when RPK / faction flag
+	// if(sd->status.faction_id > 0 || mapdata->rpk.info[RPK_FULLLOOT] == 1)
+	// 	return 3;
 
 	do {
 		x = rnd()%(mapdata->xs-2)+1;
@@ -8116,7 +8231,7 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 
 /** Calculates Reputation on exp gain [biali]
 * @param sd Player
-* @param base_exp Base EXP before peronal bonuses
+* @param base_exp Base EXP before personal bonuses
 */
 static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 {
@@ -8125,17 +8240,17 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 	if((faction_id = sd->status.faction_id) <= 0)
 		return;
 
-	exp = (int)(base_exp / sd->status.base_level);
+	//exp = (int)(base_exp / sd->status.base_level);
+	exp = int(base_exp);
 
-	for (i=1; i <= MAX_FACTION; i++) {
+	for (i=1; i < MAX_FACTION; i++) {
 		if(faction_search(i) && faction_id == i) {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, 1, INT_MAX);
+			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
 			clif_name_area(&sd->bl);
-			ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 		} else {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), 1, INT_MAX);
-			ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
+			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
+		ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 	}
 	return;
 }
@@ -8149,7 +8264,7 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 */
 static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_exp, struct block_list *src)
 {
-	int bonus = 0, vip_bonus_base = 0, vip_bonus_job = 0;
+	int bonus = 0, vip_bonus_base = 0, vip_bonus_job = 0, fvf_bonus = 0, motd_bonus = 0, contested_base_bonus = 0, contested_job_bonus = 0;
 
 	if (src) {
 		struct status_data *status = status_get_status_data(src);
@@ -8171,6 +8286,25 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 			vip_bonus_base = battle_config.vip_base_exp_increase;
 			vip_bonus_job = battle_config.vip_job_exp_increase;
 		}
+
+		// Biali EXP bonus for faction player
+		if (src && src->type == BL_MOB && sd->status.faction_id) { 
+			fvf_bonus = battle_config.fvf_exp_increase;
+		}
+
+		//biali Monster of the day
+		if(src && src->type == BL_MOB && ((TBL_MOB*)src)->mob_of_the_day > 0 && ((TBL_MOB*)src)->db->base_exp > 0 ) {
+			motd_bonus = battle_config.motd_exp_increase;
+		}
+
+		// Biali contested territories base xp bonus
+		if (sd && map_getmapflag(src->m, MF_CONTESTED) && sd->status.guild_id) {
+			struct map_data *mapdata = map_getmapdata(src->m);
+			if (sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID]) {
+				contested_base_bonus += mapdata->contested.info[CONTESTED_BASE_BONUS]; // base and job ar percentage. drops are different
+				contested_job_bonus += mapdata->contested.info[CONTESTED_JOB_BONUS];
+			}
+		}
 	}
 
 	// Give EXPBOOST for quests even if src is NULL.
@@ -8181,7 +8315,7 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 	}
 
 	if (*base_exp) {
-		t_exp exp = (t_exp)(*base_exp + ((double)*base_exp * ((bonus + vip_bonus_base) / 100.)));
+		t_exp exp = (t_exp)(*base_exp + ((double)*base_exp * ((bonus + vip_bonus_base + fvf_bonus + motd_bonus + contested_base_bonus) / 100.)));
 		*base_exp = cap_value(exp, 1, MAX_EXP);
 	}
 
@@ -8190,7 +8324,7 @@ static void pc_calcexp(struct map_session_data *sd, t_exp *base_exp, t_exp *job_
 		bonus += sd->sc.data[SC_JEXPBOOST]->val1;
 
 	if (*job_exp) {
-		t_exp exp = (t_exp)(*job_exp + ((double)*job_exp * ((bonus + vip_bonus_job) / 100.)));
+		t_exp exp = (t_exp)(*job_exp + ((double)*job_exp * ((bonus + vip_bonus_job + fvf_bonus + motd_bonus + contested_job_bonus) / 100.)));
 		*job_exp = cap_value(exp, 1, MAX_EXP);
 	}
 
@@ -8216,6 +8350,21 @@ void pc_gainexp_disp(struct map_session_data *sd, t_exp base_exp, t_exp next_bas
 		(long)base_exp * (lost ? -1 : 1), (base_exp / (float)next_base_exp * 100 * (lost ? -1 : 1)),
 		(long)job_exp * (lost ? -1 : 1), (job_exp / (float)next_job_exp * 100 * (lost ? -1 : 1)));
 	clif_messagecolor(&sd->bl, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
+}
+
+// biali calc infamy from mobs
+int pc_calcinfamy (map_session_data *sd, block_list *src, t_exp exp) {
+	struct mob_data *md = BL_CAST(BL_MOB,src);
+	int lvl_diff = 1;
+	int infamy = 1;
+	
+	if(md->level > sd->status.base_level) {
+		lvl_diff = (md->level - sd->status.base_level ) + 1;
+	}
+
+	infamy = (exp * (battle_config.infamy_from_mobs * lvl_diff))/100;
+	
+	return infamy;
 }
 
 /**
@@ -8290,15 +8439,19 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 
 	// Biali : get infamy from killing mobs
 	// infamy is a % of the base exp given by the mob
-	// in non full-loot maps infamy is a 10th of that
-	if(src->type == BL_MOB) {
-		int inf = 0;
-		if(map_getmapflag_sub(src->m,MF_RPK, NULL))
-			inf=(base_exp * battle_config.infamy_from_mobs)/100;
-		else
-			inf=(base_exp * (battle_config.infamy_from_mobs * .10))/100;
+	// in non RPK maps infamy is a 10th of that
+	if(src && src->type == BL_MOB) {
+		// char buf[256];
+		int infamy = pc_calcinfamy(sd,src,base_exp);
+
+		if(!map_getmapflag(src->m,MF_RPK))
+			infamy = infamy * 0.1;
+
+		if(infamy < 1) infamy = 1;
 		
-		add2limit(sd->status.infamy,inf,MAX_INFAMY);
+		add2limit(sd->status.infamy,infamy,MAX_INFAMY);
+		// sprintf(buf, "Infamy increased by %d. Total infamy (%d/%d) \n",infamy,sd->status.infamy,MAX_INFAMY);
+		// clif_displaymessage(sd->fd,buf);
 	}
 
 	// Biali Adventurer Quest
@@ -9280,7 +9433,7 @@ void pc_close_npc(struct map_session_data *sd,int flag)
 /*==========================================
  * Invoked when a player has negative current hp
  *------------------------------------------*/
-int pc_dead(struct map_session_data *sd,struct block_list *src)
+int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id) // biali damage log
 {
 	int i=0,k=0,infamy=0;;
 	t_tick tick = gettick();
@@ -9444,6 +9597,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 
 	if (src && src->type == BL_PC) {
 		struct map_session_data *ssd = (struct map_session_data *)src;
+		pc_calc_ranking(sd, ssd, skill_id); // Ranking System biali damage log
 		pc_setparam(ssd, SP_KILLEDRID, sd->bl.id);
 		npc_script_event(ssd, NPCE_KILLPC);
 
@@ -9642,7 +9796,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 	}
 
 	//biali deadbody rework
-	if(map_getmapflag_sub(sd->bl.m,MF_RPK,NULL) || (src && faction_get_id(&sd->bl) > 0 && src->type == BL_PC )) {
+	if((map_getmapflag_sub(sd->bl.m,MF_RPK,NULL) && src->type != BL_MOB) || (src && faction_get_id(&sd->bl) > 0 && src->type == BL_PC )) {
 	
 		struct item lootbag[MAX_INVENTORY] = {};
 		i = k = 0;
@@ -9719,6 +9873,11 @@ int pc_dead(struct map_session_data *sd,struct block_list *src)
 		sd->respawn_tid = add_timer(tick+500, pc_respawn_timer, sd->bl.id, 0);
 		return 1;
 	}
+
+	// to remove the timer in case they have died in the blackzone and were in the knocked state
+	pc_delknockedtimer(sd);
+
+	pc_delremounttimer(sd); //reset the re-mounting timer case they have one biali mounts rework
 
 	//Reset "can log out" tick.
 	//Biali check this out blackzone
@@ -10120,10 +10279,6 @@ bool pc_setparam(struct map_session_data *sd,int64 type,int64 val_tmp)
 		return true;
 	case SP_FACTION:
 		sd->status.faction_id = val;
-		ShowWarning("pc_setparam : BIALI : faction_id",val);
-		// status_calc_pc(sd,SCO_NONE);
-		// if( map_getmapflag(sd->bl.m, MF_FVF) )
-		// 	pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 		return true;
 	case SP_CHARMOVE:
 		sd->status.character_moves = val;
@@ -11568,6 +11723,18 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 
 	nullpo_retr(false,sd);
 
+	// biali hellgates - Cant change equips in HellGates
+	if(map_getmapdata(sd->bl.m)->rpk.info[RPK_ISHG]) {
+		clif_equipitemack(sd,0,0,ITEM_EQUIP_ACK_FAIL);
+		return false;
+	}
+
+	//Biali Black Zone - Fallen players cant change equips
+	if(sd->state.knocked != INVALID_TIMER) {
+		clif_equipitemack(sd,0,0,ITEM_EQUIP_ACK_FAIL);
+		return false;
+	}
+
 	if( n < 0 || n >= MAX_INVENTORY ) {
 		if( equipswitch ){
 			clif_equipswitch_add( sd, n, req_pos, ITEM_EQUIP_ACK_FAIL );
@@ -11584,12 +11751,7 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 		}
 		return false;
 	}
-	//biali hellgates. one shouldnt be allowed to change equips in hg
-	// union u_mapflag_args args = {};
-	// if(map_getmapflag_sub( sd->bl.m, static_cast<e_mapflag>(MF_RPK), &args ) && args.rpk.info[RPK_ISHG]) {
-	// 	clif_equipitemack(sd,n,0,ITEM_EQUIP_ACK_FAIL);
-	// 	return false;
-	// }
+
 
 	if (!(id = sd->inventory_data[n]))
 		return false;
@@ -14787,6 +14949,7 @@ void do_init_pc(void) {
 	add_timer_func_list(pc_invincible_timer, "pc_invincible_timer");
 	add_timer_func_list(pc_invincible_timer_reset, "pc_invincible_timer_reset"); //biali blackzone
 	add_timer_func_list(pc_knocked_timer, "pc_knocked_timer"); //biali blackzone
+	add_timer_func_list(pc_remount_timer, "pc_remount_timer"); //biali mount rework
 	add_timer_func_list(pc_eventtimer, "pc_eventtimer");
 	add_timer_func_list(pc_inventory_rental_end, "pc_inventory_rental_end");
 	add_timer_func_list(pc_calc_pvprank_timer, "pc_calc_pvprank_timer");
