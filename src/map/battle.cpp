@@ -8622,6 +8622,8 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 0; //If you are not representing a guild, can't target Contested Stone. Biali
 			if( sd->status.guild_id && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID] && t_bl->type == BL_MOB && ((TBL_MOB*)t_bl)->mob_id == MOBID_CONTEST_STONE)
 				return 0; //If your guild holds the contested map u cant hit the contest stone. Biali
+			if( t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_FVF) && (sd->status.faction_id == 0 || BL_CAST(BL_PC,t_bl)->status.faction_id == 0) )
+				return 0; // Target is not enlisted with any faction
 			if( t_bl->type != BL_PC || (t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_RPK))) // Biali rpk mode
 				state |= BCT_ENEMY; //Natural enemy.
 			// if( t_bl->type != BL_PC )

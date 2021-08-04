@@ -40,33 +40,36 @@
 		mes .@n$;
 		mes "Do you want to go ahead and start your representation?";
 		next;
+		mes .@n$;
 		if(select("Yes please:No thank you") == 2) {
-			mes .@n$;
 			mes "I understand. This is not for the faint of the heart.";
 			close;
 		}
 		if(BaseLevel < 40) {
-			mes .@n$;
 			mes "I am sorry but this is only to heroes at level 40 and more.";
 			close;
 		}
 
 		for(.@i=1;.@i<=4;.@i++) {
 			if(factioninfo(.@i,2) == strcharinfo(3)) {
-				setfaction(.@i);
+				.@result = setfaction(.@i);
 				break;
 			}
 		}
-		mes "All Done. Good luck, and take care!";
+
+		if(.@result == 1) 
+			mes "All Done. Good luck, and take care!";
+		else
+			mes "Hum... We can't go ahead with this, I am sorry.";
 		close;
 	}
 
 OnInit:
 	//Add here the maps to be sanctuary for a certain faction
-	if(strnpcinfo(2) == "geffen") 			.@f = 1;
-	else if(strnpcinfo(2) == "payon") 		.@f = 2;
-	else if(strnpcinfo(2) == "morocc") 		.@f = 3;
-	else if(strnpcinfo(2) == "prontera")	.@f = 4;
+	if(strnpcinfo(2) == "Geffen") 			.@f = 1;
+	else if(strnpcinfo(2) == "Payon") 		.@f = 2;
+	else if(strnpcinfo(2) == "Morocc") 		.@f = 3;
+	else if(strnpcinfo(2) == "Prontera")	.@f = 4;
 	
 	if(.@f > 0) { 
 		setmapflag strnpcinfo(4), mf_loadevent;
@@ -78,6 +81,11 @@ OnPCLoadMapEvent:
 	if(getcharid(6) == 0)
 		if(strcharinfo(3) == strnpcinfo(4))
 			announce "Welcome to the sanctuary of " + factioninfo(getfactionmap(strcharinfo(3)),0),bc_blue|bc_self;
+
+	// if(getcharid(6) > 0 && getcharid(6) != getfactionmap(strcharinfo(3))) {
+	// 	setfaction(0);
+	// 	dispbottom "City representation has been removed because this map is a sanctuary of a different City.";
+	// }
 	end;
 }
 

@@ -11,7 +11,7 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 	if(!vip_status(1) || (vip_status(1) && PM_RESET_CD < gettimetick(2))) {
 		mes "Well, it won't come for free...";
 		mes "We'll need:";
-		mes "^0000FF1x " + getitemname($@RESET_STONE_ID) +"^000000";
+		mes "^0000FF1x " + getitemname(RESET_STONE_ID) +"^000000";
 		if(!vip_status(1)) mes "Plus commisison of ^0000FF" +callfunc("F_InsertComma",(BaseLevel+JobLevel)*1000)+"z^000000";
 	} else {
 		mes "Remember you can only reset either your stats or skills once every 7 days. You can choose to reset both at the same time too if you prefer.";
@@ -41,14 +41,14 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 		goto L_Reset;
 	}
 
-	if(countitem($@RESET_STONE_ID)<1 || Zeny<(BaseLevel+JobLevel)*1000) {
-		mes "If at least you had a ^ff0000" + getitemname($@RESET_STONE_ID) +"^000000 and the sum of " + callfunc("F_InsertComma",(BaseLevel+JobLevel)*1000)+"z^000000...";
+	if(countitem(RESET_STONE_ID)<1 || Zeny<(BaseLevel+JobLevel)*1000) {
+		mes "If at least you had a ^ff0000" + getitemname(RESET_STONE_ID) +"^000000 and the sum of " + callfunc("F_InsertComma",(BaseLevel+JobLevel)*1000)+"z^000000...";
 		next;
 		mes .n$;
 		mes "But that is fine, next time then.";
 		close;
 	} else {
-		mes "I am sorry but, payment first... Can I have the "+getitemname($@RESET_STONE_ID) +"^000000 and the sum of " + callfunc("F_InsertComma",(BaseLevel+JobLevel)*1000)+"z^000000 now, please?";
+		mes "I am sorry but, payment first... Can I have the "+getitemname(RESET_STONE_ID) +"^000000 and the sum of " + callfunc("F_InsertComma",(BaseLevel+JobLevel)*1000)+"z^000000 now, please?";
 		next;
 		if(select("^FF0000No, I've changed my mind:^00AA00Yes, please take it^000000") == 1 ){
 			mes .n$;
@@ -56,8 +56,8 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 			mes "....";
 			close;
 		} else {
-			if(countitem($@RESET_STONE_ID) >= 1 && Zeny >= (BaseLevel+JobLevel)*1000) {
-				delitem $@RESET_STONE_ID,1;
+			if(countitem(RESET_STONE_ID) >= 1 && Zeny >= (BaseLevel+JobLevel)*1000) {
+				delitem RESET_STONE_ID,1;
 				Zeny -= (BaseLevel+JobLevel)*1000;
 				goto L_Reset;
 			} else {

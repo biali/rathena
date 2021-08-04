@@ -25980,7 +25980,7 @@ BUILDIN_FUNC(setfaction)
 		{
 			ShowError("setfaction: No such character (char_id=%d).\n", char_id);
 			script_pushnil(st);
-			return 1;
+			return SCRIPT_CMD_SUCCESS;
 		}
 	} else {
 		if (!script_rid2sd(sd))
@@ -25990,7 +25990,22 @@ BUILDIN_FUNC(setfaction)
 	faction_id = script_getnum(st,2);
 	if(faction_id <= 0  || (fdb = faction_search(faction_id)) == NULL) {
 		ShowError("setfaction: Invalid faction id %d \n",faction_id);
+		script_pushnil(st);
 		return SCRIPT_CMD_SUCCESS;
+	}
+
+	// party must be composed only by people with the same faction
+	// confirm if this player is a party leader
+	struct party_data *p;
+	int i;
+
+	if( ( p = party_search(sd->status.party_id) ) != NULL) {
+		if( p->party.count > 1) {
+			ARR_FIND(0, MAX_PARTY, i, p->data[i].sd->status.faction_id != faction_id);
+			if( i < MAX_PARTY) {
+				return SCRIPT_CMD_SUCCESS;
+			}
+		}
 	}
 
 	sd->status.faction_id = faction_id;
@@ -26000,8 +26015,8 @@ BUILDIN_FUNC(setfaction)
 		pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 
 	faction_spawn(sd);
-
-	return 0;
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
 }
 
 BUILDIN_FUNC(factionleave) 

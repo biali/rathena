@@ -140,9 +140,9 @@ OnInit:
 	// Payment Currency + Cost
 	// Can be ITEM ID or Any Variable.
 	setarray .currency$,
-		$@HUNTING_MEDAL,	//	Hairstyle - Ex. need Zeny
-		$@HUNTING_MEDAL,	//	Hair Color - Ex. need Zeny
-		$@HUNTING_MEDAL;	//	Cloth Color - Ex. need Zeny
+		HUNTING_MEDAL,	//	Hairstyle - Ex. need Zeny
+		HUNTING_MEDAL,	//	Hair Color - Ex. need Zeny
+		HUNTING_MEDAL;	//	Cloth Color - Ex. need Zeny
 		
 	setarray .cost,
 		1,	//	Hairstyle ( 10,000 Zeny )

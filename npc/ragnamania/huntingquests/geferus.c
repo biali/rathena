@@ -114,7 +114,7 @@ L_Quest:
 		 if(BaseLevel <= 220) 
 			getexp .@bexp,.@jexp;
 
-		getitem $@HUNTING_MEDAL,6;
+		getitem HUNTING_MEDAL,6;
 		close;
 	} else {
 		mes "[Geferus]";
@@ -150,7 +150,7 @@ L_Quest:
 		getmapxy(.@map$,.@x,.@y,BL_PC);
 		if(.@map$ == "gld_dun04") {
 			if(rand(0,1000) > 980)
-				makeitem $@HUNTING_MEDAL,1,.@map$,.@x,.@y;
+				makeitem HUNTING_MEDAL,1,.@map$,.@x,.@y;
 		}
 	}
 }

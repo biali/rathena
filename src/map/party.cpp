@@ -389,7 +389,7 @@ int party_invite(struct map_session_data *sd,struct map_session_data *tsd)
 	if( ( p = party_search(sd->status.party_id) ) == NULL )
 		return 0;
 
-	if( sd->status.faction_id && tsd && tsd->status.faction_id )
+	if( tsd && (sd->status.faction_id || tsd->status.faction_id) )
 	{
 		if( !battle_config.faction_party_settings && sd->status.faction_id != tsd->status.faction_id ) {
 			clif_displaymessage(sd->fd, msg_txt(sd,1632));

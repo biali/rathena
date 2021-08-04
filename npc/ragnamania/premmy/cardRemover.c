@@ -54,18 +54,18 @@ sala_premmy,107,143,6	script	Sage Apprentice	755,{
 		mes "Sorry, you don't seem to have enough Zeny. I can't do this for free.";
 		close;
 	}
-	if(.@material == $@ENRICHED_ORIDECON_ID) {
-		if(countitem($@ENRICHED_ORIDECON_ID) < 1) {
-			mes "Sorry, I can't find your  ^FF0000" + getitemname($@ENRICHED_ORIDECON_ID) +"^000000.";
+	if(.@material == ENRICHED_ORIDECON_ID) {
+		if(countitem(ENRICHED_ORIDECON_ID) < 1) {
+			mes "Sorry, I can't find your  ^FF0000" + getitemname(ENRICHED_ORIDECON_ID) +"^000000.";
 			close;
 		} else
-			delitem $@ENRICHED_ORIDECON_ID,1;
-	} else if(.@material == $@ENRICHED_ELUNIUM_ID){
-		if(countitem($@ENRICHED_ELUNIUM_ID) < 1) {
-			mes "Sorry, I can't find your  ^FF0000" + getitemname($@ENRICHED_ELUNIUM_ID) +"^000000.";
+			delitem ENRICHED_ORIDECON_ID,1;
+	} else if(.@material == ENRICHED_ELUNIUM_ID){
+		if(countitem(ENRICHED_ELUNIUM_ID) < 1) {
+			mes "Sorry, I can't find your  ^FF0000" + getitemname(ENRICHED_ELUNIUM_ID) +"^000000.";
 			close;
 		} else
-			delitem $@ENRICHED_ELUNIUM_ID,1;
+			delitem ENRICHED_ELUNIUM_ID,1;
 	} else {
 		mes " ";
 		mes "^FF0000ERROR^000000: Please report this to a member of the staff.";

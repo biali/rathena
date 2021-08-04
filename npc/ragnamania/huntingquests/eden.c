@@ -394,7 +394,7 @@ L_Quest:
         mes "Mission '"+ getarg(1) +"'";
         mes "Base Exp: '"+ getarg(2,0) +"'";
         mes "Job Exp: '"+ getarg(3,0) +"'";
-        mes getitemname($@HUNTING_MEDAL) + ": '" + "1x'";
+        mes getitemname(HUNTING_MEDAL) + ": '" + "1x'";
         for ( .@i = 4; .@i < getargcount(); .@i++ )
             mes getarg(.@i);
 

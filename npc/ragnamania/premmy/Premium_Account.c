@@ -67,7 +67,7 @@ function	script	F_Premmy	{
 				,.bcor$+""+.vip_day[2] + " Days (" + F_InsertComma(.vip_cashpoint[2]) +"/"+ .vip_tradecoin[2] + ")"
 				) - 1;
 
-			.@coin = select("Paying with Manias:Paying with " + getitemname($@VOTER_CERTIFICATE));
+			.@coin = select("Paying with Manias:Paying with " + getitemname(VOTER_CERTIFICATE));
 				
 			mes .npc$;
 			mes "You've chosen the plan:";
@@ -75,7 +75,7 @@ function	script	F_Premmy	{
 			if(.@coin == 1)
 				mes "^4527A0Cost:^000000 " + F_InsertComma(.vip_cashpoint[.@i])+" Manias";
 			else
-				mes "^4527A0Cost:^000000 "+.vip_tradecoin[.@i]+"x " + getitemname($@VOTER_CERTIFICATE)+"s.";
+				mes "^4527A0Cost:^000000 "+.vip_tradecoin[.@i]+"x " + getitemname(VOTER_CERTIFICATE)+"s.";
 			sleep2 1000;
 			mes "Should we proceed?";
 			next;
@@ -102,13 +102,13 @@ function	script	F_Premmy	{
 				}
 				break;
 				case 2:
-					if ( countitem($@VOTER_CERTIFICATE) < .vip_tradecoin[.@i] ) {
+					if ( countitem(VOTER_CERTIFICATE) < .vip_tradecoin[.@i] ) {
 						mes .npc$;
-						mes "You do not have enough ^008aff"+getitemname($@VOTER_CERTIFICATE)+"s^000000.";
+						mes "You do not have enough ^008aff"+getitemname(VOTER_CERTIFICATE)+"s^000000.";
 						close;
 					}
 					else {
-						delitem $@VOTER_CERTIFICATE, .vip_tradecoin[.@i];
+						delitem VOTER_CERTIFICATE, .vip_tradecoin[.@i];
 						vip_time (.vip_day[.@i] * 1440);
 						mes .npc$;
 						mes "All done! Thank you for the business!";

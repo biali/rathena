@@ -41,7 +41,7 @@ Body:
     Name: "Storage"
     Table: storage
   - ID: 10
-    Name: "Premium Storage"
+    Name: "Premmy Storage"
     Table: "stor_vip"
     Max: 300
   - ID: 15

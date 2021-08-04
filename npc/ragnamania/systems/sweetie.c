@@ -42,23 +42,27 @@
 			break;
 		case 2:
 		OnOpenStorage:
+			if(getmapflag(strcharinfo(3),mf_town))
+				.@cost = 200;
+			else
+				.@cost = 2000;
 			if(vip_status(1)) {
 				mes .n$;
 				mes "Which storage should we open?";
 				next;
-				switch(select("Premium Storage [^00DD00free^000000]:Standard Storage [^ff0000200z^000000]")){
+				switch(select("Premium Storage [^00DD00free^000000]:Standard Storage [^ff0000"+callfunc("F_InsertComma",.@cost)+"z^000000]")){
 					case 1:
 						close2;
 						openstorage2 10,STOR_MODE_GET|STOR_MODE_PUT;
 						end;
 						break;
 					case 2:
-						if(Zeny < 200) {
+						if(Zeny < .@cost) {
 							mes .n$;
 							mes "I am afraid you don't have enough Zeny for this.";
 							close;
 						} else {
-							Zeny -= 200;
+							Zeny -= .@cost;
 							close2;
 							openstorage;
 							end;
@@ -67,17 +71,17 @@
 				}
 			} else {
 				mes .n$;
-				mes "This will cost you ^ff0000200z^000000. Do you want to continue?";
+				mes "This will cost you ^ff0000"+ callfunc("F_InsertComma",.@cost) +"z^000000. Do you want to continue?";
 				next;
 				if(select("Yes, please.:No, I've changed my mind.") == 2) {
 					close;
 				} else {
-					if(Zeny < 200) {
+					if(Zeny < .@cost) {
 						mes .n$;
 						mes "I am sorry but you don't seem to have enough Zeny for this.";
 						close;
 					} else {
-						Zeny -= 200;
+						Zeny -= .@cost;
 						close2;
 						openstorage;
 						end;
@@ -86,21 +90,25 @@
 			}
 			break;
 		case 3:
+		if(getmapflag(strcharinfo(3),mf_town))
+			.@cost = 1500;
+		else
+			.@cost = 12000;
 		OnOpenGuildStorage:
 			mes .n$;
 			if(getcharid(2) > 0) {
-				mes "This will cost you ^ff00001.500z^000000";
+				mes "This will cost you ^ff0000"+ callfunc("F_InsertComma",.@cost) +"z^000000";
 				mes "Do you want to continue?";
 				next;
 				if(select("Yes, please.:No, thank you") == 2) {
 					close;
 				} else {
-					if(Zeny < 1500) {
+					if(Zeny < .@cost) {
 						mes .n$;
 						mes "I am sorry, but you don't seem to have enough Zeny.";
 						close;
 					} else {
-						Zeny -= 1500;
+						Zeny -= .@cost;
 						close2;
 						guildopenstorage;
 						end;

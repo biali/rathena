@@ -1,5 +1,5 @@
 
-sala_premmy,112,184,4	script	Job Master	10006,{
+prontera,148,195,4	script	Job Master#free	10006,{
 function Get_Job_Equip;
 // Checks if the Player has the required level.
 // closes if not, returns if yes
@@ -311,12 +311,23 @@ function	Confirm_Change	{
 		close;
 	}
 	mes "Do you want to change into ^0055FF"+jobname(.@class)+"^000000 class?";
+	if (.@class == Job_Novice_High)
+		mes "That will cost you" +  .CostRebirth + "x " + getitemname(VOTER_CERTIFICATE);
+	else
+		mes "That will cost you" +  .Cost + "x " + getitemname(VOTER_CERTIFICATE);
 	.@job_option$ = " ~ Change into ^0055FF"+jobname(.@class)+"^000000 class";
-	if( .@class == Job_Novice_High)
+	if( .@class == Job_Novice_High) {
 		.@job_option$ = " ~ ^0055FFRebirth^000000";
+		.@Cost = .CostRebirth;
+	}
 	
 	if (select(.@job_option$+": ~ ^777777" + 
 			((.@back) ?"Go back" : "Cancel") + "^000000") == 1) {
+			if(countitem(VOTER_CERTIFICATE) < .Cost ) {
+				mes "I am sorry but you don't seem to have enough " + getitemname(VOTER_CERTIFICATE);
+				close;
+			}
+		delitem VOTER_CERTIFICATE, .Cost;
 		Job_Change(.@class);
 	}
 	if (!.@back)
@@ -433,6 +444,8 @@ OnInit:
 	.NPCName$ = "[ Moreth ]";
 	
 	// Settings
+	.Cost = 1;						// How many VOTER_CERTIFICATE to the npc do his magic
+	.CostRebirth = 10;				// How many VOTER_CERTIFICATE to rebirth
 	.ThirdClass = false;			// Enable third classes?
 	.RebirthClass = true;			// Enable rebirth classes?
 	.SecondExpanded = false;		// Enable new expanded second classes: Ex. Super Novice, Kagerou/Oboro, Rebellion?

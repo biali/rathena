@@ -433,7 +433,7 @@ OnHour00:
 prontera,143,161,6	script	Assistente da Feira	770,{
 	mes "[^FFA500Assistente da Feira^000000]";
 	mes "Ol�! Para participar da Feira de Fim-de-M�s voc� precisar� de ^00AAFF "+getitemname(7539)+"s^000000.";
-	mes "Eu posso trocar 10x " +getitemname(7539)+ "s por 1x " + getitemname($@HUNTING_MEDAL);
+	mes "Eu posso trocar 10x " +getitemname(7539)+ "s por 1x " + getitemname(HUNTING_MEDAL);
 	mes "Deseja trocar?";
 	next;
 	if(select("Sim, por favor:N�o, obrigado") == 1) {
@@ -443,7 +443,7 @@ prontera,143,161,6	script	Assistente da Feira	770,{
 			close;
 		} else {
 			delitem 7539,10;
-			getitem $@HUNTING_MEDAL,1;
+			getitem HUNTING_MEDAL,1;
 			next;
 			mes "[^FFA500Assistente da Feira^000000]";
 			mes "Prontinho! Muito obrigada e bom divertimento!!";

@@ -30,7 +30,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 				}
 				
 				mes .n$;
-				mes "Sure, thing! I can see you have ^AA000000" + .@votes + " Vote Points^000000 at the moment. Should we go ahead and contabilize them?";
+				mes "Sure thing! I can see you have ^AA000000" + .@votes + " Vote Points^000000 at the moment. Should we go ahead and contabilize them?";
 				next;
 				if(select("Yes, please:No, not now") == 2){
 					mes .n$;
@@ -48,6 +48,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 					next;
 					mes .n$;
 					mes "You've accumulated ^AA0000"+ #VP_VOTEPOINTS+" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
+					getitem VOTER_CERTIFICATE, .@votes;
 					announce "Thank you " + strcharinfo(0) + ", for voting for us! And thank you for your contribution of " + .@votes + " vote points!",bc_all,0xFAFA00; 
 					close;
 				}
@@ -116,12 +117,12 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 		case 2:
 			if(#VP_VOTEPOINTS >= .MinVotes4Reward && gettime(DT_DAYOFMONTH) >= 20 && !#VP_COLLECTED) {
 				.@qt = #VP_VOTEPOINTS * 3;
-				callfunc "F_getsigneditem",$@VOTER_CERTIFICATE, .@qt;
+				callfunc "F_getsigneditem",VOTER_CERTIFICATE, .@qt;
 				getitem 30023,10; // Bag of Manias
 				vip_time $@Periodo; // Extends Premmy by 3 days
 				set #VP_COLLECTED,1;
 				mes .n$;
-				mes "Thank you very much for your contribution! We've given you " + .@qt + " " + getitemname($@HUNTING_MEDAL) + "s as a gesture of appreciation and we have also given you 5 days of Premmy!";
+				mes "Thank you very much for your contribution! We've given you " + .@qt + " " + getitemname(HUNTING_MEDAL) + "s as a gesture of appreciation and we have also given you 5 days of Premmy!";
 				next;
 				mes .n$;
 				mes "Hope you continue to do the good job as you did last month!";
@@ -169,14 +170,14 @@ OnHour00:	//-- Monthly Rewards
 	end;
 
 OnInit:
-	.MinVotes4Reward 	= 60;
+	.MinVotes4Reward 	= 40;
 	.FirstDday 			= 5;
 	.SecondDday 		= 10;
-	.ThirdDday			= 15;
+	.ThirdDday			= 20;
 	.FirstTarget		= 1000;
 	.SecondTarget		= 2500;
 	.ThirdTarget		= 4000;
-	.ExtensionStart		= 20;
+	.ExtensionStart		= 23;
 	.ExtensionCost		= 100000000; //500 kk 
 	.dayOfMonth 		= callfunc("F_getDaysOfMonth");
 	.OriginalEquipsRates = getBattleFlag("item_rate_equip");
@@ -195,7 +196,7 @@ OnInit:
 
 
 	function CheckPoints {
-		.@gid = getarg(0,getcharid(3));
+		.@gid = getarg(0,getcharid(7));
 		query_sql("SELECT points FROM `cp_v4p_voters` WHERE `account_id` = "+.@gid,.@votes);
 
 		return .@votes;
@@ -268,5 +269,3 @@ OnInit:
 		return;
 	}
 }
-
-

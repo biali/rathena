@@ -6,9 +6,9 @@ sala_premmy,49,122,4	script	Premium Stylist	878,{
     // Dont edit this bit
     setarray .@min_style,0,0,0;
     if(sex == SEX_MALE)
-    	setarray .@max_style,95,33,34;
+    	setarray .@max_style,80,100,500;
     else
-    	setarray .@max_style,99,33,34;
+    	setarray .@max_style,80,100,500;
 	
 	.@menu_size = getarraysize( .menu_name$ );
 	.@cost_size = getarraysize( .cost );
@@ -31,6 +31,12 @@ OnTalk:
 	@style_value = getlook( .look_type[@style] );
 
 	.@style_number = .@min_style[@style];
+
+	if(getcharid(6) > 0 && @style == 2) { // style 2 = cloth color
+		mes "[^0055FF ::: Premium Stylist ::: ^000000]";
+		mes "I cannot help you while you are representing a City.";
+		close;
+	}
 
 	addtimer 1000,strnpcinfo(0)+"::OnCancela";
 	do{
