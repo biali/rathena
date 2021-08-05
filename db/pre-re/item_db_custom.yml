@@ -7406,3 +7406,51 @@ Body:
       BuyingStore: true
     Script: |
       callfunc "farm",2,7194;
+  - Id: 30120
+    AegisName: Adventurer Gift Box
+    Name: Adventurer Gift Box
+    Type: Usable
+    Weight: 10
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+      Script: |
+        callfunc "F_GetAdventurerItem";
+  - Id: 30121
+    AegisName: Event Gift Box
+    Name: Event Gift Box
+    Type: Usable
+    Weight: 10
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+      Script: |
+        callfunc "F_GetEventItem";
+  - Id: 30122
+    AegisName: Hunter's Reward Package
+    Name: Hunter's Reward Package
+    Type: Usable
+    Weight: 10
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+      Script: |
+        callfunc "F_GetHunterItem";

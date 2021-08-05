@@ -1,3 +1,44 @@
+function	script	F_GetAdventurerItem	{
+	getitembound groupranditem(IG_Animal_Scroll),1,bound_Account;
+	return;
+	// IG_Animal_Scroll,5098,5,1,1,0,0,1	// 1x Tiger_Mask
+	// IG_Animal_Scroll,5177,5,1,1,0,0,1	// 1x Guardian_Lion_Mask
+	// IG_Animal_Scroll,12100,185,5,1,0,0,1	// 5x Luk_Dish10
+	// IG_Animal_Scroll,5030,5,1,1,0,0,1	// 1x Panda_Cap
+	// IG_Animal_Scroll,5059,5,1,1,0,0,1	// 1x Brown_Bear_Cap
+	// IG_Animal_Scroll,5033,5,1,1,0,0,1	// 1x Smokie_Hat
+	// IG_Animal_Scroll,12073,185,5,1,0,0,1	// 5x Str_Dish08
+	// IG_Animal_Scroll,5084,5,1,1,0,0,1	// 1x Lazy_Raccoon
+	// IG_Animal_Scroll,5198,5,1,1,0,0,1	// 1x Drooping_Bunny
+	// IG_Animal_Scroll,12048,185,5,1,0,0,1	// 5x Int_Dish03
+	// IG_Animal_Scroll,5259,10,1,1,0,0,1	// 1x Elephant_Hat_
+	// IG_Animal_Scroll,5078,10,1,1,0,0,1	// 1x Sea_Otter_Cap
+	// IG_Animal_Scroll,12084,185,5,1,0,0,1	// 5x Vit_Dish09
+	// IG_Animal_Scroll,5111,10,1,1,0,0,1	// 1x Galapago_Cap
+	// IG_Animal_Scroll,5217,5,1,1,0,0,1	// 1x Magestic_Goat_TW
+	// IG_Animal_Scroll,5222,5,1,1,0,0,1	// 1x Fish_On_Head_
+	// IG_Animal_Scroll,12086,185,5,1,0,0,1	// 5x Agi_Dish06
+}
+
+function	script	F_GetEventItem	{
+	getitembound groupranditem(IG_RAGNAMANIA_TIER3),1,bound_Account;
+	return;
+}
+
+function	script	F_GetHunterItem	{
+	getitembound groupranditem(IG_Vigorgra_Package1),1,bound_Account;
+	// IG_Vigorgra_Package1,12208,0,2,0,0,0,1	// 2x Battle_Manual
+	// IG_Vigorgra_Package1,12202,0,2,0,0,0,1	// 2x Str_Dish10_
+	// IG_Vigorgra_Package1,12203,0,2,0,0,0,1	// 2x Agi_Dish10_
+	// IG_Vigorgra_Package1,12204,0,2,0,0,0,1	// 2x Int_Dish10_
+	// IG_Vigorgra_Package1,12205,0,2,0,0,0,1	// 2x Dex_Dish10_
+	// IG_Vigorgra_Package1,12216,0,15,0,0,0,1	// 15x Inc_Agi_10_Scroll
+	// IG_Vigorgra_Package1,12215,0,15,0,0,0,1	// 15x Blessing_10_Scroll
+	// IG_Vigorgra_Package1,12211,0,1,0,0,0,1	// 1x Kafra_Card
+	// IG_Vigorgra_Package1,7621,0,1,0,0,0,1	// 1x Token_Of_Siegfried
+	return;
+}
+
 
 function	script	F_getsigneditem	{
 	.@id = getarg(0,0);

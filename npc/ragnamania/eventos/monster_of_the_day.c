@@ -10,9 +10,9 @@ prontera,125,210,5	script	Connor::motdBoard	632,{
 	next;
 	mes "^0000FF[ Connor ]^000000";
 	mes "Exp Bonus : ^EE00AA" + callfunc("F_InsertComma",$@motd_XP)+"^000000.";
-	mes "A chance to get ^DD0088"+getitemname(HUNTING_MEDAL)+"s^000000.";
-	mes "A chance to get ^CC0066"+getitemname(30022)+"s^000000.";
-	mes "A chance to get ^BB0044"+getitemname(30027)+"es^000000.";
+	mes "A chance to get ^DD0088"+getitemname(EVENT_BOX)+"s^000000.";
+	mes "A chance to get ^CC0066"+getitemname(MANIA_COIN)+"s^000000.";
+	mes "A chance to get ^BB0044"+getitemname(RAGNAMANIA_LOOTBOX)+"es^000000.";
 	next;
 	mes "^0000FF[ Connor ]^000000";
 	mes "So, what are you waiting for?";
@@ -61,9 +61,9 @@ function	script	ChangeMob	{
 	.@npc$ = getarg(0,strnpcinfo(3));
 	.@id = monsteroftheday(getelementofarray(getvariableofnpc(.mobs,"motdBoard"),rand(getarraysize(getvariableofnpc(.mobs,"motdBoard")))));
 	setnpcdisplay(.@npc$,getmonsterinfo(.@id,MOB_NAME), .@id);
-	addmonsterdrop .@id,30027,200;	// Ragnamania Loot Boxes
-	addmonsterdrop .@id,30023,200;	// Ragnamania Bag of Manias
-	addmonsterdrop .@id,HUNTING_MEDAL,200;	// Ragnamania Hunting Coins
+	addmonsterdrop .@id,RAGNAMANIA_LOOTBOX,300;	// Ragnamania Loot Boxes
+	addmonsterdrop .@id,BAG_OF_MANIAS,120;	// Ragnamania Bag of Manias
+	addmonsterdrop .@id,EVENT_BOX,200;	// Ragnamania Hunting Coins
 
 	return;
 }

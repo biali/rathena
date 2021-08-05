@@ -2,7 +2,6 @@
 -	script	Highest Peak	-1,{
 
 OnPCLoginEvent:
-	debugmes "Entrou char com master_id = " + getcharid(7);
 	.onlineusers++;
 	goto Continue;
 
@@ -18,7 +17,19 @@ Continue:
 		$peakusers = 0;
 	end;
 
-OnClock0000:
-	$peakusers = .onlineusers;
+OnMinute00:
+OnMinute30:
+	if (gettime(DT_HOUR) == 0 && gettime(DT_MINUTE) == 0) {
+		.onlineusers = getusers(1);
+		$peakusers = .onlineusers;
+		end;
+	}
+
+	.onlineusers = getusers(1);
+	goto Continue;
+
 	end;
+
+OnInit:
+	.onlineusers = 0;
 }

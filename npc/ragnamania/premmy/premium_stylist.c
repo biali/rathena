@@ -128,8 +128,8 @@ OnInit:
 		"Cloth Color";
 		
 	setarray .cost,
-		50000,	//	Hairstyle ( 10,000 Zeny )
-		110000,	//	Hair Color ( 10,000 Zeny )
-		190000;	//	Cloth Color ( 10,000 Zeny )
+		5000,	//	Hairstyle ( 10,000 Zeny )
+		10000,	//	Hair Color ( 10,000 Zeny )
+		50000;	//	Cloth Color ( 10,000 Zeny )
 	end;
 }

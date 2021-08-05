@@ -1153,6 +1153,8 @@ IG_Super_Card_Pet_Egg4,14508,140,5,1,0,0,1	// 5x Zeny_Scroll
 IG_Vigorgra_Package1,12208,0,2,0,0,0,1	// 2x Battle_Manual
 IG_Vigorgra_Package1,12202,0,2,0,0,0,1	// 2x Str_Dish10_
 IG_Vigorgra_Package1,12203,0,2,0,0,0,1	// 2x Agi_Dish10_
+IG_Vigorgra_Package1,12204,0,2,0,0,0,1	// 2x Int_Dish10_
+IG_Vigorgra_Package1,12205,0,2,0,0,0,1	// 2x Dex_Dish10_
 IG_Vigorgra_Package1,12216,0,15,0,0,0,1	// 15x Inc_Agi_10_Scroll
 IG_Vigorgra_Package1,12215,0,15,0,0,0,1	// 15x Blessing_10_Scroll
 IG_Vigorgra_Package1,12211,0,1,0,0,0,1	// 1x Kafra_Card
