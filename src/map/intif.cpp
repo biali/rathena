@@ -578,6 +578,54 @@ bool intif_send_guild_storage(uint32 account_id, struct s_storage *gstor)
 	return true;
 }
 
+
+
+
+
+/**
+ * Biali master storage
+ * Request to load master storage from char-serv
+ * @param account_id: Player account identification
+ * @param master_id: master id of player
+ * @return false - error, true - message sent
+ */
+bool intif_request_master_storage(uint32 account_id, int master_id)
+{
+	ShowWarning("intif_request_master_storage : chegou aki masterid %d\n",master_id);
+	master_id += 2000000;
+	if (CheckForCharServer())
+		return false;
+	WFIFOHEAD(inter_fd,10);
+	WFIFOW(inter_fd,0) = 0x3018;
+	WFIFOL(inter_fd,2) = account_id;
+	WFIFOL(inter_fd,6) = master_id;
+	WFIFOSET(inter_fd,10);
+	return true;
+}
+
+/**
+ * Request to save master storage
+ * @param account_id: account requesting the save
+ * @param mstor: Master storage struct to save
+ * @return false - error, true - message sent
+ */
+bool intif_send_master_storage(uint32 account_id, struct s_storage *mstor)
+{
+	if (CheckForCharServer())
+		return false;
+	WFIFOHEAD(inter_fd,sizeof(struct s_storage)+12);
+	WFIFOW(inter_fd,0) = 0x3019;
+	WFIFOW(inter_fd,2) = (unsigned short)sizeof(struct s_storage)+12;
+	WFIFOL(inter_fd,4) = account_id;
+	WFIFOL(inter_fd,8) = mstor->id;
+	memcpy( WFIFOP(inter_fd,12),mstor, sizeof(struct s_storage) );
+	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+	return true;
+}
+
+
+
+
 /**
  * Party creation request
  * @param member : Struct of 1 party member
@@ -1563,6 +1611,74 @@ int intif_parse_PartyCreated(int fd)
 	party_created(RFIFOL(fd,2), RFIFOL(fd,6),RFIFOB(fd,10),RFIFOL(fd,11), RFIFOCP(fd,15));
 	return 1;
 }
+
+
+// Biali Master Storage
+/**
+ * Received a master storage
+ * @param fd : char-serv link
+ * @return 0=error, 1=sucess
+ */
+int intif_parse_LoadMasterStorage(int fd)
+{
+	struct s_storage *gstor;
+	struct map_session_data *sd;
+	int master_id, flag;
+
+	master_id = RFIFOL(fd,8) - 2000000;
+	flag = RFIFOL(fd,12);
+	if (master_id <= 0)
+		return 0;
+
+	ShowWarning("inrif_parse_LoadMasterStorage chegou com master id : %d\n",master_id);
+
+	sd = map_id2sd( RFIFOL(fd,4) );
+	if (flag){ //If flag != 0, we attach a player and open the storage
+		if(sd == NULL){
+			ShowError("intif_parse_LoadMasterStorage: user not found (AID: %d)\n",RFIFOL(fd,4));
+			return 0;
+		}
+	}
+	gstor = master2storage(master_id);
+	if (!gstor) {
+		ShowWarning("intif_parse_LoadMasterStorage: error master_id %d not exist\n",master_id);
+		return 0;
+	}
+	if (gstor->status) { // Already open.. lets ignore this update
+		ShowWarning("intif_parse_LoadMasterStorage: storage received for a client already open (User %d:%d)\n", flag?sd->status.account_id:1, flag?sd->status.char_id:1);
+		return 0;
+	}
+	if (gstor->dirty) { // Already have storage, and it has been modified and not saved yet! Exploit! [Skotlex]
+		ShowWarning("intif_parse_LoadMasterStorage: received storage for an already modified non-saved storage! (User %d:%d)\n", flag?sd->status.account_id:1, flag?sd->status.char_id:1);
+		return 0;
+	}
+	if (RFIFOW(fd,2)-13 != sizeof(struct s_storage)) {
+		ShowError("intif_parse_LoadMasterStorage: data size error %d %" PRIuPTR "\n",RFIFOW(fd,2)-13 , sizeof(struct s_storage));
+		gstor->status = false;
+		return 0;
+	}
+
+	memcpy(gstor,RFIFOP(fd,13),sizeof(struct s_storage));
+	if( flag )
+		storage_master_storageopen(sd);
+
+	return 1;
+}
+
+/**
+ * ACK master_storage saved
+ * @param fd : char-serv link
+ * @return 1
+ */
+int intif_parse_SaveMasterStorage(int fd)
+{
+	int master_id = RFIFOL(fd,6) - 2000000;
+	storage_master_storagesaved(master_id);
+	return 1;
+}
+
+
+
 
 /**
  * Receive party info
@@ -3778,8 +3894,18 @@ int intif_parse(int fd)
 	case 0x3807:	intif_parse_MessageToFD(fd); break;
 	case 0x3808:	intif_parse_accinfo_ack(fd); break;
 	case 0x3809:	intif_parse_broadcast_obtain_special_item(fd); break;
-	case 0x3818:	intif_parse_LoadGuildStorage(fd); break;
-	case 0x3819:	intif_parse_SaveGuildStorage(fd); break;
+	case 0x3818:
+		if(WFIFOL(fd,8) > 2000000)
+			intif_parse_LoadMasterStorage(fd);
+		else
+			intif_parse_LoadGuildStorage(fd);
+		break;
+	case 0x3819:
+		if(WFIFOL(fd,6) > 2000000)
+			intif_parse_SaveMasterStorage(fd); 
+		else
+			intif_parse_SaveGuildStorage(fd); 
+		break;
 	case 0x3820:	intif_parse_PartyCreated(fd); break;
 	case 0x3821:	intif_parse_PartyInfo(fd); break;
 	case 0x3822:	intif_parse_PartyMemberAdded(fd); break;

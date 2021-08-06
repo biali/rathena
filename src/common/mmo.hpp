@@ -72,6 +72,7 @@ typedef uint32 t_itemid;
 #define MAX_WALK_SPEED 1000 ///Max walk speed
 #define MAX_STORAGE 600 ///Max number of storage slots a player can have
 #define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
+#define MAX_MASTER_STORAGE 600 ///Max number of storage slots for a master account //Biali
 #define MAX_PARTY 12 ///Max party member
 #define MAX_GUILD 16+10*1	///Increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	///Increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
@@ -389,6 +390,7 @@ enum storage_type {
 	TABLE_CART,
 	TABLE_STORAGE,
 	TABLE_GUILD_STORAGE,
+	TABLE_MASTER_STORAGE,
 };
 
 enum e_storage_mode {
@@ -416,6 +418,7 @@ struct s_storage {
 		struct item items_storage[MAX_STORAGE];
 		struct item items_cart[MAX_CART];
 		struct item items_guild[MAX_GUILD_STORAGE];
+		struct item items_master[MAX_MASTER_STORAGE]; // biali master storage
 	} u;
 };
 

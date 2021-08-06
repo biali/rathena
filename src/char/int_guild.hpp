@@ -37,5 +37,6 @@ int inter_guild_charname_changed(int guild_id,uint32 account_id, uint32 char_id,
 int inter_guild_CharOnline(uint32 char_id, int guild_id);
 int inter_guild_CharOffline(uint32 char_id, int guild_id);
 uint16 inter_guild_storagemax(int guild_id);
+uint16 inter_master_storagemax(int master_id); // biali master storage
 
 #endif /* INT_GUILD_HPP */

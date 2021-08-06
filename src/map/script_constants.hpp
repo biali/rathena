@@ -7719,6 +7719,14 @@
 	export_constant(GSTORAGE_NO_STORAGE);
 	export_constant(GSTORAGE_NO_PERMISSION);
 
+	/* master storage flags */
+	export_constant(MSTORAGE_OPEN);
+	export_constant(MSTORAGE_STORAGE_ALREADY_OPEN);
+	export_constant(MSTORAGE_ALREADY_OPEN);
+	export_constant(MSTORAGE_NO_ACCOUNT);
+	export_constant(MSTORAGE_NO_STORAGE);
+	export_constant(MSTORAGE_NO_PERMISSION);
+
 	/* block list types */
 	export_constant(BL_PC);
 	export_constant(BL_MOB);
@@ -7746,6 +7754,11 @@
 	export_constant(GUILDSTORAGE_LOG_FINAL_SUCCESS);
 	export_constant(GUILDSTORAGE_LOG_EMPTY);
 	export_constant(GUILDSTORAGE_LOG_FAILED);
+
+	/* master storage log */
+	export_constant(MASTERSTORAGE_LOG_FINAL_SUCCESS);
+	export_constant(MASTERSTORAGE_LOG_EMPTY);
+	export_constant(MASTERSTORAGE_LOG_FAILED);
 
 	/* castle data flags */
 	export_constant(CD_NONE);

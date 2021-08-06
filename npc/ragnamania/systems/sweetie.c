@@ -46,48 +46,71 @@
 				.@cost = 200;
 			else
 				.@cost = 2000;
-			if(vip_status(1)) {
-				mes .n$;
-				mes "Which storage should we open?";
-				next;
-				switch(select("Premium Storage [^00DD00free^000000]:Standard Storage [^ff0000"+callfunc("F_InsertComma",.@cost)+"z^000000]")){
-					case 1:
-						close2;
-						openstorage2 10,STOR_MODE_GET|STOR_MODE_PUT;
-						end;
-						break;
-					case 2:
-						if(Zeny < .@cost) {
-							mes .n$;
-							mes "I am afraid you don't have enough Zeny for this.";
-							close;
-						} else {
-							Zeny -= .@cost;
-							close2;
-							openstorage;
-							end;
-						}
-						break;
-				}
-			} else {
-				mes .n$;
-				mes "This will cost you ^ff0000"+ callfunc("F_InsertComma",.@cost) +"z^000000. Do you want to continue?";
-				next;
-				if(select("Yes, please.:No, I've changed my mind.") == 2) {
-					close;
-				} else {
+SelectStorage:
+			mes .n$;
+			mes "Which storage should we open?";
+			next;
+			switch(select("Premium Storage [^00DD00free^000000]:Standard Storage [^ff0000"+callfunc("F_InsertComma",.@cost)+"z^000000]:Personal Storage [^ff0000"+callfunc("F_InsertComma",.@cost)+"z^000000]:Master Storage [^ff0000"+callfunc("F_InsertComma",.@cost)+"z^000000]")){
+				case 1:
+					if(!vip_status(1)) {
+						mes .n$;
+						mes "Sorry, it doesn't seem like you have a valid Premium Account active.";
+						next;
+						goto SelectStorage;
+					}
+					close2;
+					openstorage2 10,STOR_MODE_GET|STOR_MODE_PUT;
+					end;
+					break;
+				case 2:
 					if(Zeny < .@cost) {
 						mes .n$;
-						mes "I am sorry but you don't seem to have enough Zeny for this.";
-						close;
+						mes "I am afraid you don't have enough Zeny for this.";
+						next;
+						goto SelectStorage;
 					} else {
 						Zeny -= .@cost;
 						close2;
 						openstorage;
 						end;
 					}
-				}
+				case 3:
+					mes .n$;
+					mes "I am sorry... this option is not available at the moment.";
+					next;
+					goto SelectStorage;
+					// if(Zeny < .@cost) {
+					// 	mes .n$;
+					// 	mes "I am afraid you don't have enough Zeny for this.";
+					// 	next;
+					// 	goto SelectStorage;
+					// } else {
+					// 	Zeny -= .@cost;
+					// 	close2;
+					// 	openstorage;
+					// 	end;
+					// }
+					break;
+				case 4:
+					if(Zeny < .@cost) {
+						mes .n$;
+						mes "I am sorry, but you don't seem to have enough Zeny.";
+						close;
+					} else {
+						close2;
+						if(masteropenstorage() == MSTORAGE_OPEN) 
+							Zeny -= .@cost;
+						else {
+							mes .n$;
+							mes "Storage already open by another account.";
+							close;
+						}
+						end;
+					}
+					break;
+
 			}
+
 			break;
 		case 3:
 		if(getmapflag(strcharinfo(3),mf_town))
@@ -108,9 +131,14 @@
 						mes "I am sorry, but you don't seem to have enough Zeny.";
 						close;
 					} else {
-						Zeny -= .@cost;
 						close2;
-						guildopenstorage;
+						if(guildopenstorage() == GSTORAGE_OPEN) 
+							Zeny -= .@cost;
+						else {
+							mes .n$;
+							mes "Guild storage already open by another guild member.";
+							close;
+						}
 						end;
 					}
 				}

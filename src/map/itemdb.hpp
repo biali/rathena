@@ -907,7 +907,7 @@ struct item_data
 		unsigned no_refine : 1;	// [celest]
 		unsigned delay_consume;	// [Skotlex]
 		struct {
-			bool drop, trade, trade_partner, sell, cart, storage, guild_storage, mail, auction;
+			bool drop, trade, trade_partner, sell, cart, storage, guild_storage, mail, auction, master_storage; //biali master storage
 		} trade_restriction;	//Item restrictions mask [Skotlex]
 		unsigned autoequip: 1;
 		bool buyingstore;
@@ -922,7 +922,7 @@ struct item_data
 	} flag;
 	struct {// item stacking limitation
 		uint16 amount;
-		bool inventory, cart, storage, guild_storage;
+		bool inventory, cart, storage, guild_storage, master_storage; // biali master storage
 	} stack;
 	struct {
 		uint16 override;
@@ -1092,6 +1092,10 @@ bool itemdb_ishatched_egg(struct item* item);
 #define itemdb_canguildstore(item, gmlv) itemdb_isrestricted(item , gmlv, 0, itemdb_canguildstore_sub)
 #define itemdb_canmail(item, gmlv) itemdb_isrestricted(item , gmlv, 0, itemdb_canmail_sub)
 #define itemdb_canauction(item, gmlv) itemdb_isrestricted(item , gmlv, 0, itemdb_canauction_sub)
+
+//biali master storage
+bool itemdb_canmasterstore_sub(struct item_data *itd, int gmlv, int unused);
+#define itemdb_canmasterstore(item, gmlv) itemdb_isrestricted(item , gmlv, 0, itemdb_canmasterstore_sub)
 
 bool itemdb_isequip2(struct item_data *id);
 #define itemdb_isequip(nameid) itemdb_isequip2(itemdb_search(nameid))

@@ -10372,6 +10372,20 @@ BUILDIN_FUNC(guildopenstorage)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+//biali master storage
+BUILDIN_FUNC(masteropenstorage)
+{
+	TBL_PC* sd;
+	int ret;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	ret = storage_master_storageopen(sd);
+	script_pushint(st,ret);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(guildopenstorage_log){
 #if PACKETVER < 20140205
 	ShowError( "buildin_guildopenstorage_log: This command requires PACKETVER 2014-02-05 or newer.\n" );
@@ -26859,6 +26873,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(gettimestr,"si?"),
 	BUILDIN_DEF(openstorage,""),
 	BUILDIN_DEF(guildopenstorage,""),
+	BUILDIN_DEF(masteropenstorage,""),
 	BUILDIN_DEF(guildopenstorage_log,"?"),
 	BUILDIN_DEF(openlootbag,""), // biali deadbody
 	BUILDIN_DEF(guild_has_permission,"i?"),

@@ -131,7 +131,7 @@ Body:
   - ID: 82
     Name: "Personal Storage"
     Table: "stor_ars_fild13_char_2"
-    Max: 5
+    Max: 50
 Footer:
   Imports:
     - Path: conf/import/inter_server.yml

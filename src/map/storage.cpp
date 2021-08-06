@@ -35,6 +35,9 @@ using namespace rathena;
 ///Databases of guild_storage : int guild_id -> struct guild_storage
 std::map<int, struct s_storage> guild_storage_db;
 
+///Databases of master_storage : int master_id -> struct master_storage biali master storage
+std::map<int, struct s_storage> master_storage_db;
+
 struct s_storage_table *storage_db;
 int storage_count;
 
@@ -125,6 +128,7 @@ void do_init_storage(void)
 void do_final_storage(void)
 {
 	guild_storage_db.clear();
+	master_storage_db.clear(); //biali master storage
 	if (storage_db)
 		aFree(storage_db);
 	storage_db = NULL;
@@ -142,6 +146,16 @@ void do_reconnect_storage(void){
 		// Save closed storages.
 		if( stor.dirty && stor.status == 0 ){
 			storage_guild_storagesave(0, stor.id, 0);
+		}
+	}
+
+	//biali master storage
+	for( auto entry : master_storage_db ){
+		struct s_storage stor = entry.second;
+
+		// Save closed storages.
+		if( stor.dirty && stor.status == 0 ){
+			storage_master_storagesave(0, stor.id, 0);
 		}
 	}
 }
@@ -563,6 +577,613 @@ struct s_storage *guild2storage(int guild_id)
 
 	return gs;
 }
+
+
+/**
+ * Biali master storage
+ * Retrieve the master_storage 
+ * will create a new storage if none found for the master account
+ * @param master_id : master account id
+ * @return s_storage
+ */
+struct s_storage *master2storage(int master_id)
+{
+	struct s_storage *gs;
+
+	gs = master2storage2(master_id);
+	
+	if( gs == nullptr ){
+		gs = &master_storage_db[master_id];
+		gs->id = master_id;
+		gs->type = TABLE_MASTER_STORAGE;
+	}
+
+	return gs;
+}
+
+/**
+ * See if the master_storage exist in db and fetch it if it's the case
+ * @author : [Skotlex]
+ * @param master_id : master_id to search the storage
+ * @return s_storage or nullptr
+ */
+struct s_storage *master2storage2(int master_id){
+	return util::map_find( master_storage_db, master_id );
+}
+
+
+/**
+ * Delete a master_storage and remove it from db
+ * @param master_id : master id to remove the storage from
+ */
+void storage_master_delete(int master_id)
+{
+	master_storage_db.erase(master_id);
+}
+
+/**
+ * Attempt to open master storage for player
+ * @param sd : player
+ * @return 0 : success, 1 : fail, 2 : no master acocunt found
+ */
+char storage_master_storageopen(struct map_session_data* sd)
+{
+	struct s_storage *gstor;
+
+	nullpo_ret(sd);
+
+	if(sd->status.master_id <= 0)
+		return MSTORAGE_NO_ACCOUNT;
+
+	if (sd->state.storage_flag == 4)
+		return MSTORAGE_ALREADY_OPEN; // storage already open.
+	else if (sd->state.storage_flag)
+		return MSTORAGE_STORAGE_ALREADY_OPEN; // Can't open both storages at a time.
+
+	if((gstor = master2storage2(sd->status.master_id)) == nullptr) {
+		ShowWarning("storage_master_storageopen ENTROU\n");
+		intif_request_master_storage(sd->status.account_id, sd->status.master_id);
+		return MSTORAGE_OPEN;
+	}
+
+	if(gstor->status)
+		return MSTORAGE_ALREADY_OPEN;
+
+	if( gstor->lock )
+		return MSTORAGE_ALREADY_OPEN;
+
+	ShowWarning("storage_master_storageopen PASSOU\n");
+	gstor->status = true;
+	sd->state.storage_flag = 4;
+	storage_sortitem(gstor->u.items_master, ARRAYLENGTH(gstor->u.items_master));
+	clif_storagelist(sd, gstor->u.items_master, ARRAYLENGTH(gstor->u.items_master), "Master Storage");
+	clif_updatestorageamount(sd, gstor->amount, gstor->max_amount);
+
+	return MSTORAGE_OPEN;
+}
+
+
+
+
+
+void storage_master_log( struct map_session_data* sd, struct item* item, int16 amount ){
+	int i;
+	SqlStmt* stmt = SqlStmt_Malloc(mmysql_handle);
+	StringBuf buf;
+	StringBuf_Init(&buf);
+
+	StringBuf_Printf(&buf, "INSERT INTO `master_storage_log` (`time`, `master_id`, `char_id`, `name`, `nameid`, `amount`, `identify`, `refine`, `attribute`, `unique_id`, `bound`, `enchantgrade`");
+	for (i = 0; i < MAX_SLOTS; ++i)
+		StringBuf_Printf(&buf, ", `card%d`", i);
+	for (i = 0; i < MAX_ITEM_RDM_OPT; ++i) {
+		StringBuf_Printf(&buf, ", `option_id%d`", i);
+		StringBuf_Printf(&buf, ", `option_val%d`", i);
+		StringBuf_Printf(&buf, ", `option_parm%d`", i);
+	}
+	StringBuf_Printf(&buf, ") VALUES(NOW(),'%u','%u', '%s', '%u', '%d','%d','%d','%d','%" PRIu64 "','%d','%d'",
+		sd->status.master_id, sd->status.char_id, sd->status.name, item->nameid, amount, item->identify, item->refine,item->attribute, item->unique_id, item->bound, item->enchantgrade);
+
+	for (i = 0; i < MAX_SLOTS; i++)
+		StringBuf_Printf(&buf, ",'%u'", item->card[i]);
+	for (i = 0; i < MAX_ITEM_RDM_OPT; i++)
+		StringBuf_Printf(&buf, ",'%d','%d','%d'", item->option[i].id, item->option[i].value, item->option[i].param);
+	StringBuf_Printf(&buf, ")");
+
+	if (SQL_SUCCESS != SqlStmt_PrepareStr(stmt, StringBuf_Value(&buf)) || SQL_SUCCESS != SqlStmt_Execute(stmt))
+		SqlStmt_ShowDebug(stmt);
+
+	SqlStmt_Free(stmt);
+	StringBuf_Destroy(&buf);
+}
+
+enum e_master_storage_log storage_master_log_read_sub( struct map_session_data* sd, std::vector<struct master_log_entry>& log, uint32 max ){
+	StringBuf buf;
+	int j;
+
+	StringBuf_Init(&buf);
+
+	StringBuf_AppendStr(&buf, "SELECT `id`, `time`, `name`, `amount`");
+	StringBuf_AppendStr(&buf, " , `nameid`, `identify`, `refine`, `attribute`, `expire_time`, `bound`, `unique_id`, `enchantgrade`");
+	for (j = 0; j < MAX_SLOTS; ++j)
+		StringBuf_Printf(&buf, ", `card%d`", j);
+	for (j = 0; j < MAX_ITEM_RDM_OPT; ++j) {
+		StringBuf_Printf(&buf, ", `option_id%d`", j);
+		StringBuf_Printf(&buf, ", `option_val%d`", j);
+		StringBuf_Printf(&buf, ", `option_parm%d`", j);
+	}
+	StringBuf_Printf(&buf, " FROM `master_storage_log` WHERE `master_id`='%u'", sd->status.master_id );
+	StringBuf_Printf(&buf, " ORDER BY `time` DESC LIMIT %u", max);
+
+	SqlStmt* stmt = SqlStmt_Malloc(mmysql_handle);
+	if( SQL_ERROR == SqlStmt_PrepareStr(stmt, StringBuf_Value(&buf)) ||
+		SQL_ERROR == SqlStmt_Execute(stmt) )
+	{
+		SqlStmt_ShowDebug(stmt);
+		SqlStmt_Free(stmt);
+		StringBuf_Destroy(&buf);
+
+		return MASTERSTORAGE_LOG_FAILED;
+	}
+
+	struct master_log_entry entry;
+
+	// General data
+	SqlStmt_BindColumn(stmt, 0, SQLDT_UINT,      &entry.id,               0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 1, SQLDT_STRING,    &entry.time, sizeof(entry.time), NULL, NULL);
+	SqlStmt_BindColumn(stmt, 2, SQLDT_STRING,    &entry.name, sizeof(entry.name), NULL, NULL);
+	SqlStmt_BindColumn(stmt, 3, SQLDT_SHORT,     &entry.amount,           0, NULL, NULL);
+
+	// Item data
+	SqlStmt_BindColumn(stmt, 4, SQLDT_UINT,      &entry.item.nameid,      0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 5, SQLDT_CHAR,      &entry.item.identify,    0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 6, SQLDT_CHAR,      &entry.item.refine,      0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 7, SQLDT_CHAR,      &entry.item.attribute,   0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 8, SQLDT_UINT,      &entry.item.expire_time, 0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 9, SQLDT_UINT,      &entry.item.bound,       0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 10, SQLDT_UINT64,   &entry.item.unique_id,   0, NULL, NULL);
+	SqlStmt_BindColumn(stmt, 11, SQLDT_INT8,     &entry.item.enchantgrade,0, NULL, NULL);
+	for( j = 0; j < MAX_SLOTS; ++j )
+		SqlStmt_BindColumn(stmt, 12+j, SQLDT_UINT, &entry.item.card[j], 0, NULL, NULL);
+	for( j = 0; j < MAX_ITEM_RDM_OPT; ++j ) {
+		SqlStmt_BindColumn(stmt, 12+MAX_SLOTS+j*3, SQLDT_SHORT, &entry.item.option[j].id, 0, NULL, NULL);
+		SqlStmt_BindColumn(stmt, 12+MAX_SLOTS+j*3+1, SQLDT_SHORT, &entry.item.option[j].value, 0, NULL, NULL);
+		SqlStmt_BindColumn(stmt, 12+MAX_SLOTS+j*3+2, SQLDT_CHAR, &entry.item.option[j].param, 0, NULL, NULL);
+	}
+
+	log.reserve(max);
+
+	while( SQL_SUCCESS == SqlStmt_NextRow(stmt) ){
+		log.push_back( entry );
+	}
+
+	Sql_FreeResult(mmysql_handle);
+	StringBuf_Destroy(&buf);
+	SqlStmt_Free(stmt);
+
+	if( log.empty() ){
+		return MASTERSTORAGE_LOG_EMPTY;
+	}
+
+	return MASTERSTORAGE_LOG_FINAL_SUCCESS;
+}
+
+enum e_master_storage_log storage_master_log_read( struct map_session_data* sd ){
+	std::vector<struct master_log_entry> log;
+
+	enum e_master_storage_log ret = storage_master_log_read_sub( sd, log, MAX_MASTER_STORAGE_LOG_PACKET );
+
+	clif_master_storage_log( sd, log, ret );
+
+	return ret;
+}
+
+/**
+ * Attempt to add an item in master storage, then refresh it
+ * @param sd : player attempting to open the master_storage
+ * @param stor : master_storage
+ * @param item : item to add
+ * @param amount : number of item to add
+ * @return True : success, False : fail
+ */
+bool storage_master_additem(struct map_session_data* sd, struct s_storage* stor, struct item* item_data, int amount)
+{
+	struct item_data *id;
+	int i;
+
+	nullpo_ret(sd);
+	nullpo_ret(stor);
+	nullpo_ret(item_data);
+
+	if(item_data->nameid == 0 || amount <= 0)
+		return false;
+
+	id = itemdb_search(item_data->nameid);
+
+	if( id->stack.master_storage && amount > id->stack.amount ) // item stack limitation
+		return false;
+
+	if (!itemdb_canmasterstore(item_data, pc_get_group_level(sd)) || item_data->expire_time) { // Check if item is storable. [Skotlex]
+		clif_displaymessage (sd->fd, msg_txt(sd,264));
+		return false;
+	}
+
+	if (item_data->bound > BOUND_ACCOUNT && !pc_can_give_bounded_items(sd)) {
+		clif_displaymessage(sd->fd, msg_txt(sd,294));
+		return false;
+	}
+// #ifdef BGEXTENDED
+// 	//Brian Bg Items - updated by [AnubisK]
+// 	if( item_data->card[0]==CARD0_CREATE && (MakeDWord(item_data->card[2],item_data->card[3]) == (battle_config.bg_reserved_char_id || battle_config.woe_reserved_char_id)  && !battle_config.bg_can_trade))
+// 	{	// "Battleground's Items"
+// 		clif_displaymessage (sd->fd, msg_txt(sd,264));
+// 		return 1;
+// 	}
+// #endif
+	if(itemdb_isstackable2(id)) { //Stackable
+		for(i = 0; i < stor->max_amount; i++) {
+			if(compare_item(&stor->u.items_master[i], item_data)) {
+				if( amount > MAX_AMOUNT - stor->u.items_master[i].amount || ( id->stack.master_storage && amount > id->stack.amount - stor->u.items_master[i].amount ) )
+					return false;
+
+				stor->u.items_master[i].amount += amount;
+				clif_storageitemadded(sd,&stor->u.items_master[i],i,amount);
+				stor->dirty = true;
+
+				storage_master_log( sd, &stor->u.items_master[i], amount );
+
+				return true;
+			}
+		}
+	}
+
+	//Add item
+	for(i = 0; i < stor->max_amount && stor->u.items_master[i].nameid; i++);
+	if(i >= stor->max_amount)
+		return false;
+
+	memcpy(&stor->u.items_master[i],item_data,sizeof(stor->u.items_master[0]));
+	stor->u.items_master[i].amount = amount;
+	stor->amount++;
+	clif_storageitemadded(sd,&stor->u.items_master[i],i,amount);
+	clif_updatestorageamount(sd, stor->amount, stor->max_amount);
+	stor->dirty = true;
+
+	storage_master_log( sd, &stor->u.items_master[i], amount );
+
+	return true;
+}
+
+/**
+ * Attempt to add an item in master storage, then refresh i
+ * @param stor : master_storage
+ * @param item : item to add
+ * @param amount : number of item to add
+ * @return True : success, False : fail
+ */
+bool storage_master_additem2(struct s_storage* stor, struct item* item, int amount) {
+	struct item_data *id;
+	int i;
+
+	nullpo_ret(stor);
+	nullpo_ret(item);
+
+	if (item->nameid == 0 || amount <= 0 || !(id = itemdb_exists(item->nameid)))
+		return false;
+
+	if (item->expire_time)
+		return false;
+
+	if (itemdb_isstackable2(id)) { // Stackable
+		for (i = 0; i < stor->max_amount; i++) {
+			if (compare_item(&stor->u.items_master[i], item)) {
+				// Set the amount, make it fit with max amount
+				amount = min(amount, ((id->stack.master_storage) ? id->stack.amount : MAX_AMOUNT) - stor->u.items_master[i].amount);
+				if (amount != item->amount)
+					ShowWarning("storage_master_additem2: Stack limit reached! Altered amount of item \"" CL_WHITE "%s" CL_RESET "\" (%u). '" CL_WHITE "%d" CL_RESET "' -> '" CL_WHITE"%d" CL_RESET "'.\n", id->name.c_str(), id->nameid, item->amount, amount);
+				stor->u.items_master[i].amount += amount;
+				stor->dirty = true;
+				return true;
+			}
+		}
+	}
+
+	// Add the item
+	for (i = 0; i < stor->max_amount && stor->u.items_master[i].nameid; i++);
+	if (i >= stor->max_amount)
+		return false;
+
+	memcpy(&stor->u.items_master[i], item, sizeof(stor->u.items_master[0]));
+	stor->u.items_master[i].amount = amount;
+	stor->amount++;
+	stor->dirty = true;
+	return true;
+}
+
+/**
+ * Attempt to delete an item in master storage, then refresh it
+ * @param sd : player
+ * @param stor : master_storage
+ * @param n : index of item in master storage
+ * @param amount : number of item to delete
+ * @return True : success, False : fail
+ */
+bool storage_master_delitem(struct map_session_data* sd, struct s_storage* stor, int n, int amount)
+{
+	nullpo_retr(1, sd);
+	nullpo_retr(1, stor);
+
+	if(!stor->u.items_master[n].nameid || stor->u.items_master[n].amount < amount)
+		return false;
+
+	// Log before removing it
+	storage_master_log( sd, &stor->u.items_master[n], -amount );
+
+	stor->u.items_master[n].amount -= amount;
+
+	if(!stor->u.items_master[n].amount) {
+		memset(&stor->u.items_master[n],0,sizeof(stor->u.items_master[0]));
+		stor->amount--;
+		clif_updatestorageamount(sd, stor->amount, stor->max_amount);
+	}
+
+	clif_storageitemremoved(sd,n,amount);
+	stor->dirty = true;
+	return true;
+}
+
+/**
+ * Attempt to add an item in master storage from inventory, then refresh it
+ * @param sd : player
+ * @param amount : number of item to delete
+ */
+void storage_master_storageadd(struct map_session_data* sd, int index, int amount)
+{
+	struct s_storage *stor;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	if( !stor->status || stor->amount > stor->max_amount )
+		return;
+
+	if( index < 0 || index >= MAX_INVENTORY )
+		return;
+
+	if( sd->inventory.u.items_inventory[index].nameid == 0 )
+		return;
+
+	if( amount < 1 || amount > sd->inventory.u.items_inventory[index].amount )
+		return;
+
+	if (itemdb_ishatched_egg(&sd->inventory.u.items_inventory[index]))
+		return;
+
+	if( stor->lock ) {
+		storage_master_storageclose(sd);
+		return;
+	}
+
+	if(storage_master_additem(sd,stor,&sd->inventory.u.items_inventory[index],amount))
+		pc_delitem(sd,index,amount,0,4,LOG_TYPE_STORAGE); //BIALI TODO : THIS IS WRONG BUT NOT SURE HOW TO ADD ANOTHER ENTRY TO PICKLOG
+	else {
+		clif_storageitemremoved(sd,index,0);
+		clif_dropitem(sd,index,0);
+	}
+}
+
+/**
+ * Attempt to retrieve an item from master storage to inventory, then refresh it
+ * @param sd : player
+ * @param index : index of item in storage
+ * @param amount : number of item to get
+ * @return 1:success, 0:fail
+ */
+void storage_master_storageget(struct map_session_data* sd, int index, int amount)
+{
+	struct s_storage *stor;
+	unsigned char flag = 0;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	if(!stor->status)
+		return;
+
+	if(index < 0 || index >= stor->max_amount)
+		return;
+
+	if(stor->u.items_master[index].nameid == 0)
+		return;
+
+	if(amount < 1 || amount > stor->u.items_master[index].amount)
+		return;
+
+	if( stor->lock ) {
+		storage_master_storageclose(sd);
+		return;
+	}
+
+	if((flag = pc_additem(sd,&stor->u.items_master[index],amount,LOG_TYPE_STORAGE)) == 0)
+		storage_master_delitem(sd,stor,index,amount);
+	else { // inform fail
+		clif_storageitemremoved(sd,index,0);
+		clif_additem(sd,0,0,flag);
+	}
+}
+
+/**
+ * Attempt to add an item in master storage from cart, then refresh it
+ * @param sd : player
+ * @param index : index of item in cart
+ * @param amount : number of item to transfer
+ */
+void storage_master_storageaddfromcart(struct map_session_data* sd, int index, int amount)
+{
+	struct s_storage *stor;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	if( !stor->status || stor->amount > stor->max_amount )
+		return;
+
+	if( index < 0 || index >= MAX_CART )
+		return;
+
+	if( sd->cart.u.items_cart[index].nameid == 0 )
+		return;
+
+	if( amount < 1 || amount > sd->cart.u.items_cart[index].amount )
+		return;
+
+	if(storage_master_additem(sd,stor,&sd->cart.u.items_cart[index],amount))
+		pc_cart_delitem(sd,index,amount,0,LOG_TYPE_STORAGE);
+	else {
+		clif_storageitemremoved(sd,index,0);
+		clif_dropitem(sd,index,0);
+	}
+}
+
+/**
+ * Attempt to retrieve an item from master storage to cart, then refresh it
+ * @param sd : player
+ * @param index : index of item in storage
+ * @param amount : number of item to transfer
+ * @return 1:fail, 0:success
+ */
+void storage_master_storagegettocart(struct map_session_data* sd, int index, int amount)
+{
+	short flag;
+	struct s_storage *stor;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	if(!stor->status)
+		return;
+
+	if(index < 0 || index >= stor->max_amount)
+		return;
+
+	if(stor->u.items_master[index].nameid == 0)
+		return;
+
+	if(amount < 1 || amount > stor->u.items_master[index].amount)
+		return;
+
+	if((flag = pc_cart_additem(sd,&stor->u.items_master[index],amount,LOG_TYPE_STORAGE)) == 0)
+		storage_master_delitem(sd,stor,index,amount);
+	else {
+		clif_storageitemremoved(sd,index,0);
+		clif_cart_additem_ack(sd,(flag == 1) ? ADDITEM_TO_CART_FAIL_WEIGHT:ADDITEM_TO_CART_FAIL_COUNT);
+	}
+}
+
+/**
+ * Request to save master storage
+ * @param account_id : account requesting the save
+ * @param master_id : master id to take the master_storage
+ * @param flag : 1=char quitting, close the storage
+ * @return False : fail (no storage), True : success (requested)
+ */
+bool storage_master_storagesave(uint32 account_id, int master_id, int flag)
+{
+	struct s_storage *stor = master2storage2(master_id);
+
+	if (stor) {
+		if (flag&CSAVE_QUIT) //Char quitting, close it.
+			stor->status = false;
+
+		if (stor->dirty)
+			intif_send_master_storage(account_id,stor);
+
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * ACK save of master storage
+ * @param master_id : master id to use the storage
+ */
+void storage_master_storagesaved(int master_id)
+{
+	struct s_storage *stor;
+
+	if ((stor = master2storage2(master_id)) != NULL) {
+		if (stor->dirty && !stor->status) // Storage has been correctly saved.
+			stor->dirty = false;
+	}
+}
+
+/**
+ * Close storage for player then save it
+ * @param sd : player
+ */
+void storage_master_storageclose(struct map_session_data* sd)
+{
+	struct s_storage *stor;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	clif_storageclose(sd);
+	if (stor->status) {
+		if (save_settings&CHARSAVE_STORAGE)
+			chrif_save(sd, CSAVE_INVENTORY|CSAVE_CART); //This one also saves the storage. [Skotlex]
+		else
+			storage_master_storagesave(sd->status.account_id, sd->status.master_id,0);
+
+		stor->status = false;
+	}
+
+	sd->state.storage_flag = 0;
+}
+
+/**
+ * Close storage for player then save it
+ * @param sd
+ * @param flag
+ */
+void storage_master_storage_quit(struct map_session_data* sd, int flag)
+{
+	struct s_storage *stor;
+
+	nullpo_retv(sd);
+	nullpo_retv(stor = master2storage2(sd->status.master_id));
+
+	if (flag) {	//Only during a master break flag is 1 (don't save storage)
+		clif_storageclose(sd);
+
+		if (save_settings&CHARSAVE_STORAGE)
+			chrif_save(sd, CSAVE_INVENTORY|CSAVE_CART);
+
+		sd->state.storage_flag = 0;
+		stor->status = false;
+		return;
+	}
+
+	if (stor->status) {
+		if (save_settings&CHARSAVE_STORAGE)
+			chrif_save(sd, CSAVE_INVENTORY|CSAVE_CART);
+		else
+			storage_master_storagesave(sd->status.account_id,sd->status.master_id,1);
+	}
+
+	sd->state.storage_flag = 0;
+	stor->status = false;
+}
+
+
+
+
+
+
+
+
+
+
 
 /**
  * See if the guild_storage exist in db and fetch it if it's the case
