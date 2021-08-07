@@ -73,7 +73,7 @@ main_menu:
 			if(.@result == 1) 
 				mes "All Done. Good luck, and take care!";
 			else
-				mes "Hum... We can't go ahead with this, I am sorry.";
+				mes "Hum... We can't go ahead with this, I am sorry. Maybe you are in a party? Remember you cannot enlist to a City and be in a party with people not enlisted to the same city.";
 			close;
 
 			break;

@@ -26015,9 +26015,14 @@ BUILDIN_FUNC(setfaction)
 
 	if( ( p = party_search(sd->status.party_id) ) != NULL) {
 		if( p->party.count > 1) {
-			ARR_FIND(0, MAX_PARTY, i, p->data[i].sd->status.faction_id != faction_id);
-			if( i < MAX_PARTY) {
-				return SCRIPT_CMD_SUCCESS;
+			for(i=0; i < MAX_PARTY; i++) {
+				if(p->party.member[i].online && p->data[i].sd->status.faction_id == faction_id)
+					continue;
+				else {
+					clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Some players of the Party are offline or enlisted with a different city.", false, SELF);
+					script_pushnil(st);
+					return SCRIPT_CMD_SUCCESS;
+				} 
 			}
 		}
 	}
