@@ -41,22 +41,27 @@ OnPvpRanking:	//-- Menus
 			//===== Dont Touch - Menu Generation ======================
 			.@m = select("^008800PvP Kitten Arena^000000 [ "+getmapusers(.MapName$[0]) + "/" + .MaxPlayers[0] + " ]:^FF0000PvP Full-Loot Arena^000000 [ "+getmapusers(.MapName$[1]) +  "/" + .MaxPlayers[1] + " ]") - 1;
 			if(.MaxPlayers[.@m] && getmapusers(.MapName$[.@m]) >= .MaxPlayers[.@m]){
+				mes .NPC$;
 				mes "Room is Full.";
 				close;
 			} else if(.MapMode[.@m]&4 && getcharid(1) <= 0 ) {
 				mes "You must be in a Party to join.";
 				close;
 			} else if(.MapMode[.@m]&1 && getcharid(2) <= 0 ) {
+				mes .NPC$;
 				mes "You must be in a Guild to join.";
 				close;
-			} else if(BaseLevel < 50 && .@m != 1) {
-				mes "You must be Base Level 50 or more to join.";
+			} else if(BaseLevel < 70 && .@m != 1) {
+				mes .NPC$;
+				mes "You must be Base Level 70 or more to join.";
 				close;
-			} else if(BaseLevel < 50) {
-				mes "You must be at least Base Level 50 to enter the PvP Arenas";
+			} else if(BaseLevel < 70) {
+				mes .NPC$;
+				mes "You must be at least Base Level 70 to enter the PvP Arenas";
 				close;
-			} else if(ValidateEntry() == 0) {
-				mes "You are undergeared to join the Arenas.";
+			} else if(.@m == 2 && ValidateEntry() == 0) {
+				mes .NPC$;
+				mes "You are undergeared to join the Arenas. All slots must be occupied by a piece of equipment (expept head low, head mid and costumes)";
 				close;
 			//else if( .@m == 1 && (eaclass()&EAJL_UPPER || BaseLevel>99)) {
 			// 	mes "You don't meet the criteria to join the Classic Arena.";
@@ -247,9 +252,9 @@ OnMinute00:
 
 	function	ValidateEntry	{
 		for(.@i=0;.@i<10;.@i++) {
+			if(.@i == 4) continue; // head low
+			if(.@i == 5) continue; // head mid
 			if(getequipid(.@i) == -1) return 0;
-			if(.@i == 3) .@i = 5;
-			if(.@i == 7) .@i = 8;
 		}
 		return 1;
 

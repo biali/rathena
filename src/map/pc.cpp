@@ -7009,8 +7009,20 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 		// 	//faction_leave(sd);
 
 		//faction system : a player holding a flag cannot enter a sanctuary map of another city
-		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) 
+		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) {
+			char output[128];
+			sprintf(output, "You cannot cross this border map while representing a city.");
+			clif_messagecolor(&sd->bl, color_table[COLOR_RED], output, false, SELF);
 		  	return SETPOS_NOTALLOW;
+		}
+
+		//faction system : a player holding a flag cannot enter a pvp/bg/gvg/rpk maps
+		if (sd->status.faction_id && mapdata_flag_vs2(mapdata) ) {
+			char output[128];
+			sprintf(output, "You cannot enter any PVP/BG/GVG/RPK maps while representing a city.");
+			clif_messagecolor(&sd->bl, color_table[COLOR_RED], output, false, SELF);
+		  	return SETPOS_NOTALLOW;
+		}
 
 		if (sd->bg_id && !mapdata->flag[MF_BATTLEGROUND]) // Moving to a map that isn't a Battlegrounds
 			bg_team_leave(sd, false, true);
