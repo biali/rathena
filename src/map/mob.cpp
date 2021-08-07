@@ -2841,6 +2841,11 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 						}
 #endif
 						pc_gainexp(tmpsd[i], &md->bl, base_exp, job_exp, 0);
+
+						//biali reputation system
+						if(sd && sd->status.party_id == 0) {
+							pc_give_rep_points(sd,md->level);
+						}
 					}
 				}
 				if(zeny) // zeny from mobs [Valaris]
@@ -2851,8 +2856,9 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				pc_damage_log_clear(tmpsd[i],md->bl.id);
 		}
 
-		for( i = 0; i < pnum; i++ ) //Party share.
+		for( i = 0; i < pnum; i++ ) { //Party share.
 			party_exp_share(pt[i].p, &md->bl, pt[i].base_exp,pt[i].job_exp,pt[i].zeny);
+		}
 
 	} //End EXP giving.
 

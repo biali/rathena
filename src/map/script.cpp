@@ -26197,7 +26197,49 @@ BUILDIN_FUNC(getreputation)
 
 	script_pushint(st, sd->status.rep[i].value);
 	return SCRIPT_CMD_SUCCESS;
+}
 
+BUILDIN_FUNC(getreputationpoints)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+
+	script_pushint(st, sd->status.rep[i].points);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(takereputationpoints)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if(!script_hasdata(st,3)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+	int q = script_getnum(st,3);
+
+	sd->status.rep[i].points -= q;
+	script_pushint(st, sd->status.rep[i].points);
+	return SCRIPT_CMD_SUCCESS;
 }
 
 /**
@@ -27285,6 +27327,8 @@ struct script_function buildin_func[] = {
 
 	//Biali reputation system
 	BUILDIN_DEF(getreputation,"i"),
+	BUILDIN_DEF(getreputationpoints,"i"),
+	BUILDIN_DEF(takereputationpoints,"ii"),
 
 	// Biali mount rework
 	BUILDIN_DEF(mountinfo, "ii"),

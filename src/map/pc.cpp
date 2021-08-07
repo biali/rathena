@@ -8233,7 +8233,7 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 * @param sd Player
 * @param base_exp Base EXP before personal bonuses
 */
-static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
+void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 {
 	int faction_id, exp, i;
 
@@ -8250,8 +8250,17 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 		} else {
 			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
-		ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
+		//ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 	}
+	return;
+}
+
+void pc_give_rep_points(struct map_session_data *sd, int points) {
+	int faction_id = sd->status.faction_id;
+	if(faction_id) {
+		sd->status.rep[faction_id].points += points;
+	}
+
 	return;
 }
 
@@ -9435,7 +9444,7 @@ void pc_close_npc(struct map_session_data *sd,int flag)
  *------------------------------------------*/
 int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id) // biali damage log
 {
-	int i=0,k=0,infamy=0;;
+	int i=0,k=0,infamy=0;
 	t_tick tick = gettick();
 	struct map_data *mapdata = map_getmapdata(sd->bl.m);
 

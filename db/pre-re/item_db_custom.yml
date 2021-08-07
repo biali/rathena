@@ -7454,3 +7454,23 @@ Body:
       NoAuction: true
       Script: |
         callfunc "F_GetHunterItem";
+  - Id: 30151
+    AegisName: Geffen_Heart_Stone
+    Name: Geffen Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30152
+    AegisName: Payon_Heart_Stone
+    Name: Payon Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30153
+    AegisName: Morocc_Heart_Stone
+    Name: Morocc Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30154
+    AegisName: Prontera_Heart_Stone
+    Name: Prontera Heart Stone
+    Weight: 300
+    Type: Etc

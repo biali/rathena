@@ -693,13 +693,13 @@ int char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	if( memcmp(p->rep, cp->rep, sizeof(p->rep)) )
 	{
 		StringBuf_Clear(&buf);
-		StringBuf_Printf(&buf, "REPLACE INTO `reputation` (`account_id`, `char_id`, `faction_id`, `value`) VALUES ");
+		StringBuf_Printf(&buf, "REPLACE INTO `reputation` (`account_id`, `char_id`, `faction_id`, `value`, `points`) VALUES ");
 		for( i = 1, count = 0; i <= MAX_FACTION; ++i )
 		{
 
 			if( count )
 				StringBuf_AppendStr(&buf, ",");
-			StringBuf_Printf(&buf, "('%d', '%d', '%d', '%d')", p->account_id, p->char_id, i, p->rep[i].value);
+			StringBuf_Printf(&buf, "('%d', '%d', '%d', '%d', '%d')", p->account_id, p->char_id, i, p->rep[i].value, p->rep[i].points);
 			++count;
 
 		}
@@ -1633,19 +1633,21 @@ int char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_ev
 
 
 	//read reputation from SQL
-	//`reputation` (`account_id`, `char_id`, `faction_id`, `value`
-	if( SQL_ERROR == SqlStmt_Prepare(stmt, "SELECT `value` FROM `reputation` WHERE `char_id`=? ORDER by `faction_id` ASC")
+	//`reputation` (`account_id`, `char_id`, `faction_id`, `value`, `points`
+	if( SQL_ERROR == SqlStmt_Prepare(stmt, "SELECT `value`, `points` FROM `reputation` WHERE `char_id`=? ORDER by `faction_id` ASC")
 	||	SQL_ERROR == SqlStmt_BindParam(stmt, 0, SQLDT_INT, &char_id, 0)
 	||	SQL_ERROR == SqlStmt_Execute(stmt)
-	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 0, SQLDT_INT,  	&tmp_rep.value, 0, NULL, NULL) )
+	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 0, SQLDT_INT,  	&tmp_rep.value, 0, NULL, NULL) 
+	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 1, SQLDT_INT,  	&tmp_rep.points, 0, NULL, NULL) )
 		SqlStmt_ShowDebug(stmt);
 
-	
+	p->rep[0].points = 0;
 	p->rep[0].value = 0; // there will never be a faction_id == 0 so we nullify the first position of the array
 	strncpy(p->rep[0].desc, "", sizeof(p->rep[0].desc)); // there will never be a faction_id == 0 so we nullify the first position of the array
 
 	for( i = 1; i <= MAX_FACTION && SQL_SUCCESS == SqlStmt_NextRow(stmt); ++i )
 	{
+		memcpy(&p->rep[i].points, &tmp_rep.points, sizeof(tmp_rep.points));
 		memcpy(&p->rep[i].value, &tmp_rep.value, sizeof(tmp_rep.value));
 		memcpy(&p->rep[i].desc, "", 12);
 	}

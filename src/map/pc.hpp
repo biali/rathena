@@ -1206,6 +1206,10 @@ void pc_calc_skilltree(struct map_session_data *sd);
 int pc_calc_skilltree_normalize_job(struct map_session_data *sd);
 void pc_clean_skilltree(struct map_session_data *sd);
 
+// biali reputation system
+void pc_calcrep(struct map_session_data *sd, t_exp base_exp);
+void pc_give_rep_points(struct map_session_data *sd, int points);
+
 #define pc_checkoverhp(sd) ((sd)->battle_status.hp == (sd)->battle_status.max_hp)
 #define pc_checkoversp(sd) ((sd)->battle_status.sp == (sd)->battle_status.max_sp)
 

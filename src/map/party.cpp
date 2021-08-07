@@ -1139,8 +1139,37 @@ void party_exp_share(struct party_data* p, struct block_list* src, t_exp base_ex
 
 		if (zeny) // zeny from mobs [Valaris]
 			pc_getzeny(sd[i],zeny,LOG_TYPE_PICKDROP_MONSTER,NULL);
+
+		//biali reputation system
+		if(sd[i]->status.faction_id) 
+			party_rep_share(sd[i], src, c);
 	}
 }
+
+//biali reputation system
+void party_rep_share(struct map_session_data *sd, struct block_list* src, int count)
+{
+	nullpo_retv(sd);
+	int repp = 0;
+	double bonus = 100 + battle_config.party_even_share_bonus*(count-1);
+
+	if(count < 1)
+		count = 1;
+
+	if(sd->status.faction_id <= 0)
+		return;
+
+	TBL_MOB *md = BL_CAST(BL_MOB, src);
+	if(md && md->level) {
+		repp = md->level / count;
+	}
+
+	if (repp) {
+		repp = (int) cap_value(repp * bonus/100, INT_MIN, INT_MAX);
+		pc_give_rep_points(sd,repp);
+	}
+}
+
 
 //Does party loot. first_charid holds the charid of the player who has time priority to take the item.
 int party_share_loot(struct party_data* p, struct map_session_data* sd, struct item* item, int first_charid)

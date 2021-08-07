@@ -639,6 +639,7 @@ struct s_skillcount {
 struct reputation {
 	char desc[12];
 	int value;
+	int points;
 };
 
 struct mmo_charstatus {

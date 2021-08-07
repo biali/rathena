@@ -641,7 +641,6 @@ char storage_master_storageopen(struct map_session_data* sd)
 		return MSTORAGE_STORAGE_ALREADY_OPEN; // Can't open both storages at a time.
 
 	if((gstor = master2storage2(sd->status.master_id)) == nullptr) {
-		ShowWarning("storage_master_storageopen ENTROU\n");
 		intif_request_master_storage(sd->status.account_id, sd->status.master_id);
 		return MSTORAGE_OPEN;
 	}
@@ -652,7 +651,6 @@ char storage_master_storageopen(struct map_session_data* sd)
 	if( gstor->lock )
 		return MSTORAGE_ALREADY_OPEN;
 
-	ShowWarning("storage_master_storageopen PASSOU\n");
 	gstor->status = true;
 	sd->state.storage_flag = 4;
 	storage_sortitem(gstor->u.items_master, ARRAYLENGTH(gstor->u.items_master));

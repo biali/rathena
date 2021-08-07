@@ -53,5 +53,4 @@ OnInit:
 		.@t$ = getarg(0);
 		return "^0033cc" + .@t$ + "^000000";
 	} 
-
 }
