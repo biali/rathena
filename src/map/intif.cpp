@@ -591,7 +591,6 @@ bool intif_send_guild_storage(uint32 account_id, struct s_storage *gstor)
  */
 bool intif_request_master_storage(uint32 account_id, int master_id)
 {
-	ShowWarning("intif_request_master_storage : chegou aki masterid %d\n",master_id);
 	master_id += 2000000;
 	if (CheckForCharServer())
 		return false;
@@ -1629,8 +1628,6 @@ int intif_parse_LoadMasterStorage(int fd)
 	flag = RFIFOL(fd,12);
 	if (master_id <= 0)
 		return 0;
-
-	ShowWarning("inrif_parse_LoadMasterStorage chegou com master id : %d\n",master_id);
 
 	sd = map_id2sd( RFIFOL(fd,4) );
 	if (flag){ //If flag != 0, we attach a player and open the storage

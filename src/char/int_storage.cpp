@@ -634,7 +634,6 @@ bool mapif_parse_StorageSave(int fd) {
 bool mapif_load_master_storage(int fd,uint32 account_id,int master_id, char flag)
 {
 	master_id -= 2000000;
-	ShowWarning("mapid_load_master_storage chegou master_id %d\n",master_id);
 	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT `id` FROM `cp_users` WHERE `id`='%d'",  master_id) )
 		Sql_ShowDebug(sql_handle);
 	else if( Sql_NumRows(sql_handle) > 0 )
