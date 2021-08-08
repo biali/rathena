@@ -508,6 +508,17 @@ void party_member_joined(struct map_session_data *sd)
 		return;
 	}
 
+	//biali faction system
+	// check when a player logs in and was in a party before logoff
+	// if the party is factioned, expel
+	ARR_FIND( 0, MAX_PARTY, i, p->party.member[i].online && p->data[i].sd->status.faction_id != sd->status.faction_id );
+	if (i < MAX_PARTY) {
+		// sd->status.party_id = 0;
+		intif_party_leave(p->party.party_id,sd->status.account_id, sd->status.char_id, sd->status.name ,PARTY_MEMBER_WITHDRAW_EXPEL);
+		sd->status.party_id = 0;
+		return;
+	}
+
 	ARR_FIND( 0, MAX_PARTY, i, p->party.member[i].account_id == sd->status.account_id && p->party.member[i].char_id == sd->status.char_id );
 
 	if (i < MAX_PARTY) {
