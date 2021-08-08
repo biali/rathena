@@ -577,6 +577,9 @@ struct Battle_Config
 	// biali monster of the day
 	int motd_exp_increase;
 
+	// biali hardcap for equipments drop
+	int hardcap;
+
 	// Global Damage adjustment. [Cydh]
 	int atk_adjustment_map;
 	int atk_damage_attacker;

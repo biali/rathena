@@ -2990,6 +2990,12 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 					drop_rate = 1;
 			}
 #endif
+
+			//biali Cap to all equips drop Rates
+			if(it->type == 4 || it->type == 5) {
+				drop_rate = min(drop_rate,battle_config.hardcap);
+			}
+
 			// attempt to drop the item
 			if (rnd() % 10000 >= drop_rate)
 				continue;

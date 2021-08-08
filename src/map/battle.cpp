@@ -9467,6 +9467,8 @@ static const struct _battle_data {
 	{ "random_options_drop_chances",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
 // Monster of the day
 	{ "motd_exp_increase",                  &battle_config.motd_exp_increase,                10,     0,     10000,          },
+// Ragnamania Hard Cap
+	{ "drops_hardcap",               		&battle_config.hardcap,         			   3000,     0,     10000,          },
 	
 #include "../custom/battle_config_init.inc"
 };
