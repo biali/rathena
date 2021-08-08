@@ -101,7 +101,7 @@ geffen,108,147,0	script	warp_gefenia	45,2,2,{
 	end;
 
 OnTouch:
-	mes " "
+	mes " ";
 	mes "^FF0000WARNING^000000";
 	mes "^FF0000You are entering a^000000";
 	mes "^FF0000Full-loot PK Area^000000";
