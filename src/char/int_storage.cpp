@@ -663,10 +663,11 @@ bool mapif_load_master_storage(int fd,uint32 account_id,int master_id, char flag
 
 void mapif_save_master_storage_ack(int fd,uint32 account_id,int master_id,int fail)
 {
+	master_id += 2000000;
 	WFIFOHEAD(fd,11);
 	WFIFOW(fd,0)=0x3819;
 	WFIFOL(fd,2)=account_id;
-	WFIFOL(fd,6)=master_id + 2000000;
+	WFIFOL(fd,6)=master_id;
 	WFIFOB(fd,10)=fail;
 	WFIFOSET(fd,11);
 }

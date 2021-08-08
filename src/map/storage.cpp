@@ -1098,6 +1098,8 @@ bool storage_master_storagesave(uint32 account_id, int master_id, int flag)
 		return true;
 	}
 
+	ShowWarning("storage_master_storagesave : Nao devia ter chego aki!!!\n");
+
 	return false;
 }
 

@@ -612,16 +612,16 @@ bool intif_send_master_storage(uint32 account_id, struct s_storage *mstor)
 {
 	if (CheckForCharServer())
 		return false;
+	int tmp_id = mstor->id + 2000000;
 	WFIFOHEAD(inter_fd,sizeof(struct s_storage)+12);
 	WFIFOW(inter_fd,0) = 0x3019;
 	WFIFOW(inter_fd,2) = (unsigned short)sizeof(struct s_storage)+12;
 	WFIFOL(inter_fd,4) = account_id;
-	WFIFOL(inter_fd,8) = mstor->id;
+	WFIFOL(inter_fd,8) = tmp_id;
 	memcpy( WFIFOP(inter_fd,12),mstor, sizeof(struct s_storage) );
 	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
 	return true;
 }
-
 
 
 
@@ -1669,7 +1669,7 @@ int intif_parse_LoadMasterStorage(int fd)
  */
 int intif_parse_SaveMasterStorage(int fd)
 {
-	int master_id = RFIFOL(fd,6) - 2000000;
+	int master_id = RFIFOL(fd,6);
 	storage_master_storagesaved(master_id);
 	return 1;
 }
@@ -3892,13 +3892,13 @@ int intif_parse(int fd)
 	case 0x3808:	intif_parse_accinfo_ack(fd); break;
 	case 0x3809:	intif_parse_broadcast_obtain_special_item(fd); break;
 	case 0x3818:
-		if(WFIFOL(fd,8) > 2000000)
+		if(RFIFOL(fd,8) > 2000000)
 			intif_parse_LoadMasterStorage(fd);
 		else
 			intif_parse_LoadGuildStorage(fd);
 		break;
 	case 0x3819:
-		if(WFIFOL(fd,6) > 2000000)
+		if(RFIFOL(fd,6) > 2000000)
 			intif_parse_SaveMasterStorage(fd); 
 		else
 			intif_parse_SaveGuildStorage(fd); 
