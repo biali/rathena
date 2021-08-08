@@ -408,7 +408,8 @@ void faction_leave( struct map_session_data *sd) {
 	sd->status.faction_id = 0;
 	sd->faction = {};
 	sd->faction.g = {};
-	sd->guild_emblem_id = 0;
+	sd->guild_emblem_id = NULL;
+
 	if (sd->status.guild_id && (g = guild_search(sd->status.guild_id)) != NULL) {
 		//if player was originally in a guild... reload its info
 		sd->guild_emblem_id = sd->guild->emblem_id;

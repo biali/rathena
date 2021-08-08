@@ -9832,7 +9832,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 			if(sd->inventory.u.items_inventory[i].card[0] == CARD0_CREATE && 
 			sd->inventory.u.items_inventory[i].card[2] == GetWord(battle_config.reserved_costume_id, 0) &&
 			sd->inventory.u.items_inventory[i].card[3] == GetWord(battle_config.reserved_costume_id, 1)) {
-					continue;
+				continue;
 			}
 
 			//lets also skip items we should not break (itemdb.hpp can keep a list of constants for this)
@@ -9847,9 +9847,9 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 			)
 				continue;
 
-			// now lets break some of his stuff:
+			// now lets break some of their stuff:
 			if(!pc_candrop(sd,&sd->inventory.u.items_inventory[i])) {
-					// Non-tradebla items, bye!
+					// Non-tradeble items, bye!
 					sd->inventory.u.items_inventory[i] = {};
 					continue;
 			}
@@ -9888,8 +9888,8 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 		//Set a timer to unload the deadbody
 		add_timer(gettick()+battle_config.remove_deadbody_timer,npc_remove_deadbody,nd->bl.id,0);
 
-		sd->status.faction_id = 0;
-		faction_update_data(sd);
+		// sd->status.faction_id = 0; this is done in the function below
+		faction_leave(sd);
 
 		sd->respawn_tid = add_timer(tick+500, pc_respawn_timer, sd->bl.id, 0);
 		return 1;
