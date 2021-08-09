@@ -15,7 +15,7 @@
 	mes "I can help you in changing any piece of headgear into a costume.";
 	next;
 	mes "[Luna]";
-	mes "I charge 10.000 Manias or 4x "+getitemname(VOTER_CERTIFICATE)+"s for that.";
+	mes "I charge 10.000 Manias or 4x "+getitemname(VOTE_CERTIFICATE)+"s for that.";
 	next;
 	mes "[Luna]";
 	mes "Please chose which piece of equipement you'd want converted.";
@@ -53,10 +53,10 @@
 		close;
 	}
 	mes "[Luna]";
-	mes "You can pay using Manias or "+ getitemname(VOTER_CERTIFICATE)+"s.";
+	mes "You can pay using Manias or "+ getitemname(VOTE_CERTIFICATE)+"s.";
 	mes "Which option you are gonna chose?";
 	next;
-	if(select("Pay using Manias:Pay with "+getitemname(VOTER_CERTIFICATE)+"s") == 1) {
+	if(select("Pay using Manias:Pay with "+getitemname(VOTE_CERTIFICATE)+"s") == 1) {
 		if(#CASHPOINTS < 10000 ) {
 			mes "[Luna]";
 			mes "I am sorry but you don't seem to have enough Manias.";
@@ -71,17 +71,17 @@
 			close;
 		}
 	} else {
-		if(countitem(VOTER_CERTIFICATE) < 4 ) {
+		if(countitem(VOTE_CERTIFICATE) < 4 ) {
 			mes "[Luna]";
-			mes "I am sorry but you don't seem to have enough "+getitemname(VOTER_CERTIFICATE)+"s.";
+			mes "I am sorry but you don't seem to have enough "+getitemname(VOTE_CERTIFICATE)+"s.";
 			close;
 		} else {
-			delitem VOTER_CERTIFICATE, 4;
+			delitem VOTE_CERTIFICATE, 4;
 			.@temp = getitemname(getequipid(.@Part));
 			costume .@Part; // Convert the Headgear
 			mes "[Luna]";
 			mes "It's all done! Hope you like it!";
-			logmes "[Luna] created " + getitemname(.@temp) + " payment: " + getitemname(VOTER_CERTIFICATE);
+			logmes "[Luna] created " + getitemname(.@temp) + " payment: " + getitemname(VOTE_CERTIFICATE);
 			close;
 		}
 	}

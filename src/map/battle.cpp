@@ -9420,6 +9420,7 @@ static const struct _battle_data {
 	{ "fvf_in_all_maps",					&battle_config.fvf_in_all_maps,					0,		0,      1,				},
 	{ "faction_disc_min",					&battle_config.faction_disc_min,			 -100,	 -INT_MAX,  0		        },
 	{ "faction_disc_max",					&battle_config.faction_disc_max,			  100,		0,   	INT_MAX         },
+	{ "faction_change_name",				&battle_config.faction_change_name,			    0,		0,   	1               },
 //Biali other reserved charids
 	{ "ancient_reserved_char_id",           &battle_config.ancient_reserved_char_id,        999992, 0,      INT_MAX,        },
 	{ "normal_dg_reserved_char_id",         &battle_config.normal_dg_reserved_char_id,      999993, 0,      INT_MAX,        },

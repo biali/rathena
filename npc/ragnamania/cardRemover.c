@@ -40,7 +40,7 @@
 	mes "we will need:";
 	.@material = getequiprefinecost(.@part,REFINE_COST_ENRICHED,REFINE_MATERIAL_ID);
 	mes "^0000FF1x " + getitemname(.@material) +"^000000";
-	mes "^0000FF3x " + getitemname(VOTER_CERTIFICATE) +"^000000";
+	mes "^0000FF3x " + getitemname(VOTE_CERTIFICATE) +"^000000";
 	mes "Plus a small fee of ^0000FF" +callfunc("F_InsertComma",15000)+"z^000000 to cover my studies.";
 	mes "Do you want to go ahead with this? I guarantee my services. No risks envolved.";
 	if(select("^FF0000No, I've changed my mind:^00AA00Yes, please go ahead^000000") == 1 ){
@@ -59,15 +59,15 @@
 		mes "Sorry, I can't find your  ^FF0000" + getitemname(.@material) +"^000000.";
 		close;
 	}
-	if(countitem(VOTER_CERTIFICATE) < 3) {
-		mes "Sorry, I can't find your  ^FF0000" + getitemname(VOTER_CERTIFICATE) +"^000000.";
+	if(countitem(VOTE_CERTIFICATE) < 3) {
+		mes "Sorry, I can't find your  ^FF0000" + getitemname(VOTE_CERTIFICATE) +"^000000.";
 		close;
 	}
 
 
 	Zeny -= 15000;
 	delitem .@material,1;
-	delitem VOTER_CERTIFICATE,3;
+	delitem VOTE_CERTIFICATE,3;
 
 	successremovecards .@part;
 	mes "Perfect! Success, again! I am just so good at this!";

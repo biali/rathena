@@ -57,7 +57,7 @@ L_Menu:
 	next;
 
 L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:^dd0000Close^000000")) {
+	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:"+(getcharid(6)?"Leave City Representation:":"")+"^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
 			if( vip_status(1) || getgmlevel() >= 10) {
 				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
@@ -290,8 +290,14 @@ L_PremmyMenu:
 					close;
 				case 2: goto L_Loop; break;
 			}
-
 		case 7:
+			mes "[ City Representation ]";
+			mes "Leaving Representation...";
+			close2;
+			progressbar("0xffffff",10);
+			factionleave;
+			break;
+		case 8:
 		default:
 			close;
 	}

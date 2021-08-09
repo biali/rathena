@@ -48,7 +48,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 					next;
 					mes .n$;
 					mes "You've accumulated ^AA0000"+ #VP_VOTEPOINTS+" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
-					getitem VOTER_CERTIFICATE, .@votes;
+					getitem VOTE_CERTIFICATE, .@votes;
 					announce "Thank you " + strcharinfo(0) + ", for voting for us! And thank you for your contribution of " + .@votes + " vote points!",bc_all,0xFAFA00; 
 					close;
 				}
@@ -117,7 +117,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 		case 2:
 			if(#VP_VOTEPOINTS >= .MinVotes4Reward && gettime(DT_DAYOFMONTH) >= 20 && !#VP_COLLECTED) {
 				.@qt = #VP_VOTEPOINTS * 1;
-				callfunc "F_getsigneditem",VOTER_CERTIFICATE, .@qt;
+				callfunc "F_getsigneditem",VOTE_CERTIFICATE, .@qt;
 				getitem BAG_OF_MANIAS,10; // Bag of Manias
 				vip_time $@Periodo; // Extends Premmy by 3 days
 				set #VP_COLLECTED,1;

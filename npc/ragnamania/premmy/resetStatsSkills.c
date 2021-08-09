@@ -14,7 +14,7 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 	if(PM_RESET_CD < gettimetick(2)) {
 		mes "Well, it won't come for free...";
 		mes "We'll need:";
-		mes "^0000FF1x " + getitemname(VOTER_CERTIFICATE) +"^000000";
+		mes "^0000FF1x " + getitemname(VOTE_CERTIFICATE) +"^000000";
 		if(!vip_status(1)) {
 			mes "^0000FF1x " + getitemname(RESET_STONE_ID) +"^000000";
 		}
@@ -50,14 +50,14 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 		close;
 	}
 
-	if(countitem(VOTER_CERTIFICATE) == 0) {
-		mes "I am sorry but I can't find your " + getitemname(VOTER_CERTIFICATE);
+	if(countitem(VOTE_CERTIFICATE) == 0) {
+		mes "I am sorry but I can't find your " + getitemname(VOTE_CERTIFICATE);
 		close;
 	}
 
 	if(countitem(RESET_STONE_ID) > 0 || vip_status(1)) {
 		if(!vip_status(1))
-			mes "Right... Payment first... Can I have the "+getitemname(RESET_STONE_ID) +"^000000, the " +getitemname(VOTER_CERTIFICATE) + " and the sum of " + callfunc("F_InsertComma",60000)+"z^000000 now, please?";
+			mes "Right... Payment first... Can I have the "+getitemname(RESET_STONE_ID) +"^000000, the " +getitemname(VOTE_CERTIFICATE) + " and the sum of " + callfunc("F_InsertComma",60000)+"z^000000 now, please?";
 		else
 			mes "Right... Are you ready to proceed?";
 		next;
@@ -67,7 +67,7 @@ sala_premmy,184,126,4	script	Mighty Alchemist	665,{
 			mes "....";
 			close;
 		} else {
-			if((countitem(RESET_STONE_ID) > 0 || vip_status(1)) && Zeny >= 60000 && countitem(VOTER_CERTIFICATE) > 0) {
+			if((countitem(RESET_STONE_ID) > 0 || vip_status(1)) && Zeny >= 60000 && countitem(VOTE_CERTIFICATE) > 0) {
 				if(!vip_status(1))
 					delitem RESET_STONE_ID,1;
 				delitem VOTE_CERTIFICATE,1;

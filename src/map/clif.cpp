@@ -5004,9 +5004,12 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				clif_specialeffect_single(bl,EF_BABYBODY2,sd->fd);
 
 			if(tsd->status.faction_id) {
+				
+				if(battle_config.faction_change_name) {
+					clif_name_area(&tsd->bl);
+					clif_guild_emblem_area(&tsd->bl);
+				}
 				clif_sendfactionaurastoone(tsd,sd);
-				clif_name_area(&tsd->bl);
-				clif_guild_emblem_area(&tsd->bl);
 				if(sd->status.faction_id > 0 && sd->status.faction_id != tsd->status.faction_id)
 					clif_sendrpkswords_single(sd->fd, tsd);
 			}
@@ -8741,7 +8744,7 @@ void clif_guild_belonginfo(struct map_session_data *sd)
 	nullpo_retv(g = sd->guild);
 
 	//biali faction system
-	if(sd->status.faction_id) {
+	if(sd->status.faction_id && battle_config.faction_change_name) {
 		clif_bg_belonginfo(sd);
 		return;
 	}
@@ -10116,7 +10119,6 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			packet.gid = bl->id;
 
 			map_session_data *sd = (map_session_data *)bl;
-			struct faction_data *fdb = NULL;
 
 			//Requesting your own "shadow" name. [Skotlex]
 			if( src == bl && target == SELF && sd->disguise ){
@@ -10129,25 +10131,18 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				return;
 			}
 
-			if(  (fdb = faction_search(sd->status.faction_id)) != NULL ) {
-				//BIALI 
-				int i = sd->status.faction_id;
-				int value = sd->status.rep[i].value;
-				int fd = sd->fd;
+			if(battle_config.faction_change_name) {
+				struct faction_data *fdb = NULL;
+				if( (fdb = faction_search(sd->status.faction_id)) != NULL) {
+					safestrncpy( packet.name, fdb->pl_name, NAME_LENGTH );
+					safestrncpy( packet.guild_name, fdb->name, NAME_LENGTH );
+					safestrncpy( packet.position_name, sd->status.rep[fdb->id].desc, NAME_LENGTH );
 
-				if(value <= battle_config.reputation_hated) strncpy(sd->status.rep[i].desc,"HATED",12);
-				else if(value <= battle_config.reputation_unfriendly) strncpy(sd->status.rep[i].desc,"UNFRIENDLY",12);
-				else if(value > battle_config.reputation_unfriendly && value < battle_config.reputation_friendly) strncpy(sd->status.rep[i].desc,"NEUTRAL",12);
-				else if(value >= battle_config.reputation_friendly) strncpy(sd->status.rep[i].desc,"FRIENDLY",12);
-				else strncpy(sd->status.rep[i].desc,"HONORED",12);
-				safestrncpy( packet.name, fdb->pl_name, NAME_LENGTH );
-				safestrncpy( packet.guild_name, fdb->name, NAME_LENGTH );
-				safestrncpy( packet.position_name, sd->status.rep[fdb->id].desc, NAME_LENGTH );
-
-				clif_send( &packet, sizeof(packet), src, target );
-				return;
+					clif_send( &packet, sizeof(packet), src, target );
+					return;
+				}
 			}
-
+			
 			safestrncpy( packet.name, sd->status.name, NAME_LENGTH );
 
 			party_data *p = nullptr;
@@ -10756,7 +10751,7 @@ static bool clif_process_message(struct map_session_data* sd, bool whisperFormat
 	// If it is not a whisper message, set the name to the fakename of the player
 	if( whisperFormat == false && sd->fakename[0] != '\0' ){
 		strcpy( out_name, sd->fakename );
-	} else if(sd->status.faction_id) {
+	} else if(sd->status.faction_id && battle_config.faction_change_name) {
 		//biali faction system
 		safestrncpy( out_name, sd->faction.pl_name, nameLength + 1 );
 	} else {
@@ -14569,7 +14564,7 @@ void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd)
 	int guild_id = RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]);
 #endif
 	//Biali faction system
-	if( sd->status.faction_id )
+	if( sd->status.faction_id && battle_config.faction_change_name)
 		clif_bg_emblem(sd, &sd->faction.g);
 	else if( (g = guild_search(guild_id)) != NULL )
 		clif_guild_emblem(sd,g);
@@ -18605,7 +18600,7 @@ void clif_bg_belonginfo(struct map_session_data *sd)
 	struct guild *g;
 	nullpo_retv(sd);
 
-	if( !(battle_config.bg_eAmod_mode && sd->bg_id && (g = bg_guild_get(sd->bg_id)) != NULL) && !(sd->status.faction_id && (g = &sd->faction.g) != NULL) )
+	if( !(battle_config.bg_eAmod_mode && sd->bg_id && (g = bg_guild_get(sd->bg_id)) != NULL) && !(battle_config.faction_change_name && sd->status.faction_id && (g = &sd->faction.g) != NULL) )
 		return;
 
 	fd = sd->fd;
@@ -18807,6 +18802,9 @@ void clif_bg_updatescore_single(struct map_session_data *sd)
 /// 02dd <account id>.L <name>.24B <camp>.W
 void clif_sendbgemblem_area(struct map_session_data *sd)
 {
+	if(!battle_config.faction_change_name)
+		return;
+
 	unsigned char buf[33];
 	nullpo_retv(sd);
 
@@ -18819,6 +18817,9 @@ void clif_sendbgemblem_area(struct map_session_data *sd)
 
 void clif_sendbgemblem_single(int fd, struct map_session_data *sd)
 {
+	if(!battle_config.faction_change_name)
+		return;
+
 	nullpo_retv(sd);
 	WFIFOHEAD(fd,32);
 	WFIFOW(fd,0) = 0x2dd;

@@ -6372,8 +6372,8 @@ Body:
       NoMail: true
       NoAuction: true
   - Id: 30101
-    AegisName: Voter_Certificate
-    Name: Voter's Certificate
+    AegisName: Vote_Certificate
+    Name: Vote Certificate
     Type: Etc
     Buy: 1000
     Weight: 100

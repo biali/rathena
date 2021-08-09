@@ -8241,6 +8241,37 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 }
 
 
+//biali reputation system
+void pc_update_rep(map_session_data *sd, int value) {
+	int i = sd->status.faction_id;
+	if(i > 0) {
+		sd->status.rep[i].value = value;
+		if(value <= battle_config.reputation_hated) {
+			sd->status.rep[i].reputation = -2;
+			strncpy(sd->status.rep[i].desc,"HATED",12);
+		}
+		else if(value <= battle_config.reputation_unfriendly) {
+			sd->status.rep[i].reputation = -1;
+			strncpy(sd->status.rep[i].desc,"UNFRIENDLY",12);
+		}
+		else if(value > battle_config.reputation_unfriendly && value < battle_config.reputation_friendly) {
+			sd->status.rep[i].reputation = 0;
+			strncpy(sd->status.rep[i].desc,"NEUTRAL",12);
+		}
+		else if(value >= battle_config.reputation_friendly) {
+			sd->status.rep[i].reputation = 1;
+			strncpy(sd->status.rep[i].desc,"FRIENDLY",12);
+		}
+		else {
+			sd->status.rep[i].reputation = 2;
+			strncpy(sd->status.rep[i].desc,"HONORED",12);
+		}
+
+		if(battle_config.faction_change_name)
+			clif_name_area(&sd->bl);
+	}
+}
+
 /** Calculates Reputation on exp gain [biali]
 * @param sd Player
 * @param base_exp Base EXP before personal bonuses
@@ -8248,6 +8279,7 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 {
 	int faction_id, exp, i;
+	int value;
 
 	if((faction_id = sd->status.faction_id) <= 0)
 		return;
@@ -8257,8 +8289,8 @@ void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 
 	for (i=1; i < MAX_FACTION; i++) {
 		if(faction_search(i) && faction_id == i) {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
-			clif_name_area(&sd->bl);
+			value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
+			pc_update_rep(sd, value);
 		} else {
 			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
@@ -8270,6 +8302,13 @@ void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 void pc_give_rep_points(struct map_session_data *sd, int points) {
 	int faction_id = sd->status.faction_id;
 	if(faction_id) {
+		switch(sd->status.rep[faction_id].reputation) {
+			case -2: points *= 0.8; break;
+			case -1: points *= 0.9; break;
+			case  1: points *= 1.2; break;
+			case  2: points *= 1.3; break;
+			default: break;
+		}
 		sd->status.rep[faction_id].points += points;
 	}
 

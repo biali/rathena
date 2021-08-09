@@ -24,7 +24,7 @@ geffen,112,149,6	script	Dark Mage	792,{
 	mes "in return:";
 	next;
 	mes .n$;
-	mes "I need "+ (5 - $GEFENIA_WARP_COUNT) +"/5x ^6600cc" + getitemname(VOTER_CERTIFICATE) + "^000000.";
+	mes "I need "+ (5 - $GEFENIA_WARP_COUNT) +"/5x ^6600cc" + getitemname(VOTE_CERTIFICATE) + "^000000.";
 	mes "But worry not...";
 	mes "They don't need to come";
 	mes "all from you.";
@@ -56,8 +56,8 @@ geffen,112,149,6	script	Dark Mage	792,{
 		close;
 	}
 	mes .n$;
-	if(countitem(VOTER_CERTIFICATE) > 0) {
-		delitem VOTER_CERTIFICATE, 1;
+	if(countitem(VOTE_CERTIFICATE) > 0) {
+		delitem VOTE_CERTIFICATE, 1;
 		set $GEFENIA_WARP_COUNT, $GEFENIA_WARP_COUNT + 1;
 		if($GEFENIA_WARP_COUNT >= 5) {
 			

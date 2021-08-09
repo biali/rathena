@@ -640,6 +640,7 @@ struct reputation {
 	char desc[12];
 	int value;
 	int points;
+	short reputation; // from -2 to 2 being hated, unfriednly, normal, friendly, honored
 };
 
 struct mmo_charstatus {

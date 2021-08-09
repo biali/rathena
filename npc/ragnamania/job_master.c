@@ -312,9 +312,9 @@ function	Confirm_Change	{
 	}
 	mes "Do you want to change into ^0055FF"+jobname(.@class)+"^000000 class?";
 	if (.@class == Job_Novice_High)
-		mes "That will cost you" +  .CostRebirth + "x " + getitemname(VOTER_CERTIFICATE);
+		mes "That will cost you" +  .CostRebirth + "x " + getitemname(VOTE_CERTIFICATE);
 	else
-		mes "That will cost you" +  .Cost + "x " + getitemname(VOTER_CERTIFICATE);
+		mes "That will cost you" +  .Cost + "x " + getitemname(VOTE_CERTIFICATE);
 	.@job_option$ = " ~ Change into ^0055FF"+jobname(.@class)+"^000000 class";
 	if( .@class == Job_Novice_High) {
 		.@job_option$ = " ~ ^0055FFRebirth^000000";
@@ -323,11 +323,11 @@ function	Confirm_Change	{
 	
 	if (select(.@job_option$+": ~ ^777777" + 
 			((.@back) ?"Go back" : "Cancel") + "^000000") == 1) {
-			if(countitem(VOTER_CERTIFICATE) < .Cost ) {
-				mes "I am sorry but you don't seem to have enough " + getitemname(VOTER_CERTIFICATE);
+			if(countitem(VOTE_CERTIFICATE) < .Cost ) {
+				mes "I am sorry but you don't seem to have enough " + getitemname(VOTE_CERTIFICATE);
 				close;
 			}
-		delitem VOTER_CERTIFICATE, .Cost;
+		delitem VOTE_CERTIFICATE, .Cost;
 		Job_Change(.@class);
 	}
 	if (!.@back)
@@ -444,8 +444,8 @@ OnInit:
 	.NPCName$ = "[ Moreth ]";
 	
 	// Settings
-	.Cost = 1;						// How many VOTER_CERTIFICATE to the npc do his magic
-	.CostRebirth = 10;				// How many VOTER_CERTIFICATE to rebirth
+	.Cost = 1;						// How many VOTE_CERTIFICATE to the npc do his magic
+	.CostRebirth = 10;				// How many VOTE_CERTIFICATE to rebirth
 	.ThirdClass = false;			// Enable third classes?
 	.RebirthClass = true;			// Enable rebirth classes?
 	.SecondExpanded = false;		// Enable new expanded second classes: Ex. Super Novice, Kagerou/Oboro, Rebellion?

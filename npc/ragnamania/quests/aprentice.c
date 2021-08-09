@@ -297,13 +297,13 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				mes "At the present, you can activate/extend your ^f5b041Premium^000000 Account by 1, 10 days or 30 days";
 				next;
 				mes .n$;
-				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname(VOTER_CERTIFICATE)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
+				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname(VOTE_CERTIFICATE)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
 				next;
 				mes .n$;
 				mes "You can find more about Hunting Quests talking to my colleague, Sophie.";
 				next;
 				mes .n$;
-				mes "As I was saying... With the Mania$ or the "+getitemname(VOTER_CERTIFICATE)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
+				mes "As I was saying... With the Mania$ or the "+getitemname(VOTE_CERTIFICATE)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
 				next;
 				mes .n$;
 				mes "Ah! I almost forgot!!";
