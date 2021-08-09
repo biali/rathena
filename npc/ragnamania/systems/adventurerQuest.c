@@ -13,9 +13,12 @@ OnInit:
 	.MonthlyReward = 8000;
 	
 	//Reward items
-	setarray .DailyRewardItem[0],12209,14209,12209,14209,522;
-	setarray .WeeklyRewardItem[0],12900,12901;
-	setarray .MonthlyRewardItem[0],13582,13607,12901;
+	setarray .DailyRewardItem[0],30120,30027; // Hunter Pack, Mania Lootbox   //12209,14209,12209,14209;
+	setarray .DailyRewardItemQt[0],1,1;
+	setarray .WeeklyRewardItem[0],30120,30027; // Hunter Pack, Mania Lootbox  //,12900,12901;
+	setarray .WeeklyRewardItemQt[0],3,1;
+	setarray .MonthlyRewardItem[0],30120,30027; // Hunter Pack, Mania Lootbox  //,13582,13607,12901;
+	setarray .MonthlyRewardItemQt[0],10,3;
 
 	//Control Variables
 	setarray .Points$[0],	"#AQ_DailyPoints",	"#AQ_WeeklyPoints",	"#AQ_MonthlyPoints";
@@ -151,7 +154,9 @@ OnNPCKillEvent:
 					dispbottom " - Access to new towns and dungeons via teleport",0xf1d6a6;
 					.@title$ = "Daily Reward";
 					.@body$ = "Brave, fellow adventurer! I see you've met today's Adventurer's Challenge! Here is something for you, hope you like it and see you tomorrow!";
-					setarray .@mailitem[0],.DailyRewardItem[gettime(DT_DAYOFWEEK)];
+					copyarray .@mailitem[0],.DailyRewardItem[0],getarraysize(.DailyRewardItem);
+					copyarray .@mailqt[0],.DailyRewardItemQt[0],getarraysize(.DailyRewardItemQt);
+					// setarray .@mailitem[0],.DailyRewardItem[gettime(DT_DAYOFWEEK)];
 				} else if(.Period$[.@i] == ".Week") {
 					dispbottom "Adventurer Tom : You've just completed your Weekly Adventurer's Challenge!",0xaed6f1;
 					dispbottom "Adventurer Tom : Also, check your Rodex for the prize.",0xaed6f1;
@@ -159,7 +164,9 @@ OnNPCKillEvent:
 					dispbottom " - Access to new towns and dungeons via teleport",0xf1d6a6;
 					.@title$ = "Weekly Reward";
 					.@body$ = "Brave, fellow adventurer! I see you've met this week's Adventurer's Challenge! Here is something for you, hope you like it and see you next week!";
-					setarray .@mailitem[0],.WeeklyRewardItem[rand(getarraysize(.WeeklyRewardItem))];
+					copyarray .@mailitem[0],.WeeklyRewardItem[0],getarraysize(.WeeklyRewardItem);
+					copyarray .@mailqt[0],.WeeklyRewardItemQt[0],getarraysize(.WeeklyRewardItemQt);
+					// setarray .@mailitem[0],.WeeklyRewardItem[rand(getarraysize(.WeeklyRewardItem))];
 				} else if(.Period$[.@i]== ".Month") {
 					dispbottom "Adventurer Tom : You've just completed your Monthly Adventurer's Challenge!",0xaed6f1;
 					dispbottom "Adventurer Tom : Also, check your Rodex for the prize.",0xaed6f1;
@@ -167,14 +174,16 @@ OnNPCKillEvent:
 					dispbottom " - Access to new towns and dungeons via teleport",0xf1d6a6;
 					.@title$ = "Monthly Reward";
 					.@body$ = "Brave, fellow adventurer! I see you've met this month's Adventurer's Challenge! Here is something for you, hope you like it and see you next month!";
-					setarray .@mailitem[0],.MonthlyRewardItem[rand(getarraysize(.MonthlyRewardItem))];
+					copyarray .@mailitem[0],.MonthlyRewardItem[0],getarraysize(.MonthlyRewardItem);
+					copyarray .@mailqt[0],.MonthlyRewardItemQt[0],getarraysize(.MonthlyRewardItemQt);
+					// setarray .@mailitem[0],.MonthlyRewardItem[rand(getarraysize(.MonthlyRewardItem))];
 				}
-				setarray .@mailitem[1],30100,30027; // +Tom coin +lootbox
-				setarray .@mailqt[0],1,1,1; 
+				// setarray .@mailitem[1],30100,30027; // +Tom coin +lootbox. .@mailitem[0] is filled above.
+				// setarray .@mailqt[0],1,1,1; 
 				mail getcharid(0), .sender$, .@title$, .@body$, .zeny, .@mailitem, .@mailqt;
 				set getd(.Chkpoint$[.@i]), getd(.Period$[.@i]);
 				set getd(.Points$[.@i]),0;
-				specialeffect 709,AREA;
+				// specialeffect 709,AREA;
 				.@ret=1;
 			}
 		}

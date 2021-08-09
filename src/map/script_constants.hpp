@@ -5246,6 +5246,19 @@
 	export_constant(IG_RAGNAMANIA_FOOD2);
 	export_constant(IG_RAGNAMANIA_FOOD3);
 	export_constant(IG_RAGNAMANIA_ROMANTIC);
+	export_constant(IG_ADVENTURER_BOX);
+	export_constant(IG_HUNTER_BOX);
+	export_constant(IG_VOTER_BOX);
+	export_constant(IG_RM_001);
+	export_constant(IG_RM_002);
+	export_constant(IG_RM_003);
+	export_constant(IG_RM_004);
+	export_constant(IG_RM_005);
+	export_constant(IG_RM_006);
+	export_constant(IG_RM_007);
+	export_constant(IG_RM_008);
+	export_constant(IG_RM_009);
+	export_constant(IG_RM_010);
 
 	/* unit stop walking */
 	export_constant(USW_NONE);

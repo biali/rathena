@@ -22,7 +22,7 @@ void do_final_mount(void);
 struct mount_data {
 	int id;
 	char name[NAME_LENGTH];
-	int max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, aura;
+	int max_hp, race, ele, ele_lvl, size, speed_bonus, cast_time, aura, summon_item;
 	struct script_code *script;
 };
 
