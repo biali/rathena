@@ -442,8 +442,8 @@ void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_
 // biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	if(sd->mount > 1) { //because 1 is the default one and has no aura or skills
-		struct mount_data *mdb = mount_search(sd->mount);
+	if(sd->mount_id) {
+		struct mount_data *mdb = mountdb_exists(sd->mount_id);
 		clif_hat_effect_single(&sd->bl,mdb->aura,true); //Area
 	}
 }

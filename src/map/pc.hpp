@@ -19,6 +19,7 @@
 #include "itemdb.hpp" // MAX_ITEMGROUP
 #include "map.hpp" // RC_ALL
 #include "mob.hpp" //e_size
+#include "mount.hpp" //biali mount rework
 #include "script.hpp" // struct script_reg, struct script_regstr
 #include "searchstore.hpp"  // struct s_search_store_info
 #include "status.hpp" // unit_data
@@ -830,8 +831,7 @@ struct map_session_data {
 		uint16 level;
 		int target;
 	} skill_keep_using;
-
-	int mount; // biali mount rework (mount id)
+	int mount_id; // biali mount rework
 	int mount_remount_timer; //biali mount rework. when will them be allowed to mount again?
 };
 

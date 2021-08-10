@@ -22350,9 +22350,6 @@ BUILDIN_FUNC(setmounting) {
 
 	if( !script_rid2sd(sd) )
 		return SCRIPT_CMD_SUCCESS;
-	
-	// if (!script_charid2sd(2,sd))
-	// 	return SCRIPT_CMD_FAILURE;
 
 	if( sd->sc.option&(OPTION_WUGRIDER|OPTION_RIDING|OPTION_DRAGON|OPTION_MADOGEAR) ) {
 		clif_msg(sd, NEED_REINS_OF_MOUNT);
@@ -22365,9 +22362,9 @@ BUILDIN_FUNC(setmounting) {
 			mount_desmount(sd,false);
 		} else { 
 			if (!script_hasdata(st,2))
-				mdb = mount_search(DEFAULT_MOUNT);
+				mdb = mountdb_exists(DEFAULT_MOUNT);
 			else
-				mdb = mount_search(script_getnum(st,2));
+				mdb = mountdb_exists(script_getnum(st,2));
 
 			mount_setride(sd,mdb);
 		}
@@ -22384,7 +22381,7 @@ BUILDIN_FUNC(mountinfo)
 
 	mount_id = script_getnum(st,2);
 
-	if( (mdb = mount_search(mount_id)) == NULL )
+	if( (mdb = mountdb_exists(mount_id)) == NULL )
 	{
 		ShowWarning("mountinfo: Invalid mount id %d \n",mount_id);
 		return 0;
@@ -22396,14 +22393,14 @@ BUILDIN_FUNC(mountinfo)
 	{
 		//ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,speed_bonus,Cast Time{ Aura: #1 #2 #3 }
 		default: script_pushint(st,mdb->id);			break;	// mount's id
-		case 1: script_pushstrcopy(st,mdb->name);		break;	// mount's name
+		case 1: script_pushstrcopy(st,mdb->name.c_str());		break;	// mount's name
 		case 2: script_pushint(st,mdb->max_hp);			break;	// maximum hp
 		case 3: script_pushint(st,mdb->race);			break;	// Race
 		case 4: script_pushint(st,mdb->ele);			break;	// Element
 		case 5: script_pushint(st,mdb->ele_lvl);		break;	// Element lvl
 		case 6: script_pushint(st,mdb->size);			break;	// Size
-		case 7: script_pushint(st,mdb->skill_id);		break;	// Skill Level
-		case 8: script_pushint(st,mdb->skill_lv);		break;	// Skill Id
+		// case 7: script_pushint(st,mdb->jobs);		break;	// Skill Level
+		// case 8: script_pushint(st,mdb->classes);		break;	// Skill Id
 		case 9: script_pushint(st,mdb->speed_bonus);	break;	// Speed
 		case 10: script_pushint(st,mdb->cast_time);		break;	// cast time
 		case 11: script_pushint(st,mdb->aura);			break;	// Aura ID

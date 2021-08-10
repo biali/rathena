@@ -81,7 +81,6 @@
 #   EquipScript             Script to execute when the item is equipped. (Default: null)
 #   UnEquipScript           Script to execute when the item is unequipped or when a rental item expires. (Default: null)
 ###########################################################################
-
 Header:
   Type: ITEM_DB
   Version: 1
@@ -1664,7 +1663,7 @@ Body:
     Name: Prontera Heart Stone
     Weight: 300
     Type: Etc
-- Id: 30200
+  - Id: 30200
     AegisName: Ploc Monster
     Name: Ploc Monster
     Type: Usable
@@ -1685,26 +1684,38 @@ Body:
     Script: |
       sc_start SC_ITEMBOOST,1800000,150;
   - Id: 30600
-    AegisName: Boarding_Halter_1
-    Name: Journeymen's Ride
+    AegisName: FrostyMountLeash
+    Name: Frosty Leash
     Type: Delayconsume
-    Weight: 10
-    Script: |
-      if(!ismounting()) {.@cast = mountinfo(2,10); progressbar("0xfffff",.@cast);} setmounting(2);
+    Weight: 0
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(2,10);
+        progressbar("0xfffff",.@cast);
+      } 
+      setmounting(2);
   - Id: 30601
-    AegisName: Boarding_Halter_2
+    AegisName: MasterRide
     Name: Master Ride
     Type: Delayconsume
-    Weight: 10
-    Script: |
-      if(!ismounting()) {.@cast = mountinfo(3,10); progressbar("0xfffff",.@cast);} setmounting(3);
+    Weight: 0
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(3,10); 
+        progressbar("0xfffff",.@cast);
+      } 
+      setmounting(3);
   - Id: 30602
-    AegisName: Boarding_Halter_3
+    AegisName: CollectorRide
     Name: Collector Ride
     Type: Delayconsume
-    Weight: 10
-    Script: |
-      if(!ismounting()) {.@cast = mountinfo(4,10); progressbar("0xfffff",.@cast);} setmounting(4);
+    Weight: 0
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(4,10);
+        progressbar("0xfffff",.@cast);
+      }
+      setmounting(4);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat

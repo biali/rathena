@@ -7418,10 +7418,8 @@ static unsigned short status_calc_speed(struct block_list *bl, struct status_cha
 				val = 15 + 5 * pc_checkskill(sd, RA_WUGRIDER);
 			//biali mount rework
 			else if( sc->data[SC_ALL_RIDING] ) {
-				struct mount_data *mdb = mount_search(sd->mount);
-				if(mdb == NULL || mdb->id == DEFAULT_MOUNT)
-					val = battle_config.rental_mount_speed_boost;
-				else
+				struct mount_data *mdb = mountdb_exists(sd->mount_id);
+				if(mdb)
 					val = mdb->speed_bonus;
 			}
 		}

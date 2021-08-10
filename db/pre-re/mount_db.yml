@@ -1,0 +1,88 @@
+###########################################################################
+# Pre-Renewal Mount Database
+###########################################################################
+#
+# Mount Settings
+#
+###########################################################################
+# - Id                      Monster that can be used as pet
+#   Mount Name              Pet Tame Item.
+#   MaxHP                   Pet Egg Item.
+#   Race                    Pet Accessory Item. (Default: 0)
+#   Element                 Pet Food Item. (Default: 0)
+#   ElementLvl              The amount of hunger is decreased every [HungryDelay] seconds.
+#   Size                    The amount of time in seconds it takes for hunger to decrease after feeding. (Default: 60)
+#   SpeedBonus              The amount of hunger that is increased every time the pet is fed (Default: 20)
+#   Cast                    Amount of Intimacy the pet starts with. (Default: 250)
+#   Aura                    Amount of Intimacy that is increased when fed. (Default: 50)
+#   SummonItem              Amount of Intimacy that is increased when over-fed. (Default: -100)
+#   Jobs                    Amount of Intimacy that is increased when the pet is hungry. (Default: -5)
+#   Classes                 Amount of Intimacy that is increased when the pet owner dies. (Default: -20)
+#   Script                  Capture success rate. (10000 = 100%)
+#   EquipScript             If a pet has a Special Performance. (Default: true)
+#   UnEquipScript           Rate of which the pet will attack [requires at least pet_support_min_friendly intimacy]. (10000 = 100%)
+
+###########################################################################
+
+Header:
+  Type: MOUNT_DB
+  Version: 1
+
+Body:
+  - Id: 1
+    Name: Apprentice Ingo
+    MaxHP: 1200
+    Race: 2
+    Element: 0
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 25
+    Cast: 1
+    Aura: 0
+    SummonItem: Boarding_Halter
+    Jobs:
+      Novice: true
+    Classes:
+      Upper: true
+  - Id: 2
+    Name: Frosty Mount
+    MaxHP: 10000
+    Race: 2
+    Element: 1
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 28
+    Cast: 3
+    Aura: 209
+    SummonItem: FrostyMountLeash
+    Script: |
+      bonus2 bAddEffWhenHit,Eff_Freeze,3000;
+      bonus3 bAutoSpell,"WZ_METEOR",3,100;
+      bonus3 bAutoSpell,"WZ_FROSTNOVA",5,100;
+  - Id: 3
+    Name: Master Ride
+    MaxHP: 12000
+    Race: 2
+    Element: 0
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 28
+    Cast: 3
+    Aura: 210
+    SummonItem: MasterRide
+    Script: |
+      bonus2 bAddEffWhenHit,Eff_Silence,3000;
+  - Id: 4
+    Name: Collector Ride
+    MaxHP: 12000
+    Race: 2
+    Element: 2
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 28
+    Cast: 3
+    Aura: 211
+    SummonItem: CollectorRide
+    Script: |
+      bonus2 bAddEffWhenHit,Eff_Stone,3000;
+

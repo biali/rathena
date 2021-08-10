@@ -5248,6 +5248,7 @@
 	export_constant(IG_RAGNAMANIA_ROMANTIC);
 	export_constant(IG_ADVENTURER_BOX);
 	export_constant(IG_HUNTER_BOX);
+	export_constant(IG_EVENT_BOX);
 	export_constant(IG_VOTER_BOX);
 	export_constant(IG_RM_001);
 	export_constant(IG_RM_002);
