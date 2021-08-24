@@ -51,6 +51,7 @@ struct mmo_account {
 	int old_group;
 	time_t vip_time;
 #endif
+	int master_id; //biali master accounts
 };
 
 
