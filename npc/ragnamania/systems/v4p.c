@@ -7,38 +7,32 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 
 	mes .n$;
 	mes "Hello, " + strcharinfo(0)+"!";
-	if(gettime(DT_DAYOFMONTH) > .ThirdDday && $vp_totalVotePoints < .ThirdTarget) {
-		mes "We're short by " + (.ThirdTarget - $vp_totalVotePoints) + " vp this month.";
-		mes "It is just too sad... ^0000AA=^FF0000(^000000";
-		mes "Because of that there is nothing I can help you with until next month.";
-		close;
-	}
 	mes "How can I help you today?";
 	next;
 	
-	switch(select((gettime(DT_DAYOFMONTH)<.ThirdDday?"Redeem Vote Points":"Extend the Event")+":Collect my Rewards")) {
+	switch(select("Redeem Vote Points:Extend the Event:Collect my Rewards")) {
 		case 1:
-			if(gettime(DT_DAYOFMONTH)<.ThirdDday) {
-				.@votes = CheckPoints();
-				if( .@votes <= 0) {
-					mes .n$;
-					mes "Sorry, darling, you don't seem to have any voting points right now.";
-					next;
-					mes .n$;
-					mes "You can always ALT+TAB and contribute, though. ^.~";
-					close;
-				}
-				
+			.@votes = CheckPoints();
+			if( .@votes <= 0) {
 				mes .n$;
-				mes "Sure thing! I can see you have ^AA000000" + .@votes + " Vote Points^000000 at the moment. Should we go ahead and contabilize them?";
+				mes "Sorry, darling, you don't seem to have any voting points right now.";
 				next;
-				if(select("Yes, please:No, not now") == 2){
-					mes .n$;
-					mes "Absolutely! Not a problem.";
-					mes "See you later then!";
-					close;
-				} else {
-					UpdatePoints(getcharid(3),.@votes);
+				mes .n$;
+				mes "You can always ALT+TAB and contribute, though. ^.~";
+				close;
+			}
+	
+			mes .n$;
+			mes "Sure thing! I can see you have ^AA000000" + .@votes + " Vote Points^000000 at the moment. Should we go ahead and contabilize them?";
+			next;
+			if(select("Yes, please:No, not now") == 2){
+				mes .n$;
+				mes "Absolutely! Not a problem.";
+				mes "See you later then!";
+				close;
+			} else {
+				if(gettime(DT_DAYOFMONTH)<.ThirdDday) {
+					UpdatePoints(getcharid(7),.@votes,1);
 					mes .n$;
 					mes "All done!";
 					mes "I've just added your ^AA0000"+.@votes+" vote points^000000 to the stack and we now count with a total of ^0099AA"+$vp_totalVotePoints+" Vote Points^000000 this month so far!";
@@ -47,13 +41,32 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 					mes "I've also taken note of your personal contribution. Please continue to contribute and come back by the end of the month for you prize!";
 					next;
 					mes .n$;
-					mes "You've accumulated ^AA0000"+ #VP_VOTEPOINTS+" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
-					getitem VOTE_CERTIFICATE, .@votes;
+					mes "You've accumulated ^AA0000"+ callfunc("CheckMasterPoints") +" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
 					announce "Thank you " + strcharinfo(0) + ", for voting for us! And thank you for your contribution of " + .@votes + " vote points!",bc_all,0xFAFA00; 
+					close2;
+				} else {
+					UpdatePoints(getcharid(7),.@votes,0);
+					mes .n$;
+					mes "All done!";
+					mes "Unfortunately the monthly voting points event have already ended so I cannot contabilize your points towards the pool.";
+					next;
+					mes .n$;
+					mes "But that is fine, we will have another chance next month.";
+					close2;
+				}
+				//getitem VOTE_CERTIFICATE, .@votes;
+				end;
+			}
+		case 2:
+			if(gettime(DT_DAYOFMONTH) >= .ThirdDday && gettime(DT_DAYOFMONTH) <= .dayOfMonth) {
+				mes .n$;
+				if(gettime(DT_DAYOFMONTH) > .ThirdDday && $vp_totalVotePoints < .ThirdTarget) {
+					mes "We were short by " + (.ThirdTarget - $vp_totalVotePoints) + " vp this month.";
+					mes "It is just too sad... ^0000AA=^FF0000(^000000";
+					mes "Because of that there is nothing I can help you with until next month.";
 					close;
 				}
-			} else if(gettime(DT_DAYOFMONTH) >= .ThirdDday && gettime(DT_DAYOFMONTH) < .dayOfMonth) {
-				mes .n$;
+
 				mes "From this point until the end of the month we can extend the bonuses using Zeny.";
 				next;
 				mes .n$;
@@ -110,17 +123,18 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 				}
 			} else {
 				mes .n$;
-				mes "I am sorry but tomorrow the event will restart so we are not accepting any further donations today.";
+				mes "I am sorry but you cannot contribute to the event extension just yet. Please come back around the 20th of the month.";
 				close;
 			}
 			break;
-		case 2:
-			if(#VP_VOTEPOINTS >= .MinVotes4Reward && gettime(DT_DAYOFMONTH) >= 20 && !#VP_COLLECTED) {
-				.@qt = #VP_VOTEPOINTS * 1;
+		case 3:
+			.@totalvotes = callfunc("CheckMasterPoints");
+			if(.@totalvotes >= .MinVotes4Reward && gettime(DT_DAYOFMONTH) >= .ThirdDday) {
+				.@qt = 3; //.@totalvotes * 1;
 				callfunc "F_getsigneditem",VOTE_CERTIFICATE, .@qt;
 				getitem BAG_OF_MANIAS,10; // Bag of Manias
 				vip_time $@Periodo; // Extends Premmy by 3 days
-				set #VP_COLLECTED,1;
+				callfunc "ClearMasterPoints";
 				mes .n$;
 				mes "Thank you very much for your contribution! We've given you " + .@qt + " " + getitemname(EVENT_BOX) + " as a gesture of appreciation and we have also given you 3 days of Premmy!";
 				next;
@@ -131,16 +145,12 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 				mes .n$;
 				mes "Hum... I am afraid the Rewards are distributed only from the "+.ExtensionStart+"th of each month. Please come back by then.";
 				close;
-			} else if(#VP_VOTEPOINTS < .MinVotes4Reward) {
+			} else if(.@totalvotes < .MinVotes4Reward) {
 				mes .n$;
 				mes "Oh dear, I am afraid you don't have enough Vote Points to receive any rewards just now. Please continue to conttribute and come back later.";
 				next;
 				mes .n$;
-				mes "You have " + #VP_VOTEPOINTS + " out of " + .MinVotes4Reward + " necessary for the monthly personal reward.";
-			} else if(#VP_COLLECTED) {
-				mes .n$;
-				mes "Oh, my apologies, but you've already collected your reward for this month!";
-				close;
+				mes "You have " + .@totalvotes + " out of " + .MinVotes4Reward + " necessary for the monthly personal reward.";
 			} else {
 				mes .n$;
 				mes "Hum... I am afraid there is nothing I can do for you at the moment. Please come back later and don't forget to vote for us in our website!";
@@ -153,16 +163,19 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 OnHour00:	//-- Monthly Rewards
 	.dayOfMonth = callfunc("F_getDaysOfMonth");
 	if(gettime(DT_DAYOFMONTH) == 1) {
+		addrid(0);
+		set #VP_VOTEPOINTS,0;
+		set #VP_ZENY_DONATED, 0;
+		detachrid;
+		sleep 100; //just to make sure no rid is attached from this point;
 		query_sql("DELETE FROM `cp_v4p_voters`");
 		query_sql("DELETE FROM `acc_reg_num` WHERE `key` = '#VP_VOTEPOINTS'");
 		query_sql("DELETE FROM `acc_reg_num` WHERE `key` = '#VP_ZENY_DONATED'");
-		query_sql("DELETE FROM `acc_reg_num` WHERE `key` = '#VP_COLLECTED'");
 		set $vp_totalVotePoints, 0;	// Zera Bucket de pontos
 		set $vp_donations, 0;		// Zera Bucket de Zenys
 		logmes "Chefe Amante : Deletado o conteudo da tabela cp_v4p_voters";
 		logmes "Chefe Amante : Deletado o #VP_VOTEPOINTS da tabela acc_reg_num";
 		logmes "Chefe Amante : Deletado o #VP_COLLECTED da tabela acc_reg_num";
-		logmes "Chefe Amante : Deletado o #VP_ZENY_DONATED da tabela acc_reg_num";
 		logmes "Chefe Amante : Zerada a variavel $vp_totalVotePoints";
 	}
 	SetTargets();
@@ -170,24 +183,24 @@ OnHour00:	//-- Monthly Rewards
 	end;
 
 OnInit:
-	.MinVotes4Reward 	= 40;
+	.MinVotes4Reward 	= 36;
 	.FirstDday 			= 5;
 	.SecondDday 		= 10;
 	.ThirdDday			= 20;
-	.FirstTarget		= 1000;
-	.SecondTarget		= 2500;
-	.ThirdTarget		= 4000;
+	.FirstTarget		= 200;
+	.SecondTarget		= 460;
+	.ThirdTarget		= 1000;
 	.ExtensionStart		= 23;
-	.ExtensionCost		= 100000000; //500 kk 
+	.ExtensionCost		= 10000000; //10 kk 
 	.dayOfMonth 		= callfunc("F_getDaysOfMonth");
 	.OriginalEquipsRates = getBattleFlag("item_rate_equip");
 	.OriginalCardsRates	= getBattleFlag("item_rate_card");
-	.BonusE1			= .OriginalEquipsRates *= 15/100;
-	.BonusC1			= .OriginalEquipsRates *= 15/100;
-	.BonusE2			= .OriginalEquipsRates *= 20/100;
-	.BonusC2			= .OriginalEquipsRates *= 20/100;
-	.BonusE3			= .OriginalEquipsRates *= 30/100;
-	.BonusC3			= .OriginalEquipsRates *= 30/100;
+	.BonusE1			= (.OriginalEquipsRates * 115)/100;
+	.BonusC1			= (.OriginalCardsRates * 115)/100;
+	.BonusE2			= (.OriginalEquipsRates * 120)/100;
+	.BonusC2			= (.OriginalCardsRates * 120)/100;
+	.BonusE3			= (.OriginalEquipsRates * 130)/100;
+	.BonusC3			= (.OriginalCardsRates * 130)/100;
 	.n$ = "^00AAFF[ Chefe Amante ]^000000";
 	SetTargets();
 	AdjustRates();
@@ -202,14 +215,25 @@ OnInit:
 		return .@votes;
 	}
 
-	function UpdatePoints	{
-		set .@gid, getarg(0,getcharid(3));
-		set .@votes, getarg(1,0);
-		set $vp_totalVotePoints, $vp_totalVotePoints + .@votes;
-		set #VP_VOTEPOINTS, #VP_VOTEPOINTS + .@votes;
-		callfunc "F_getsigneditem",30101,.@votes;
-		query_sql("DELETE FROM `cp_v4p_voters` WHERE `account_id` = "+.@gid);
+	function CheckMasterPoints {
+		query_sql("SELECT SUM(value) FROM `acc_reg_num` WHERE `key` = '#VP_VOTEPOINTS' AND `account_id` IN (SELECT `account_id` FROM `login` WHERE `master_id` = " + getcharid(7)+ " ) "+.@votes);
+		return .@votes;
+	}
 
+	function ClearMasterPoints {
+		query_sql("DELETE FROM `acc_reg_num` WHERE `key` = '#VP_VOTEPOINTS' AND `account_id` IN (SELECT `account_id` FROM `login` WHERE `master_id` = " + getcharid(7)+ " )");
+		return;
+	}
+
+	function UpdatePoints	{
+		set .@gid, getarg(0,getcharid(7));
+		set .@votes, getarg(1,0);
+		if(getarg(2) == 1) {
+			set $vp_totalVotePoints, $vp_totalVotePoints + .@votes;
+			set #VP_VOTEPOINTS, #VP_VOTEPOINTS + .@votes;	
+		}
+		callfunc "F_getsigneditem",VOTE_CERTIFICATE,.@votes;
+		query_sql("DELETE FROM `cp_v4p_voters` WHERE `account_id` = "+.@gid);
 		return;
 	}
 
@@ -238,7 +262,7 @@ OnInit:
 		if($vp_totalVotePoints < .VotePointsTarget) 
 			return;
 
-		// De tras pra frente agora: Se estivermos no periodo das extensoes (dia 20+):
+		// De tras pra frente agora: Se estivermos no periodo das extensoes (dia 23+):
 		if(gettime(DT_DAYOFMONTH) >= .ExtensionStart) {
 			// Se coletamos zeny o bastante, Extendemos os bonus por mais 24 horas:
 			if($vp_donations >= .ExtensionCost) {

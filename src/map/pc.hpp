@@ -831,7 +831,7 @@ struct map_session_data {
 		uint16 level;
 		int target;
 	} skill_keep_using;
-	int mount_id; // biali mount rework
+	uint32 mount_id; // biali mount rework
 	int mount_remount_timer; //biali mount rework. when will them be allowed to mount again?
 };
 

@@ -31,7 +31,7 @@ Header:
 Body:
   - Id: 1
     Name: Apprentice Ingo
-    MaxHP: 1200
+    MaxHP: 600
     Race: 2
     Element: 0
     ElementLvl: 1
@@ -51,7 +51,7 @@ Body:
     Element: 1
     ElementLvl: 1
     Size: 0
-    SpeedBonus: 28
+    SpeedBonus: 30
     Cast: 3
     Aura: 209
     SummonItem: FrostyMountLeash
@@ -66,7 +66,7 @@ Body:
     Element: 0
     ElementLvl: 1
     Size: 0
-    SpeedBonus: 28
+    SpeedBonus: 30
     Cast: 3
     Aura: 210
     SummonItem: MasterRide
@@ -79,10 +79,31 @@ Body:
     Element: 2
     ElementLvl: 1
     Size: 0
-    SpeedBonus: 28
+    SpeedBonus: 30
     Cast: 3
     Aura: 211
     SummonItem: CollectorRide
     Script: |
       bonus2 bAddEffWhenHit,Eff_Stone,3000;
-
+  - Id: 5
+    Name: Luscious Ride
+    MaxHP: 1200
+    Race: 2
+    Element: 0
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 25
+    Cast: 1
+    Aura: 0
+    SummonItem: LusciousRide
+  - Id: 6
+    Name: Prestigious Ride
+    MaxHP: 6000
+    Race: 2
+    Element: 0
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 30
+    Cast: 2
+    Aura: 0
+    SummonItem: PrestigiousRide

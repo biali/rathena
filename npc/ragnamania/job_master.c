@@ -312,9 +312,9 @@ function	Confirm_Change	{
 	}
 	mes "Do you want to change into ^0055FF"+jobname(.@class)+"^000000 class?";
 	if (.@class == Job_Novice_High)
-		mes "That will cost you" +  .CostRebirth + "x " + getitemname(VOTE_CERTIFICATE);
+		mes "That will cost you " +  .CostRebirth + "x " + getitemname(VOTE_CERTIFICATE);
 	else
-		mes "That will cost you" +  .Cost + "x " + getitemname(VOTE_CERTIFICATE);
+		mes "That will cost you " +  .Cost + "x " + getitemname(VOTE_CERTIFICATE);
 	.@job_option$ = " ~ Change into ^0055FF"+jobname(.@class)+"^000000 class";
 	if( .@class == Job_Novice_High) {
 		.@job_option$ = " ~ ^0055FFRebirth^000000";

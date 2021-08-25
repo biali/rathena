@@ -47,7 +47,7 @@ L_Menu:
 		mes factioninfo(getcharid(6),0);
 		mes " ";
 	}
-	mes "Personal Vote Points: ^0000FF[" + #VP_VOTEPOINTS + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
+	mes "Personal Vote Points: ^0000FF[" + callfunc("F_CheckVP") + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
 	if(gettime(DT_DAYOFMONTH) < getvariableofnpc(.ThirdDday,"v4p"))	
 		mes "Global VP: ^0000FF[" + $vp_totalVotePoints + "/" + getvariableofnpc(.VotePointsTarget,"v4p") + "]^000000";
 	else if(gettime(DT_DAYOFMONTH) > getvariableofnpc(.ThirdDday,"v4p") && $vp_totalVotePoints > getvariableofnpc(.ThirdTarget,"v4p"))

@@ -430,8 +430,6 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "I told you this was gonna be brief!";
 	mes "All the best in your journey!";
 	mes "And see you in around!";
-	if(checkquest(64500) < 0 )
-		setquest 64500;
 	if(checkquest(64503) < 0 )
 		setquest 64503;
 

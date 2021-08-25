@@ -1585,8 +1585,20 @@ Body:
     Name: Reins Of Mount
     Type: Delayconsume
     Weight: 10
+    Flags:
+      isMount: true
     Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(1);
+      if(!ismounting()) {
+        if((eaclass()&EAJ_BASEMASK) == EAJ_NOVICE) {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(1);
+        } else {
+          dispbottom "This mount can't be used by your class.";
+        }
+      } else {
+        setmounting(1);
+      }
   - Id: 30120
     AegisName: Adventurer Gift Box
     Name: Adventurer Gift Box
@@ -1687,7 +1699,9 @@ Body:
     AegisName: FrostyMountLeash
     Name: Frosty Leash
     Type: Delayconsume
-    Weight: 0
+    Weight: 300
+    Flags:
+      isMount: true
     Script: >
       if(!ismounting()) {
         .@cast = mountinfo(2,10);
@@ -1698,7 +1712,9 @@ Body:
     AegisName: MasterRide
     Name: Master Ride
     Type: Delayconsume
-    Weight: 0
+    Weight: 300
+    Flags:
+      isMount: true
     Script: >
       if(!ismounting()) {
         .@cast = mountinfo(3,10); 
@@ -1709,13 +1725,51 @@ Body:
     AegisName: CollectorRide
     Name: Collector Ride
     Type: Delayconsume
-    Weight: 0
+    Weight: 300
+    Flags:
+      isMount: true
     Script: >
       if(!ismounting()) {
         .@cast = mountinfo(4,10);
         progressbar("0xfffff",.@cast);
       }
       setmounting(4);
+  - Id: 30603
+    AegisName: LusciousRide
+    Name: Luscious Ride
+    Type: Delayconsume
+    Weight: 100
+    Flags:
+      isMount: true
+    Script: |
+      if(!ismounting()) {
+        if(eaclass()&EAJL_2) {
+          dispbottom "This mount is exclusive for 1st classes only.";
+        } else {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(5);
+        }
+      } else
+        setmounting(5);
+  - Id: 30604
+    AegisName: PrestigiousRide
+    Name: Prestigious Ride
+    Type: Delayconsume
+    Weight: 200
+    Flags:
+      isMount: true
+    Script: |
+      if(!ismounting()) {
+        if(eaclass()&EAJL_UPPER) {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(6);
+        } else {
+          dispbottom "This mount is exclusive for Rebirth/Advanced classes.";
+        }
+      } else
+        setmounting(6);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat
