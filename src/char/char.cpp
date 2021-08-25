@@ -693,13 +693,13 @@ int char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	if( memcmp(p->rep, cp->rep, sizeof(p->rep)) )
 	{
 		StringBuf_Clear(&buf);
-		StringBuf_Printf(&buf, "REPLACE INTO `reputation` (`account_id`, `char_id`, `faction_id`, `value`) VALUES ");
+		StringBuf_Printf(&buf, "REPLACE INTO `reputation` (`account_id`, `char_id`, `faction_id`, `value`, `points`, `reputation`) VALUES ");
 		for( i = 1, count = 0; i <= MAX_FACTION; ++i )
 		{
 
 			if( count )
 				StringBuf_AppendStr(&buf, ",");
-			StringBuf_Printf(&buf, "('%d', '%d', '%d', '%d')", p->account_id, p->char_id, i, p->rep[i].value);
+			StringBuf_Printf(&buf, "('%d', '%d', '%d', '%d', '%d', '%d')", p->account_id, p->char_id, i, p->rep[i].value, p->rep[i].points, p->rep[i].reputation);
 			++count;
 
 		}
@@ -754,6 +754,11 @@ int char_memitemdata_to_sql(const struct item items[], int max, int id, enum sto
 			printname = "Guild Storage";
 			tablename = schema_config.guild_storage_db;
 			selectoption = "guild_id";
+			break;
+		case TABLE_MASTER_STORAGE:
+			printname = "Master Storage";
+			tablename = schema_config.master_storage_db;
+			selectoption = "master_id";
 			break;
 		default:
 			ShowError("Invalid table name!\n");
@@ -976,6 +981,13 @@ bool char_memitemdata_from_sql(struct s_storage* p, int max, int id, enum storag
 			selectoption = "guild_id";
 			storage = p->u.items_guild;
 			max2 = inter_guild_storagemax(id);
+			break;
+		case TABLE_MASTER_STORAGE:
+			printname = "Master Storage";
+			tablename = schema_config.master_storage_db;
+			selectoption = "master_id";
+			storage = p->u.items_master;
+			max2 = inter_master_storagemax(id);
 			break;
 		default:
 			ShowError("Invalid table name!\n");
@@ -1621,19 +1633,24 @@ int char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_ev
 
 
 	//read reputation from SQL
-	//`reputation` (`account_id`, `char_id`, `faction_id`, `value`
-	if( SQL_ERROR == SqlStmt_Prepare(stmt, "SELECT `value` FROM `reputation` WHERE `char_id`=? ORDER by `faction_id` ASC")
+	//`reputation` (`account_id`, `char_id`, `faction_id`, `value`, `points`
+	if( SQL_ERROR == SqlStmt_Prepare(stmt, "SELECT `value`, `points`, `reputation` FROM `reputation` WHERE `char_id`=? ORDER by `faction_id` ASC")
 	||	SQL_ERROR == SqlStmt_BindParam(stmt, 0, SQLDT_INT, &char_id, 0)
 	||	SQL_ERROR == SqlStmt_Execute(stmt)
-	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 0, SQLDT_INT,  	&tmp_rep.value, 0, NULL, NULL) )
+	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 0, SQLDT_INT,  	&tmp_rep.value, 0, NULL, NULL) 
+	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 1, SQLDT_INT,  	&tmp_rep.points, 0, NULL, NULL)
+	||	SQL_ERROR == SqlStmt_BindColumn(stmt, 2, SQLDT_INT,  	&tmp_rep.reputation, 0, NULL, NULL) )
 		SqlStmt_ShowDebug(stmt);
 
-	
+	p->rep[0].reputation = 0;
+	p->rep[0].points = 0;
 	p->rep[0].value = 0; // there will never be a faction_id == 0 so we nullify the first position of the array
 	strncpy(p->rep[0].desc, "", sizeof(p->rep[0].desc)); // there will never be a faction_id == 0 so we nullify the first position of the array
 
 	for( i = 1; i <= MAX_FACTION && SQL_SUCCESS == SqlStmt_NextRow(stmt); ++i )
 	{
+		memcpy(&p->rep[i].reputation, &tmp_rep.reputation, sizeof(tmp_rep.reputation));
+		memcpy(&p->rep[i].points, &tmp_rep.points, sizeof(tmp_rep.points));
 		memcpy(&p->rep[i].value, &tmp_rep.value, sizeof(tmp_rep.value));
 		memcpy(&p->rep[i].desc, "", 12);
 	}
@@ -2835,7 +2852,8 @@ bool char_checkdb(void){
                 schema_config.auction_db, schema_config.quest_db, schema_config.homunculus_db, schema_config.skill_homunculus_db,
                 schema_config.mercenary_db, schema_config.mercenary_owner_db,
 		schema_config.elemental_db, schema_config.skillcooldown_db, schema_config.bonus_script_db,
-		schema_config.clan_table, schema_config.clan_alliance_table, schema_config.mail_attachment_db, schema_config.achievement_table
+		schema_config.clan_table, schema_config.clan_alliance_table, schema_config.mail_attachment_db, schema_config.achievement_table,
+		schema_config.master_storage_db
 	};
 	ShowInfo("Start checking DB integrity\n");
 	for (i=0; i<ARRAYLENGTH(sqltable); i++){ //check if they all exist and we can acces them in sql-server
@@ -3060,6 +3078,13 @@ bool char_checkdb(void){
 		Sql_ShowDebug(sql_handle);
 		return false;
 	}
+	//checking master_storage_db // biali
+	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT  `id`,`master_id`,`nameid`,`amount`,`equip`,`identify`,`refine`,"
+		"`attribute`,`card0`,`card1`,`card2`,`card3`,`option_id0`,`option_val0`,`option_parm0`,`option_id1`,`option_val1`,`option_parm1`,`option_id2`,`option_val2`,`option_parm2`,`option_id3`,`option_val3`,`option_parm3`,`option_id4`,`option_val4`,`option_parm4`,`expire_time`,`bound`,`unique_id`,`enchantgrade`"
+		" FROM `%s` LIMIT 1;", schema_config.master_storage_db) ){
+		Sql_ShowDebug(sql_handle);
+		return false;
+	}
 	//checking clan table
 	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT  `clan_id`,`name`,`master`,`mapname`,`max_member`"
 		" FROM `%s` LIMIT 1;", schema_config.clan_table) ){
@@ -3131,6 +3156,8 @@ void char_sql_config_read(const char* cfgName) {
 			safestrncpy(schema_config.guild_position_db, w2, sizeof(schema_config.guild_position_db));
 		else if(!strcmpi(w1,"guild_storage_db"))
 			safestrncpy(schema_config.guild_storage_db, w2, sizeof(schema_config.guild_storage_db));
+		else if(!strcmpi(w1,"master_storage_db")) //biali master storage
+			safestrncpy(schema_config.master_storage_db, w2, sizeof(schema_config.master_storage_db));
 		else if(!strcmpi(w1,"party_db"))
 			safestrncpy(schema_config.party_db, w2, sizeof(schema_config.party_db));
 		else if(!strcmpi(w1,"pet_db"))
@@ -3204,6 +3231,7 @@ void char_set_default_sql(){
 	safestrncpy(schema_config.guild_position_db,"guild_position",sizeof(schema_config.guild_position_db));
 	safestrncpy(schema_config.guild_skill_db,"guild_skill",sizeof(schema_config.guild_skill_db));
 	safestrncpy(schema_config.guild_storage_db,"guild_storage",sizeof(schema_config.guild_storage_db));
+	safestrncpy(schema_config.master_storage_db,"master_storage",sizeof(schema_config.master_storage_db)); //biali master storage
 	safestrncpy(schema_config.party_db,"party",sizeof(schema_config.party_db));
 	safestrncpy(schema_config.pet_db,"pet",sizeof(schema_config.pet_db));
 	safestrncpy(schema_config.mail_db,"mail",sizeof(schema_config.mail_db)); // MAIL SYSTEM

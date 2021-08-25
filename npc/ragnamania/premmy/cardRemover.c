@@ -39,8 +39,9 @@ sala_premmy,107,143,6	script	Sage Apprentice	755,{
 	mes "removed from your ^0000AA" + getequipname(.@part)+ "^000000";
 	mes "we will need:";
 	.@material = getequiprefinecost(.@part,REFINE_COST_ENRICHED,REFINE_MATERIAL_ID);
-	mes "^0000FF1x " + getitemname(.@material) +"^000000";	
-	mes "Plus a small fee of ^0000FF" +callfunc("F_InsertComma",(BaseLevel+JobLevel)*500)+"z^000000 to cover my studies.";
+	mes "^0000FF1x " + getitemname(.@material) +"^000000";
+	mes "^0000FF1x " + getitemname(VOTE_CERTIFICATE) +"^000000";
+	mes "Plus a small fee of ^0000FF" +callfunc("F_InsertComma",5000)+"z^000000 to cover my studies.";
 	mes "Do you want to go ahead with this? I guarantee my services. No risks envolved.";
 	if(select("^FF0000No, I've changed my mind:^00AA00Yes, please go ahead^000000") == 1 ){
 		clear;
@@ -50,30 +51,23 @@ sala_premmy,107,143,6	script	Sage Apprentice	755,{
 	}
 	clear;
 	mes .n$;
-	if(Zeny < (BaseLevel+JobLevel)*500) {
+	if(Zeny < 5000) {
 		mes "Sorry, you don't seem to have enough Zeny. I can't do this for free.";
 		close;
 	}
-	if(.@material == $@ENRICHED_ORIDECON_ID) {
-		if(countitem($@ENRICHED_ORIDECON_ID) < 1) {
-			mes "Sorry, I can't find your  ^FF0000" + getitemname($@ENRICHED_ORIDECON_ID) +"^000000.";
-			close;
-		} else
-			delitem $@ENRICHED_ORIDECON_ID,1;
-	} else if(.@material == $@ENRICHED_ELUNIUM_ID){
-		if(countitem($@ENRICHED_ELUNIUM_ID) < 1) {
-			mes "Sorry, I can't find your  ^FF0000" + getitemname($@ENRICHED_ELUNIUM_ID) +"^000000.";
-			close;
-		} else
-			delitem $@ENRICHED_ELUNIUM_ID,1;
-	} else {
-		mes " ";
-		mes "^FF0000ERROR^000000: Please report this to a member of the staff.";
-		logmes "Card Remover cant identify the material";
+	if(countitem(.@material) < 1) {
+		mes "Sorry, I can't find your  ^FF0000" + getitemname(.@material) +"^000000.";
+		close;
+	}
+	if(countitem(VOTE_CERTIFICATE) < 1) {
+		mes "Sorry, I can't find your  ^FF0000" + getitemname(VOTE_CERTIFICATE) +"^000000.";
 		close;
 	}
 
-	Zeny -= (BaseLevel+JobLevel)*500;
+	Zeny -= 5000;
+	delitem .@material,1;
+	delitem VOTE_CERTIFICATE,1;
+
 	successremovecards .@part;
 	mes "Perfect! Success, again! I am just so good at this!";
 	close;

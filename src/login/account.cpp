@@ -741,7 +741,7 @@ static bool mmo_auth_fromsql(AccountDB_SQL* db, struct mmo_account* acc, uint32 
 	// retrieve login entry for the specified account
 	if( SQL_ERROR == Sql_Query(sql_handle,
 #ifdef VIP_ENABLE
-		"SELECT `account_id`,`userid`,`user_pass`,`sex`,`email`,`group_id`,`state`,`unban_time`,`expiration_time`,`logincount`,`lastlogin`,`last_ip`,`birthdate`,`character_slots`,`pincode`, `pincode_change`, `vip_time`, `old_group` FROM `%s` WHERE `account_id` = %d",
+		"SELECT `account_id`,`userid`,`user_pass`,`login`.`sex`,`login`.`email`,`cp_users`.`group_id`,`login`.`state`,`login`.`unban_time`,`login`.`expiration_time`,`logincount`,`lastlogin`,`login`.`last_ip`,`birthdate`,`character_slots`,`pincode`, `pincode_change`, `cp_users`.`vip_time`, `cp_users`.`old_group`, `login`.`master_id` FROM `%s`,`cp_users` WHERE `login`.`account_id` = %d AND `login`.`master_id` = `cp_users`.`id`",
 #else
 		"SELECT `account_id`,`userid`,`user_pass`,`sex`,`email`,`group_id`,`state`,`unban_time`,`expiration_time`,`logincount`,`lastlogin`,`last_ip`,`birthdate`,`character_slots`,`pincode`, `pincode_change` FROM `%s` WHERE `account_id` = %d",
 #endif
@@ -777,6 +777,7 @@ static bool mmo_auth_fromsql(AccountDB_SQL* db, struct mmo_account* acc, uint32 
 	Sql_GetData(sql_handle, 16, &data, NULL); acc->vip_time = atol(data);
 	Sql_GetData(sql_handle, 17, &data, NULL); acc->old_group = atoi(data);
 #endif
+	Sql_GetData(sql_handle, 18, &data, NULL); acc->master_id = atoi(data);
 	Sql_FreeResult(sql_handle);
 	acc->web_auth_token[0] = '\0';
 
@@ -868,6 +869,20 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 15, SQLDT_LONG,      (void*)&acc->vip_time,        sizeof(acc->vip_time))
 		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 16, SQLDT_INT,       (void*)&acc->old_group,       sizeof(acc->old_group))
 #endif
+		||  SQL_SUCCESS != SqlStmt_Execute(stmt)
+		) {
+			SqlStmt_ShowDebug(stmt);
+			break;
+		}
+
+
+		// biali master account (vip)
+		if( SQL_SUCCESS != SqlStmt_Prepare(stmt, 
+			"UPDATE `cp_users` SET `group_id`=?, `vip_time`=?, `old_group`=? WHERE `id` = '%d'",
+			acc->master_id)
+		||  SQL_SUCCESS != SqlStmt_BindParam(stmt,  0, SQLDT_INT,       (void*)&acc->group_id,        sizeof(acc->group_id))
+		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 1, SQLDT_LONG,      (void*)&acc->vip_time,        sizeof(acc->vip_time))
+		||  SQL_SUCCESS != SqlStmt_BindParam(stmt, 2, SQLDT_INT,       (void*)&acc->old_group,       sizeof(acc->old_group))
 		||  SQL_SUCCESS != SqlStmt_Execute(stmt)
 		) {
 			SqlStmt_ShowDebug(stmt);

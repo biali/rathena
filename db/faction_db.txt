@@ -20,10 +20,10 @@
 // * { Script Bonus } : Script Bonus for each faction
 
 // Faction ID: 1
-1,Geffen Arcane,Resistance Soldier,geffen,0,0,8,6,1,0,22,0x6495ED,204,
+1,Geffen Arcane,Resistance Soldier,geffen,0,0,7,0,1,0,22,0x6495ED,204,
 // Faction ID: 2
-2,Payon Royal Guard,Resistance Soldier,payon,0,0,0,0,1,0,10,0x7CFC00,205,
+2,Payon Royal Guard,Resistance Soldier,payon,0,0,7,0,1,0,10,0x7CFC00,205,
 // Faction ID: 3
-3,Morocc Rebels,Resistance Soldier,morocc,0,0,1,9,1,0,33,0xFF3030,206,
+3,Morocc Rebels,Resistance Soldier,morocc,0,0,7,0,1,0,33,0xFF3030,206,
 // Faction ID: 4
-4,Prontera Guard,Resistance Soldier,prontera,155,180,7,0,1,0,5,0xEE82EE,207,
+4,Prontera Guard,Resistance Soldier,prontera,0,0,7,0,1,0,5,0xEE82EE,207,

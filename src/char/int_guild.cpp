@@ -648,6 +648,18 @@ uint16 inter_guild_storagemax(int guild_id)
 #endif
 }
 
+
+//biali master storage
+/**
+ * Get the max storage size of a guild.
+ * @param guild_id: Guild ID to search
+ * @return Guild storage max size
+ */
+uint16 inter_master_storagemax(int master_id)
+{
+	return MAX_GUILD_STORAGE;
+}
+
 // `guild_castle` (`castle_id`, `guild_id`, `economy`, `defense`, `triggerE`, `triggerD`, `nextTime`, `payTime`, `createTime`, `visibleC`, `visibleG0`, `visibleG1`, `visibleG2`, `visibleG3`, `visibleG4`, `visibleG5`, `visibleG6`, `visibleG7`)
 int inter_guildcastle_tosql(struct guild_castle *gc)
 {

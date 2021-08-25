@@ -5246,6 +5246,20 @@
 	export_constant(IG_RAGNAMANIA_FOOD2);
 	export_constant(IG_RAGNAMANIA_FOOD3);
 	export_constant(IG_RAGNAMANIA_ROMANTIC);
+	export_constant(IG_ADVENTURER_BOX);
+	export_constant(IG_HUNTER_BOX);
+	export_constant(IG_EVENT_BOX);
+	export_constant(IG_VOTER_BOX);
+	export_constant(IG_RM_001);
+	export_constant(IG_RM_002);
+	export_constant(IG_RM_003);
+	export_constant(IG_RM_004);
+	export_constant(IG_RM_005);
+	export_constant(IG_RM_006);
+	export_constant(IG_RM_007);
+	export_constant(IG_RM_008);
+	export_constant(IG_RM_009);
+	export_constant(IG_RM_010);
 
 	/* unit stop walking */
 	export_constant(USW_NONE);
@@ -7719,6 +7733,14 @@
 	export_constant(GSTORAGE_NO_STORAGE);
 	export_constant(GSTORAGE_NO_PERMISSION);
 
+	/* master storage flags */
+	export_constant(MSTORAGE_OPEN);
+	export_constant(MSTORAGE_STORAGE_ALREADY_OPEN);
+	export_constant(MSTORAGE_ALREADY_OPEN);
+	export_constant(MSTORAGE_NO_ACCOUNT);
+	export_constant(MSTORAGE_NO_STORAGE);
+	export_constant(MSTORAGE_NO_PERMISSION);
+
 	/* block list types */
 	export_constant(BL_PC);
 	export_constant(BL_MOB);
@@ -7746,6 +7768,11 @@
 	export_constant(GUILDSTORAGE_LOG_FINAL_SUCCESS);
 	export_constant(GUILDSTORAGE_LOG_EMPTY);
 	export_constant(GUILDSTORAGE_LOG_FAILED);
+
+	/* master storage log */
+	export_constant(MASTERSTORAGE_LOG_FINAL_SUCCESS);
+	export_constant(MASTERSTORAGE_LOG_EMPTY);
+	export_constant(MASTERSTORAGE_LOG_FAILED);
 
 	/* castle data flags */
 	export_constant(CD_NONE);

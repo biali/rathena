@@ -81,7 +81,6 @@
 #   EquipScript             Script to execute when the item is equipped. (Default: null)
 #   UnEquipScript           Script to execute when the item is unequipped or when a rental item expires. (Default: null)
 ###########################################################################
-
 Header:
   Type: ITEM_DB
   Version: 1
@@ -1586,29 +1585,191 @@ Body:
     Name: Reins Of Mount
     Type: Delayconsume
     Weight: 10
+    Flags:
+      isMount: true
     Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(1);
-  - Id: 30600
-    AegisName: Boarding_Halter_1
-    Name: Journeymen's Ride
-    Type: Delayconsume
+      if(!ismounting()) {
+        if((eaclass()&EAJ_BASEMASK) == EAJ_NOVICE) {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(1);
+        } else {
+          dispbottom "This mount can't be used by your class.";
+        }
+      } else {
+        setmounting(1);
+      }
+  - Id: 30120
+    AegisName: Adventurer Gift Box
+    Name: Adventurer Gift Box
+    Type: Usable
+    Buy: 1
     Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(2);
+        getrandgroupitem(IG_ADVENTURER_BOX);
+  - Id: 30121
+    AegisName: Event Gift Box
+    Name: Event Gift Box
+    Type: Usable
+    Weight: 10
+    Type: Usable
+    Buy: 1
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+        getrandgroupitem(IG_RAGNAMANIA_TIER3);
+  - Id: 30122
+    AegisName: Hunter's Reward Package
+    Name: Hunter's Reward Package
+    Type: Usable
+    Buy: 1
+    Weight: 10
+    Flags:
+      Container: true
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+        getrandgroupitem(IG_HUNTER_BOX);
+  - Id: 30151
+    AegisName: Geffen_Heart_Stone
+    Name: Geffen Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30152
+    AegisName: Payon_Heart_Stone
+    Name: Payon Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30153
+    AegisName: Morocc_Heart_Stone
+    Name: Morocc Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30154
+    AegisName: Prontera_Heart_Stone
+    Name: Prontera Heart Stone
+    Weight: 300
+    Type: Etc
+  - Id: 30200
+    AegisName: Ploc Monster
+    Name: Ploc Monster
+    Type: Usable
+    Buy: 2
+    Weight: 10
+    Delay:
+      Duration: 60000
+      Status: Reuse_Limit_D
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      sc_start SC_ITEMBOOST,1800000,150;
+  - Id: 30600
+    AegisName: FrostyMountLeash
+    Name: Frosty Leash
+    Type: Delayconsume
+    Weight: 300
+    Flags:
+      isMount: true
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(2,10);
+        progressbar("0xfffff",.@cast);
+      } 
+      setmounting(2);
   - Id: 30601
-    AegisName: Boarding_Halter_2
+    AegisName: MasterRide
     Name: Master Ride
     Type: Delayconsume
-    Weight: 10
-    Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(3);
+    Weight: 300
+    Flags:
+      isMount: true
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(3,10); 
+        progressbar("0xfffff",.@cast);
+      } 
+      setmounting(3);
   - Id: 30602
-    AegisName: Boarding_Halter_3
+    AegisName: CollectorRide
     Name: Collector Ride
     Type: Delayconsume
-    Weight: 10
+    Weight: 300
+    Flags:
+      isMount: true
+    Script: >
+      if(!ismounting()) {
+        .@cast = mountinfo(4,10);
+        progressbar("0xfffff",.@cast);
+      }
+      setmounting(4);
+  - Id: 30603
+    AegisName: LusciousRide
+    Name: Luscious Ride
+    Type: Delayconsume
+    Weight: 100
+    Flags:
+      isMount: true
     Script: |
-      if(!ismounting()) {.@cast = mountinfo(1,10); progressbar("0xfffff",.@cast);} setmounting(4);
+      if(!ismounting()) {
+        if(eaclass()&EAJL_2) {
+          dispbottom "This mount is exclusive for 1st classes only.";
+        } else {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(5);
+        }
+      } else
+        setmounting(5);
+  - Id: 30604
+    AegisName: PrestigiousRide
+    Name: Prestigious Ride
+    Type: Delayconsume
+    Weight: 200
+    Flags:
+      isMount: true
+    Script: |
+      if(!ismounting()) {
+        if(eaclass()&EAJL_UPPER) {
+          .@cast = mountinfo(1,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(6);
+        } else {
+          dispbottom "This mount is exclusive for Rebirth/Advanced classes.";
+        }
+      } else
+        setmounting(6);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat
@@ -6372,8 +6533,8 @@ Body:
       NoMail: true
       NoAuction: true
   - Id: 30101
-    AegisName: Voter_Certificate
-    Name: Voter's Certificate
+    AegisName: Vote_Certificate
+    Name: Vote Certificate
     Type: Etc
     Buy: 1000
     Weight: 100
@@ -7353,11 +7514,6 @@ Body:
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
     Script: |
       callfunc "RM_DiarioDeBordo";
   - Id: 25433

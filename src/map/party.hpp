@@ -92,6 +92,9 @@ int party_sub_count_class(struct block_list *bl, va_list ap);
 int party_sub_count_banding(struct block_list *bl, va_list ap);
 int party_foreachsamemap(int (*func)(struct block_list *,va_list),struct map_session_data *sd,int range,...);
 
+//biali reputation system
+void party_rep_share(struct map_session_data *sd, struct block_list* src, int count);
+
 /*==========================================
  * Party Booking in KRO [Spiria]
  *------------------------------------------*/

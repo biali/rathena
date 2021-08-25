@@ -168,6 +168,40 @@ void inter_storage_checkDB(void) {
 	}
 }
 
+
+
+
+
+
+// biali master storage
+/**
+ * Save master_storage data to sql
+ * @param master_id: Guild ID to save
+ * @param p: Guild Storage entries
+ * @return True if success, False if failed
+ */
+bool master_storage_tosql(int master_id, struct s_storage* p)
+{
+	return char_memitemdata_to_sql(p->u.items_master, inter_master_storagemax(master_id), master_id, TABLE_MASTER_STORAGE, p->stor_id);
+}
+
+/**
+ * Fetch master_storage entries from table
+ * @param master_id: Master ID to fetch
+ * @param p: Master Storage entries
+ * @return True if success, False if failed
+ */
+bool master_storage_fromsql(int master_id, struct s_storage* p)
+{
+	master_id -= 2000000;
+	return char_memitemdata_from_sql( p, inter_master_storagemax(master_id), master_id, TABLE_MASTER_STORAGE, p->stor_id );
+}
+
+
+
+
+
+
 //---------------------------------------------------------
 // storage data initialize
 void inter_storage_sql_init(void)
@@ -195,6 +229,7 @@ void inter_storage_sql_final(void)
  */
 bool mapif_load_guild_storage(int fd,uint32 account_id,int guild_id, char flag)
 {
+	// this is a request for a guild storage
 	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT `guild_id` FROM `%s` WHERE `guild_id`='%d'", schema_config.guild_db, guild_id) )
 		Sql_ShowDebug(sql_handle);
 	else if( Sql_NumRows(sql_handle) > 0 )
@@ -580,6 +615,110 @@ bool mapif_parse_StorageSave(int fd) {
 }
 
 
+
+
+
+
+
+
+
+
+/**
+ * Send master storage data to the map server
+ * @param fd: Map server's fd
+ * @param account_id: Account ID requesting
+ * @param master_id: Guild ID requesting
+ * @param flag: Additional parameters
+ * @return True on success or false on failure
+ */
+bool mapif_load_master_storage(int fd,uint32 account_id,int master_id, char flag)
+{
+	master_id -= 2000000;
+	if( SQL_ERROR == Sql_Query(sql_handle, "SELECT `id` FROM `cp_users` WHERE `id`='%d'",  master_id) )
+		Sql_ShowDebug(sql_handle);
+	else if( Sql_NumRows(sql_handle) > 0 )
+	{// guild exists
+		WFIFOHEAD(fd, sizeof(struct s_storage)+13);
+		WFIFOW(fd,0) = 0x3818;
+		WFIFOW(fd,2) = sizeof(struct s_storage)+13;
+		WFIFOL(fd,4) = account_id;
+		WFIFOL(fd,8) = master_id += 2000000;
+		WFIFOB(fd,12) = flag; //1 open storage, 0 don't open
+		master_storage_fromsql(master_id, (struct s_storage*)WFIFOP(fd,13));
+		WFIFOSET(fd, WFIFOW(fd,2));
+		return true;
+	}
+	// guild does not exist
+	Sql_FreeResult(sql_handle);
+	WFIFOHEAD(fd, 12);
+	WFIFOW(fd,0) = 0x3818;
+	WFIFOW(fd,2) = 12;
+	WFIFOL(fd,4) = account_id;
+	WFIFOL(fd,8) = 0;
+	WFIFOSET(fd, 12);
+	return false;
+}
+
+
+
+void mapif_save_master_storage_ack(int fd,uint32 account_id,int master_id,int fail)
+{
+	master_id += 2000000;
+	WFIFOHEAD(fd,11);
+	WFIFOW(fd,0)=0x3819;
+	WFIFOL(fd,2)=account_id;
+	WFIFOL(fd,6)=master_id;
+	WFIFOB(fd,10)=fail;
+	WFIFOSET(fd,11);
+}
+
+
+void mapif_parse_LoadMasterStorage(int fd)
+{
+	RFIFOHEAD(fd);
+	mapif_load_master_storage(fd,RFIFOL(fd,2),RFIFOL(fd,6),1);
+}
+
+/**
+ * Save guild storage data from map server
+ * @param fd: Map server's fd
+ * @return True on success or false on failure
+ */
+bool mapif_parse_SaveMasterStorage(int fd)
+{
+	int master_id;
+	int len;
+
+	RFIFOHEAD(fd);
+	master_id = RFIFOL(fd,8) - 2000000;
+	len = RFIFOW(fd,2);
+
+	if( sizeof(struct s_storage) != len - 12 )
+	{
+		ShowError("inter storage: data size error %" PRIuPTR " != %d\n", sizeof(struct s_storage), len - 12);
+	}
+	else
+	{
+		if( SQL_ERROR == Sql_Query(sql_handle, "SELECT `id` FROM `cp_users` WHERE `id`='%d'", master_id) )
+			Sql_ShowDebug(sql_handle);
+		else if( Sql_NumRows(sql_handle) > 0 )
+		{// master account exists
+			Sql_FreeResult(sql_handle);
+			master_storage_tosql(master_id, (struct s_storage*)RFIFOP(fd,12));
+			mapif_save_master_storage_ack(fd, RFIFOL(fd,4), master_id, 0);
+			return false;
+		}
+		Sql_FreeResult(sql_handle);
+	}
+	mapif_save_master_storage_ack(fd, RFIFOL(fd,4), master_id, 1);
+	return true;
+}
+
+
+
+
+
+
 /*==========================================
  * Parse packet from map-server
  *------------------------------------------*/
@@ -587,8 +726,19 @@ bool inter_storage_parse_frommap(int fd)
 {
 	RFIFOHEAD(fd);
 	switch(RFIFOW(fd,0)){
-		case 0x3018: mapif_parse_LoadGuildStorage(fd); break;
-		case 0x3019: mapif_parse_SaveGuildStorage(fd); break;
+		case 0x3018:
+			if(RFIFOL(fd,6) > 2000000)
+				mapif_parse_LoadMasterStorage(fd); 
+			else
+				mapif_parse_LoadGuildStorage(fd); 
+			break;
+		case 0x3019: 
+			if(RFIFOL(fd,8) > 2000000)
+				mapif_parse_SaveMasterStorage(fd); 
+			else
+				mapif_parse_SaveGuildStorage(fd); 
+			break;
+
 #ifdef BOUND_ITEMS
 		case 0x3056: mapif_parse_itembound_retrieve(fd); break;
 #endif

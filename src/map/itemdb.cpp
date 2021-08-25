@@ -936,6 +936,19 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->flag.trade_restriction.guild_storage = false;
 		}
 
+		//biali master storage
+		if (this->nodeExists(tradeNode, "NoMasterStorage")) {
+			bool active;
+
+			if (!this->asBool(tradeNode, "NoMasterStorage", active))
+				return 0;
+
+			item->flag.trade_restriction.master_storage = active;
+		} else {
+			if (!exists)
+				item->flag.trade_restriction.master_storage = false;
+		}
+
 		if (this->nodeExists(tradeNode, "NoMail")) {
 			bool active;
 
@@ -1497,6 +1510,12 @@ bool itemdb_canstore_sub(struct item_data* item, int gmlv, int unused) {
 bool itemdb_canguildstore_sub(struct item_data* item, int gmlv, int unused) {
 	return (item && (!(item->flag.trade_restriction.guild_storage) || gmlv >= item->gm_lv_trade_override));
 }
+
+//biali master storage
+bool itemdb_canmasterstore_sub(struct item_data* item, int gmlv, int unused) {
+	return (item && (!(item->flag.trade_restriction.master_storage) || gmlv >= item->gm_lv_trade_override));
+}
+
 
 bool itemdb_canmail_sub(struct item_data* item, int gmlv, int unused) {
 	return (item && (!(item->flag.trade_restriction.mail) || gmlv >= item->gm_lv_trade_override));

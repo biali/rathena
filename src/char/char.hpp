@@ -88,6 +88,8 @@ struct Schema_Config {
 	char clan_table[DB_NAME_LEN];
 	char clan_alliance_table[DB_NAME_LEN];
 	char achievement_table[DB_NAME_LEN];
+	//biali master storage
+	char master_storage_db[DB_NAME_LEN];
 };
 extern struct Schema_Config schema_config;
 

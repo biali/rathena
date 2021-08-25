@@ -36,6 +36,10 @@ int intif_request_registry(struct map_session_data *sd, int flag);
 bool intif_request_guild_storage(uint32 account_id, int guild_id);
 bool intif_send_guild_storage(uint32 account_id, struct s_storage *gstor);
 
+//biali master storage
+bool intif_request_master_storage(uint32 account_id, int master_id);
+bool intif_send_master_storage(uint32 account_id, struct s_storage *mstor);
+
 int intif_create_party(struct party_member *member,char *name,int item,int item2);
 int intif_request_partyinfo(int party_id, uint32 char_id);
 

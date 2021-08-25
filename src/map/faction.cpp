@@ -22,6 +22,7 @@
 #include "mapreg.hpp"
 #include "mob.hpp"
 #include "npc.hpp"
+#include "party.hpp" //biali
 #include "pc.hpp"
 #include "pet.hpp"
 #include "skill.hpp"
@@ -130,10 +131,13 @@ void faction_spawn(struct map_session_data *sd)
 			ShowError("faction_spawn : Faction not found \n");
 		} else {
 			faction_update_data(sd);
-			clif_bg_belonginfo(sd);
-			clif_bg_emblem(sd, &sd->faction.g);
 
-			clif_name_area(&sd->bl);
+			if(battle_config.faction_change_name) {
+				clif_bg_belonginfo(sd);
+				clif_bg_emblem(sd, &sd->faction.g);
+
+				clif_name_area(&sd->bl);
+			}
 
 			// this will send the auras
 			clif_hat_effect_single(&sd->bl,fdb->aura,true); //Area
@@ -376,16 +380,17 @@ void faction_update_data(struct map_session_data *sd) {
 	
 	nullpo_retv(sd);
 	
-	if(sd->status.faction_id > 0) { 
+	if(sd->status.faction_id > 0 && battle_config.faction_change_name) { 
 		//someone has joined the faction
 		sd->faction.g = factions[sd->status.faction_id];
 		sd->guild_emblem_id = factions[sd->status.faction_id].emblem_id;
 		safestrncpy(sd->faction.name, sd->faction.g.name, NAME_LENGTH);
 		safestrncpy(sd->faction.pl_name, sd->faction.g.position[1].name, NAME_LENGTH);
-	} else {
-		//someone has left the faction
-		faction_leave(sd);
-	}
+	} 
+	// else {
+	// 	//someone has left the faction
+	// 	faction_leave(sd);
+	// }
 
 	return;
 }
@@ -399,30 +404,42 @@ void faction_leave( struct map_session_data *sd) {
 
 	struct faction_data *fdb = faction_search(sd->status.faction_id);
 
-	clif_name_area(&sd->bl);
+	// if(sd->status.party_id){
+	// 	struct party_data* p = party_search(sd->status.party_id);
+	// 	intif_party_leave(p->party.party_id,sd->status.account_id, sd->status.char_id, sd->status.name ,PARTY_MEMBER_WITHDRAW_EXPEL);
+	// 	sd->status.party_id = 0;
+	// }
+
+	party_leave(sd);
+
+	if(battle_config.faction_change_name)
+		clif_name_area(&sd->bl);
 	clif_refreshlook(&sd->bl,sd->bl.id,LOOK_CLOTHES_COLOR,sd->vd.cloth_color,AREA);
 	clif_hat_effect_single(&sd->bl,fdb->aura,false); //Area
 	clif_hat_effect_single2(&sd->bl,fdb->aura,false); //Self
-
-	struct guild *g = NULL;
 	sd->status.faction_id = 0;
-	sd->faction = {};
-	sd->faction.g = {};
-	sd->guild_emblem_id = 0;
-	if (sd->status.guild_id && (g = guild_search(sd->status.guild_id)) != NULL) {
-		//if player was originally in a guild... reload its info
-		sd->guild_emblem_id = sd->guild->emblem_id;
-		clif_guild_belonginfo(sd);
-		clif_guild_basicinfo(sd);
-		clif_guild_allianceinfo(sd);
-		clif_guild_memberlist(sd);
-		clif_guild_skillinfo(sd);
-		clif_guild_emblem(sd, g);
-	} else {
-		//else clean all the visuals related to guild
-		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Please log out to reload the visual information of your char.", false, SELF);
-	}
 
+	if(battle_config.faction_change_name) {
+		struct guild *g = NULL;
+		sd->faction = {};
+		sd->faction.g = {};
+		sd->guild_emblem_id = NULL;
+
+		if (sd->status.guild_id && (g = guild_search(sd->status.guild_id)) != NULL) {
+			//if player was originally in a guild... reload its info
+			sd->guild_emblem_id = sd->guild->emblem_id;
+			clif_guild_belonginfo(sd);
+			clif_guild_basicinfo(sd);
+			clif_guild_allianceinfo(sd);
+			clif_guild_memberlist(sd);
+			clif_guild_skillinfo(sd);
+			clif_guild_emblem(sd, g);
+		} 
+		// else {
+		// 	//else clean all the visuals related to guild
+		// 	clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Please log out to reload the visual information of your char.", false, SELF);
+		// }
+	}
 }
 
 

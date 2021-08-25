@@ -442,8 +442,8 @@ void clif_sendfactionaurastoone(struct map_session_data *sd, struct map_session_
 // biali mount rework
 void clif_sendaurastoone(struct map_session_data *sd, struct map_session_data *dsd)
 {
-	if(sd->mount > 1) { //because 1 is the default one and has no aura or skills
-		struct mount_data *mdb = mount_search(sd->mount);
+	if(sd->mount_id) {
+		struct mount_data *mdb = mountdb_exists(sd->mount_id);
 		clif_hat_effect_single(&sd->bl,mdb->aura,true); //Area
 	}
 }
@@ -5004,9 +5004,12 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 				clif_specialeffect_single(bl,EF_BABYBODY2,sd->fd);
 
 			if(tsd->status.faction_id) {
+				
+				if(battle_config.faction_change_name) {
+					clif_name_area(&tsd->bl);
+					clif_guild_emblem_area(&tsd->bl);
+				}
 				clif_sendfactionaurastoone(tsd,sd);
-				clif_name_area(&tsd->bl);
-				clif_guild_emblem_area(&tsd->bl);
 				if(sd->status.faction_id > 0 && sd->status.faction_id != tsd->status.faction_id)
 					clif_sendrpkswords_single(sd->fd, tsd);
 			}
@@ -8741,7 +8744,7 @@ void clif_guild_belonginfo(struct map_session_data *sd)
 	nullpo_retv(g = sd->guild);
 
 	//biali faction system
-	if(sd->status.faction_id) {
+	if(sd->status.faction_id && battle_config.faction_change_name) {
 		clif_bg_belonginfo(sd);
 		return;
 	}
@@ -9998,6 +10001,19 @@ void clif_refresh_storagewindow(struct map_session_data *sd) {
 		clif_storagelist(sd, sd->premiumStorage.u.items_storage, ARRAYLENGTH(sd->premiumStorage.u.items_storage), storage_getName(sd->premiumStorage.stor_id));
 		clif_updatestorageamount(sd, sd->premiumStorage.amount, sd->premiumStorage.max_amount);
 	}
+	// Notify the client that the master storage is open otherwise it will
+	// remain locked forever and nobody will be able to access it
+	if( sd->state.storage_flag == 4 ) {
+		struct s_storage *gstor = master2storage2(sd->status.master_id);
+
+		if( !gstor ) // Shouldn't happen. The information should already be at the map-server
+			intif_request_master_storage(sd->status.account_id, sd->status.master_id);
+		else {
+			storage_sortitem(gstor->u.items_master, ARRAYLENGTH(gstor->u.items_master));
+			clif_storagelist(sd, gstor->u.items_master, ARRAYLENGTH(gstor->u.items_master), "Master Storage");
+			clif_updatestorageamount(sd, gstor->amount, gstor->max_amount);
+		}
+	}
 }
 
 // refresh the client's screen, getting rid of any effects
@@ -10103,7 +10119,6 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 			packet.gid = bl->id;
 
 			map_session_data *sd = (map_session_data *)bl;
-			struct faction_data *fdb = NULL;
 
 			//Requesting your own "shadow" name. [Skotlex]
 			if( src == bl && target == SELF && sd->disguise ){
@@ -10116,25 +10131,18 @@ void clif_name( struct block_list* src, struct block_list *bl, send_target targe
 				return;
 			}
 
-			if(  (fdb = faction_search(sd->status.faction_id)) != NULL ) {
-				//BIALI 
-				int i = sd->status.faction_id;
-				int value = sd->status.rep[i].value;
-				int fd = sd->fd;
+			if(battle_config.faction_change_name) {
+				struct faction_data *fdb = NULL;
+				if( (fdb = faction_search(sd->status.faction_id)) != NULL) {
+					safestrncpy( packet.name, fdb->pl_name, NAME_LENGTH );
+					safestrncpy( packet.guild_name, fdb->name, NAME_LENGTH );
+					safestrncpy( packet.position_name, sd->status.rep[fdb->id].desc, NAME_LENGTH );
 
-				if(value <= battle_config.reputation_hated) strncpy(sd->status.rep[i].desc,"HATED",12);
-				else if(value <= battle_config.reputation_unfriendly) strncpy(sd->status.rep[i].desc,"UNFRIENDLY",12);
-				else if(value > battle_config.reputation_unfriendly && value < battle_config.reputation_friendly) strncpy(sd->status.rep[i].desc,"NEUTRAL",12);
-				else if(value >= battle_config.reputation_friendly) strncpy(sd->status.rep[i].desc,"FRIENDLY",12);
-				else strncpy(sd->status.rep[i].desc,"HONORED",12);
-				safestrncpy( packet.name, fdb->pl_name, NAME_LENGTH );
-				safestrncpy( packet.guild_name, fdb->name, NAME_LENGTH );
-				safestrncpy( packet.position_name, sd->status.rep[fdb->id].desc, NAME_LENGTH );
-
-				clif_send( &packet, sizeof(packet), src, target );
-				return;
+					clif_send( &packet, sizeof(packet), src, target );
+					return;
+				}
 			}
-
+			
 			safestrncpy( packet.name, sd->status.name, NAME_LENGTH );
 
 			party_data *p = nullptr;
@@ -10743,7 +10751,7 @@ static bool clif_process_message(struct map_session_data* sd, bool whisperFormat
 	// If it is not a whisper message, set the name to the fakename of the player
 	if( whisperFormat == false && sd->fakename[0] != '\0' ){
 		strcpy( out_name, sd->fakename );
-	} else if(sd->status.faction_id) {
+	} else if(sd->status.faction_id && battle_config.faction_change_name) {
 		//biali faction system
 		safestrncpy( out_name, sd->faction.pl_name, nameLength + 1 );
 	} else {
@@ -13798,6 +13806,8 @@ void clif_parse_MoveToKafra(int fd, struct map_session_data *sd)
 		storage_guild_storageadd(sd, item_index, item_amount);
 	else if (sd->state.storage_flag == 3)
 		storage_storageadd(sd, &sd->premiumStorage, item_index, item_amount);
+	else if (sd->state.storage_flag == 4)
+		storage_master_storageadd(sd, item_index, item_amount);
 }
 
 
@@ -13821,6 +13831,8 @@ void clif_parse_MoveFromKafra(int fd,struct map_session_data *sd)
 		storage_guild_storageget(sd, item_index, item_amount);
 	else if(sd->state.storage_flag == 3)
 		storage_storageget(sd, &sd->premiumStorage, item_index, item_amount);
+	else if(sd->state.storage_flag == 4)
+		storage_master_storageget(sd, item_index, item_amount);
 }
 
 
@@ -13854,6 +13866,8 @@ void clif_parse_MoveToKafraFromCart(int fd, struct map_session_data *sd){
 		storage_guild_storageaddfromcart(sd, idx, amount);
 	else if (sd->state.storage_flag == 3)
 		storage_storageaddfromcart(sd, &sd->premiumStorage, idx, amount);
+	else if (sd->state.storage_flag == 4)
+		storage_master_storageaddfromcart(sd, idx, amount);
 }
 
 
@@ -13878,6 +13892,8 @@ void clif_parse_MoveFromKafraToCart(int fd, struct map_session_data *sd){
 		storage_guild_storagegettocart(sd, idx, amount);
 	else if (sd->state.storage_flag == 3)
 		storage_storagegettocart(sd, &sd->premiumStorage, idx, amount);
+	else if (sd->state.storage_flag == 4)
+		storage_master_storagegettocart(sd, idx, amount);
 }
 
 
@@ -13894,6 +13910,8 @@ void clif_parse_CloseKafra(int fd, struct map_session_data *sd)
 		storage_guild_storageclose(sd);
 	else if( sd->state.storage_flag == 3 )
 		storage_premiumStorage_close(sd);
+	else if( sd->state.storage_flag == 4 )
+		storage_master_storageclose(sd);
 }
 
 
@@ -14546,7 +14564,7 @@ void clif_parse_GuildRequestEmblem(int fd,struct map_session_data *sd)
 	int guild_id = RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]);
 #endif
 	//Biali faction system
-	if( sd->status.faction_id )
+	if( sd->status.faction_id && battle_config.faction_change_name)
 		clif_bg_emblem(sd, &sd->faction.g);
 	else if( (g = guild_search(guild_id)) != NULL )
 		clif_guild_emblem(sd,g);
@@ -18582,7 +18600,7 @@ void clif_bg_belonginfo(struct map_session_data *sd)
 	struct guild *g;
 	nullpo_retv(sd);
 
-	if( !(battle_config.bg_eAmod_mode && sd->bg_id && (g = bg_guild_get(sd->bg_id)) != NULL) && !(sd->status.faction_id && (g = &sd->faction.g) != NULL) )
+	if( !(battle_config.bg_eAmod_mode && sd->bg_id && (g = bg_guild_get(sd->bg_id)) != NULL) && !(battle_config.faction_change_name && sd->status.faction_id && (g = &sd->faction.g) != NULL) )
 		return;
 
 	fd = sd->fd;
@@ -18784,6 +18802,9 @@ void clif_bg_updatescore_single(struct map_session_data *sd)
 /// 02dd <account id>.L <name>.24B <camp>.W
 void clif_sendbgemblem_area(struct map_session_data *sd)
 {
+	if(!battle_config.faction_change_name)
+		return;
+
 	unsigned char buf[33];
 	nullpo_retv(sd);
 
@@ -18796,6 +18817,9 @@ void clif_sendbgemblem_area(struct map_session_data *sd)
 
 void clif_sendbgemblem_single(int fd, struct map_session_data *sd)
 {
+	if(!battle_config.faction_change_name)
+		return;
+
 	nullpo_retv(sd);
 	WFIFOHEAD(fd,32);
 	WFIFOW(fd,0) = 0x2dd;
@@ -22313,6 +22337,58 @@ void clif_guild_storage_log( struct map_session_data* sd, std::vector<struct gui
 	WFIFOSET( fd, p->PacketLength );
 #endif
 }
+
+// Biali master storage
+/// Sends out the usage history of the guild storage
+/// 09DA <size>.W <result>.W <count>.W { <id>.L <item id>.W <amount>.L <action>.B <refine>.L <unique id>.Q <identify>.B <item type>.W
+///      { <card item id>.W }*4 <name>.24B <time>.24B <attribute>.B }*count (ZC_ACK_GUILDSTORAGE_LOG)
+void clif_master_storage_log( struct map_session_data* sd, std::vector<struct master_log_entry>& log, enum e_master_storage_log result ){
+#if PACKETVER >= 20140205
+	nullpo_retv( sd );
+
+	int fd = sd->fd;
+	int16 size = sizeof( struct PACKET_ZC_ACK_GUILDSTORAGE_LOG );
+
+	if( result == MASTERSTORAGE_LOG_FINAL_SUCCESS ){
+		size += static_cast<int16>(log.size()) * sizeof( struct PACKET_ZC_ACK_GUILDSTORAGE_LOG_sub );
+	}else{
+		log.clear();
+	}
+
+	WFIFOHEAD( fd, size );
+	struct PACKET_ZC_ACK_GUILDSTORAGE_LOG *p = (struct PACKET_ZC_ACK_GUILDSTORAGE_LOG*)WFIFOP( fd, 0 );
+
+	p->packetType = HEADER_ZC_ACK_GUILDSTORAGE_LOG;
+	p->PacketLength = size;
+	p->result = result;
+	p->amount = (uint16)log.size();
+
+	if( result == MASTERSTORAGE_LOG_FINAL_SUCCESS ){
+		for( int i = 0; i < log.size(); i++ ){
+			struct PACKET_ZC_ACK_GUILDSTORAGE_LOG_sub* item = &p->items[i];
+			struct master_log_entry& entry = log[i];
+
+			item->id = entry.id;
+			item->itemId = client_nameid( entry.item.nameid );
+			item->amount = (uint16)( entry.amount > 0 ? entry.amount : ( entry.amount * -1 ) );
+			item->action = entry.amount > 0; // action = true(put), false(get)
+			item->refine = entry.item.refine;
+			item->uniqueId = entry.item.unique_id;
+			item->IsIdentified = entry.item.identify;
+			item->itemType = itemtype( entry.item.nameid );
+			clif_addcards( &item->slot, &entry.item );
+			safestrncpy( item->name, entry.name, NAME_LENGTH );
+			safestrncpy( item->time, entry.time, NAME_LENGTH );
+			item->attribute = entry.item.attribute;
+		}
+	}
+	
+	WFIFOSET( fd, p->PacketLength );
+#endif
+}
+
+
+
 
 /// Activates the client camera info or updates the client camera with the given values.
 /// 0A78 <type>.B <range>.F <rotation>.F <latitude>.F

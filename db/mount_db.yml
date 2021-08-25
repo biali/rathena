@@ -1,0 +1,8 @@
+Header:
+  Type: MOUNT_DB
+  Version: 1
+
+Footer:
+  Imports:
+  - Path: db/pre-re/mount_db.yml
+    Mode: Prerenewal

@@ -19,6 +19,7 @@
 #include "itemdb.hpp" // MAX_ITEMGROUP
 #include "map.hpp" // RC_ALL
 #include "mob.hpp" //e_size
+#include "mount.hpp" //biali mount rework
 #include "script.hpp" // struct script_reg, struct script_regstr
 #include "searchstore.hpp"  // struct s_search_store_info
 #include "status.hpp" // unit_data
@@ -289,7 +290,7 @@ struct map_session_data {
 		unsigned int arrow_atk : 1;
 		unsigned int gangsterparadise : 1;
 		unsigned int rest : 1;
-		unsigned int storage_flag : 3; //0: closed, 1: Normal Storage open, 2: guild storage open [Skotlex], 3: Premium Storage
+		unsigned int storage_flag : 3; //0: closed, 1: Normal Storage open, 2: guild storage open [Skotlex], 3: Premium Storage, 4: Master Storage
 		unsigned int snovice_dead_flag : 1; //Explosion spirits on death: 0 off, 1 used.
 		unsigned int abra_flag : 2; // Abracadabra bugfix by Aru
 		unsigned int autocast : 1; // Autospell flag [Inkfish]
@@ -372,7 +373,7 @@ struct map_session_data {
 	struct mmo_charstatus status;
 
 	// Item Storages
-	struct s_storage storage, premiumStorage;
+	struct s_storage storage, premiumStorage, masterStorage;
 	struct s_storage inventory;
 	struct s_storage cart;
 
@@ -830,8 +831,7 @@ struct map_session_data {
 		uint16 level;
 		int target;
 	} skill_keep_using;
-
-	int mount; // biali mount rework (mount id)
+	uint32 mount_id; // biali mount rework
 	int mount_remount_timer; //biali mount rework. when will them be allowed to mount again?
 };
 
@@ -1205,6 +1205,10 @@ void pc_expire_check(struct map_session_data *sd);
 void pc_calc_skilltree(struct map_session_data *sd);
 int pc_calc_skilltree_normalize_job(struct map_session_data *sd);
 void pc_clean_skilltree(struct map_session_data *sd);
+
+// biali reputation system
+void pc_calcrep(struct map_session_data *sd, t_exp base_exp);
+void pc_give_rep_points(struct map_session_data *sd, int points);
 
 #define pc_checkoverhp(sd) ((sd)->battle_status.hp == (sd)->battle_status.max_hp)
 #define pc_checkoversp(sd) ((sd)->battle_status.sp == (sd)->battle_status.max_sp)

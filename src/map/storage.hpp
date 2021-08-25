@@ -33,6 +33,16 @@ enum e_guild_storage_flags : uint8 {
 	GSTORAGE_NO_PERMISSION
 };
 
+/// Master storage flags
+enum e_master_storage_flags : uint8 {
+	MSTORAGE_OPEN = 0,
+	MSTORAGE_STORAGE_ALREADY_OPEN,
+	MSTORAGE_ALREADY_OPEN,
+	MSTORAGE_NO_ACCOUNT,
+	MSTORAGE_NO_STORAGE,
+	MSTORAGE_NO_PERMISSION
+};
+
 enum e_guild_storage_log : uint16 {
 	GUILDSTORAGE_LOG_SUCCESS,
 	GUILDSTORAGE_LOG_FINAL_SUCCESS,
@@ -47,6 +57,24 @@ struct guild_log_entry{
 	struct item item;
 	int16 amount;
 };
+
+
+// biali master storage
+enum e_master_storage_log : uint16 {
+	MASTERSTORAGE_LOG_SUCCESS,
+	MASTERSTORAGE_LOG_FINAL_SUCCESS,
+	MASTERSTORAGE_LOG_EMPTY,
+	MASTERSTORAGE_LOG_FAILED,
+};
+
+struct master_log_entry{
+	uint32 id;
+	char name[NAME_LENGTH];
+	char time[NAME_LENGTH];
+	struct item item;
+	int16 amount;
+};
+
 
 const char *storage_getName(uint8 id);
 bool storage_exists(uint8 id);
@@ -81,6 +109,24 @@ void storage_guild_storageclose(struct map_session_data *sd);
 void storage_guild_storage_quit(struct map_session_data *sd,int flag);
 bool storage_guild_storagesave(uint32 account_id, int guild_id, int flag);
 void storage_guild_storagesaved(int guild_id); //Ack from char server that guild store was saved.
+
+//biali master storage
+struct s_storage* master2storage(int master_id);
+struct s_storage* master2storage2(int master_id);
+void storage_master_delete(int master_id);
+char storage_master_storageopen(struct map_session_data *sd);
+enum e_master_storage_log storage_master_log_read( struct map_session_data* sd );
+bool storage_master_additem(struct map_session_data *sd,struct s_storage *stor,struct item *item_data,int amount);
+bool storage_master_additem2(struct s_storage* stor, struct item* item, int amount);
+bool storage_master_delitem(struct map_session_data *sd,struct s_storage *stor,int n,int amount);
+void storage_master_storageadd(struct map_session_data *sd,int index,int amount);
+void storage_master_storageget(struct map_session_data *sd,int index,int amount);
+void storage_master_storageaddfromcart(struct map_session_data *sd,int index,int amount);
+void storage_master_storagegettocart(struct map_session_data *sd,int index,int amount);
+void storage_master_storageclose(struct map_session_data *sd);
+void storage_master_storage_quit(struct map_session_data *sd,int flag);
+bool storage_master_storagesave(uint32 account_id, int master_id, int flag);
+void storage_master_storagesaved(int master_id);
 
 // Premium Storage [Cydh]
 void storage_premiumStorage_open(struct map_session_data *sd);

@@ -736,6 +736,20 @@ void quest_update_objective(struct map_session_data *sd, struct mob_data* md)
 			if (objective_check == 6 && sd->quest_log[i].count[j] < qi->objectives[j]->count)  {
 				sd->quest_log[i].count[j]++;
 				sd->save_quest = true;
+
+				// biali faction system
+				// players questing with faction flags get bonuses
+				if (rnd()%100 >= 70 && itemdb_exists(30122) && sd->status.faction_id) {
+					struct item entry = {};
+					entry.nameid = 30122;
+					entry.identify = itemdb_isidentified(30122);
+					entry.amount = 1;
+					e_additem_result result;
+
+					if ((result = pc_additem(sd, &entry, 1, LOG_TYPE_QUEST)) != ADDITEM_SUCCESS) // Failed to obtain the item
+						clif_additem(sd, 0, 0, result);
+
+				}
 				clif_quest_update_objective(sd, &sd->quest_log[i]);
 			}
 		}

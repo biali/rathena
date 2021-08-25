@@ -4,39 +4,393 @@
 #include "mount.hpp"
 
 #include <map>
-
-#include <math.h>
 #include <stdlib.h>
 
-#include <yaml-cpp/yaml.h>
-
-#include "../common/cbasetypes.hpp"
-#include "../common/core.hpp" // get_svn_revision()
-#include "../common/ers.hpp"  // ers_destroy
-#include "../common/malloc.hpp"
-#include "../common/mmo.hpp" //NAME_LENGTH
 #include "../common/nullpo.hpp"
+#include "../common/random.hpp"
 #include "../common/showmsg.hpp"
-#include "../common/socket.hpp" // session[]
-#include "../common/strlib.hpp" // safestrncpy()
-#include "../common/timer.hpp"
-#include "../common/utilities.hpp"
+#include "../common/strlib.hpp"
 #include "../common/utils.hpp"
+#include "../common/utilities.hpp"
 
-#include "battle.hpp"
+#include "battle.hpp" // struct battle_config
+#include "cashshop.hpp"
 #include "clif.hpp"
-#include "map.hpp"
+#include "intif.hpp"
+#include "log.hpp"
+#include "mob.hpp"
 #include "pc.hpp"
 #include "status.hpp"
 
-static DBMap* mount_db=NULL;
 
-struct mount_data *mount_search(int id)
+using namespace rathena;
+
+static void itemdb_jobid2mapid(uint64 bclass[3], e_mapid jobmask, bool active);
+
+const std::string MountDatabase::getDefaultLocation(){
+	return std::string(db_path) + "/mount_db.yml";
+}
+
+/**
+ * Reads and parses an entry from the mount_db.
+ * @param node: YAML node containing the entry.
+ * @return count of successfully parsed rows
+ */
+uint64 MountDatabase::parseBodyNode(const YAML::Node &node) {
+	uint32 id;
+
+	if (!this->asUInt32(node, "Id", id))
+		return 0;
+
+	std::shared_ptr<mount_data> mount = this->find(id);
+	bool exists = mount != nullptr;
+
+	if (!exists) {
+		mount = std::make_shared<mount_data>();
+		mount->id = id;
+		// mount->flag.available = true;
+	}
+
+	if (this->nodeExists(node, "Name")) {
+		std::string name;
+
+		if (!this->asString(node, "Name", name))
+			return 0;
+
+		mount->name.resize(ITEM_NAME_LENGTH);
+		mount->name = name.c_str();
+	}
+	// Max HP
+	if (this->nodeExists(node, "MaxHP")) {
+		uint32 max_hp;
+
+		if (!this->asUInt32(node, "MaxHP", max_hp))
+			return 0;
+
+		mount->max_hp = max_hp;
+	} else {
+		if (!exists)
+			mount->max_hp = 5000;
+	}
+	//Race
+	if (this->nodeExists(node, "Race")) {
+		uint16 race;
+
+		if (!this->asUInt16(node, "Race", race))
+			return 0;
+
+		mount->race = race;
+	} else {
+		if (!exists)
+			mount->race = 2;
+	}
+	//Element
+	if (this->nodeExists(node, "Element")) {
+		uint16 ele;
+
+		if (!this->asUInt16(node, "Element", ele))
+			return 0;
+
+		mount->ele = ele;
+	} else {
+		if (!exists)
+			mount->ele = 0;
+	}
+	//Element Level
+	if (this->nodeExists(node, "ElementLvl")) {
+		uint16 ele_lvl;
+
+		if (!this->asUInt16(node, "ElementLvl", ele_lvl))
+			return 0;
+
+		mount->ele_lvl = ele_lvl;
+	} else {
+		if (!exists)
+			mount->ele_lvl = 1;
+	}
+	//Size
+	if (this->nodeExists(node, "Size")) {
+		uint16 size;
+
+		if (!this->asUInt16(node, "Size", size))
+			return 0;
+
+		mount->size = size;
+	} else {
+		if (!exists)
+			mount->size = 0;
+	}
+	//Speed bonus
+	if (this->nodeExists(node, "SpeedBonus")) {
+		uint16 speed_bonus;
+
+		if (!this->asUInt16(node, "SpeedBonus", speed_bonus))
+			return 0;
+
+		mount->speed_bonus = speed_bonus;
+	} else {
+		if (!exists)
+			mount->speed_bonus = 25;
+	}
+	//Cast Time
+	if (this->nodeExists(node, "Cast")) {
+		uint16 cast_time;
+
+		if (!this->asUInt16(node, "Cast", cast_time))
+			return 0;
+
+		mount->cast_time = cast_time;
+	} else {
+		if (!exists)
+			mount->cast_time = 5;
+	}
+	//Hateffect (aura)
+	if (this->nodeExists(node, "Aura")) {
+		uint16 aura;
+
+		if (!this->asUInt16(node, "Aura", aura))
+			return 0;
+
+		mount->aura = aura;
+	} else {
+		if (!exists)
+			mount->aura = 0;
+	}
+	//Summon Item
+	if( this->nodeExists( node, "SummonItem" ) ){
+		std::string summon_item;
+
+		if( !this->asString( node, "SummonItem", summon_item ) ){
+			return 0;
+		}
+
+		struct item_data* item = itemdb_search_aegisname( summon_item.c_str() );
+
+		if( item == nullptr ){
+			this->invalidWarning( node["SummonItem"], "Summon item %s does not exist.\n", summon_item.c_str() );
+			return 0;
+		}
+
+		mount->summon_item = item->nameid;
+		item->flag.isMount = true;
+	}else{
+		if( !exists ){
+			mount->summon_item = 0;
+		}
+	}
+	// Jobs
+	if (this->nodeExists(node, "Jobs")) {
+		const YAML::Node &jobNode = node["Jobs"];
+
+		mount->jobs[0] = mount->jobs[1] = mount->jobs[2] = 0;
+
+		if (this->nodeExists(jobNode, "All")) {
+			bool active;
+
+			if (!this->asBool(jobNode, "All", active))
+				return 0;
+
+			itemdb_jobid2mapid(mount->jobs, MAPID_ALL, active);
+		}
+
+		for (const auto &jobit : jobNode) {
+			std::string jobName = jobit.first.as<std::string>();
+
+			// Skipped because processed above the loop
+			if (jobName.compare("All") == 0)
+				continue;
+
+			std::string jobName_constant = "EAJ_" + jobName;
+			int64 constant;
+
+			if (!script_get_constant(jobName_constant.c_str(), &constant)) {
+				this->invalidWarning(jobNode[jobName], "Invalid mount job %s, defaulting to All.\n", jobName.c_str());
+				itemdb_jobid2mapid(mount->jobs, MAPID_ALL, true);
+				break;
+			}
+
+			bool active;
+
+			if (!this->asBool(jobNode, jobName, active))
+				return 0;
+
+			itemdb_jobid2mapid(mount->jobs, static_cast<e_mapid>(constant), active);
+		}
+	} else {
+		if (!exists) {
+			mount->jobs[0] = mount->jobs[1] = mount->jobs[2] = 0;
+
+			itemdb_jobid2mapid(mount->jobs, MAPID_ALL, true);
+		}
+	}
+	// Classes
+	if (this->nodeExists(node, "Classes")) {
+		const YAML::Node &classNode = node["Classes"];
+
+		if (this->nodeExists(classNode, "All")) {
+			bool active;
+
+			if (!this->asBool(classNode, "All", active))
+				return 0;
+
+			if (active)
+				mount->classes |= ITEMJ_ALL;
+			else
+				mount->classes &= ~ITEMJ_ALL;
+		}
+
+		for (const auto &classit : classNode) {
+			std::string className = classit.first.as<std::string>();
+
+			// Skipped because processed above the loop
+			if (className.compare("All") == 0)
+				continue;
+
+			std::string className_constant = "ITEMJ_" + className;
+			int64 constant;
+
+			if (!script_get_constant(className_constant.c_str(), &constant)) {
+				this->invalidWarning(classNode[className], "Invalid class upper %s, defaulting to All.\n", className.c_str());
+				mount->classes |= ITEMJ_ALL;
+				break;
+			}
+
+			bool active;
+
+			if (!this->asBool(classNode, className, active))
+				return 0;
+
+			if (active)
+				mount->classes |= constant;
+			else
+				mount->classes &= ~constant;
+		}
+	} else {
+		if (!exists)
+			mount->classes = ITEMJ_ALL;
+	}
+	//Script
+	if (this->nodeExists(node, "Script")) {
+		std::string script;
+
+		if (!this->asString(node, "Script", script))
+			return 0;
+
+		if (exists && mount->script) {
+			script_free_code(mount->script);
+			mount->script = nullptr;
+		}
+
+		mount->script = parse_script(script.c_str(), this->getCurrentFile().c_str(), node["Script"].Mark().line + 1, SCRIPT_IGNORE_EXTERNAL_BRACKETS);
+	} else {
+		if (!exists) 
+			mount->script = nullptr;
+	}
+	// Script Equip
+	if (this->nodeExists(node, "EquipScript")) {
+		std::string script;
+
+		if (!this->asString(node, "EquipScript", script))
+			return 0;
+
+		if (exists && mount->equip_script) {
+			script_free_code(mount->equip_script);
+			mount->equip_script = nullptr;
+		}
+
+		mount->equip_script = parse_script(script.c_str(), this->getCurrentFile().c_str(), node["EquipScript"].Mark().line + 1, SCRIPT_IGNORE_EXTERNAL_BRACKETS);
+	} else {
+		if (!exists)
+			mount->equip_script = nullptr;
+	}
+	// Script Unequip
+	if (this->nodeExists(node, "UnEquipScript")) {
+		std::string script;
+
+		if (!this->asString(node, "UnEquipScript", script))
+			return 0;
+
+		if (exists && mount->unequip_script) {
+			script_free_code(mount->unequip_script);
+			mount->unequip_script = nullptr;
+		}
+
+		mount->unequip_script = parse_script(script.c_str(), this->getCurrentFile().c_str(), node["UnEquipScript"].Mark().line + 1, SCRIPT_IGNORE_EXTERNAL_BRACKETS);
+	} else {
+		if (!exists)
+			mount->unequip_script = nullptr;
+	}
+
+	if( !exists ){
+		this->put( id, mount );
+	}
+
+	return 1;
+}
+
+MountDatabase mount_db;
+
+/** Searches for the mount_data. Use this to check if mount exists or not.
+* @param id
+* @return *mount_data if item is exist, or NULL if not
+*/
+struct mount_data* mountdb_exists(uint32 id) {
+	std::shared_ptr<mount_data> mount = mount_db.find(id);
+
+	return mount ? mount.get() : nullptr;
+}
+
+void MountDatabase::loadingFinished(){
+	if( !this->exists( ITEMID_DUMMY ) ){
+		// Create dummy item
+		std::shared_ptr<mount_data> dummy_mount = std::make_shared<mount_data>();
+
+		dummy_mount->id = ITEMID_DUMMY;
+		dummy_mount->name = "UNKNOWN_ITEM";
+		dummy_mount->summon_item = ITEMID_DUMMY;
+
+		mount_db.put( ITEMID_DUMMY, dummy_mount );
+	}
+}
+
+/**
+ * Converts the jobmask from the format in itemdb to the format used by the map server.
+ * @param bclass: Pointer to store itemdb format
+ * @param jobmask: Job Mask to convert
+ * @param active: Whether the flag is active or not
+ * @author: Skotlex
+ */
+static void itemdb_jobid2mapid(uint64 bclass[3], e_mapid jobmask, bool active)
 {
-	if(id < 1 || id > MAX_MOUNT)
-		return NULL;
+	uint64 temp_mask[3] = { 0 };
 
-	return (struct mount_data*)idb_get(mount_db,id);
+	if (jobmask != MAPID_ALL) {
+		// Calculate the required bit to set
+		uint64 job = 1ULL << ( jobmask & MAPID_BASEMASK );
+
+		// 2-1
+		if( ( jobmask & JOBL_2_1 ) != 0 ){
+			temp_mask[1] |= job;
+		// 2-2
+		}else if( ( jobmask & JOBL_2_2 ) != 0 ){
+			temp_mask[2] |= job;
+		// Basejob
+		}else{
+			temp_mask[0] |= job;
+		}
+	} else {
+		temp_mask[0] = temp_mask[1] = temp_mask[2] = MAPID_ALL;
+	}
+
+	for (int i = 0; i < ARRAYLENGTH(temp_mask); i++) {
+		if (temp_mask[i] == 0)
+			continue;
+
+		if (active)
+			bclass[i] |= temp_mask[i];
+		else
+			bclass[i] &= ~temp_mask[i];
+	}
 }
 
 
@@ -71,7 +425,7 @@ void mount_setride(struct map_session_data *sd, struct mount_data *mdb) {
 		clif_messagecolor(&sd->bl,color_table[COLOR_RED],"You can't mount right now.",false,SELF);
 	} else {
 		sc_start(NULL, &sd->bl, SC_ALL_RIDING, 10000, 1, INFINITE_TICK); //mount
-		sd->mount = mdb->id;
+		sd->mount_id = mdb->id;
 		clif_hat_effect_single(&sd->bl,mdb->aura,true);
 		mount_pc_status(sd);
 	}
@@ -85,9 +439,9 @@ void mount_desmount(struct map_session_data *sd, bool force) {
 		val = REMOUNT_TIMER * 6 * 1000;
 
     status_change_end(&sd->bl, SC_ALL_RIDING, INVALID_TIMER); //release mount
-	struct mount_data *mdb = mount_search(sd->mount);
-    sd->mount = 0;
+	struct mount_data *mdb = mountdb_exists(sd->mount_id);
 	clif_hat_effect_single(&sd->bl,mdb->aura,false); //Area
+	sd->mount_id = 0;
 	mount_pc_status(sd);
 	pc_setremounttimer(sd,val);
 }
@@ -96,8 +450,9 @@ void mount_pc_status(struct map_session_data *sd) {
 
 	struct mount_data *mdb = NULL;
 	struct status_data *status = status_get_base_status(&sd->bl);
+	ShowWarning("Biali mount stats calculation Entrou aqui \n");
 	
-	if( (mdb = mount_search(sd->mount)) != NULL) {
+	if( (mdb = mountdb_exists(sd->mount_id)) != NULL) {
 		pc_setparam( sd, SP_MAXHP, mdb->max_hp );
     	pc_setparam( sd, SP_HP, mdb->max_hp );
 
@@ -108,164 +463,163 @@ void mount_pc_status(struct map_session_data *sd) {
 
 		run_script(mdb->script,0,sd->bl.id,0);
 		pc_bonus_script(sd);
-
+		// status_calc_pc(sd,SCO_NONE);
 	} else{
-		ShowWarning("Biali entrou aki \n");
 		pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
 		pc_setparam( sd, SP_HP, sd->status.hp );
-		status_calc_pc(sd,SCO_NONE);
+		// status_calc_pc(sd,SCO_NONE);
 	}
 }
 
 
-// ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,{ Aura: #1 #2 #3 }
-static int mount_readdb(void)
-{
-	struct mount_data *mdb;
-	const char *filename = "mount_db.txt";
-	uint32 lines = 0, count = 0;
-	char line[1024], path[256];
-	FILE *fp;
-	void *aChSysSave = NULL;
+// // ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,{ Aura: #1 #2 #3 }
+// static int mount_readdb(void)
+// {
+// 	struct mount_data *mdb;
+// 	const char *filename = "mount_db.txt";
+// 	uint32 lines = 0, count = 0;
+// 	char line[1024], path[256];
+// 	FILE *fp;
+// 	void *aChSysSave = NULL;
 
-	struct item_data *idt = NULL;
+// 	struct item_data *idt = NULL;
 
-	sprintf(path, "%s/%s", db_path, filename);
-	if((fp = fopen(path, "r")) == NULL ) {
-		ShowWarning("mount_readdb: File not found \"%s\", skipping.\n", path);
-		return 0;
-	}
+// 	sprintf(path, "%s/%s", db_path, filename);
+// 	if((fp = fopen(path, "r")) == NULL ) {
+// 		ShowWarning("mount_readdb: File not found \"%s\", skipping.\n", path);
+// 		return 0;
+// 	}
 
-	while(fgets(line, sizeof(line), fp)) 
-	{
-		char *str[32], *p;
-		int i, id, max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, aura, k = 0;
-		t_itemid item;
+// 	while(fgets(line, sizeof(line), fp)) 
+// 	{
+// 		char *str[32], *p;
+// 		int i, id, max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, aura, k = 0;
+// 		t_itemid item;
 
-		lines++;
-		if(line[0] == '/' && line[1] == '/')
-			continue;
-		memset(str, 0, sizeof(str));
+// 		lines++;
+// 		if(line[0] == '/' && line[1] == '/')
+// 			continue;
+// 		memset(str, 0, sizeof(str));
 
-		p = line;
-		while( ISSPACE(*p) )
-			++p;
-		if( *p == '\0' )
-			continue;
-		for( i = 0; i < 11; ++i ) {
-			str[i] = p;
-			p = strchr(p,',');
-			if( p == NULL )
-				break;
-			*p = '\0';
-			++p;
-		}
+// 		p = line;
+// 		while( ISSPACE(*p) )
+// 			++p;
+// 		if( *p == '\0' )
+// 			continue;
+// 		for( i = 0; i < 11; ++i ) {
+// 			str[i] = p;
+// 			p = strchr(p,',');
+// 			if( p == NULL )
+// 				break;
+// 			*p = '\0';
+// 			++p;
+// 		}
 
-		if( p == NULL ) {
-			ShowError("mount_readdb: Insufficient columns in line %d of \"%s\" (mount id %d), skipping.\n", lines, path, atoi(str[0]));
-			continue;
-		}
+// 		if( p == NULL ) {
+// 			ShowError("mount_readdb: Insufficient columns in line %d of \"%s\" (mount id %d), skipping.\n", lines, path, atoi(str[0]));
+// 			continue;
+// 		}
 
-		id = atoi(str[0]);
+// 		id = atoi(str[0]);
 
-		if( id < 1 || id > MAX_MOUNT ) {
-			ShowError("mount_readdb : Incorrect Mount ID: %d, must be between 0 and %d\n", id, MAX_MOUNT);
-			continue;
-		} else if( mount_search(id) ) {
-			ShowError("mount_readdb : Duplicate Mount ID %d, line %d.\n", id, lines);
-			continue;
-		}
+// 		if( id < 1 || id > MAX_MOUNT ) {
+// 			ShowError("mount_readdb : Incorrect Mount ID: %d, must be between 0 and %d\n", id, MAX_MOUNT);
+// 			continue;
+// 		} else if( mount_search(id) ) {
+// 			ShowError("mount_readdb : Duplicate Mount ID %d, line %d.\n", id, lines);
+// 			continue;
+// 		}
 
-		max_hp = atoi(str[2]);
-		if( max_hp < 1 || max_hp > INT_MAX ) {
-			ShowWarning("mount_readdb : Invalid max_hp: %d, in line %d of \"%s\" (Mount id %d).\n", max_hp, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : Max HP must be between %d and %d. Default to %d.\n", 1, INT_MAX, 1);
-			max_hp = 1;
-		}
+// 		max_hp = atoi(str[2]);
+// 		if( max_hp < 1 || max_hp > INT_MAX ) {
+// 			ShowWarning("mount_readdb : Invalid max_hp: %d, in line %d of \"%s\" (Mount id %d).\n", max_hp, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : Max HP must be between %d and %d. Default to %d.\n", 1, INT_MAX, 1);
+// 			max_hp = 1;
+// 		}
 
-		race = atoi(str[3]);
-		if( race < RC_FORMLESS || race > RC_DRAGON ) {
-			ShowWarning("mount_readdb : Invalid race: %d, in line %d of \"%s\" (Mount id %d).\n", race, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : race must be between %d and %d. Default to %d.\n", RC_FORMLESS, RC_DRAGON, RC_DEMIHUMAN);
-			race = RC_DEMIHUMAN;
-		}
+// 		race = atoi(str[3]);
+// 		if( race < RC_FORMLESS || race > RC_DRAGON ) {
+// 			ShowWarning("mount_readdb : Invalid race: %d, in line %d of \"%s\" (Mount id %d).\n", race, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : race must be between %d and %d. Default to %d.\n", RC_FORMLESS, RC_DRAGON, RC_DEMIHUMAN);
+// 			race = RC_DEMIHUMAN;
+// 		}
 
-		ele = atoi(str[4]);
-		if( ele < ELE_NEUTRAL || ele > ELE_UNDEAD ) {
-			ShowWarning("mount_readdb : Invalid element: %d, in line %d of \"%s\" (Mount id %d).\n", ele, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : element must be between %d and %d. Default to %d.\n", ELE_NEUTRAL, ELE_UNDEAD, ELE_NEUTRAL);
-			ele = ELE_NEUTRAL;
-		}
+// 		ele = atoi(str[4]);
+// 		if( ele < ELE_NEUTRAL || ele > ELE_UNDEAD ) {
+// 			ShowWarning("mount_readdb : Invalid element: %d, in line %d of \"%s\" (Mount id %d).\n", ele, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : element must be between %d and %d. Default to %d.\n", ELE_NEUTRAL, ELE_UNDEAD, ELE_NEUTRAL);
+// 			ele = ELE_NEUTRAL;
+// 		}
 
-		ele_lvl = atoi(str[5]);
-		if( ele_lvl < 1 || ele_lvl > 4 ) {
-			ShowWarning("mount_readdb : Invalid element level: %d, in line %d of \"%s\" (Mount id %d).\n", ele_lvl, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : element must be between 1 and 4. Default to 1.\n");
-			ele_lvl = 1;
-		}
+// 		ele_lvl = atoi(str[5]);
+// 		if( ele_lvl < 1 || ele_lvl > 4 ) {
+// 			ShowWarning("mount_readdb : Invalid element level: %d, in line %d of \"%s\" (Mount id %d).\n", ele_lvl, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : element must be between 1 and 4. Default to 1.\n");
+// 			ele_lvl = 1;
+// 		}
 
-		size = atoi(str[6]);
-		if( size < 0 || size > 2 ) {
-			ShowWarning("mount_readdb : Invalid size: %d, in line %d of \"%s\" (Mount id %d).\n", size, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : size must be 0, 1 or 2. Default to 0.\n");
-			size = 0;
-		}
+// 		size = atoi(str[6]);
+// 		if( size < 0 || size > 2 ) {
+// 			ShowWarning("mount_readdb : Invalid size: %d, in line %d of \"%s\" (Mount id %d).\n", size, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : size must be 0, 1 or 2. Default to 0.\n");
+// 			size = 0;
+// 		}
 
-		speed_bonus = atoi(str[7]);
-		if( speed_bonus < -100 || speed_bonus > 100 ) {
-			ShowWarning("mount_readdb : Invalid speed bonus: %d, in line %d of \"%s\" (Mount id %d).\n", speed_bonus, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : speed must be between -100 and 100. Default to 25.\n");
-			speed_bonus = 25;
-		}
+// 		speed_bonus = atoi(str[7]);
+// 		if( speed_bonus < -100 || speed_bonus > 100 ) {
+// 			ShowWarning("mount_readdb : Invalid speed bonus: %d, in line %d of \"%s\" (Mount id %d).\n", speed_bonus, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : speed must be between -100 and 100. Default to 25.\n");
+// 			speed_bonus = 25;
+// 		}
 
-        cast_time = atoi(str[8]);
-		if( cast_time < 0 || cast_time > 60 ) {
-			ShowWarning("mount_readdb : Invalid cast time: %d, in line %d of \"%s\" (Mount id %d).\n", cast_time, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : cast time must be between 1 and 60. Default to 1.\n");
-			cast_time = 1;
-		}
+//         cast_time = atoi(str[8]);
+// 		if( cast_time < 0 || cast_time > 60 ) {
+// 			ShowWarning("mount_readdb : Invalid cast time: %d, in line %d of \"%s\" (Mount id %d).\n", cast_time, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : cast time must be between 1 and 60. Default to 1.\n");
+// 			cast_time = 1;
+// 		}
 
-		aura = atoi(str[9]);
-		if( aura < 0 || aura > INT_MAX ) {
-			ShowWarning("mount_readdb : Invalid aura: %d, in line %d of \"%s\" (Mount id %d).\n", aura, lines, path, atoi(str[0]));
-			ShowWarning("mount_readdb : aura must be between 0 and %d. Default to 0.\n",INT_MAX);
-			aura = 0;
-		}
+// 		aura = atoi(str[9]);
+// 		if( aura < 0 || aura > INT_MAX ) {
+// 			ShowWarning("mount_readdb : Invalid aura: %d, in line %d of \"%s\" (Mount id %d).\n", aura, lines, path, atoi(str[0]));
+// 			ShowWarning("mount_readdb : aura must be between 0 and %d. Default to 0.\n",INT_MAX);
+// 			aura = 0;
+// 		}
 
-		item = atoi(str[10]);
-		if( (idt = itemdb_search(item)) == NULL ) {
-			ShowWarning("mount_readdb : Invalid item: %d, in line %d of \"%s\" (Mount id %d). Skipping.\n", item, lines, path, atoi(str[0]));
-			continue;
-		} else 
-			idt->flag.isMount = true;
+// 		item = atoi(str[10]);
+// 		if( (idt = itemdb_search(item)) == NULL ) {
+// 			ShowWarning("mount_readdb : Invalid item: %d, in line %d of \"%s\" (Mount id %d). Skipping.\n", item, lines, path, atoi(str[0]));
+// 			continue;
+// 		} else 
+// 			idt->flag.isMount = true;
 
-		// // script
-		str[11] = p;
+// 		// // script
+// 		str[11] = p;
 
-		CREATE(mdb,struct mount_data,1);
-		mdb->id = id;
-		safestrncpy(mdb->name,str[1],sizeof(mdb->name));
-		mdb->max_hp = max_hp;
-		mdb->race = race;
-		mdb->ele = ele;
-		mdb->ele_lvl = ele_lvl;
-		mdb->size = size;
-		mdb->skill_id = skill_id;
-		mdb->skill_lv = skill_lv;
-		mdb->speed_bonus = speed_bonus;
-        mdb->cast_time = cast_time;
-		mdb->aura = aura;
-		mdb->script = parse_script(str[11],path,lines,0);
+// 		CREATE(mdb,struct mount_data,1);
+// 		mdb->id = id;
+// 		safestrncpy(mdb->name,str[1],sizeof(mdb->name));
+// 		mdb->max_hp = max_hp;
+// 		mdb->race = race;
+// 		mdb->ele = ele;
+// 		mdb->ele_lvl = ele_lvl;
+// 		mdb->size = size;
+// 		mdb->skill_id = skill_id;
+// 		mdb->skill_lv = skill_lv;
+// 		mdb->speed_bonus = speed_bonus;
+//         mdb->cast_time = cast_time;
+// 		mdb->aura = aura;
+// 		mdb->script = parse_script(str[11],path,lines,0);
 
-		idb_put(mount_db,id,mdb);
+// 		idb_put(mount_db,id,mdb);
 
-		count++;
-	}
-	fclose(fp);
-	ShowStatus("Done reading '" CL_WHITE"%lu" CL_RESET "' mounts in file '" CL_WHITE "%s" CL_RESET "'.\n", count, filename);
+// 		count++;
+// 	}
+// 	fclose(fp);
+// 	ShowStatus("Done reading '" CL_WHITE"%lu" CL_RESET "' mounts in file '" CL_WHITE "%s" CL_RESET "'.\n", count, filename);
 
-	return 0;
-}
+// 	return 0;
+// }
 
 static void destroy_mount_data(struct mount_data *self, int free_self)
 {
@@ -285,18 +639,20 @@ static int mount_final_sub(DBKey key, DBData *data, va_list ap)
 	return 0;
 }
 
-void mount_read(void)
+static void mount_read(void)
 {
-	mount_readdb();
+	mount_db.load();
+	// mount_readdb();
 }
 
 void do_init_mount(void)
 {
-	mount_db 	= idb_alloc(DB_OPT_BASE);
+	// mount_db 	= idb_alloc(DB_OPT_BASE);
 	mount_read();
 }
 
 void do_final_mount(void)
 {
-	mount_db->destroy(mount_db,mount_final_sub);
+	mount_db.clear();
+	// mount_db->destroy(mount_db,mount_final_sub);
 }

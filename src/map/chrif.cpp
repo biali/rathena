@@ -322,6 +322,9 @@ int chrif_save(struct map_session_data *sd, int flag) {
 		storage_guild_storagesave(sd->status.account_id, sd->status.guild_id, flag);
 	if (sd->premiumStorage.dirty)
 		storage_premiumStorage_save(sd);
+	//biali master storage
+	if (sd->state.storage_flag == 4)
+		storage_master_storagesave(sd->status.account_id, sd->status.master_id, flag);
 
 	if (flag&CSAVE_QUITTING)
 		sd->state.storage_flag = 0; //Force close it.

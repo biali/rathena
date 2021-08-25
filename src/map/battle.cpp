@@ -8622,10 +8622,10 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 0; //If you are not representing a guild, can't target Contested Stone. Biali
 			if( sd->status.guild_id && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID] && t_bl->type == BL_MOB && ((TBL_MOB*)t_bl)->mob_id == MOBID_CONTEST_STONE)
 				return 0; //If your guild holds the contested map u cant hit the contest stone. Biali
+			if( t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_FVF) && (sd->status.faction_id == 0 || BL_CAST(BL_PC,t_bl)->status.faction_id == 0) )
+				return 0; // Source/Target is not enlisted with any faction
 			if( t_bl->type != BL_PC || (t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_RPK))) // Biali rpk mode
 				state |= BCT_ENEMY; //Natural enemy.
-			// if( t_bl->type != BL_PC )
-			// 	state |= BCT_ENEMY; //Natural enemy.
 			break;
 		}
 		case BL_MOB:
@@ -8683,7 +8683,7 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		return (flag&state)?1:-1;
 	}
 
-	if( mapdata_flag_vs(mapdata) )
+	if( mapdata_flag_vs(mapdata) || mapdata->flag[MF_FVF])
 	{ //Check rivalry settings.
 		int sbg_id = 0, tbg_id = 0;
 		if(mapdata->flag[MF_BATTLEGROUND] )
@@ -9420,6 +9420,7 @@ static const struct _battle_data {
 	{ "fvf_in_all_maps",					&battle_config.fvf_in_all_maps,					0,		0,      1,				},
 	{ "faction_disc_min",					&battle_config.faction_disc_min,			 -100,	 -INT_MAX,  0		        },
 	{ "faction_disc_max",					&battle_config.faction_disc_max,			  100,		0,   	INT_MAX         },
+	{ "faction_change_name",				&battle_config.faction_change_name,			    0,		0,   	1               },
 //Biali other reserved charids
 	{ "ancient_reserved_char_id",           &battle_config.ancient_reserved_char_id,        999992, 0,      INT_MAX,        },
 	{ "normal_dg_reserved_char_id",         &battle_config.normal_dg_reserved_char_id,      999993, 0,      INT_MAX,        },
@@ -9467,6 +9468,8 @@ static const struct _battle_data {
 	{ "random_options_drop_chances",      	&battle_config.random_drop_chances,  	        100,    0,      10000,          },
 // Monster of the day
 	{ "motd_exp_increase",                  &battle_config.motd_exp_increase,                10,     0,     10000,          },
+// Ragnamania Hard Cap
+	{ "drops_hardcap",               		&battle_config.hardcap,         			   3000,     0,     10000,          },
 	
 #include "../custom/battle_config_init.inc"
 };

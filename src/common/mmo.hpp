@@ -72,6 +72,7 @@ typedef uint32 t_itemid;
 #define MAX_WALK_SPEED 1000 ///Max walk speed
 #define MAX_STORAGE 600 ///Max number of storage slots a player can have
 #define MAX_GUILD_STORAGE 600 ///Max number of storage slots a guild
+#define MAX_MASTER_STORAGE 600 ///Max number of storage slots for a master account //Biali
 #define MAX_PARTY 12 ///Max party member
 #define MAX_GUILD 16+10*1	///Increased max guild members +6 per 1 extension levels [Lupus]
 #define MAX_GUILDPOSITION 20	///Increased max guild positions to accomodate for all members [Valaris] (removed) [PoW]
@@ -180,7 +181,7 @@ const t_itemid WEDDING_RING_F = 2635;
 #define MAX_DROPS 50
 
 // Biali mount rework
-#define REMOUNT_TIMER 30 // 30 seconds (multiplied by 6 when unmounted by dmg)
+#define REMOUNT_TIMER 10 // 30 seconds (multiplied by 6 when unmounted by dmg)
 
 // Castle Ranking biali damage log
 #define RANK_CASTLES 34 
@@ -389,6 +390,7 @@ enum storage_type {
 	TABLE_CART,
 	TABLE_STORAGE,
 	TABLE_GUILD_STORAGE,
+	TABLE_MASTER_STORAGE,
 };
 
 enum e_storage_mode {
@@ -416,6 +418,7 @@ struct s_storage {
 		struct item items_storage[MAX_STORAGE];
 		struct item items_cart[MAX_CART];
 		struct item items_guild[MAX_GUILD_STORAGE];
+		struct item items_master[MAX_MASTER_STORAGE]; // biali master storage
 	} u;
 };
 
@@ -636,6 +639,8 @@ struct s_skillcount {
 struct reputation {
 	char desc[12];
 	int value;
+	int points;
+	short reputation; // from -2 to 2 being hated, unfriednly, normal, friendly, honored
 };
 
 struct mmo_charstatus {

@@ -389,7 +389,7 @@ int party_invite(struct map_session_data *sd,struct map_session_data *tsd)
 	if( ( p = party_search(sd->status.party_id) ) == NULL )
 		return 0;
 
-	if( sd->status.faction_id && tsd && tsd->status.faction_id )
+	if( tsd && (sd->status.faction_id || tsd->status.faction_id) )
 	{
 		if( !battle_config.faction_party_settings && sd->status.faction_id != tsd->status.faction_id ) {
 			clif_displaymessage(sd->fd, msg_txt(sd,1632));
@@ -505,6 +505,17 @@ void party_member_joined(struct map_session_data *sd)
 
 	if (!p) {
 		party_request_info(sd->status.party_id, sd->status.char_id);
+		return;
+	}
+
+	//biali faction system
+	// check when a player logs in and was in a party before logoff
+	// if the party is factioned, expel
+	ARR_FIND( 0, MAX_PARTY, i, p->party.member[i].online && p->data[i].sd->status.faction_id != sd->status.faction_id );
+	if (i < MAX_PARTY) {
+		// sd->status.party_id = 0;
+		intif_party_leave(p->party.party_id,sd->status.account_id, sd->status.char_id, sd->status.name ,PARTY_MEMBER_WITHDRAW_EXPEL);
+		sd->status.party_id = 0;
 		return;
 	}
 
@@ -1139,8 +1150,37 @@ void party_exp_share(struct party_data* p, struct block_list* src, t_exp base_ex
 
 		if (zeny) // zeny from mobs [Valaris]
 			pc_getzeny(sd[i],zeny,LOG_TYPE_PICKDROP_MONSTER,NULL);
+
+		//biali reputation system
+		if(sd[i]->status.faction_id) 
+			party_rep_share(sd[i], src, c);
 	}
 }
+
+//biali reputation system
+void party_rep_share(struct map_session_data *sd, struct block_list* src, int count)
+{
+	nullpo_retv(sd);
+	int repp = 0;
+	double bonus = 100 + battle_config.party_even_share_bonus*(count-1);
+
+	if(count < 1)
+		count = 1;
+
+	if(sd->status.faction_id <= 0)
+		return;
+
+	TBL_MOB *md = BL_CAST(BL_MOB, src);
+	if(md && md->level) {
+		repp = md->level / count;
+	}
+
+	if (repp) {
+		repp = (int) cap_value(repp * bonus/100, INT_MIN, INT_MAX);
+		pc_give_rep_points(sd,repp);
+	}
+}
+
 
 //Does party loot. first_charid holds the charid of the player who has time priority to take the item.
 int party_share_loot(struct party_data* p, struct map_session_data* sd, struct item* item, int first_charid)

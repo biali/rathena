@@ -7009,8 +7009,20 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 		// 	//faction_leave(sd);
 
 		//faction system : a player holding a flag cannot enter a sanctuary map of another city
-		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) 
+		if (sd->status.faction_id && mapdata->faction_id && mapdata->faction_id != sd->status.faction_id ) {
+			char output[128];
+			sprintf(output, "You cannot cross this border map while representing a city.");
+			clif_messagecolor(&sd->bl, color_table[COLOR_RED], output, false, SELF);
 		  	return SETPOS_NOTALLOW;
+		}
+
+		//faction system : a player holding a flag cannot enter a pvp/bg/gvg/rpk maps
+		if (sd->status.faction_id && mapdata_flag_vs2(mapdata) ) {
+			char output[128];
+			sprintf(output, "You cannot enter any PVP/BG/GVG/RPK maps while representing a city.");
+			clif_messagecolor(&sd->bl, color_table[COLOR_RED], output, false, SELF);
+		  	return SETPOS_NOTALLOW;
+		}
 
 		if (sd->bg_id && !mapdata->flag[MF_BATTLEGROUND]) // Moving to a map that isn't a Battlegrounds
 			bg_team_leave(sd, false, true);
@@ -8229,13 +8241,45 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 }
 
 
+//biali reputation system
+void pc_update_rep(map_session_data *sd, int value) {
+	int i = sd->status.faction_id;
+	if(i > 0) {
+		sd->status.rep[i].value = value;
+		if(value <= battle_config.reputation_hated) {
+			sd->status.rep[i].reputation = -2;
+			strncpy(sd->status.rep[i].desc,"HATED",12);
+		}
+		else if(value <= battle_config.reputation_unfriendly) {
+			sd->status.rep[i].reputation = -1;
+			strncpy(sd->status.rep[i].desc,"UNFRIENDLY",12);
+		}
+		else if(value > battle_config.reputation_unfriendly && value < battle_config.reputation_friendly) {
+			sd->status.rep[i].reputation = 0;
+			strncpy(sd->status.rep[i].desc,"NEUTRAL",12);
+		}
+		else if(value >= battle_config.reputation_friendly) {
+			sd->status.rep[i].reputation = 1;
+			strncpy(sd->status.rep[i].desc,"FRIENDLY",12);
+		}
+		else {
+			sd->status.rep[i].reputation = 2;
+			strncpy(sd->status.rep[i].desc,"HONORED",12);
+		}
+
+		if(battle_config.faction_change_name)
+			clif_name_area(&sd->bl);
+	}
+}
+
 /** Calculates Reputation on exp gain [biali]
 * @param sd Player
 * @param base_exp Base EXP before personal bonuses
 */
-static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
+void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 {
 	int faction_id, exp, i;
+	int value;
 
 	if((faction_id = sd->status.faction_id) <= 0)
 		return;
@@ -8245,13 +8289,29 @@ static void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
 
 	for (i=1; i < MAX_FACTION; i++) {
 		if(faction_search(i) && faction_id == i) {
-			sd->status.rep[i].value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
-			clif_name_area(&sd->bl);
+			value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
+			pc_update_rep(sd, value);
 		} else {
 			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
-		ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
+		//ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 	}
+	return;
+}
+
+void pc_give_rep_points(struct map_session_data *sd, int points) {
+	int faction_id = sd->status.faction_id;
+	if(faction_id) {
+		switch(sd->status.rep[faction_id].reputation) {
+			case -2: points *= 0.8; break;
+			case -1: points *= 0.9; break;
+			case  1: points *= 1.2; break;
+			case  2: points *= 1.3; break;
+			default: break;
+		}
+		sd->status.rep[faction_id].points += points;
+	}
+
 	return;
 }
 
@@ -9435,7 +9495,7 @@ void pc_close_npc(struct map_session_data *sd,int flag)
  *------------------------------------------*/
 int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id) // biali damage log
 {
-	int i=0,k=0,infamy=0;;
+	int i=0,k=0,infamy=0;
 	t_tick tick = gettick();
 	struct map_data *mapdata = map_getmapdata(sd->bl.m);
 
@@ -9811,7 +9871,7 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 			if(sd->inventory.u.items_inventory[i].card[0] == CARD0_CREATE && 
 			sd->inventory.u.items_inventory[i].card[2] == GetWord(battle_config.reserved_costume_id, 0) &&
 			sd->inventory.u.items_inventory[i].card[3] == GetWord(battle_config.reserved_costume_id, 1)) {
-					continue;
+				continue;
 			}
 
 			//lets also skip items we should not break (itemdb.hpp can keep a list of constants for this)
@@ -9826,9 +9886,9 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 			)
 				continue;
 
-			// now lets break some of his stuff:
+			// now lets break some of their stuff:
 			if(!pc_candrop(sd,&sd->inventory.u.items_inventory[i])) {
-					// Non-tradebla items, bye!
+					// Non-tradeble items, bye!
 					sd->inventory.u.items_inventory[i] = {};
 					continue;
 			}
@@ -9867,8 +9927,8 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 		//Set a timer to unload the deadbody
 		add_timer(gettick()+battle_config.remove_deadbody_timer,npc_remove_deadbody,nd->bl.id,0);
 
-		sd->status.faction_id = 0;
-		faction_update_data(sd);
+		// sd->status.faction_id = 0; this is done in the function below
+		faction_leave(sd);
 
 		sd->respawn_tid = add_timer(tick+500, pc_respawn_timer, sd->bl.id, 0);
 		return 1;

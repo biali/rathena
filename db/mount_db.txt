@@ -1,5 +1,5 @@
 // Complete Mount System [Biali]
-// ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,speed_bonus,Cast Time{ Aura: #1 #2 #3 }
+// ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,speed_bonus,Cast Time, hateffect, summon_item, script
 // * ID: mount ID
 // * Mount Name: Mount Name
 // * Max_hp : Mount's maximum hp
@@ -11,15 +11,15 @@
 //		5 = Poison, 6 = Holy, 7 = Dark, 8 = Spirit, 9 = Undead
 // * Element lvl: 1 ~ 4
 // * Size: 1 - small, 0 - normal, 2 - big
-// * speed : the amount to be reduced from the standard walk speed
+// * speed : the amount to be subtracted from the standard walk speed
 // * cast time : the amount in seconds to cast mount
-// * { Aura } : see doc/effect_list.txt
+// * hateffect / aura : see doc/effect_list.txt
 // * item : item used to summon the mount (we need this to feed id->isMount)
 // * { script } : Special passive skill the mount has
 
 
 // Mount ID: 1 - Default
-1,Default,12000,2,0,1,0,28,3,0,12622,{ bonus2 bAddEffWhenHit,Eff_Silence,0; }
-2,Journeymen Ride,18000,2,0,1,0,28,4,209,30600,{ bonus2 bAddEffWhenHit,Eff_Freeze,3000; }
-3,Master Ride,25000,2,0,1,0,30,5,210,30601,{ bonus2 bAddEffWhenHit,Eff_Silence,3000; }
-4,Collector Ride,25000,2,0,1,0,25,5,211,30602,{ bonus2 bAddEffWhenHit,Eff_Stone,3000; }
+1,Default,          12000,2,0,1,0,28,1,0,12622,{ bonus2 bAddEffWhenHit,Eff_Silence,0; }
+2,Journeymen Ride,  18000,2,0,1,0,28,3,209,30600,{ bonus2 bAddEffWhenHit,Eff_Freeze,3000; }
+3,Master Ride,      25000,2,0,1,0,30,3,210,30601,{ bonus2 bAddEffWhenHit,Eff_Silence,3000; }
+4,Collector Ride,   25000,2,0,1,0,25,3,211,30602,{ bonus2 bAddEffWhenHit,Eff_Stone,3000; }

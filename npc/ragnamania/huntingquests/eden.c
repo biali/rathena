@@ -1,6 +1,22 @@
 
 -	script	#HuntingQuests	-1,{
     function eraseQuests; function checkQuests; function redirect;
+
+    if(checkquest(64503) == 1) {
+		mes .n$;
+		mes "Oh look who's here!";
+		mes "How are you doing?";
+		mes "Sophie said only good things about you!";
+		next;
+		mes .n$;
+		mes "So, you are you ready to start hunting?";
+		next;
+		mes .n$;
+		mes "Here, take these... they might be helpful.";
+		getitem 569,300; //Novice_Potion
+		completequest 64503;
+		next;
+	}
     eraseQuests();
     // Looking for completed quests (2). One must collect rewards before taking another quest
     if((.@i = checkQuests(2)) > 0) {
@@ -354,6 +370,9 @@ L_Quests_7:
                     mes "See you later!";
                     close;
             }
+        case 8:
+            end;
+            break;
     }
 
 L_Quest:
@@ -394,7 +413,7 @@ L_Quest:
         mes "Mission '"+ getarg(1) +"'";
         mes "Base Exp: '"+ getarg(2,0) +"'";
         mes "Job Exp: '"+ getarg(3,0) +"'";
-        mes getitemname($@HUNTING_MEDAL) + ": '" + "1x'";
+        mes getitemname(HUNTER_BOX) + ": '" + "1x'";
         for ( .@i = 4; .@i < getargcount(); .@i++ )
             mes getarg(.@i);
 
@@ -414,7 +433,7 @@ L_Quest:
     end; 
 
 OnInit:
-    .n$ = "^FF0000[ Hunting Quests ]^000000";
+    .n$ = "^FF0000[ Agent Kafra ]^000000";
     setarray .quests_1[0],11114,11115,11116,11117,11118,11119,11120,11121,11122,11123; // 11-25
     setarray .quests_2[0],8266,8267,8268,8269,8270; // 26-40
     setarray .quests_3[0],12072,12073,12074,12075,12076,12077,12078,12079,12080,12081,12082,12083,12084,12085,12086,12087; // 41-55
@@ -469,16 +488,16 @@ OnInit:
 }
 
 // Duplicates
-prontera,164,169,3	duplicate(#HuntingQuests)	Hunting Quests#prt	859
-geffen,111,65,6	duplicate(#HuntingQuests)	Hunting Quests#gef	859
-morocc,183,95,3	duplicate(#HuntingQuests)	Hunting Quests#moc	859
-payon,164,87,7	duplicate(#HuntingQuests)	Hunting Quests#pay	859
-aldebaran,131,103,5	duplicate(#HuntingQuests)	Hunting Quests#ald	859
-alberta,128,45,2	duplicate(#HuntingQuests)	Hunting Quests#alb	859
-yuno,175,75,4	duplicate(#HuntingQuests)	Hunting Quests#yun	859
-hugel,100,119,1	duplicate(#HuntingQuests)	Hunting Quests#hug	859
-lighthalzen,142,112,4	duplicate(#HuntingQuests)	Hunting Quests#lhz	859
-rachel,129,145,5	duplicate(#HuntingQuests)	Hunting Quests#rac	859
-brasilis,180,221,7	duplicate(#HuntingQuests)	Hunting Quests#bra	859
-louyang,228,99,3	duplicate(#HuntingQuests)	Hunting Quests#lou	859
-ayothaya,221,191,4	duplicate(#HuntingQuests)	Hunting Quests#ayo	859
+prontera,164,169,3	duplicate(#HuntingQuests)	Agent Kafra#prt	859
+geffen,111,65,6	duplicate(#HuntingQuests)	Agent Kafra#gef	859
+morocc,183,95,3	duplicate(#HuntingQuests)	Agent Kafra#moc	859
+payon,164,87,7	duplicate(#HuntingQuests)	Agent Kafra#pay	859
+aldebaran,131,103,5	duplicate(#HuntingQuests)	Agent Kafra#ald	859
+alberta,128,45,2	duplicate(#HuntingQuests)	Agent Kafra#alb	859
+yuno,175,75,4	duplicate(#HuntingQuests)	Agent Kafra#yun	859
+hugel,100,119,1	duplicate(#HuntingQuests)	Agent Kafra#hug	859
+lighthalzen,142,112,4	duplicate(#HuntingQuests)	Agent Kafra#lhz	859
+rachel,129,145,5	duplicate(#HuntingQuests)	Agent Kafra#rac	859
+brasilis,180,221,7	duplicate(#HuntingQuests)	Agent Kafra#bra	859
+louyang,228,99,3	duplicate(#HuntingQuests)	Agent Kafra#lou	859
+ayothaya,221,191,4	duplicate(#HuntingQuests)	Agent Kafra#ayo	859

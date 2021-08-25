@@ -573,9 +573,13 @@ struct Battle_Config
 	int fvf_in_all_maps;
 	int faction_disc_min;
 	int faction_disc_max;
+	int faction_change_name;
 
 	// biali monster of the day
 	int motd_exp_increase;
+
+	// biali hardcap for equipments drop
+	int hardcap;
 
 	// Global Damage adjustment. [Cydh]
 	int atk_adjustment_map;

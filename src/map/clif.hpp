@@ -43,6 +43,7 @@ struct mail_message;
 struct achievement;
 struct guild_log_entry;
 enum e_guild_storage_log : uint16;
+enum e_master_storage_log : uint16;
 enum e_bg_queue_apply_ack : uint16;
 enum e_instance_notify : uint8;
 
@@ -1180,6 +1181,9 @@ void clif_attendence_response( struct map_session_data *sd, int32 data );
 void clif_weight_limit( struct map_session_data* sd );
 
 void clif_guild_storage_log( struct map_session_data* sd, std::vector<struct guild_log_entry>& log, enum e_guild_storage_log result );
+
+//biali master storage
+void clif_master_storage_log( struct map_session_data* sd, std::vector<struct master_log_entry>& log, enum e_master_storage_log result );
 
 void clif_camerainfo( struct map_session_data* sd, bool show, float range = 0.0f, float rotation = 0.0f, float latitude = 0.0f );
 

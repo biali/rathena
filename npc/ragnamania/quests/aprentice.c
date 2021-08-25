@@ -297,13 +297,13 @@ new_1-2,115,115,4	script	Lilian#new	4_F_KAFRA1,{
 				mes "At the present, you can activate/extend your ^f5b041Premium^000000 Account by 1, 10 days or 30 days";
 				next;
 				mes .n$;
-				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname($@VOTER_CERTIFICATE)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
+				mes "You can also activate/extend your ^f5b041Premium^000000 Account using "+getitemname(VOTE_CERTIFICATE)+", a special coin you get ingame by playing Hunting Quests among a bunch of other things.";
 				next;
 				mes .n$;
 				mes "You can find more about Hunting Quests talking to my colleague, Sophie.";
 				next;
 				mes .n$;
-				mes "As I was saying... With the Mania$ or the "+getitemname($@VOTER_CERTIFICATE)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
+				mes "As I was saying... With the Mania$ or the "+getitemname(VOTE_CERTIFICATE)+" in hand, you can activate/extend your ^f5b041Premium^000000 Account via our representative in (the north of) Prontera or in your "+getitemname(24501)+".";
 				next;
 				mes .n$;
 				mes "Ah! I almost forgot!!";
@@ -348,16 +348,13 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes .n$;
 	mes "I promise I will keep this as simple as it can be.";
 	mes " ";
-	mes "So, "+getitemname($@HUNTING_MEDAL)+", right?";
+	mes "So, "+getitemname(HUNTER_BOX)+", right?";
 	next;
 	mes .n$;
-	mes "Here at Ragnamania Enliven these coins are worth quite a lot of zeny!";
+	mes "Here at Ragnamania Enliven these are very valuable!";
 	next;
 	mes .n$;
-	mes "And that is because there is just so much you can do with them!";
-	next;
-	mes .n$;
-	mes "Well, and also because in order to get them you will need to get your hands dirty.";
+	mes "That is because in order to get them you will need to get your hands dirty.";
 	next;
 	mes .n$;
 	mes "I mean, virtually of course! With these rumours out there about that virus and stuff, did you hear that?";
@@ -369,23 +366,10 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "Oh, where were we?";
 	mes " ";
 	sleep2 1000;
-	mes "Ah! Of Course! "+getitemname($@HUNTING_MEDAL)+"s!!";
+	mes "Ah! Of Course! "+getitemname(HUNTER_BOX)+"es!!";
 	next;
 	mes .n$;
-	mes "So, one can visit my shop in any major town and get all the items from the ^FF0000Mania Shop^000000 not with Mania$ but with..."+getitemname($@HUNTING_MEDAL)+"!! How awesome is that?";
-	mes " ";
-	mes "^0000FF* That excludes Costume items *^000000";
-	next;
-	mes .n$;
-	mes "Ah! and you can also use them to convert ordinary hats in costumes!!";
-	next;
-	mes .n$;
-	mes "Uh there is just so much you can do with them, I can't remember them all, sorry!";
-	mes " ";
-	mes "^0000FFVisit our website for more info on everything you can get with "+getitemname($@HUNTING_MEDAL)+"s.^000000";
-	next;
-	mes .n$;
-	mes "Now you must be saying to yourself:";
+	mes "You must be saying to yourself:";
 	mes "Ok Sophie... but how on Earth do I get these precious, precious coins?";
 	mes "hi hi hi ~*";
 	next;
@@ -428,7 +412,7 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "You get lots of EXP,";
 	mes "and of course:";
 	mes "shining, precious";
-	mes "^FFA500"+getitemname($@HUNTING_MEDAL)+"s^000000.";
+	mes "^FFA500"+getitemname(HUNTER_BOX)+"es^000000.";
 	next;
 	mes .n$;
 	mes "That is all I know... Now I guess you may want to hear more about the PvP Events... please refer to my friend accross the room...";
@@ -446,8 +430,6 @@ new_1-2,120,101,3	script	Sophie#new	894,{
 	mes "I told you this was gonna be brief!";
 	mes "All the best in your journey!";
 	mes "And see you in around!";
-	if(checkquest(64500) < 0 )
-		setquest 64500;
 	if(checkquest(64503) < 0 )
 		setquest 64503;
 

@@ -266,6 +266,12 @@ turbo_e_4	mapflag	fvf	off
 turbo_e_8	mapflag	fvf	off
 turbo_e_16	mapflag	fvf	off
 
+//Gefenia - is full pk
+gefenia01	mapflag	fvf	off
+gefenia02	mapflag	fvf	off
+gefenia03	mapflag	fvf	off
+gefenia04	mapflag	fvf	off
+
 //Ragnamania
 
 new_zone01	mapflag	fvf	off

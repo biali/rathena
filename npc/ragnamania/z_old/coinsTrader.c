@@ -3,7 +3,7 @@ prontera,145,200,4	script	Negociador Ambulante#CoinsTrader	733,{
 	mes "Cotacao do dia:";
 	mes "Hunting Coin 1x : " +F_InsertComma(.CustoHuntingCoin)+ " Zeny";
 
-	mes "Quantas "+ getitemname($@HUNTING_MEDAL) +" voce desejaria?";
+	mes "Quantas "+ getitemname(HUNTING_MEDAL) +" voce desejaria?";
 	next;
 	mes .n$;
 	input(.@qt);
@@ -24,7 +24,7 @@ prontera,145,200,4	script	Negociador Ambulante#CoinsTrader	733,{
 			close;
 		}
 		set Zeny, Zeny - .@cost;
-		getitem $@HUNTING_MEDAL, .@qt;
+		getitem HUNTING_MEDAL, .@qt;
 		mes "Prontinho, muito obrigado.";
 		close;
 	}

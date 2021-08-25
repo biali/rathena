@@ -1,3 +1,9 @@
+function	script	F_CheckVP	{
+	query_sql("SELECT SUM(value) AS `value` FROM `acc_reg_num` WHERE `key` = '#VP_VOTEPOINTS' AND `account_id` IN (SELECT `account_id` FROM `login` WHERE `master_id` = " + getcharid(7)+ " ) ",.@votes);
+	if(!.@votes) 
+		.@votes = 0;
+	return .@votes;
+}
 
 function	script	F_getsigneditem	{
 	.@id = getarg(0,0);

@@ -10372,6 +10372,20 @@ BUILDIN_FUNC(guildopenstorage)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+//biali master storage
+BUILDIN_FUNC(masteropenstorage)
+{
+	TBL_PC* sd;
+	int ret;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	ret = storage_master_storageopen(sd);
+	script_pushint(st,ret);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(guildopenstorage_log){
 #if PACKETVER < 20140205
 	ShowError( "buildin_guildopenstorage_log: This command requires PACKETVER 2014-02-05 or newer.\n" );
@@ -11642,7 +11656,7 @@ BUILDIN_FUNC(checknonearnpc)
 		range = script_getnum(st,3);
 	else {
 		script_pushint(st,-1);
-		ShowError("builtin_checknonearnpc : No Range provided \m");
+		ShowError("builtin_checknonearnpc : No Range provided \n");
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -22336,9 +22350,6 @@ BUILDIN_FUNC(setmounting) {
 
 	if( !script_rid2sd(sd) )
 		return SCRIPT_CMD_SUCCESS;
-	
-	// if (!script_charid2sd(2,sd))
-	// 	return SCRIPT_CMD_FAILURE;
 
 	if( sd->sc.option&(OPTION_WUGRIDER|OPTION_RIDING|OPTION_DRAGON|OPTION_MADOGEAR) ) {
 		clif_msg(sd, NEED_REINS_OF_MOUNT);
@@ -22351,9 +22362,9 @@ BUILDIN_FUNC(setmounting) {
 			mount_desmount(sd,false);
 		} else { 
 			if (!script_hasdata(st,2))
-				mdb = mount_search(DEFAULT_MOUNT);
+				mdb = mountdb_exists(DEFAULT_MOUNT);
 			else
-				mdb = mount_search(script_getnum(st,2));
+				mdb = mountdb_exists(script_getnum(st,2));
 
 			mount_setride(sd,mdb);
 		}
@@ -22370,7 +22381,7 @@ BUILDIN_FUNC(mountinfo)
 
 	mount_id = script_getnum(st,2);
 
-	if( (mdb = mount_search(mount_id)) == NULL )
+	if( (mdb = mountdb_exists(mount_id)) == NULL )
 	{
 		ShowWarning("mountinfo: Invalid mount id %d \n",mount_id);
 		return 0;
@@ -22382,14 +22393,14 @@ BUILDIN_FUNC(mountinfo)
 	{
 		//ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,speed_bonus,Cast Time{ Aura: #1 #2 #3 }
 		default: script_pushint(st,mdb->id);			break;	// mount's id
-		case 1: script_pushstrcopy(st,mdb->name);		break;	// mount's name
+		case 1: script_pushstrcopy(st,mdb->name.c_str());		break;	// mount's name
 		case 2: script_pushint(st,mdb->max_hp);			break;	// maximum hp
 		case 3: script_pushint(st,mdb->race);			break;	// Race
 		case 4: script_pushint(st,mdb->ele);			break;	// Element
 		case 5: script_pushint(st,mdb->ele_lvl);		break;	// Element lvl
 		case 6: script_pushint(st,mdb->size);			break;	// Size
-		case 7: script_pushint(st,mdb->skill_id);		break;	// Skill Level
-		case 8: script_pushint(st,mdb->skill_lv);		break;	// Skill Id
+		// case 7: script_pushint(st,mdb->jobs);		break;	// Skill Level
+		// case 8: script_pushint(st,mdb->classes);		break;	// Skill Id
 		case 9: script_pushint(st,mdb->speed_bonus);	break;	// Speed
 		case 10: script_pushint(st,mdb->cast_time);		break;	// cast time
 		case 11: script_pushint(st,mdb->aura);			break;	// Aura ID
@@ -25980,7 +25991,7 @@ BUILDIN_FUNC(setfaction)
 		{
 			ShowError("setfaction: No such character (char_id=%d).\n", char_id);
 			script_pushnil(st);
-			return 1;
+			return SCRIPT_CMD_SUCCESS;
 		}
 	} else {
 		if (!script_rid2sd(sd))
@@ -25990,7 +26001,27 @@ BUILDIN_FUNC(setfaction)
 	faction_id = script_getnum(st,2);
 	if(faction_id <= 0  || (fdb = faction_search(faction_id)) == NULL) {
 		ShowError("setfaction: Invalid faction id %d \n",faction_id);
+		script_pushnil(st);
 		return SCRIPT_CMD_SUCCESS;
+	}
+
+	// party must be composed only by people with the same faction
+	// confirm if this player is a party leader
+	struct party_data *p;
+	int i;
+
+	if( ( p = party_search(sd->status.party_id) ) != NULL) {
+		if( p->party.count > 1) {
+			for(i=0; i < MAX_PARTY; i++) {
+				if(p->party.member[i].online && p->data[i].sd->status.faction_id == faction_id)
+					continue;
+				else {
+					clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Some players of the Party are offline or enlisted with a different city.", false, SELF);
+					script_pushnil(st);
+					return SCRIPT_CMD_SUCCESS;
+				} 
+			}
+		}
 	}
 
 	sd->status.faction_id = faction_id;
@@ -26000,8 +26031,8 @@ BUILDIN_FUNC(setfaction)
 		pc_setpos(sd, sd->mapindex, sd->bl.x, sd->bl.y, CLR_RESPAWN);
 
 	faction_spawn(sd);
-
-	return 0;
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
 }
 
 BUILDIN_FUNC(factionleave) 
@@ -26168,7 +26199,49 @@ BUILDIN_FUNC(getreputation)
 
 	script_pushint(st, sd->status.rep[i].value);
 	return SCRIPT_CMD_SUCCESS;
+}
 
+BUILDIN_FUNC(getreputationpoints)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+
+	script_pushint(st, sd->status.rep[i].points);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(takereputationpoints)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if(!script_hasdata(st,3)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+	int q = script_getnum(st,3);
+
+	sd->status.rep[i].points -= q;
+	script_pushint(st, sd->status.rep[i].points);
+	return SCRIPT_CMD_SUCCESS;
 }
 
 /**
@@ -26844,6 +26917,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(gettimestr,"si?"),
 	BUILDIN_DEF(openstorage,""),
 	BUILDIN_DEF(guildopenstorage,""),
+	BUILDIN_DEF(masteropenstorage,""),
 	BUILDIN_DEF(guildopenstorage_log,"?"),
 	BUILDIN_DEF(openlootbag,""), // biali deadbody
 	BUILDIN_DEF(guild_has_permission,"i?"),
@@ -27255,6 +27329,8 @@ struct script_function buildin_func[] = {
 
 	//Biali reputation system
 	BUILDIN_DEF(getreputation,"i"),
+	BUILDIN_DEF(getreputationpoints,"i"),
+	BUILDIN_DEF(takereputationpoints,"ii"),
 
 	// Biali mount rework
 	BUILDIN_DEF(mountinfo, "ii"),

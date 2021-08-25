@@ -19,4 +19,9 @@ bool inter_storage_parse_frommap(int fd);
 
 bool guild_storage_tosql(int guild_id, struct s_storage *p);
 
+// biali master storage
+// bool mapif_parse_SaveMasterStorage(int fd);
+void mapif_parse_LoadMasterStorage(int fd);
+bool master_storage_tosql(int master_id, struct s_storage* p);
+
 #endif /* INT_STORAGE_HPP */
