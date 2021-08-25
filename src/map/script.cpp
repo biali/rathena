@@ -11656,7 +11656,7 @@ BUILDIN_FUNC(checknonearnpc)
 		range = script_getnum(st,3);
 	else {
 		script_pushint(st,-1);
-		ShowError("builtin_checknonearnpc : No Range provided \m");
+		ShowError("builtin_checknonearnpc : No Range provided \n");
 		return SCRIPT_CMD_SUCCESS;
 	}
 

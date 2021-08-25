@@ -22,6 +22,7 @@
 #include "mapreg.hpp"
 #include "mob.hpp"
 #include "npc.hpp"
+#include "party.hpp" //biali
 #include "pc.hpp"
 #include "pet.hpp"
 #include "skill.hpp"
@@ -385,10 +386,11 @@ void faction_update_data(struct map_session_data *sd) {
 		sd->guild_emblem_id = factions[sd->status.faction_id].emblem_id;
 		safestrncpy(sd->faction.name, sd->faction.g.name, NAME_LENGTH);
 		safestrncpy(sd->faction.pl_name, sd->faction.g.position[1].name, NAME_LENGTH);
-	} else {
-		//someone has left the faction
-		faction_leave(sd);
-	}
+	} 
+	// else {
+	// 	//someone has left the faction
+	// 	faction_leave(sd);
+	// }
 
 	return;
 }
@@ -401,6 +403,14 @@ void faction_leave( struct map_session_data *sd) {
 		return;
 
 	struct faction_data *fdb = faction_search(sd->status.faction_id);
+
+	// if(sd->status.party_id){
+	// 	struct party_data* p = party_search(sd->status.party_id);
+	// 	intif_party_leave(p->party.party_id,sd->status.account_id, sd->status.char_id, sd->status.name ,PARTY_MEMBER_WITHDRAW_EXPEL);
+	// 	sd->status.party_id = 0;
+	// }
+
+	party_leave(sd);
 
 	if(battle_config.faction_change_name)
 		clif_name_area(&sd->bl);
@@ -424,10 +434,11 @@ void faction_leave( struct map_session_data *sd) {
 			clif_guild_memberlist(sd);
 			clif_guild_skillinfo(sd);
 			clif_guild_emblem(sd, g);
-		} else {
-			//else clean all the visuals related to guild
-			clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Please log out to reload the visual information of your char.", false, SELF);
-		}
+		} 
+		// else {
+		// 	//else clean all the visuals related to guild
+		// 	clif_messagecolor(&sd->bl, color_table[COLOR_RED], "Please log out to reload the visual information of your char.", false, SELF);
+		// }
 	}
 }
 
