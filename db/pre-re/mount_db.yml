@@ -46,7 +46,7 @@ Body:
       Upper: true
   - Id: 2
     Name: Frosty Mount
-    MaxHP: 10000
+    MaxHP: 6000
     Race: 2
     Element: 1
     ElementLvl: 1
@@ -57,8 +57,6 @@ Body:
     SummonItem: FrostyMountLeash
     Script: |
       bonus2 bAddEffWhenHit,Eff_Freeze,3000;
-      bonus3 bAutoSpell,"WZ_METEOR",3,100;
-      bonus3 bAutoSpell,"WZ_FROSTNOVA",5,100;
   - Id: 3
     Name: Master Ride
     MaxHP: 12000
@@ -107,3 +105,14 @@ Body:
     Cast: 2
     Aura: 0
     SummonItem: PrestigiousRide
+  - Id: 7
+    Name: Advanced Ride
+    MaxHP: 2000
+    Race: 2
+    Element: 0
+    ElementLvl: 1
+    Size: 0
+    SpeedBonus: 25
+    Cast: 2
+    Aura: 0
+    SummonItem: AdvancedRide

@@ -13,7 +13,7 @@ Oninit:
 	end;
 }
 
--	shop	mount_shop	-1,12622:50,30603:600,30604:3000
+-	shop	mount_shop	-1,12622:50,30603:600,30604:3000,30605:10000
 
 rent_mb,143,42,3	duplicate(Iuri)	Iuri#rent	964
 prontera,218,223,4	duplicate(Iuri)	Iuri#prt	964

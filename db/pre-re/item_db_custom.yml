@@ -1704,10 +1704,15 @@ Body:
       isMount: true
     Script: >
       if(!ismounting()) {
-        .@cast = mountinfo(2,10);
-        progressbar("0xfffff",.@cast);
-      } 
-      setmounting(2);
+        if(eaclass()&EAJL_UPPER) {
+          .@cast = mountinfo(2,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(2);
+        } else {
+          dispbottom "This mount is exclusive for Rebirth/Advanced classes.";
+        }
+      } else
+        setmounting(2);
   - Id: 30601
     AegisName: MasterRide
     Name: Master Ride
@@ -1746,7 +1751,7 @@ Body:
         if(eaclass()&EAJL_2) {
           dispbottom "This mount is exclusive for 1st classes only.";
         } else {
-          .@cast = mountinfo(1,10); 
+          .@cast = mountinfo(5,10); 
           progressbar("0xfffff",.@cast);
           setmounting(5);
         }
@@ -1762,7 +1767,7 @@ Body:
     Script: |
       if(!ismounting()) {
         if(eaclass()&EAJL_UPPER) {
-          .@cast = mountinfo(1,10); 
+          .@cast = mountinfo(6,10); 
           progressbar("0xfffff",.@cast);
           setmounting(6);
         } else {
@@ -1770,6 +1775,24 @@ Body:
         }
       } else
         setmounting(6);
+  - Id: 30605
+    AegisName: AdvancedRide
+    Name: Advanced Ride
+    Type: Delayconsume
+    Weight: 200
+    Flags:
+      isMount: true
+    Script: |
+      if(!ismounting()) {
+        if(eaclass()&EAJL_2) {
+          .@cast = mountinfo(7,10); 
+          progressbar("0xfffff",.@cast);
+          setmounting(7);
+        } else {
+          dispbottom "This mount is exclusive for second classes.";
+        }
+      } else
+        setmounting(7);
   - Id: 5538
     AegisName: Tucan_Hat
     Name: Tucan Hat

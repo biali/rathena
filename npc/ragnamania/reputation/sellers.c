@@ -10,7 +10,6 @@
         case 3:
         case 4:
 			.@rep = callfunc("F_rep",getcharid(6));
-			debugmes ""+.@rep;
 			if( .@rep > 0 ) {
 				for(.@i=0;.@i<getarraysize(getd("$@unc_" + getcharid(6)+strnpcinfo(2)));.@i=.@i+3 ) {
 					@default$ += ",";

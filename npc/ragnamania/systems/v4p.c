@@ -10,7 +10,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 	mes "How can I help you today?";
 	next;
 	
-	switch(select("Redeem Vote Points:Extend the Event:Collect my Rewards")) {
+	switch(select("Redeem Vote Points:Extend the Event:Collect my Rewards:Open Shop")) {
 		case 1:
 			.@votes = CheckPoints();
 			if( .@votes <= 0) {
@@ -157,6 +157,13 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 				close;
 			}
 			break;
+		case 4:
+			mes .n$;
+			mes "Oh, sure... I sell only the best stuff in town.";
+			close2;
+			callshop "certificates_shop",1;
+			end;
+			
 	}
 	end;
 
@@ -293,3 +300,6 @@ OnInit:
 		return;
 	}
 }
+
+
+-	itemshop	certificates_shop	-1,30101,12208:1,30200:1,13582:4,12103:7,30600:20
