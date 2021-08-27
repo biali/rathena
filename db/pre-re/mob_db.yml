@@ -81,5 +81,3 @@ Footer:
   Imports:
   - Path: db/pre-re/mob_db_prere.yml
     Mode: Prerenewal
-  - Path: db/pre-re/mob_db_custom.yml
-    Mode: Prerenewal

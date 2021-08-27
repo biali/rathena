@@ -4209,6 +4209,8 @@ void npc_world_drops_sub(int mob_id) {
 						++mob_data::c_ac;
 					}
 				}
+
+				//ShowWarning("IG_RM_001,%d,100,1,1,0	// %s\n",id->nameid,id->name.c_str());
 			} else if(id->type == 5) {
 				switch(id->subtype) {
 					case W_STAFF:	case W_2HSTAFF:
@@ -4247,7 +4249,11 @@ void npc_world_drops_sub(int mob_id) {
 						}
 						break;
 				}
-			}
+				//ShowWarning("IG_RM_002,%d,100,1,1,0	// %s\n",id->nameid,id->name.c_str());
+			} 
+			// else if(id->type == 3) {
+			// 	ShowWarning("IG_RM_003,%d,100,1,1,0	// %s\n",id->nameid,id->name.c_str());
+			// }
 		}
 	}
 

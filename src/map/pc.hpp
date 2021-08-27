@@ -321,6 +321,7 @@ struct map_session_data {
 		unsigned short autoloot;
 		t_itemid autolootid[AUTOLOOTITEM_SIZE]; // [Zephyrus]
 		unsigned short autoloottype;
+		unsigned int spb : 1; // @spb / @partybuff
 		unsigned int autolooting : 1; //performance-saver, autolooting state for @alootid
 		unsigned int autobonus; //flag to indicate if an autobonus is activated. [Inkfish]
 		unsigned int gmaster_flag : 1;

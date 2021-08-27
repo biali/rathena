@@ -42,7 +42,7 @@ function	script	F_Premmy	{
 	.rcor$ = "^ff0000[*]^000000 ";									// Cancel button symbol;
 	setarray .vip_day,30,10,1;										// Number of days that can be purchased;
 	setarray .vip_cashpoint,20000,8000,2000;						// Price in #CASHPOINTS;
-	setarray .vip_tradecoin,60,40,2;								// Price in Voting Certificates
+	setarray .vip_tradecoin,56,18,2;								// Price in Voting Certificates
 	.map$ = "sala_premmy";											// Premmy Room Map;
 	setarray .cord,35,36;
 	.vip_group = getbattleflag("vip_group");

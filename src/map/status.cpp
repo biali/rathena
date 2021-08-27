@@ -33,6 +33,7 @@
 #include "mob.hpp"
 #include "mount.hpp"
 #include "npc.hpp"
+#include "party.hpp"
 #include "path.hpp"
 #include "pc.hpp"
 #include "pc_groups.hpp"
@@ -12872,6 +12873,14 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 	if( opt_flag&2 && sd && !sd->npc_ontouch_.empty() )
 		npc_touchnext_areanpc(sd,false); // Run OnTouch_ on next char in range
 
+	if( sd && sd->status.party_id && (
+		type == SC_BLESSING || type == SC_INCREASEAGI || type == SC_CP_WEAPON || type == SC_CP_SHIELD ||
+		type == SC_CP_ARMOR || type == SC_CP_HELM || type == SC_SPIRIT || type == SC_DEVOTION )
+		) {
+		struct party_data *p = party_search(sd->status.party_id);
+		clif_party_info(p, NULL);
+	}
+
 	return 1;
 }
 
@@ -13953,6 +13962,14 @@ int status_change_end_(struct block_list* bl, enum sc_type type, int tid, const 
 
 	if(opt_flag&2 && sd && !sd->state.warping && map_getcell(bl->m,bl->x,bl->y,CELL_CHKNPC))
 		npc_touch_area_allnpc(sd,bl->m,bl->x,bl->y); // Trigger on-touch event.
+
+	if( sd && sd->status.party_id && (
+		type == SC_BLESSING || type == SC_INCREASEAGI || type == SC_CP_WEAPON || type == SC_CP_SHIELD ||
+		type == SC_CP_ARMOR || type == SC_CP_HELM || type == SC_SPIRIT || type == SC_DEVOTION )
+		) {
+		struct party_data *p = party_search(sd->status.party_id);
+		clif_party_info(p, NULL);
+	}
 
 	ers_free(sc_data_ers, sce);
 	return 1;

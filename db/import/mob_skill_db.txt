@@ -135,3 +135,41 @@
 //3014,Halloween Whisper@NPC_EMOTION,chase,197,1,200,0,5000,yes,self,always,0,19,0x81,,,,,
 
 // Here you can place your custom mob skills
+
+//Hellgates
+
+25224,Spicy Dragon@NPC_SELFDESTRUCTION,idle,173,30,10000,5000,0,no,self,myhpltmaxrate,20,,,,,,,
+25224,Spicy Dragon@NPC_SELFDESTRUCTION,attack,173,30,10000,5000,0,no,self,myhpltmaxrate,20,,,,,,,
+25224,Spicy Dragon@NPC_SELFDESTRUCTION,chase,173,30,10000,5000,0,no,self,myhpltmaxrate,20,,,,,,,
+25224,Spicy Dragon@NPC_FIREBREATH,chase,654,20,10000,500,2000,no,target,always,0,,,,,,,
+25224,Spicy Dragon@NPC_FIREBREATH,attack,654,3,2000,1500,15000,no,target,always,0,,,,,,,
+25224,Spicy Dragon@MG_FIREBALL,chase,17,10,10000,500,3000,no,target,always,0,,,,,,,
+25224,Spicy Dragon@MG_FIREBALL,attack,17,3,5000,500,10000,no,target,always,0,,,,,,,
+25224,Spicy Dragon@WZ_METEOR,attack,83,3,5000,2000,10000,no,target,always,0,,,,,,,
+
+25222,Soul Taker@NPC_FIREBREATH,chase,654,10,2000,1500,15000,no,target,always,0,,,,,,,
+25222,Soul Taker@NPC_FIREBREATH,attack,654,10,2000,1500,15000,no,target,always,0,,,,,,,
+25222,Soul Taker@MG_FIREBALL,idle,17,10,10000,500,10000,no,target,always,0,,,,,,,
+25222,Soul Taker@MG_FIREBALL,chase,17,10,10000,500,10000,no,target,always,0,,,,,,,
+25222,Soul Taker@MG_FIREBALL,attack,17,5,5000,500,10000,no,target,always,0,,,,,,,
+25222,Soul Taker@WZ_SIGHTRASHER,attack,81,10,1000,0,20000,yes,self,always,0,,,,,,,
+25222,Soul Taker@WZ_METEOR,chase,83,1,5000,1000,10000,no,target,always,0,,,,,,,
+25222,Soul Taker@WZ_METEOR,attack,83,1,5000,1000,10000,no,target,always,0,,,,,,,
+25100,Addax@MG_FIREBALL,idle,17,5,10000,0,5000,yes,target,always,0,,,,,,,
+25100,Addax@MG_FIREBALL,chase,17,5,10000,0,5000,yes,target,always,0,,,,,,,
+25100,Addax@CR_REFLECTSHIELD,attack,252,3,1000,0,200000,no,self,always,0,,,,,,,
+25100,Addax@NPC_FIREATTACK,attack,186,5,2000,1000,200000,no,target,always,0,,,,,,,
+25100,Addax@SM_MAGNUM,attack,7,7,1000,0,10000,yes,self,attackpcge,2,,,,,,,
+25100,Addax@NPC_WIDEBLEEDING,attack,665,2,10000,500,100000,no,self,myhpltmaxrate,20,,,,,,,
+25136,Fire Moth@MG_FIREBOLT,attack,19,10,3000,1000,10000,no,target,always,0,,,,,,,
+25136,Fire Moth@MG_FIREBALL,attack,17,10,3000,500,10000,no,target,always,0,,,,,,,
+25136,Fire Moth@MG_FIREBALL,chase,17,10,3000,500,10000,no,target,always,0,,,,,,,
+25136,Fire Moth@NPC_FIREATTACK,attack,186,5,1000,0,5000,yes,target,always,0,,,,,,,
+25136,Fire Moth@MG_SIGHT,idle,10,1,500,0,5000,yes,self,always,0,,,,,,,
+25136,Fire Moth@WZ_SIGHTRASHER,attack,81,5,3000,0,10000,yes,self,always,0,,,,,,,
+
+25000,Lord of the Fallen@WZ_METEOR,attack,83,3,5000,500,2000,no,target,always,0,,,,,,,
+25000,Lord of the Fallen@NPC_FIREBREATH,chase,654,20,10000,500,2000,no,target,always,0,,,,,,,
+25000,Lord of the Fallen@NPC_FIREATTACK,attack,186,5,1000,0,5000,yes,target,always,0,,,,,,,
+25000,Lord of the Fallen@MG_SIGHT,idle,10,1,500,0,5000,yes,self,always,0,,,,,,,
+25000,Lord of the Fallen@MG_FIREBALL,attack,17,5,5000,500,10000,no,target,always,0,,,,,,,

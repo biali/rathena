@@ -47,7 +47,13 @@
 // getd("$@"+strnpcinfo(4)+"Guardian") = 1 : Guardian is Down, Warp is Up
 // getd("$@"+strnpcinfo(4)+"Guardian") = 0 : The Guardian is Down and Warp is also down. Waiting respawn of the Guardian
 -	script	#hg_guardian	-1,{
+	function ValidateEntry;
 	if(getd("$@"+strnpcinfo(4)+"Guardian") == 1 ) {
+		if(.@m == 2 && ValidateEntry() == 0) {
+			dispbottom "You are undergeared to enter the Hell Gates. All slots must be occupied by a piece of equipment (expept head low, head mid and costumes)";
+			end;
+		}
+
 		if(getd("$@"+strnpcinfo(4)+"Party") == getcharid(1) && @hg_id > 0 && BaseLevel >= @HG_MIN_LEVEL) {
 			progressbar "0xff0000",5;
 			set getvariableofinstance('hg_party_count,@hg_id), getvariableofinstance('hg_party_count,@hg_id) + 1;
@@ -82,14 +88,14 @@
 	OnMinute55:
 		getmapxy(.@m$,.@x,.@y,BL_NPC);
 		if(getd("$@"+.@m$+"Guardian") < 2) {
-			monster .@m$,.@x,.@y,"Guardian",25238,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
+			monster .@m$,.@x,.@y,"Guardian",25224,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
 			set getd("$@"+.@m$+"Guardian"), 2;
 		}
 		end;
 	
 	OnGuardianDead:
 		if(getattachedrid() == 0) {
-			monster .@m$,.@x,.@y,"Guardian",25238,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
+			monster .@m$,.@x,.@y,"Guardian",25224,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
 			end;
 		}
 		initnpctimer;
@@ -123,6 +129,14 @@
 		set getd("$@"+strnpcinfo(4)+"Guardian"),0;
 		end;
 
+	function	ValidateEntry	{
+		for(.@i=0;.@i<10;.@i++) {
+			if(.@i == 4) continue; // head low
+			if(.@i == 5) continue; // head mid
+			if(getequipid(.@i) == -1) return 0;
+		}
+		return 1;
+	}
 	
 }
 
@@ -133,69 +147,69 @@ hell,1,1,1	script	hg_controller	-1,{
 	end;
 	
 OnInstanceInit:
-	mob(246,132,25003,"Infernal Imp");
-	mob(260,129,25003,"Infernal Imp");
-	mob(237,90,25003,"Infernal Imp");
-	mob(244,82,25003,"Infernal Imp");
-	mob(197,19,25003,"Infernal Imp");
-	mob(181,35,25003,"Infernal Imp");
-	mob(187,151,25003,"Infernal Imp");
-	mob(187,168,25003,"Infernal Imp");
-	mob(181,227,25003,"Infernal Imp");
-	mob(196,228,25003,"Infernal Imp");
-	mob(246,187,25003,"Infernal Imp");
-	mob(261,186,25003,"Infernal Imp");
-	mob(133,227,25003,"Infernal Imp");
-	mob(156,227,25003,"Infernal Imp");
-	mob(173,83,25003,"Infernal Imp");
-	mob(173,97,25003,"Infernal Imp");
-	mob(117,83,25003,"Infernal Imp");
-	mob(117,97,25003,"Infernal Imp");
-	mob(37,124,25003,"Infernal Imp");
-	mob(37,136,25003,"Infernal Imp");
-	mob(108,226,25003,"Infernal Imp");
-	mob(93,227,25003,"Infernal Imp");
-	mob(29,187,25003,"Infernal Imp");
-	mob(44,187,25003,"Infernal Imp");
-	mob(108,35,25003,"Infernal Imp");
-	mob(93,18,25003,"Infernal Imp");
+	mob(246,132,25136,"Infernal Imp");
+	mob(260,129,25136,"Infernal Imp");
+	mob(237,90,25136,"Infernal Imp");
+	mob(244,82,25136,"Infernal Imp");
+	mob(197,19,25136,"Infernal Imp");
+	mob(181,35,25136,"Infernal Imp");
+	mob(187,151,25136,"Infernal Imp");
+	mob(187,168,25136,"Infernal Imp");
+	mob(181,227,25136,"Infernal Imp");
+	mob(196,228,25136,"Infernal Imp");
+	mob(246,187,25136,"Infernal Imp");
+	mob(261,186,25136,"Infernal Imp");
+	mob(133,227,25136,"Infernal Imp");
+	mob(156,227,25136,"Infernal Imp");
+	mob(173,83,25136,"Infernal Imp");
+	mob(173,97,25136,"Infernal Imp");
+	mob(117,83,25136,"Infernal Imp");
+	mob(117,97,25136,"Infernal Imp");
+	mob(37,124,25136,"Infernal Imp");
+	mob(37,136,25136,"Infernal Imp");
+	mob(108,226,25136,"Infernal Imp");
+	mob(93,227,25136,"Infernal Imp");
+	mob(29,187,25136,"Infernal Imp");
+	mob(44,187,25136,"Infernal Imp");
+	mob(108,35,25136,"Infernal Imp");
+	mob(93,18,25136,"Infernal Imp");
 	
-	mob(244,65,25002,"Infernal Vulture");
-	mob(237,59,25002,"Infernal Vulture");
-	mob(232,18,25002,"Infernal Vulture");
-	mob(161,47,25002,"Infernal Vulture");
-	mob(145,66,25002,"Infernal Vulture");
-	mob(221,91,25002,"Infernal Vulture");
-	mob(212,82,25002,"Infernal Vulture");
-	mob(149,115,25002,"Infernal Vulture");
-	mob(140,115,25002,"Infernal Vulture");
-	mob(189,123,25002,"Infernal Vulture");
-	mob(180,114,25002,"Infernal Vulture");
-	mob(168,205,25002,"Infernal Vulture");
-	mob(212,249,25002,"Infernal Vulture");
-	mob(248,215,25002,"Infernal Vulture");
-	mob(141,208,25002,"Infernal Vulture");
-	mob(148,208,25002,"Infernal Vulture");
-	mob(119,250,25002,"Infernal Vulture");
-	mob(170,250,25002,"Infernal Vulture");
-	mob(93,100,25002,"Infernal Vulture");
-	mob(68,90,25002,"Infernal Vulture");
-	mob(77,82,25002,"Infernal Vulture");
-	mob(45,66,25002,"Infernal Vulture");
-	mob(53,59,25002,"Infernal Vulture");
-	mob(40,94,25002,"Infernal Vulture");
-	mob(122,205,25002,"Infernal Vulture");
-	mob(264,115,25002,"Infernal Vulture");
-	mob(76,250,25002,"Infernal Vulture");
-	mob(41,214,25002,"Infernal Vulture");
-	mob(128,46,25002,"Infernal Vulture");
-	mob(54,18,25002,"Infernal Vulture");
-	mob(199,99,25002,"Infernal Vulture");
+	mob(244,65,25222,"Infernal Vulture");
+	mob(237,59,25222,"Infernal Vulture");
+	mob(232,18,25222,"Infernal Vulture");
+	mob(161,47,25222,"Infernal Vulture");
+	mob(145,66,25222,"Infernal Vulture");
+	mob(221,91,25222,"Infernal Vulture");
+	mob(212,82,25222,"Infernal Vulture");
+	mob(149,115,25222,"Infernal Vulture");
+	mob(140,115,25222,"Infernal Vulture");
+	mob(189,123,25222,"Infernal Vulture");
+	mob(180,114,25222,"Infernal Vulture");
+	mob(168,205,25222,"Infernal Vulture");
+	mob(212,249,25222,"Infernal Vulture");
+	mob(248,215,25222,"Infernal Vulture");
+	mob(141,208,25222,"Infernal Vulture");
+	mob(148,208,25222,"Infernal Vulture");
+	mob(119,250,25222,"Infernal Vulture");
+	mob(170,250,25222,"Infernal Vulture");
+	mob(93,100,25222,"Infernal Vulture");
+	mob(68,90,25222,"Infernal Vulture");
+	mob(77,82,25222,"Infernal Vulture");
+	mob(45,66,25222,"Infernal Vulture");
+	mob(53,59,25222,"Infernal Vulture");
+	mob(40,94,25222,"Infernal Vulture");
+	mob(122,205,25222,"Infernal Vulture");
+	mob(264,115,25222,"Infernal Vulture");
+	mob(76,250,25222,"Infernal Vulture");
+	mob(41,214,25222,"Infernal Vulture");
+	mob(128,46,25222,"Infernal Vulture");
+	mob(54,18,25222,"Infernal Vulture");
+	mob(199,99,25222,"Infernal Vulture");
 
 	// Mini Bosses
-	mob(264,37,25001,"Fallen Angel","hg_controller::OnAngelDead");
-	mob(145,278,25001,"Fallen Angel","hg_controller::OnAngelDead");
-	mob(29,35,25001,"Fallen Angel","hg_controller::OnAngelDead");
+	mob(264,37,25100,"Hell Keeper","hg_controller::OnAngelDead");
+	mob(145,278,25100,"Hell Keeper","hg_controller::OnAngelDead");
+	mob(29,35,25100,"Hell Keeper","hg_controller::OnAngelDead");
 	end;
 
 	OnAngelDead:
@@ -279,6 +293,13 @@ hell,145,159,1	script	Tartarean Chest	25005,{
 				.@item = F_Rand(6917,6860,6954,6885,6907,6916,6837,6955,6866,6912,6904,6862);
 				getitem .@item,1;
 				break;
+		}
+		.@t = rand(30,50);
+		for(.@i=0;.@i<.@t;.@i++) {
+			.@g = callfunc("F_Rand",1,2,3,3,3,4,4,4,4);
+			.@v$ = "IG_RM_00" + .@g;
+			.@nameid = groupranditem(getd(.@v$));
+			getitem .@nameid,1;
 		}
 		set getvariableofinstance(getd("'hg_" + getcharid(0)),@hg_id), 1;
 		end;
@@ -444,3 +465,4 @@ pay_fild07,279,284,0	duplicate(#hg_guardian)	#hg_pay_fild07	111
 ra_fild13,225,277,0	duplicate(#hg_guardian)	#hg_ra_fild13	111
 prt_fild00,88,248,0	duplicate(#hg_guardian)	#hg_prt_fild00	111
 hu_fild03,346,262,0	duplicate(#hg_guardian)	#hg_hu_fild03	111
+
