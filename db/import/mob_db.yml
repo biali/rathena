@@ -1123,27 +1123,27 @@ Body:
   - Id: 25000
     AegisName: LOTF
     Name: Lord of the Fallen
-    Level: 156
-    Hp: 666666
+    Level: 70
+    Hp: 166666
     BaseExp: 66666
-    Attack: 9600
-    Attack2: 5000
-    Defense: 127
-    Str: 251
-    Agi: 134
+    Attack: 800
+    Attack2: 1200
+    Defense: 70
+    Str: 50
+    Agi: 20
     Vit: 30
-    Int: 194
-    Dex: 237
+    Int: 30
+    Dex: 150
     Luk: 66
     AttackRange: 10
     SkillRange: 15
     ChaseRange: 15
     Size: Large
     Race: Dragon
-    Element: Water
+    Element: Dark
     ElementLevel: 4
     WalkSpeed: 1000
-    AttackDelay: 440
+    AttackDelay: 640
     AttackMotion: 672
     DamageMotion: 432
     Ai: 10
@@ -3270,36 +3270,32 @@ Body:
   - Id: 25136
     AegisName: Fire_Moth
     Name: Fire_Moth
-    Level: 10
-    Hp: 9999
-    Sp: 2000
-    BaseExp: 9999
-    JobExp: 9999
-    Attack: 1000
-    Attack2: 500
-    Defense: 15
-    MagicDefense: 15
-    Str: 65
-    Agi: 20
-    Vit: 20
-    Int: 10
-    Dex: 250
+    Level: 60
+    Hp: 46430
+    BaseExp: 12200
+    JobExp: 6077
+    Attack: 359
+    Attack2: 609
+    Defense: 27
+    MagicDefense: 50
+    Str: 37
+    Agi: 26
+    Vit: 30
+    Int: 30
+    Dex: 140
+    Luk: 10
     AttackRange: 1
     SkillRange: 10
-    ChaseRange: 9
+    ChaseRange: 12
     Size: Small
-    Race: Formless
-    Element: Neutral
-    ElementLevel: 1
-    WalkSpeed: 150
-    AttackDelay: 300
-    AttackMotion: 286
-    DamageMotion: 340
-    Ai: 21
-    Class: Boss
-    Drops:
-      - Item: Star_Crumb
-        Rate: 1
+    Race: Demon
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 160
+    AttackDelay: 824
+    AttackMotion: 432
+    DamageMotion: 360
+    Ai: 20
   - Id: 25135
     AegisName: Fanta_Slime
     Name: Fanta_Slime
@@ -5442,36 +5438,32 @@ Body:
   - Id: 25100
     AegisName: Addax
     Name: Addax
-    Level: 10
-    Hp: 9999
-    Sp: 2000
-    BaseExp: 9999
-    JobExp: 9999
-    Attack: 1000
-    Attack2: 500
-    Defense: 15
-    MagicDefense: 15
-    Str: 65
-    Agi: 20
-    Vit: 26
-    Int: 10
-    Dex: 250
-    AttackRange: 1
+    Level: 60
+    Hp: 33300
+    BaseExp: 22000
+    JobExp: 5000
+    Attack: 590
+    Attack2: 860
+    Defense: 65
+    MagicDefense: 50
+    Str: 70
+    Agi: 30
+    Vit: 44
+    Int: 45
+    Dex: 180
+    Luk: 25
+    AttackRange: 2
     SkillRange: 10
-    ChaseRange: 8
-    Size: Small
+    ChaseRange: 12
+    Size: Large
     Race: Formless
-    Element: Neutral
-    ElementLevel: 1
-    WalkSpeed: 150
-    AttackDelay: 300
-    AttackMotion: 286
-    DamageMotion: 340
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 210
+    AttackDelay: 140
+    AttackMotion: 384
+    DamageMotion: 288
     Ai: 21
-    Class: Boss
-    Drops:
-      - Item: Star_Crumb
-        Rate: 1
   - Id: 25182
     AegisName: Mummy_
     Name: Mummy_
@@ -6795,36 +6787,32 @@ Body:
   - Id: 25222
     AegisName: Soul_Taker
     Name: Soul_Taker
-    Level: 10
-    Hp: 9999
-    Sp: 2000
-    BaseExp: 9999
-    JobExp: 9999
-    Attack: 1000
-    Attack2: 500
-    Defense: 15
-    MagicDefense: 15
-    Str: 65
-    Agi: 20
-    Vit: 27
-    Int: 10
-    Dex: 250
-    AttackRange: 1
-    SkillRange: 12
+    Level: 60
+    Hp: 80375
+    BaseExp: 29000
+    JobExp: 18000
+    Attack: 330
+    Attack2: 600
+    Defense: 23
+    MagicDefense: 70
+    Str: 45
+    Agi: 33
+    Vit: 31
+    Int: 30
+    Dex: 140
+    Luk: 30
+    AttackRange: 2
+    SkillRange: 10
     ChaseRange: 12
-    Size: Small
+    Size: Large
     Race: Formless
-    Element: Neutral
-    ElementLevel: 1
-    WalkSpeed: 150
-    AttackDelay: 300
-    AttackMotion: 286
-    DamageMotion: 340
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 160
+    AttackDelay: 800
+    AttackMotion: 600
+    DamageMotion: 288
     Ai: 21
-    Class: Boss
-    Drops:
-      - Item: Star_Crumb
-        Rate: 1
   - Id: 25223
     AegisName: Sphinx
     Name: Sphinx
@@ -6861,36 +6849,32 @@ Body:
   - Id: 25224
     AegisName: Spicy_Dragon
     Name: Spicy_Dragon
-    Level: 10
-    Hp: 9999
-    Sp: 2000
-    BaseExp: 9999
-    JobExp: 9999
-    Attack: 1000
-    Attack2: 500
-    Defense: 15
-    MagicDefense: 15
-    Str: 65
-    Agi: 20
-    Vit: 20
-    Int: 10
-    Dex: 250
-    AttackRange: 1
-    SkillRange: 8
-    ChaseRange: 11
-    Size: Small
+    Level: 60
+    Hp: 96000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 290
+    Attack2: 360
+    Defense: 65
+    MagicDefense: 50
+    Str: 20
+    Agi: 55
+    Vit: 44
+    Int: 60
+    Dex: 180
+    Luk: 25
+    AttackRange: 2
+    SkillRange: 6
+    ChaseRange: 5
+    Size: Large
     Race: Formless
-    Element: Neutral
-    ElementLevel: 1
-    WalkSpeed: 150
-    AttackDelay: 300
-    AttackMotion: 286
-    DamageMotion: 340
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 240
+    AttackDelay: 200
+    AttackMotion: 384
+    DamageMotion: 288
     Ai: 21
-    Class: Boss
-    Drops:
-      - Item: Star_Crumb
-        Rate: 1
   - Id: 25225
     AegisName: Sppo
     Name: Sppo
@@ -8095,52 +8079,67 @@ Body:
     DamageMotion: 480
     Ai: 02
   - Id: 25503
-    AegisName: NPC_SPRITE03
-    Name: Npc Sprite 03
-    Level: 2
-    Hp: 45
-    BaseExp: 27
-    JobExp: 20
-    Attack: 12
-    Attack2: 13
-    Defense: 16
-    Str: 8
-    Dex: 6
-    Luk: 2
-    AttackRange: 1
-    SkillRange: 10
-    ChaseRange: 12
+    AegisName: MOC_SOLDIER
+    Name: Morocc Soldier
+    Level: 98
+    Hp: 120000
+    Sp: 400
+    Attack: 500
+    Attack2: 200
+    Defense: 20
+    MagicDefense: 35
+    Str: 85
+    Agi: 20
+    Vit: 20
+    Int: 20
+    Dex: 53
+    Luk: 99
+    AttackRange: 2
+    SkillRange: 15
+    ChaseRange: 15
     Size: Medium
-    Race: Plant
-    Element: Fire
-    ElementLevel: 1
-    WalkSpeed: 400
-    AttackDelay: 1372
-    AttackMotion: 672
-    DamageMotion: 480
-    Ai: 02
+    Race: Demihuman
+    Element: Neutral
+    ElementLevel: 2
+    WalkSpeed: 120
+    AttackDelay: 320
+    AttackMotion: 2040
+    DamageMotion: 336
+    Ai: 10
+    Modes:
+      CanMove: true
+      CastSensorChase: true
+      Angry: true
+    Ai: 06
   - Id: 25504
-    AegisName: NPC_SPRITE04
-    Name: Npc Sprite 04
-    Level: 2
-    Hp: 45
-    BaseExp: 27
-    JobExp: 20
-    Attack: 12
-    Attack2: 13
-    Defense: 16
-    Str: 8
-    Dex: 6
-    Luk: 2
-    AttackRange: 1
-    SkillRange: 10
-    ChaseRange: 12
+    AegisName: PRT_SOLDIER
+    Name: Prontera Soldier
+    Level: 98
+    Hp: 120000
+    Sp: 400
+    Attack: 500
+    Attack2: 200
+    Defense: 20
+    MagicDefense: 35
+    Str: 85
+    Agi: 20
+    Vit: 20
+    Int: 20
+    Dex: 53
+    Luk: 99
+    AttackRange: 2
+    SkillRange: 15
+    ChaseRange: 15
     Size: Medium
-    Race: Plant
-    Element: Fire
-    ElementLevel: 1
-    WalkSpeed: 400
-    AttackDelay: 1372
-    AttackMotion: 672
-    DamageMotion: 480
-    Ai: 02
+    Race: Demihuman
+    Element: Neutral
+    ElementLevel: 2
+    WalkSpeed: 120
+    AttackDelay: 320
+    AttackMotion: 2040
+    DamageMotion: 336
+    Ai: 10
+    Modes:
+      CanMove: true
+      CastSensorChase: true
+      Angry: true

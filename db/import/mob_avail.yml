@@ -119,6 +119,28 @@ Body:
     Options:
       Riding: true
 
+  # Prontera Soldier
+  - Mob: PRT_SOLDIER
+    Sprite: JOB_KNIGHT
+    Sex: Male
+    HairStyle: 34
+    HairColor: 0
+    ClothColor: 5
+    Weapon: Dagger
+    HeadTop: Fin_Helm
+    HeadLow: Iron_Cane
+
+  # Morocc Soldier
+  - Mob: MOC_SOLDIER
+    Sprite: JOB_KNIGHT
+    Sex: Male
+    HairStyle: 3
+    HairColor: 12
+    ClothColor: 33
+    Weapon: Dagger
+    HeadTop: Fin_Helm
+    HeadLow: Iron_Cane
+
 
 #Body:
   # Examples
@@ -148,7 +170,7 @@ Body:
 #    HeadLow: Cigar
 #    Options:
 #      Falcon: true
-  # Valaris Worshiper
+#   Valaris Worshiper
 #  - Mob: E_CONDOR
 #    Sprite: JOB_THIEF
 #    Sex: Male
