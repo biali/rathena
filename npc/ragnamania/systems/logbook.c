@@ -66,7 +66,7 @@ L_Loop:
 					close;
 				}
 L_PremmyMenu:
-				switch(select("Activate/Extend Premium:Repairs:Purify Ore:Utility Stores:Close")) {
+				switch(select("Activate/Extend Premium:Open Premium Storage:Repairs:Purify Ore:Utility Stores:Close")) {
 					case 1:
 						mes "^0000FF[ Premium Services ]^000000";
 						mes "Do you want to activate or extend ^f5b041Premium^000000 on your account?";
@@ -81,7 +81,22 @@ L_PremmyMenu:
 							goto L_PremmyMenu;
 						}
 						break;
-					case 2: // Repair all
+					case 2: // Open Premium Storage
+						if(callfunc("F_isVSmap") == 0) {
+							mes "^0000FF[ Premium Services ]^000000";
+							mes "I am sorry but you cannot open your storage in this map right now.";
+							mes "Restrictions apply to:";
+							mes " - PvP/BG/GvG maps";
+							mes " - Full-loot(rPK) maps";
+							mes " - When Representing a City";
+							close;
+						} else {
+							close2;
+							openstorage2 10,STOR_MODE_GET|STOR_MODE_PUT;
+							end;
+						}
+						break;
+					case 3: // Repair all
 						if(getbrokenid(1) == 0) {
 							mes "^0000FF[ Premium Services ]^000000";
 							mes "All your equipments seem fine. No repairs are needed.";
@@ -111,13 +126,15 @@ L_PremmyMenu:
 						next;
 						goto L_PremmyMenu;
 						break;
-					case 3: // Purify ores
+
+					case 4: // Purify ores
 						mes "^0000FF[ Premium Services ]^000000";
 						mes "Connecting to the Legendary Smith system...";
 						next;
 						callfunc "massPurify","Legenday Smith";
 						break;
-					case 4: // Utility Stores
+
+					case 5: // Utility Stores
 						mes "^0000FF[ Premium Services ]^000000";
 						mes "Select the store.";
 						next;
@@ -133,6 +150,10 @@ L_PremmyMenu:
 							case 8: callshop "Pet Accessories", 1; end;
 						}
 						end;
+						break;
+
+					case 6:
+						close;
 						break;
 				}
 			} else {
@@ -291,6 +312,8 @@ L_PremmyMenu:
 				case 2: goto L_Loop; break;
 			}
 		case 7:
+			if(getcharid(6) == 0 )
+				close;
 			mes "[ City Representation ]";
 			mes "Leaving Representation...";
 			close2;

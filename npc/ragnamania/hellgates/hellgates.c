@@ -465,4 +465,3 @@ pay_fild07,279,284,0	duplicate(#hg_guardian)	#hg_pay_fild07	111
 ra_fild13,225,277,0	duplicate(#hg_guardian)	#hg_ra_fild13	111
 prt_fild00,88,248,0	duplicate(#hg_guardian)	#hg_prt_fild00	111
 hu_fild03,346,262,0	duplicate(#hg_guardian)	#hg_hu_fild03	111
-

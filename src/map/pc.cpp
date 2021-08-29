@@ -8463,9 +8463,6 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 	if (!(exp_flag&2))
 		pc_calcexp(sd, &base_exp, &job_exp, src);
 
-	// Biali Reputation System
-	pc_calcrep(sd, base_exp);
-
 	nextb = pc_nextbaseexp(sd);
 	nextj = pc_nextjobexp(sd);
 
@@ -8496,6 +8493,40 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 				job_exp = (unsigned int)(battle_config.max_exp_gain_rate/1000.*nextj);
 		}
 	}
+
+	if (!(exp_flag&2) && battle_config.max_exp_gain_rate && (base_exp || job_exp)) {
+		//Note that this value should never be greater than the original
+		//therefore no overflow checks are needed. [Skotlex]
+		if (nextb > 0) {
+			float nextbp = (float) base_exp / (float) nextb;
+			if (nextbp > battle_config.max_exp_gain_rate/1000.)
+				base_exp = (unsigned int)(battle_config.max_exp_gain_rate/1000.*nextb);
+		}
+		if (nextj > 0) {
+			float nextjp = (float) job_exp / (float) nextj;
+			if (nextjp > battle_config.max_exp_gain_rate/1000.)
+				job_exp = (unsigned int)(battle_config.max_exp_gain_rate/1000.*nextj);
+		}
+	}
+
+	// Give EXP for Base Level
+	if (base_exp) {
+		sd->status.base_exp = util::safe_addition_cap(sd->status.base_exp, base_exp, MAX_EXP);
+
+		if (!pc_checkbaselevelup(sd))
+			clif_updatestatus(sd,SP_BASEEXP);
+	}
+
+	// Give EXP for Job Level
+	if (job_exp) {
+		sd->status.job_exp = util::safe_addition_cap(sd->status.job_exp, job_exp, MAX_EXP);
+
+		if (!pc_checkjoblevelup(sd))
+			clif_updatestatus(sd,SP_JOBEXP);
+	}
+
+	// Biali Reputation System
+	pc_calcrep(sd, base_exp);
 
 	// Biali : get infamy from killing mobs
 	// infamy is a % of the base exp given by the mob
@@ -8528,37 +8559,6 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 			job_exp = 0;
 		else if( sd->status.job_exp + job_exp >= MAX_LEVEL_JOB_EXP )
 			job_exp = MAX_LEVEL_JOB_EXP - sd->status.job_exp;
-	}
-
-	if (!(exp_flag&2) && battle_config.max_exp_gain_rate && (base_exp || job_exp)) {
-		//Note that this value should never be greater than the original
-		//therefore no overflow checks are needed. [Skotlex]
-		if (nextb > 0) {
-			float nextbp = (float) base_exp / (float) nextb;
-			if (nextbp > battle_config.max_exp_gain_rate/1000.)
-				base_exp = (unsigned int)(battle_config.max_exp_gain_rate/1000.*nextb);
-		}
-		if (nextj > 0) {
-			float nextjp = (float) job_exp / (float) nextj;
-			if (nextjp > battle_config.max_exp_gain_rate/1000.)
-				job_exp = (unsigned int)(battle_config.max_exp_gain_rate/1000.*nextj);
-		}
-	}
-
-	// Give EXP for Base Level
-	if (base_exp) {
-		sd->status.base_exp = util::safe_addition_cap(sd->status.base_exp, base_exp, MAX_EXP);
-
-		if (!pc_checkbaselevelup(sd))
-			clif_updatestatus(sd,SP_BASEEXP);
-	}
-
-	// Give EXP for Job Level
-	if (job_exp) {
-		sd->status.job_exp = util::safe_addition_cap(sd->status.job_exp, job_exp, MAX_EXP);
-
-		if (!pc_checkjoblevelup(sd))
-			clif_updatestatus(sd,SP_JOBEXP);
 	}
 
 	if (flag&1)
@@ -12702,11 +12702,13 @@ void pc_bleeding (struct map_session_data *sd, t_tick diff_tick)
 void pc_regen (struct map_session_data *sd, t_tick diff_tick)
 {
 	int hp = 0, sp = 0;
+	int tmp_hp = 0; //biali mount rework
 
 	if (sd->hp_regen.value) {
 		sd->hp_regen.tick += diff_tick;
 		while (sd->hp_regen.tick >= sd->hp_regen.rate) {
 			hp += sd->hp_regen.value;
+			tmp_hp += sd->hp_regen.value; //biali mount rework
 			sd->hp_regen.tick -= sd->hp_regen.rate;
 		}
 	}

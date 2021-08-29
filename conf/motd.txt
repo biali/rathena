@@ -1,2 +1,8 @@
-// Internal default is limited to 128 lines.  If you need more, you will need to modify the MOTD_LINE_SIZE definition in pc.cpp
-Welcome to rAthena! Enjoy! Please report any bugs you find.
+
+Welcome to Ragnamania Enliven
+ - Fixed Hunter Boxes not being given when delivering a hunting quest
+ - Included @rates, @exp and a few others. Use @commands to find out more
+ - Fixed the screenshot problem that crashed the client 
+ - Added access to the Premium Storage via Logbook (restrictions apply)
+ - Fixed a small error in the Stylist NPC in Prontera
+ - Fixed player's HP Regen while riding on a mount

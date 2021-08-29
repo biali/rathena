@@ -15498,6 +15498,34 @@ static int status_natural_heal(struct block_list* bl, va_list args)
 			flag &= ~RGN_HP;
 	}
 
+	//biali mount rework
+	if(sd->mount_id && sd->tmp_hp < sd->tmp_maxhp) {
+		
+		int multiplier = 1;
+		if(!vd)
+			vd = status_get_viewdata(bl);
+		if(vd && vd->dead_sit == 2)
+			multiplier += 1;
+		if(regen->state.gc)
+			multiplier += 1;
+
+		rate = (int)(natural_heal_diff_tick * (regen->rate.hp/100. * multiplier));
+		if (ud && ud->walktimer != INVALID_TIMER)
+			rate /= 2;
+
+		regen->tick.hp += rate;
+
+		if(regen->tick.hp >= (unsigned int)battle_config.natural_healhp_interval) {
+			int val = 0;
+			do {
+				sd->tmp_hp = cap_value(sd->tmp_hp+regen->hp,0,sd->tmp_maxhp);
+				regen->tick.hp -= battle_config.natural_healhp_interval;
+			} while(regen->tick.hp >= (unsigned int)battle_config.natural_healhp_interval);
+		}
+		if(sd->tmp_hp >= sd->tmp_maxhp)
+			clif_messagecolor(bl,color_table[COLOR_LIGHT_GREEN],"HP fully restored",false,SELF);
+	}
+
 	if (!flag)
 		return 0;
 

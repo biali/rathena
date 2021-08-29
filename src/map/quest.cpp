@@ -739,7 +739,8 @@ void quest_update_objective(struct map_session_data *sd, struct mob_data* md)
 
 				// biali faction system
 				// players questing with faction flags get bonuses
-				if (rnd()%100 >= 70 && itemdb_exists(30122) && sd->status.faction_id) {
+				// 30122 HUNTER_BOX
+				if (rnd()%100 >= 98 && itemdb_exists(30122) && sd->status.faction_id) {
 					struct item entry = {};
 					entry.nameid = 30122;
 					entry.identify = itemdb_isidentified(30122);

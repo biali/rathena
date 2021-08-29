@@ -73,12 +73,12 @@ OnTalk:
 				} else if( vip_status(1) ) {
 					.@success = 1;
 				} else if( zeny >= .cost[@style] ){
+					set zeny, zeny - .cost[@style];
 					.@success = 1;
 				}
 
 				if( .@success ){
 					message strcharinfo(0),"Enjoy your NEW "+.menu_name$[@style]+" !!";
-					set zeny, zeny - .cost[@style];
 					@style_value = .@style_number;
 				}else{
 					mes "You dont have enough Zeny to change this "+.menu_name$[@style]+".";

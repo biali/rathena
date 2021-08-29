@@ -18,8 +18,8 @@ function	script	allinonemall	{
 	case 2: callshop "Consumables", 1; end;
 	case 3: callshop "Miscellaneous", 1; end;
 	case 4: callshop "Arrows", 1; end;
-	case 5: callshop "Ninja", 1; end;
-	case 6: callshop "Gunslinger", 1; end;
+	case 5: callshop "Kunais", 1; end;
+	case 6: callshop "Ammo", 1; end;
 	case 7: callshop "Pet Foods", 1; end;
 	case 8: callshop "Pet Accessories", 1; end;
 	}

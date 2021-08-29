@@ -619,6 +619,8 @@ struct map_session_data {
 		// char emblem_data[2048];
 	} faction;
 
+	int tmp_maxhp,tmp_hp; //biali mount rework
+
 	int vended_id;
 	int vender_id;
 	int vend_num;

@@ -158,6 +158,7 @@ L_DeliverCompletedQuest:
             setquest .@quest_id+300;
 
         getexp getarg(2,0),getarg(3,0);
+        getitem HUNTER_BOX,1;
         close;
 
     } else if((.@i = checkQuest(0)) > 0 || (.@i = checkQuest(1)) > 0) {
@@ -395,7 +396,7 @@ L_Quest:
 
 
     if (.@quest_status == 0 || .@quest_status == 1) {
-        mes .n$;
+        // mes .n$;
         mes "Mission ^4d4dff"+ getarg(1) +"^000000";
         mes " is already finished for today.";
         next;
@@ -403,13 +404,13 @@ L_Quest:
     }
 
     if(checkquest(.@quest_id,PLAYTIME) > -1) {
-        mes .n$;
+        // mes .n$;
         mes "Mission ^4d4dff"+ getarg(1) +"^000000";
         mes " is already in your quest log.";
         next;
         redirect(@sub); 
     } else {
-        mes .n$;
+        // mes .n$;
         mes "Mission '"+ getarg(1) +"'";
         mes "Base Exp: '"+ getarg(2,0) +"'";
         mes "Job Exp: '"+ getarg(3,0) +"'";

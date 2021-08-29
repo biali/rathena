@@ -450,9 +450,9 @@ void mount_pc_status(struct map_session_data *sd) {
 
 	struct mount_data *mdb = NULL;
 	struct status_data *status = status_get_base_status(&sd->bl);
-	ShowWarning("Biali mount stats calculation Entrou aqui \n");
-	
 	if( (mdb = mountdb_exists(sd->mount_id)) != NULL) {
+		sd->tmp_hp = pc_readparam(sd, SP_HP);
+		sd->tmp_maxhp = pc_readparam(sd, SP_MAXHP);
 		pc_setparam( sd, SP_MAXHP, mdb->max_hp );
     	pc_setparam( sd, SP_HP, mdb->max_hp );
 
@@ -465,9 +465,9 @@ void mount_pc_status(struct map_session_data *sd) {
 		pc_bonus_script(sd);
 		// status_calc_pc(sd,SCO_NONE);
 	} else{
-		pc_setparam( sd, SP_MAXHP, sd->status.max_hp );
-		pc_setparam( sd, SP_HP, sd->status.hp );
-		// status_calc_pc(sd,SCO_NONE);
+		pc_setparam( sd, SP_MAXHP, (sd->tmp_maxhp)?:sd->status.max_hp);
+		pc_setparam( sd, SP_HP, (sd->tmp_hp)?:sd->status.hp);
+		status_calc_pc(sd,SCO_NONE);
 	}
 }
 

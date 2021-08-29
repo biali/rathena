@@ -46,7 +46,8 @@ function	script	F_isVSmap	{
 	getmapflag(.@m$,MF_GVG_CASTLE)|| 
 	getmapflag(.@m$,MF_GVG_DUNGEON)  || 
 	getmapflag(.@m$,MF_BATTLEGROUND)) ||
-	getmapflag(.@m$,MF_RPK)
+	getmapflag(.@m$,MF_RPK) ||
+	getmapflag(.@m$,MF_FVF && getcharid(6)>0)
 		return 1;
 	else
 		return 0;
