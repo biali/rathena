@@ -2628,7 +2628,7 @@ static int64 battle_calc_damage_adjustment(struct block_list *src, int64 damage,
 		return damage;
 
 	atk_maps = battle_config.atk_adjustment_map;
-	map_pvp = map_flag_vs(src->m); //this includes mf_fvf too (biali)
+	map_pvp = map_flag_vs(src->m); //this does not mf_fvf!!! (biali) !!! CHECK THIS OUT !!!
 	map_gvg = map_flag_gvg2(src->m);
 	map_bg = mapd->flag[MF_BATTLEGROUND] > 0;
 
@@ -9470,6 +9470,8 @@ static const struct _battle_data {
 	{ "motd_exp_increase",                  &battle_config.motd_exp_increase,                10,     0,     10000,          },
 // Ragnamania Hard Cap
 	{ "drops_hardcap",               		&battle_config.hardcap,         			   3000,     0,     10000,          },
+// Ragnamania MvP Spawn Announce
+	{ "boss_spawn_announce",               	&battle_config.announce_boss_spawn, 			   1,     1,         1,          },
 	
 #include "../custom/battle_config_init.inc"
 };

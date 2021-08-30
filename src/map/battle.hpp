@@ -581,6 +581,9 @@ struct Battle_Config
 	// biali hardcap for equipments drop
 	int hardcap;
 
+	// biali announce boss type monsters spawn
+	int announce_boss_spawn;
+
 	// Global Damage adjustment. [Cydh]
 	int atk_adjustment_map;
 	int atk_damage_attacker;
