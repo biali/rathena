@@ -236,6 +236,7 @@ enum send_target : uint8_t {
 	AREA_FVF,
 	FVF_OTHER_AREA_CHAT,
 	FACTION,
+	MVP_HUNTER,
 };
 
 enum broadcast_flags : uint8_t {

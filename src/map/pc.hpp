@@ -343,6 +343,7 @@ struct map_session_data {
 		int deadbody_looting; // biali flags if the player is looting a body at the time (keeps deadbody gid while lootbag is open)
 		unsigned int block_action : 10;
 		int knocked; // Biali Black zone (receives an epoch time)
+		int mvp_hunting; // Biali mvp spawn announcer
 #ifdef BGEXTENDED
 		// BG eAmod
 		unsigned bg_afk : 1;

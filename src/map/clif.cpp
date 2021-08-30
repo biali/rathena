@@ -565,15 +565,21 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 	switch(type) {
 
 	case ALL_CLIENT: //All player clients.
+	case MVP_HUNTER: //biali announce mvp spawns
 #ifdef BGEXTENDED
 	case BG_LISTEN:
 #endif
 		iter = mapit_getallusers();
 		while( ( tsd = (map_session_data*)mapit_next( iter ) ) != nullptr ){
 #ifdef BGEXTENDED
-		if (type == BG_LISTEN && (tsd->state.bg_listen && !tsd->bg_queue_id))
-			continue;
+			if (type == BG_LISTEN && (tsd->state.bg_listen && !tsd->bg_queue_id))
+				continue;
 #endif
+			// biali mvp hunter
+			ShowWarning("biali clif chegou aki \n");
+			if (type == MVP_HUNTER && !tsd->state.mvp_hunting )
+				continue;
+
 			if( session_isActive( fd = tsd->fd ) ){
 				WFIFOHEAD( fd, len );
 				memcpy( WFIFOP( fd, 0 ), buf, len );

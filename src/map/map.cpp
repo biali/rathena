@@ -4669,7 +4669,8 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 			}
 		case MF_ATK_RATE:
-			nullpo_retr(-1, args);
+			if(args == NULL)
+				return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 
 			switch (args->flag_val) {
 				case DMGRATE_BL:
@@ -4680,8 +4681,6 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 				case DMGRATE_MISC:
 				case DMGRATE_HIT:
 					return mapdata->atk_rate.rate[args->flag_val];
-				default:
-					return util::umap_get(mapdata->flag, static_cast<int16>(mapflag), 0);
 			}
 		case MF_RPK:
 			if(args == NULL)

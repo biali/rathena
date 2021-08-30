@@ -10441,6 +10441,40 @@ BUILDIN_FUNC(guild_has_permission){
 	return SCRIPT_CMD_SUCCESS;
 }
 
+//biali MVP Hunting (mvp spawn announce)
+BUILDIN_FUNC(mvphunt)
+{
+	TBL_PC* sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if (!script_hasdata(st, 2))
+	{
+		script_pushint(st,-1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int state = script_getnum(st,2);
+
+	sd->state.mvp_hunting = state;
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(ismvphunting)
+{
+	TBL_PC* sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	script_pushint(st, sd->state.mvp_hunting);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
 /*==========================================
  * Make player use a skill trought item usage
  *------------------------------------------*/
@@ -26921,6 +26955,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(guildopenstorage_log,"?"),
 	BUILDIN_DEF(openlootbag,""), // biali deadbody
 	BUILDIN_DEF(guild_has_permission,"i?"),
+	BUILDIN_DEF(mvphunt,"i"),
+	BUILDIN_DEF(ismvphunting,""),
 	BUILDIN_DEF(itemskill,"vi?"),
 	BUILDIN_DEF(produce,"i"),
 	BUILDIN_DEF(cooking,"i"),

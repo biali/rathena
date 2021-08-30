@@ -1101,6 +1101,15 @@ TIMER_FUNC(mob_delayspawn){
 			return 0;
 		}
 		md->spawn_timer = INVALID_TIMER;
+
+		// Biali Announce MvP Spawn
+		// if monster boss -> do announce
+		if( md->spawn->state.boss && battle_config.announce_boss_spawn) {
+			char message[128];
+			sprintf(message, "[MVP Watch]: %s has spawned at %s. Good Hunting!", md->name, map_mapid2mapname(md->spawn->m));
+			clif_broadcast(&md->bl, message, strlen(message) + 1, BC_BLUE, MVP_HUNTER);
+		}
+
 		mob_spawn(md);
 	}
 	return 0;
