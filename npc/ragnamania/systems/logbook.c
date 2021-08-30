@@ -2,6 +2,9 @@
 	end;
 
 OnPcLoginEvent:
+	//load settings
+	mvphunt(MVP_HUNT); // enable or not mvp hunt announces;
+
 	if(strcharinfo(3) == "new_1-1") end;
 	if(countitem(24501) < 1 )
 		getitem 24501,1;
@@ -57,7 +60,7 @@ L_Menu:
 	next;
 
 L_Loop:
-	switch(select("^f5b041Premium^000000 Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:"+(getcharid(6)?"Leave City Representation:":"")+"^dd0000Close^000000")) {
+	switch(select("Premium Services:Teleport Services:Battlelog:Cities Reputation:Adventurer's Quest:Master Account Services:Settings:"+(getcharid(6)?"Leave City Representation:":"")+"^dd0000Close^000000")) {
 		case 1: // PREMMY SERVICES
 			if( vip_status(1) || getgmlevel() >= 10) {
 				if(inarray($@EventPlayers,getcharid(3)) >= 0 || .@vs = callfunc("F_isVSmap") == 1 || compare(strcharinfo(3),"new_") == 1) { 
@@ -311,7 +314,31 @@ L_PremmyMenu:
 					close;
 				case 2: goto L_Loop; break;
 			}
-		case 7:
+		case 7: //Settings
+		L_Refresh:
+			clear;
+			mes "^0000FF[ Settings ]^000000";
+			if(ismvphunting())
+				mes "MVP Hunt: ^00DD00[on]^000000";
+			else
+				 mes "MvP Hunt: ^DD0000[off]^000000";
+			switch(select("MVP Hunting on/off:^FF0000Close^000000")) {
+				case 1:
+					if(ismvphunting()) {
+						mvphunt(0);
+						set MVP_HUNT, 0;
+					} else {
+						mvphunt(1);
+						set MVP_HUNT, 1;
+					}
+					break;
+				case 2:
+					close;
+			}
+			goto L_Refresh;
+			break;
+
+		case 8: //Leave city representation
 			if(getcharid(6) == 0 )
 				close;
 			mes "[ City Representation ]";
@@ -320,7 +347,7 @@ L_PremmyMenu:
 			progressbar("0xffffff",10);
 			factionleave;
 			break;
-		case 8:
+		case 9:
 		default:
 			close;
 	}
@@ -359,6 +386,9 @@ L_PremmyMenu:
 		return "^0033cc" + .@t$ + "^000000";
 	} 
 }
+
+
+
 
 // Sellers are now in premmy_quickmall.c
 // -	shop	Utilities	-1,601:-1,602:-1,501:-1,502:-1,503:-1,504:-1,522:-1,523:-1,525:-1,610:-1,645:-1,656:-1,657:-1,1065:-1,611:-1
