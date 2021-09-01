@@ -576,7 +576,6 @@ int clif_send(const void* buf, int len, struct block_list* bl, enum send_target 
 				continue;
 #endif
 			// biali mvp hunter
-			ShowWarning("biali clif chegou aki \n");
 			if (type == MVP_HUNTER && !tsd->state.mvp_hunting )
 				continue;
 

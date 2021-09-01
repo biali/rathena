@@ -447,7 +447,7 @@ void mount_desmount(struct map_session_data *sd, bool force) {
 }
 
 void mount_pc_status(struct map_session_data *sd) {
-
+	short speed;
 	struct mount_data *mdb = NULL;
 	struct status_data *status = status_get_base_status(&sd->bl);
 	if( (mdb = mountdb_exists(sd->mount_id)) != NULL) {
@@ -456,10 +456,16 @@ void mount_pc_status(struct map_session_data *sd) {
 		pc_setparam( sd, SP_MAXHP, mdb->max_hp );
     	pc_setparam( sd, SP_HP, mdb->max_hp );
 
-		status->race 	= mdb->race;
-		status->def_ele	= mdb->ele;
-		status->ele_lv 	= mdb->ele_lvl;
-		status->size	= mdb->size;
+		status->race 	 = mdb->race;
+		status->def_ele	 = mdb->ele;
+		status->ele_lv 	 = mdb->ele_lvl;
+		status->size	 = mdb->size;
+
+		speed = DEFAULT_WALK_SPEED - mdb->speed_bonus;
+		sd->base_status.speed = cap_value(speed, MIN_WALK_SPEED, MAX_WALK_SPEED);
+		if (sd->base_status.speed != DEFAULT_WALK_SPEED)
+			sd->state.permanent_speed = 1; // Set lock when set to non-default speed.
+		status_calc_bl(&sd->bl, SCB_SPEED|SCB_SIZE|SCB_RACE|SCB_ATK_ELE|SCB_DEF_ELE);
 
 		run_script(mdb->script,0,sd->bl.id,0);
 		pc_bonus_script(sd);
@@ -467,159 +473,12 @@ void mount_pc_status(struct map_session_data *sd) {
 	} else{
 		pc_setparam( sd, SP_MAXHP, (sd->tmp_maxhp)?:sd->status.max_hp);
 		pc_setparam( sd, SP_HP, (sd->tmp_hp)?:sd->status.hp);
+		sd->state.permanent_speed = 0; // Remove lock when set back to default speed.
+		sd->base_status.speed = DEFAULT_WALK_SPEED;
+		status_calc_bl(&sd->bl, SCB_SPEED|SCB_MAXHP|SCB_SIZE|SCB_RACE|SCB_ATK_ELE|SCB_DEF_ELE);
 		status_calc_pc(sd,SCO_NONE);
 	}
 }
-
-
-// // ID,Mount Name,Max_hp,Race,Element,Element lvl,Size,skill_id,skill_lv,{ Aura: #1 #2 #3 }
-// static int mount_readdb(void)
-// {
-// 	struct mount_data *mdb;
-// 	const char *filename = "mount_db.txt";
-// 	uint32 lines = 0, count = 0;
-// 	char line[1024], path[256];
-// 	FILE *fp;
-// 	void *aChSysSave = NULL;
-
-// 	struct item_data *idt = NULL;
-
-// 	sprintf(path, "%s/%s", db_path, filename);
-// 	if((fp = fopen(path, "r")) == NULL ) {
-// 		ShowWarning("mount_readdb: File not found \"%s\", skipping.\n", path);
-// 		return 0;
-// 	}
-
-// 	while(fgets(line, sizeof(line), fp)) 
-// 	{
-// 		char *str[32], *p;
-// 		int i, id, max_hp, race, ele, ele_lvl, size, skill_id, skill_lv, speed_bonus, cast_time, aura, k = 0;
-// 		t_itemid item;
-
-// 		lines++;
-// 		if(line[0] == '/' && line[1] == '/')
-// 			continue;
-// 		memset(str, 0, sizeof(str));
-
-// 		p = line;
-// 		while( ISSPACE(*p) )
-// 			++p;
-// 		if( *p == '\0' )
-// 			continue;
-// 		for( i = 0; i < 11; ++i ) {
-// 			str[i] = p;
-// 			p = strchr(p,',');
-// 			if( p == NULL )
-// 				break;
-// 			*p = '\0';
-// 			++p;
-// 		}
-
-// 		if( p == NULL ) {
-// 			ShowError("mount_readdb: Insufficient columns in line %d of \"%s\" (mount id %d), skipping.\n", lines, path, atoi(str[0]));
-// 			continue;
-// 		}
-
-// 		id = atoi(str[0]);
-
-// 		if( id < 1 || id > MAX_MOUNT ) {
-// 			ShowError("mount_readdb : Incorrect Mount ID: %d, must be between 0 and %d\n", id, MAX_MOUNT);
-// 			continue;
-// 		} else if( mount_search(id) ) {
-// 			ShowError("mount_readdb : Duplicate Mount ID %d, line %d.\n", id, lines);
-// 			continue;
-// 		}
-
-// 		max_hp = atoi(str[2]);
-// 		if( max_hp < 1 || max_hp > INT_MAX ) {
-// 			ShowWarning("mount_readdb : Invalid max_hp: %d, in line %d of \"%s\" (Mount id %d).\n", max_hp, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : Max HP must be between %d and %d. Default to %d.\n", 1, INT_MAX, 1);
-// 			max_hp = 1;
-// 		}
-
-// 		race = atoi(str[3]);
-// 		if( race < RC_FORMLESS || race > RC_DRAGON ) {
-// 			ShowWarning("mount_readdb : Invalid race: %d, in line %d of \"%s\" (Mount id %d).\n", race, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : race must be between %d and %d. Default to %d.\n", RC_FORMLESS, RC_DRAGON, RC_DEMIHUMAN);
-// 			race = RC_DEMIHUMAN;
-// 		}
-
-// 		ele = atoi(str[4]);
-// 		if( ele < ELE_NEUTRAL || ele > ELE_UNDEAD ) {
-// 			ShowWarning("mount_readdb : Invalid element: %d, in line %d of \"%s\" (Mount id %d).\n", ele, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : element must be between %d and %d. Default to %d.\n", ELE_NEUTRAL, ELE_UNDEAD, ELE_NEUTRAL);
-// 			ele = ELE_NEUTRAL;
-// 		}
-
-// 		ele_lvl = atoi(str[5]);
-// 		if( ele_lvl < 1 || ele_lvl > 4 ) {
-// 			ShowWarning("mount_readdb : Invalid element level: %d, in line %d of \"%s\" (Mount id %d).\n", ele_lvl, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : element must be between 1 and 4. Default to 1.\n");
-// 			ele_lvl = 1;
-// 		}
-
-// 		size = atoi(str[6]);
-// 		if( size < 0 || size > 2 ) {
-// 			ShowWarning("mount_readdb : Invalid size: %d, in line %d of \"%s\" (Mount id %d).\n", size, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : size must be 0, 1 or 2. Default to 0.\n");
-// 			size = 0;
-// 		}
-
-// 		speed_bonus = atoi(str[7]);
-// 		if( speed_bonus < -100 || speed_bonus > 100 ) {
-// 			ShowWarning("mount_readdb : Invalid speed bonus: %d, in line %d of \"%s\" (Mount id %d).\n", speed_bonus, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : speed must be between -100 and 100. Default to 25.\n");
-// 			speed_bonus = 25;
-// 		}
-
-//         cast_time = atoi(str[8]);
-// 		if( cast_time < 0 || cast_time > 60 ) {
-// 			ShowWarning("mount_readdb : Invalid cast time: %d, in line %d of \"%s\" (Mount id %d).\n", cast_time, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : cast time must be between 1 and 60. Default to 1.\n");
-// 			cast_time = 1;
-// 		}
-
-// 		aura = atoi(str[9]);
-// 		if( aura < 0 || aura > INT_MAX ) {
-// 			ShowWarning("mount_readdb : Invalid aura: %d, in line %d of \"%s\" (Mount id %d).\n", aura, lines, path, atoi(str[0]));
-// 			ShowWarning("mount_readdb : aura must be between 0 and %d. Default to 0.\n",INT_MAX);
-// 			aura = 0;
-// 		}
-
-// 		item = atoi(str[10]);
-// 		if( (idt = itemdb_search(item)) == NULL ) {
-// 			ShowWarning("mount_readdb : Invalid item: %d, in line %d of \"%s\" (Mount id %d). Skipping.\n", item, lines, path, atoi(str[0]));
-// 			continue;
-// 		} else 
-// 			idt->flag.isMount = true;
-
-// 		// // script
-// 		str[11] = p;
-
-// 		CREATE(mdb,struct mount_data,1);
-// 		mdb->id = id;
-// 		safestrncpy(mdb->name,str[1],sizeof(mdb->name));
-// 		mdb->max_hp = max_hp;
-// 		mdb->race = race;
-// 		mdb->ele = ele;
-// 		mdb->ele_lvl = ele_lvl;
-// 		mdb->size = size;
-// 		mdb->skill_id = skill_id;
-// 		mdb->skill_lv = skill_lv;
-// 		mdb->speed_bonus = speed_bonus;
-//         mdb->cast_time = cast_time;
-// 		mdb->aura = aura;
-// 		mdb->script = parse_script(str[11],path,lines,0);
-
-// 		idb_put(mount_db,id,mdb);
-
-// 		count++;
-// 	}
-// 	fclose(fp);
-// 	ShowStatus("Done reading '" CL_WHITE"%lu" CL_RESET "' mounts in file '" CL_WHITE "%s" CL_RESET "'.\n", count, filename);
-
-// 	return 0;
-// }
 
 static void destroy_mount_data(struct mount_data *self, int free_self)
 {

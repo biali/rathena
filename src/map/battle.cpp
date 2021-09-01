@@ -8522,7 +8522,6 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 		default:
 			return 0;
 	} //end switch actual target
-
 	switch( t_bl->type ) { //Checks on target master
 		case BL_PC: {
 			struct map_session_data *sd;
@@ -8622,8 +8621,10 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				return 0; //If you are not representing a guild, can't target Contested Stone. Biali
 			if( sd->status.guild_id && sd->status.guild_id == mapdata->contested.info[CONTESTED_OWNER_ID] && t_bl->type == BL_MOB && ((TBL_MOB*)t_bl)->mob_id == MOBID_CONTEST_STONE)
 				return 0; //If your guild holds the contested map u cant hit the contest stone. Biali
-			if( t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_FVF) && (sd->status.faction_id == 0 || BL_CAST(BL_PC,t_bl)->status.faction_id == 0) )
-				return 0; // Source/Target is not enlisted with any faction
+			
+			// if( map_getmapflag(t_bl->m,MF_FVF) && sd->status.faction_id > 0 && ( faction_get_id(t_bl) == 0 || faction_get_id(t_bl) == faction_get_id(s_bl) ))
+			// 	return 0; // one of them is not in a faction or are part of the same faction
+			
 			if( t_bl->type != BL_PC || (t_bl->type == BL_PC && map_getmapflag(t_bl->m,MF_RPK))) // Biali rpk mode
 				state |= BCT_ENEMY; //Natural enemy.
 			break;
@@ -8686,11 +8687,18 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 	if( mapdata_flag_vs(mapdata) || mapdata->flag[MF_FVF])
 	{ //Check rivalry settings.
 		int sbg_id = 0, tbg_id = 0;
+		int sfi =0, tfi = 0;
 		if(mapdata->flag[MF_BATTLEGROUND] )
 		{
 			sbg_id = bg_team_get_id(s_bl);
 			tbg_id = bg_team_get_id(t_bl);
 		}
+		if(mapdata->flag[MF_FVF]) 
+		{
+			sfi = faction_get_id(s_bl);
+			tfi = faction_get_id(t_bl);
+		}
+
 		if( flag&(BCT_PARTY|BCT_ENEMY) )
 		{
 			int s_party = status_get_party_id(s_bl);
@@ -8716,14 +8724,24 @@ int battle_check_target( struct block_list *src, struct block_list *target,int f
 				state &= ~BCT_ENEMY;
 			if( mapdata->flag[MF_FVF] ) // Faction System
 			{
-				if( (faction_get_id(s_bl) && faction_get_id(t_bl) && (
-					map_getcell(t_bl->m,t_bl->x,t_bl->y,CELL_CHKNOFVF) ||
-					map_getcell(s_bl->m,s_bl->x,s_bl->y,CELL_CHKNOFVF) ||
-					(s_bl->type == BL_PC && ((int)((TBL_PC*)s_bl)->status.base_level < battle_config.fvf_min_lvl)) ||
-					(t_bl->type == BL_PC && ((int)((TBL_PC*)t_bl)->status.base_level < battle_config.fvf_min_lvl)))) ||
-					(s_bl->type == BL_PC && t_bl->type == BL_PC && !faction_get_id(s_bl) && !faction_get_id(t_bl))
-				)
+				if( sfi && tfi && (													// se source estiver numa faccao E target estiver numa faccao E
+					map_getcell(t_bl->m,t_bl->x,t_bl->y,CELL_CHKNOFVF) ||												// se celula onde esta o target for no_fvf OU
+					map_getcell(s_bl->m,s_bl->x,s_bl->y,CELL_CHKNOFVF) ||												// se celula onde esta o source for no_fvf OU
+					(s_bl->type == BL_PC && ((int)((TBL_PC*)s_bl)->status.base_level < battle_config.fvf_min_lvl)) ||	// se source for player e level do source < min lvl para fvf OU
+					(t_bl->type == BL_PC && ((int)((TBL_PC*)t_bl)->status.base_level < battle_config.fvf_min_lvl)) ||	// se target for player e level do target < min lvl para fvf OU
+					(s_bl->type == BL_PC && t_bl->type == BL_PC && sfi == tfi))   	// se source for player e target for player e faccao do src = faccao do target OU
+				  )
 					state &= ~BCT_ENEMY;
+		
+				if( (s_bl->type == BL_PC && t_bl->type == BL_PC) && sfi == tfi)
+					state &= ~BCT_ENEMY;
+
+				if( (s_bl->type == BL_PC && t_bl->type == BL_PC) && tfi == 0)
+					state &= ~BCT_ENEMY;
+
+				if( (s_bl->type == BL_PC && t_bl->type == BL_PC) && sfi == 0)
+					state &= ~BCT_ENEMY;
+
 			}
 			if( battle_config.pk_mode && !map_flag_gvg(m) && s_bl->type == BL_PC && t_bl->type == BL_PC )
 			{ // Prevent novice engagement on pk_mode (feature by Valaris)
