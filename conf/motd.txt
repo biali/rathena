@@ -6,3 +6,4 @@ Welcome to Ragnamania Enliven
  - Added access to the Premium Storage via Logbook (restrictions apply)
  - Fixed a small error in the Stylist NPC in Prontera
  - Fixed player's HP Regen while riding on a mount
+ - Fixed logbook not showing up in FvF maps

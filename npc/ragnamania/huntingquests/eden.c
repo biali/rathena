@@ -394,7 +394,6 @@ L_Quest:
     else if(.@quest_id >= 12072 && .@quest_id <= 12087) // Quests 41-55
         .@quest_status = checkquest(.@quest_id+300,PLAYTIME);
 
-
     if (.@quest_status == 0 || .@quest_status == 1) {
         // mes .n$;
         mes "Mission ^4d4dff"+ getarg(1) +"^000000";
@@ -474,12 +473,41 @@ OnInit:
 
 
 
+// if(.@quest_id >= 3250 && .@quest_id <= 3261) // Quests 56-70
+//             setquest .@quest_id+20;
+//         else if(.@quest_id >= 4167 && .@quest_id <= 4180) // Quests 86-90
+//             setquest .@quest_id+31;
+//         else if(.@quest_id >= 4181 && .@quest_id <= 4196) // Quests 91-99
+//             setquest .@quest_id+31;
+//         else if(.@quest_id >= 8266 && .@quest_id <= 8270) // Quests 26-40
+//             setquest .@quest_id+100;
+//         else if(.@quest_id >= 10107 && .@quest_id <= 10123) // Quests 71-85
+//             setquest .@quest_id+20;
+//         else if(.@quest_id >= 11114 && .@quest_id <= 11123) // Quests 11-25
+//             setquest .@quest_id+10;
+//         else if(.@quest_id >= 12072 && .@quest_id <= 12087) // Quests 41-55
+//             setquest .@quest_id+300;
+
     // This is executed every time one talks to the npc.
     // It will remove any expired hunting quest from the player's quest log
     function eraseQuests {
         for(.@k=1; .@k<=7;.@k++) { 
             for(.@i=0;.@i<getarraysize(getd(".quests_"+.@k));.@i++) {
-                .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 10;
+                switch(.@k){
+                    case 1:
+                        .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 10; break;
+                    case 2:
+                        .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 100; break;
+                    case 3:
+                        .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 300; break;
+                    case 4:
+                    case 5:
+                        .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 20; break;
+                    case 6:
+                    case 7:
+                        .@quest_id = getd(".quests_"+.@k+"["+.@i+"]") + 31; break;
+                }
+                
                 if (checkquest(.@quest_id,PLAYTIME) == 2) 
                     erasequest .@quest_id;
             }

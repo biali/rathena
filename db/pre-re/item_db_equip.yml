@@ -29189,11 +29189,6 @@ Body:
       Head_Top: true
     EquipLevelMin: 10
     View: 311
-    Trade:
-      Override: 100
-      NoDrop: true
-      NoSell: true
-      NoGuildStorage: true
     Script: |
       bonus bLuk,2;
       bonus bMaxHP,50;

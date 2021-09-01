@@ -2909,22 +2909,40 @@ IG_ADVENTURER_BOX,12086,10,5,1,0,0,1,1,0	// 5x Agi_Dish06
 IG_ADVENTURER_BOX,12208,10,2,1,0,0,1,1,0	// 2x Battle_Manual
 IG_ADVENTURER_BOX,12209,10,2,1,0,0,1,1,0	// 2x Insurance
 IG_ADVENTURER_BOX,30200,10,2,1,0,0,1,1,0	// 2x Ploc Monster
+IG_ADVENTURER_BOX,5098,5,1,1,0,0,1,1,0	    // 1x Tiger_Mask
+IG_ADVENTURER_BOX,5177,5,1,1,0,0,1,1,0	    // 1x Guardian_Lion_Mask
+IG_ADVENTURER_BOX,5030,5,1,1,0,0,1,1,0	    // 1x Panda_Cap
+IG_ADVENTURER_BOX,5059,5,1,1,0,0,1,1,0	    // 1x Brown_Bear_Cap
+IG_ADVENTURER_BOX,5033,5,1,1,0,0,1,1,0	    // 1x Smokie_Hat
+IG_ADVENTURER_BOX,5084,5,1,1,0,0,1,1,0	    // 1x Lazy_Raccoon
+IG_ADVENTURER_BOX,5259,5,1,1,0,0,1,1,0	    // 1x Elephant_Hat_
+IG_ADVENTURER_BOX,5078,5,1,1,0,0,1,1,0	    // 1x Sea_Otter_Cap
+IG_ADVENTURER_BOX,5111,5,1,1,0,0,1,1,0	    // 1x Galapago_Cap
+IG_ADVENTURER_BOX,5388,5,1,1,1,0,0,1,0 	// 1x Snake_Head
+IG_ADVENTURER_BOX,5283,5,1,1,0,0,1,1,0 	// 1x Chick_Hat
 
 
 IG_EVENT_BOX,5098,5,1,1,0,0,1	    // 1x Tiger_Mask
 
-IG_HUNTER_BOX,5098, 5,1,1,0,0,1,1,0	    // 1x Tiger_Mask
-IG_HUNTER_BOX,5177, 5,1,1,0,0,1,1,0	    // 1x Guardian_Lion_Mask
-IG_HUNTER_BOX,5030, 5,1,1,0,0,1,1,0	    // 1x Panda_Cap
-IG_HUNTER_BOX,5059, 5,1,1,0,0,1,1,0	    // 1x Brown_Bear_Cap
-IG_HUNTER_BOX,5033, 5,1,1,0,0,1,1,0	    // 1x Smokie_Hat
-IG_HUNTER_BOX,5084, 5,1,1,0,0,1,1,0	    // 1x Lazy_Raccoon
-IG_HUNTER_BOX,5259,10,1,1,0,0,1,1,0	    // 1x Elephant_Hat_
-IG_HUNTER_BOX,5078,10,1,1,0,0,1,1,0	    // 1x Sea_Otter_Cap
-IG_HUNTER_BOX,5111,10,1,1,0,0,1,1,0	    // 1x Galapago_Cap
-IG_HUNTER_BOX,5388,10,1,1,1,0,0,1,0 	// 1x Snake_Head
-IG_HUNTER_BOX,5283,10,1,1,0,0,1,1,0 	// 1x Chick_Hat
-
+IG_HUNTER_BOX,5098,1,1,1,0,0,1,1,0	    // 1x Tiger_Mask
+IG_HUNTER_BOX,5177,1,1,1,0,0,1,1,0	    // 1x Guardian_Lion_Mask
+IG_HUNTER_BOX,5030,3,1,1,0,0,1,1,0	    // 1x Panda_Cap
+IG_HUNTER_BOX,5059,3,1,1,0,0,1,1,0	    // 1x Brown_Bear_Cap
+IG_HUNTER_BOX,5033,3,1,1,0,0,1,1,0	    // 1x Smokie_Hat
+IG_HUNTER_BOX,5084,1,1,1,0,0,1,1,0	    // 1x Lazy_Raccoon
+IG_HUNTER_BOX,5259,1,1,1,0,0,1,1,0	    // 1x Elephant_Hat_
+IG_HUNTER_BOX,5078,3,1,1,0,0,1,1,0	    // 1x Sea_Otter_Cap
+IG_HUNTER_BOX,5111,3,1,1,0,0,1,1,0	    // 1x Galapago_Cap
+IG_HUNTER_BOX,5388,1,1,1,1,0,0,1,0 	// 1x Snake_Head
+IG_HUNTER_BOX,5283,1,1,1,0,0,1,1,0 	// 1x Chick_Hat
+IG_HUNTER_BOX,12100,10,5,1,0,0,1,1,0	// 5x Luk_Dish10
+IG_HUNTER_BOX,12073,10,5,1,0,0,1,1,0	// 5x Str_Dish08
+IG_HUNTER_BOX,12048,10,5,1,0,0,1,1,0	// 5x Int_Dish03
+IG_HUNTER_BOX,12084,10,5,1,0,0,1,1,0	// 5x Vit_Dish09
+IG_HUNTER_BOX,12086,10,5,1,0,0,1,1,0	// 5x Agi_Dish06
+IG_HUNTER_BOX,12208,10,2,1,0,0,1,1,0	// 2x Battle_Manual
+IG_HUNTER_BOX,12209,10,2,1,0,0,1,1,0	// 2x Insurance
+IG_HUNTER_BOX,30200,10,2,1,0,0,1,1,0	// 2x Ploc Monster
 
 //TIER 1
 IG_RAGNAMANIA_TIER1,31062,1,1,0,0,0,0,1,0

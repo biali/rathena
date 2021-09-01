@@ -148,13 +148,19 @@ SelectStorage:
 			}
 			break;
 		case 4: // Teleport
-			menu	" ~ Towns",Towns,
+			menu " ~ Last Warp ^777777["+lastwarp$+"]^000000",-,
+				" ~ Towns",Towns,
 		    	// " ~ Fields",Fields,
 		    	" ~ Dungeons",Dungeons,
 		    	" ~ Specials",Specials,
 		    	// " ~ Instances",Instances,
 				" ~ Territories",Territories,
 				" ~ Castles",Castles;
+
+				if (lastwarp$ == "")
+					message strcharinfo(0),"You haven't warped anywhere yet.";
+				else
+					warp lastwarp$,lastwarpx,lastwarpy;
 			end;
 
 			// --------------------------------------------------
@@ -494,7 +500,7 @@ SelectStorage:
 			// --------------------------------------------------
 				Specials:
 			// --------------------------------------------------
-			menu	"^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4;//,"Timeless Dungeons",X2;//, "Novice Grounds",X3;
+			menu	"Premium Room",X1,"Midgard Vilas",X4;//,"Timeless Dungeons",X2;//, "Novice Grounds",X3;
 
 			X1: Restrict("VIP",getcharid(0));
 				Go("sala_premmy",40,38);
