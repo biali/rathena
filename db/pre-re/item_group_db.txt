@@ -2900,6 +2900,24 @@ IG_RM_004,969,100,1,1,0	// Gold
 IG_RM_004,7291,100,1,1,0	// Agate
 IG_RM_004,7294,100,1,1,0	// Turquoise
 
+// Craftsmen drops from brute monsters when wielding a Pickaxe
+IG_RM_005,702,5,1,1     // animal gore
+IG_RM_005,7055,5,1,1    // animal poop
+IG_RM_005,919,5,1,1     // animal skin
+IG_RM_005,30350,5,1,1    // fine animal pelt
+IG_RM_005,30351,5,1,1    // thick animal pelt
+IG_RM_005,30352,5,1,1    // exquisite animal pelt
+
+// Craftsmen drops from insect monster when wielding a Pickaxe
+IG_RM_006,1059,5,1,0   // fabric
+IG_RM_006,30400,5,1,0    // Silk
+IG_RM_006,30401,5,1,0    // Cotton
+
+// random drops from apple trees
+IG_RM_007,7821,100,1,0  // green apple
+IG_RM_007,619,100,1,0   // unripe apple
+IG_RM_007,1025,100,2,0  // spider web
+
 
 IG_ADVENTURER_BOX,12100,10,5,1,0,0,1,1,0	// 5x Luk_Dish10
 IG_ADVENTURER_BOX,12073,10,5,1,0,0,1,1,0	// 5x Str_Dish08

@@ -442,7 +442,3 @@ rent_mb,225,76,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#20	45,2,2
 rent_mb,225,48,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#21	45,2,2
 rent_mb,189,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#22	45,2,2
 rent_mb,161,42,0	duplicate(PortaoDaCasa#1)	PortalDaCasa#23	45,2,2
-
-
-// // Shops Old system seeds seller
-// rent_mb,230,215,3	shop	McDonald	765,30033:15000,30034:15000,30035:15000,30036:15000,30037:15000,30038:15000,30039:15000,30040:15000,30041:15000,30042:15000;

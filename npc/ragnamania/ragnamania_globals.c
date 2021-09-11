@@ -41,13 +41,13 @@ function	script	F_isLeapYear	{
 
 function	script	F_isVSmap	{
 	.@m$ = getarg(0,strcharinfo(3));
-	if(getmapflag(.@m$,MF_PVP) || 
+	if( getmapflag(.@m$,MF_PVP) || 
 	getmapflag(.@m$,MF_GVG) || 
-	getmapflag(.@m$,MF_GVG_CASTLE)|| 
-	getmapflag(.@m$,MF_GVG_DUNGEON)  || 
-	getmapflag(.@m$,MF_BATTLEGROUND)) ||
-	getmapflag(.@m$,MF_RPK) ||
-	(getmapflag(.@m$,MF_FVF) && getcharid(6)>0)
+	getmapflag(.@m$,MF_GVG_CASTLE) || 
+	getmapflag(.@m$,MF_GVG_DUNGEON) || 
+	getmapflag(.@m$,MF_BATTLEGROUND) || 
+	getmapflag(.@m$,MF_RPK) || 
+	(getmapflag(.@m$,MF_FVF) && getcharid(6) > 0) )
 		return 1;
 	else
 		return 0;
@@ -70,7 +70,6 @@ function	script	F_rep	{
 		return -999;
 
 	.@rep = getreputation(.@faction);
-	debugmes "aaa " + .@rep;
 	if(.@rep >= .@honored) return 2;
 	else if(.@rep >= .@friendly) return 1;
 	else if(.@rep > .@unfriendly && .@rep < .@friendly) return 0;

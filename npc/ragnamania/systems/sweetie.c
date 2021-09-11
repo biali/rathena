@@ -149,6 +149,7 @@ SelectStorage:
 			break;
 		case 4: // Teleport
 			menu " ~ Last Warp ^777777["+lastwarp$+"]^000000",-,
+				" ~ Save Point",Saved,
 				" ~ Towns",Towns,
 		    	// " ~ Fields",Fields,
 		    	" ~ Dungeons",Dungeons,
@@ -162,6 +163,11 @@ SelectStorage:
 				else
 					warp lastwarp$,lastwarpx,lastwarpy;
 			end;
+
+			// --------------------------------------------------
+				Saved:
+			// --------------------------------------------------
+				Go("SavePoint",0,0);
 
 			// --------------------------------------------------
 				Towns:

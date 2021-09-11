@@ -42,14 +42,23 @@ L_Menu:
 	mes "^0000FF[ Logbook ]^000000";
 	if( vip_status(1) ) mes "Account: ^00CCAA[ Premium ]^000000";
 	else mes "Account: ^00AAFF[ Regular ]^000000";
-	mes (#CASHPOINTS)?"Mania$ in this Acc: ^0000FF" +callfunc("F_InsertComma", #CASHPOINTS)+ "^000000.":"Mania$: ^FF00000.0^000000.";
-	mes (.@cashpoints[0])?"Mania$ Available: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ Available: ^FF00000.0^000000.";
+	mes (#CASHPOINTS)?"Mania$ in this Acc: ^0000FF" +callfunc("F_InsertComma", #CASHPOINTS)+ "^000000.":"Mania$ in this Acc: ^FF00000.0^000000.";
+	mes (.@cashpoints[0])?"Mania$ in Master Acc: ^0000FF" + callfunc("F_InsertComma", .@cashpoints[0]) + "^000000." : "Mania$ in Master Acc: ^FF00000.0^000000.";
 	mes " ";
 	if(getcharid(6)) {
 		mes "^0000FFCity Representation^000000";
 		mes factioninfo(getcharid(6),0);
 		mes " ";
 	}
+
+	if(PROFESSION) {
+		mes "Profession: [ " + callfunc("F_GetProfName",PROFESSION) + " ]";
+		mes "Level: [ " + callfunc("F_GetProfLevel",PRO_INFO[0]) +" ]";
+		if(PRO_INFO[0] < 7)
+			mes "Exp: [ " + PRO_INFO[1] * 100 / 1000 + "% ]";
+		mes " ";
+	}
+
 	mes "Personal Vote Points: ^0000FF[" + callfunc("F_CheckVP") + "/" + getvariableofnpc(.MinVotes4Reward,"v4p") + "]^000000";
 	if(gettime(DT_DAYOFMONTH) < getvariableofnpc(.ThirdDday,"v4p"))	
 		mes "Global VP: ^0000FF[" + $vp_totalVotePoints + "/" + getvariableofnpc(.VotePointsTarget,"v4p") + "]^000000";
@@ -85,7 +94,7 @@ L_PremmyMenu:
 						}
 						break;
 					case 2: // Open Premium Storage
-						if(callfunc("F_isVSmap") == 0) {
+						if(callfunc("F_isVSmap") == 1) {
 							mes "^0000FF[ Premium Services ]^000000";
 							mes "I am sorry but you cannot open your storage in this map right now.";
 							mes "Restrictions apply to:";
@@ -198,10 +207,11 @@ L_PremmyMenu:
 					T36: warp "yuno",157,51; end;
 					break;
 				case 2:
-					menu "^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4;//,"Timeless Dungeons",X2;
+					menu "^f5b041Premium^000000 Room",X1,"Middgard Vilas",X4,"Farm (Farmers only)",X5;//,"Timeless Dungeons",X2;
 					X1: warp "sala_premmy",40,38; end;
 					//X2: warp "yuno",282,288; end;
 					X4: warp "rent_mb",134,33; end;
+					X5: if(PROFESSION != FARMER) {dispbottom "Only Farmers can use this.",0xff0000; end;} callfunc "F_FarmInstancing"; end;
 					break;
 			}
 		case 3: // Battlelog

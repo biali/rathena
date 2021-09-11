@@ -279,6 +279,13 @@ Body:
       Y: 5
     AdditionalMaps:
       rentinb1: true
+  - Id: 51
+    Name: Farm
+    TimeLimit: 86400000
+    Enter:
+      Map: farm
+      X: 47
+      Y: 96
   - Id: 58
     Name: Hell
     TimeLimit: 1800

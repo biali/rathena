@@ -9319,13 +9319,13 @@ Body:
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
-  - Id: 6010
-    AegisName: Pickaxe
-    Name: Hoe
-    Type: Etc
-    Weight: 10
-    Flags:
-      BuyingStore: true
+  # - Id: 6010
+  #   AegisName: Pickaxe
+  #   Name: Hoe
+  #   Type: Etc
+  #   Weight: 10
+  #   Flags:
+  #     BuyingStore: true
   - Id: 6011
     AegisName: Blue_Card_B
     Name: Blue B Card
@@ -15805,7 +15805,8 @@ Body:
     AegisName: Scroll
     Name: Blank Scroll
     Type: Etc
-    Buy: 4000
+    Buy: 80
+    Sell: 10
     Weight: 10
     Flags:
       BuyingStore: true

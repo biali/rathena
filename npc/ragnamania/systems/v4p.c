@@ -42,7 +42,7 @@ prontera,143,278,0	script	Chefe Amante::v4p	625,{
 					mes "I've also taken note of your personal contribution. Please continue to contribute and come back by the end of the month for you prize!";
 					next;
 					mes .n$;
-					mes "You've accumulated ^AA0000"+ CheckMasterPoints() +" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
+					mes "You've accumulated ^AA0000"+ CheckMasterPoints() + .@votes +" vote points^000000 until now. You need at least ^0099AA"+.MinVotes4Reward+"^000000 in order to qualify for the Personal Reward.";
 					announce "Thank you " + strcharinfo(0) + ", for voting for us! And thank you for your contribution of " + .@votes + " vote points!",bc_all,0xFAFA00; 
 					close2;
 				} else {

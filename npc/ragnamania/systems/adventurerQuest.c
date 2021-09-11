@@ -82,7 +82,7 @@ OnNPCKillEvent:
 			Update(5);
 			break;
 		case 6: case 7: case 8: case 9: case 10:
-			Update(2);
+			Update(4);
 			break;
 		default:
 			Update(1);

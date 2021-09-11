@@ -736,7 +736,8 @@ enum cell_t{
 	CELL_MAELSTROM,
 	CELL_ICEWALL,
 	CELL_NOFVF,
-	CELL_POISON, //Biali
+	CELL_POISON, //Biali battle royale
+	CELL_PLANT, //biali farm
 
 };
 
@@ -763,6 +764,7 @@ enum cell_chk : uint8 {
 	CELL_CHKICEWALL,		// Whether the cell has Ice Wall
 	CELL_CHKNOFVF,			// Whether the cell is FvF - Biali
 	CELL_CHKPOISON,			// Whether the cell has Poison Biali
+	CELL_CHKPLANT,			// Whether the cell can be used to plan Biali farm
 };
 
 struct mapcell
@@ -783,7 +785,8 @@ struct mapcell
 		maelstrom : 1,
 		icewall : 1,
 		nofvf : 1,  //Biali Faction System
-		poison : 1; //Biali Battle ROyale
+		poison : 1, //Biali Battle ROyale
+		plant : 1; //Biali Farm
 
 #ifdef CELL_NOSTACK
 	unsigned char cell_bl; //Holds amount of bls in this cell.

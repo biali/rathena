@@ -495,6 +495,7 @@
 	export_constant(CELL_NOCHAT);
 	export_constant(CELL_MAELSTROM);
 	export_constant(CELL_ICEWALL);
+	export_constant(CELL_PLANT); //Biali farm
 
 	/* getcell types */
 	export_constant(CELL_CHKWALL);
@@ -513,6 +514,7 @@
 	export_constant(CELL_CHKNOCHAT);
 	export_constant(CELL_CHKMAELSTROM);
 	export_constant(CELL_CHKICEWALL);
+	export_constant(CELL_CHKPLANT); // biali farm
 
 	/* parameters */
 	export_parameter("StatusPoint",SP_STATUSPOINT);

@@ -26234,6 +26234,44 @@ BUILDIN_FUNC(getreputation)
 	script_pushint(st, sd->status.rep[i].value);
 	return SCRIPT_CMD_SUCCESS;
 }
+//addreputation <faction_id>,<exp/value to add>,<reputation points/mob_level>
+BUILDIN_FUNC(addreputation)
+{
+	TBL_PC *sd;
+
+	int p,q;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if(!script_hasdata(st,3))
+		q = 0;
+	else
+		q = script_getnum(st,3);
+
+
+	if(!script_hasdata(st,4))
+		p = 0;
+	else 
+		p = script_getnum(st,4);
+
+
+	int i = script_getnum(st,2);
+
+	if(faction_search(i) == NULL) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	pc_calcrep(sd, i, q);
+	pc_give_rep_points(sd, p);
+	return SCRIPT_CMD_SUCCESS;
+}
 
 BUILDIN_FUNC(getreputationpoints)
 {
@@ -26274,6 +26312,31 @@ BUILDIN_FUNC(takereputationpoints)
 	int q = script_getnum(st,3);
 
 	sd->status.rep[i].points -= q;
+	script_pushint(st, sd->status.rep[i].points);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+BUILDIN_FUNC(addreputationpoints)
+{
+	TBL_PC *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	if(!script_hasdata(st,2)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if(!script_hasdata(st,3)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	int i = script_getnum(st,2);
+	int q = script_getnum(st,3);
+
+	sd->status.rep[i].points += q;
 	script_pushint(st, sd->status.rep[i].points);
 	return SCRIPT_CMD_SUCCESS;
 }
@@ -27365,8 +27428,10 @@ struct script_function buildin_func[] = {
 
 	//Biali reputation system
 	BUILDIN_DEF(getreputation,"i"),
+	BUILDIN_DEF(addreputation,"iii"),
 	BUILDIN_DEF(getreputationpoints,"i"),
 	BUILDIN_DEF(takereputationpoints,"ii"),
+	BUILDIN_DEF(addreputationpoints,"ii"),
 
 	// Biali mount rework
 	BUILDIN_DEF(mountinfo, "ii"),

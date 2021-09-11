@@ -3305,6 +3305,8 @@ int map_getcellp(struct map_data* m,int16 x,int16 y,cell_chk cellchk)
 			return (cell.icewall);
 		case CELL_CHKPOISON: //Biali Battle ROyale
 			return (cell.poison);
+		case CELL_CHKPLANT: //Biali Battle ROyale
+			return (cell.plant);
 
 		// special checks
 		case CELL_CHKPASS:
@@ -3361,6 +3363,7 @@ void map_setcell(int16 m, int16 x, int16 y, cell_t cell, bool flag)
 		case CELL_MAELSTROM:	 mapdata->cell[j].maelstrom = flag;	  	break;
 		case CELL_ICEWALL:		 mapdata->cell[j].icewall = flag;		break;
 		case CELL_POISON:		 mapdata->cell[j].poison = flag;		break; //Biali Battle Royale
+		case CELL_PLANT:		 mapdata->cell[j].plant = flag;			break; //Biali Battle Royale
 		default:
 			ShowWarning("map_setcell: invalid cell type '%d'\n", (int)cell);
 			break;

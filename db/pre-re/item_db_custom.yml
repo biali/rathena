@@ -111,106 +111,139 @@ Body:
     AegisName: Apprentice Scribe Book
     Name: Apprentice Scribe Book
     Type: Delayconsume
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Buy: 500
     Sell: 150
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Weight: 600
     Script: |
-      callfunc "Inscription_DropInfo",0; end;
+      callfunc "InscriptionEngine",0; end;
   - Id: 26561
-    AegisName: Journeyman Scribe Book
-    Name: Journeyman Scribe Book
+    AegisName: Journeymen Scribe Book
+    Name: Journeymen Scribe Book
     Type: Delayconsume
     Buy: 10000
     Sell: 3000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",1; end;
+      callfunc "InscriptionEngine",1; end;
   - Id: 26562
     AegisName: Skilled Scribe Book
     Name: Skilled Scribe Book
     Type: Delayconsume
     Buy: 100000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",2; end;
+      callfunc "InscriptionEngine",2; end;
   - Id: 26563
     AegisName: Expert Scribe Book
     Name: Expert Scribe Book
     Type: Delayconsume
     Buy: 300000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",3; end;
+      callfunc "InscriptionEngine",3; end;
   - Id: 26564
     AegisName: Artisan Scribe Book
     Name: Artisan Scribe Book
     Type: Delayconsume
     Buy: 600000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",4; end;
+      callfunc "InscriptionEngine",4; end;
   - Id: 26565
     AegisName: Master Scribe Book
     Name: Master Scribe Book
     Type: Delayconsume
     Buy: 1000000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",5; end;
+      callfunc "InscriptionEngine",5; end;
   - Id: 26566
     AegisName: Grand Master Scribe Book
     Name: Grand Master Scribe Book
     Type: Delayconsume
     Buy: 5000000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",6; end;
+      callfunc "InscriptionEngine",6; end;
   - Id: 26567
     AegisName: Illustrious Scribe Book
     Name: Illustrious Scribe Book
     Type: Delayconsume
     Buy: 10000000
     Sell: 4000
-    Classes:
-      Normal: true
-      Upper: true
-      Baby: true
-      All_Upper: true
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
     Script: |
-      callfunc "Inscription_DropInfo",7; end;
+      callfunc "InscriptionEngine",7; end;
   - Id: 3333
     AegisName: Class_Manual
     Name: Class Manual
@@ -2594,8 +2627,8 @@ Body:
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
-    Script: |
-      getitem 30022,rand(2,10);
+    Script: >
+      getitem MANIA_COIN,rand(2,10); specialeffect2 10; delitem BAG_OF_MANIAS,1;
   - Id: 20000
     AegisName: C_Mouse_Hat2
     Name: Costume Mouse Hat 2
@@ -6492,55 +6525,61 @@ Body:
       NoAuction: true
     View: 99
   - Id: 30033
-    AegisName: Aloe_Seeds
-    Name: Aloe Seeds
-    Type: Etc
+    AegisName: Apple_Seeds_Bag
+    Name: Bag of Apple Seeds
+    Type: Delayconsume
+    Buy: 150
     Weight: 50
+    Script: >
+      callfunc "farm",1,30033;
   - Id: 30034
-    AegisName: Strawberry_Seeds
-    Name: Strawberry Seeds
-    Type: Etc
+    AegisName: Strawberry_Seeds_Bag
+    Name: Bag of Strawberry Seeds
+    Type: Delayconsume
+    Buy: 1300
     Weight: 50
+    Script: >
+      callfunc "farm",1,30034;
   - Id: 30035
-    AegisName: Yggdrasil_Dried_Seeds
-    Name: Yggdrasil Dried Seeds
-    Type: Etc
+    AegisName: Yggdrasil_Seeds_Bag
+    Name: Bag of Yggdrasil Seeds
+    Type: Delayconsume
+    Buy: 54000
     Weight: 50
+    Script: >
+      callfunc "farm",1,30035;
   - Id: 30036
-    AegisName: Clovers_Seeds
-    Name: Clover Seeds
-    Type: Etc
+    AegisName: Mastela_Seeds_Bag
+    Name: Bag of Mastela Seeds
+    Type: Delayconsume
+    Buy: 39000
     Weight: 50
+    Script: >
+      callfunc "farm",1,30036;
   - Id: 30037
-    AegisName: Bitter_Herbs_Seeds
-    Name: Bitter Herbs Seeds
-    Type: Etc
+    AegisName: Orange_Seeds_Bag
+    Name: Bag of Orange Seeds
+    Type: Delayconsume
+    Buy: 500
     Weight: 50
+    Script: >
+      callfunc "farm",1,30037;
   - Id: 30038
-    AegisName: Illusion_Flower_Seeds
-    Name: Illusion Flower Seeds
-    Type: Etc
+    AegisName: Prickly_Fruid_Seeds_Bag
+    Name: Bag of Prickly Fruit Seeds
+    Type: Delayconsume
+    Buy: 36000
     Weight: 50
+    Script: >
+      callfunc "farm",1,30038;
   - Id: 30039
-    AegisName: Grapes_Seeds
-    Name: Grapes Seeds
-    Type: Etc
+    AegisName: Grapes_Seeds_Bag
+    Name: Bag of Grapes Seeds
+    Type: Delayconsume
+    Buy: 220
     Weight: 50
-  - Id: 30040
-    AegisName: Fig_Seeds
-    Name: Fig Seeds
-    Type: Etc
-    Weight: 50
-  - Id: 30041
-    AegisName: Hinalle_Seeds
-    Name: HInalle Seeds
-    Type: Etc
-    Weight: 50
-  - Id: 30042
-    AegisName: Ment_Seeds
-    Name: Ment Seeds
-    Type: Etc
-    Weight: 50
+    Script: >
+      callfunc "farm",1,30039;
   - Id: 30100
     AegisName: Adventurer_Medal
     Name: Adventurer's Medal
@@ -7539,6 +7578,23 @@ Body:
       NoAuction: true
     Script: |
       callfunc "RM_DiarioDeBordo";
+  - Id: 24502
+    AegisName: Furnace
+    Name: Craftsman Furnace
+    Type: Delayconsume
+    Buy: 10
+    Trade:
+      Override: 100
+      NoTrade: true
+      NoTradePartner: true
+      NoDrop: true
+      NoSell: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Script: |
+      callfunc "F_BuildFurnace";
   - Id: 25433
     AegisName: C_Golden_Wreath
     Name: Golden Laurel
@@ -7585,3 +7641,141 @@ Body:
       BuyingStore: true
     Script: |
       callfunc "farm",2,7194;
+  - Id: 6010
+    AegisName: Pickaxe
+    Name: Pickaxe
+    Type: Armor
+    Buy: 12000
+    Sell: 140
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    Script: |
+      if(PROFESSION != CRAFTSMAN) end; 
+      bonus2 bAddRace,RC_Brute,10; 
+      bonus2 bSubRace,RC_Brute,5;
+      bonus2 bAddRace,RC_Insect,10; 
+      bonus2 bSubRace,RC_Insect,5; 
+      bonus3 bAddMonsterDropItem,702,RC_Brute,200; 
+      bonus3 bAddMonsterDropItem,7055,RC_Brute,200; 
+      bonus3 bAddMonsterDropItem,919,RC_Brute,200; 
+      bonus3 bAddMonsterDropItem,30350,RC_Brute,200; 
+      bonus3 bAddMonsterDropItem,30351,RC_Brute,250; 
+      bonus3 bAddMonsterDropItem,30352,RC_Brute,250; 
+      bonus3 bAddMonsterDropItem,1059,RC_Insect,200;
+      bonus3 bAddMonsterDropItem,30400,RC_Insect,200;
+      bonus3 bAddMonsterDropItem,30401,RC_Insect,250;
+  - Id: 30310
+    AegisName: Improved_Pickaxe
+    Name: Improved Pickaxe
+    Type: Weapon
+    Subtype: Dagger
+    Buy: 3000000
+    Sell: 140
+    Weight: 200
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 1
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    Script: >
+      if(PROFESSION != CRAFTSMAN) end; 
+      if( PRO_INFO[0] >= 1) {
+        bonus2 bAddRace,RC_Brute,15; 
+        bonus2 bSubRace,RC_Brute,10; 
+        bonus2 bAddRace,RC_Insect,15; 
+        bonus2 bSubRace,RC_Insect,10; 
+        bonus3 bAddMonsterDropItem,702,RC_Brute,350; 
+        bonus3 bAddMonsterDropItem,7055,RC_Brute,350; 
+        bonus3 bAddMonsterDropItem,919,RC_Brute,350; 
+        bonus3 bAddMonsterDropItem,30350,RC_Brute,350; 
+        bonus3 bAddMonsterDropItem,30351,RC_Brute,400; 
+        bonus3 bAddMonsterDropItem,30352,RC_Brute,400; 
+        bonus3 bAddMonsterDropItem,1059,RC_Insect,400;
+        bonus3 bAddMonsterDropItem,30400,RC_Insect,250;
+        bonus3 bAddMonsterDropItem,30401,RC_Insect,300;
+      }
+  - Id: 30311
+    AegisName: Enriched_Pickaxe
+    Name: Enriched_Pickaxe
+    Type: Weapon
+    Subtype: Dagger
+    Buy: 12000000
+    Sell: 140
+    Weight: 20
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 1
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    Script: |
+      if(PROFESSION != CRAFTSMAN) end; 
+      if( PRO_INFO[0] >= 2) {
+        bonus2 bAddRace,RC_Brute,20;
+        bonus2 bSubRace,RC_Brute,20;
+        bonus2 bAddRace,RC_Insect,20;
+        bonus2 bSubRace,RC_Insect,20;
+        bonus3 bAddMonsterDropItem,702,RC_Brute,450; 
+        bonus3 bAddMonsterDropItem,7055,RC_Brute,450; 
+        bonus3 bAddMonsterDropItem,919,RC_Brute,450; 
+        bonus3 bAddMonsterDropItem,30350,RC_Brute,450; 
+        bonus3 bAddMonsterDropItem,30351,RC_Brute,500; 
+        bonus3 bAddMonsterDropItem,30352,RC_Brute,500; 
+        bonus3 bAddMonsterDropItem,1059,RC_Insect,500;
+        bonus3 bAddMonsterDropItem,30400,RC_Insect,350;
+        bonus3 bAddMonsterDropItem,30401,RC_Insect,400;
+      }
+  - Id: 30350
+    AegisName: Fine_Animal_Pelt
+    Name: Fine Animal Pelt
+    Type: Etc
+    Buy: 850
+    Weight: 15
+    Flags:
+      BuyingStore: true
+  - Id: 30351
+    AegisName: Thick_Animal_Pelt
+    Name: Thick Animal Pelt
+    Type: Etc
+    Buy: 960
+    Weight: 30
+    Flags:
+      BuyingStore: true
+  - Id: 30352
+    AegisName: Exquisite_Animal_Pelt
+    Name: Exquisite Animal Pelt
+    Type: Etc
+    Buy: 1100
+    Weight: 15
+    Flags:
+      BuyingStore: true
+  - Id: 30400
+    AegisName: Silk
+    Name: Silk
+    Type: Etc
+    Buy: 500
+    Weight: 3
+    Flags:
+      BuyingStore: true
+  - Id: 30401
+    AegisName: Cotton
+    Name: Cotton
+    Type: Etc
+    Buy: 410
+    Weight: 5
+    Flags:
+      BuyingStore: true

@@ -8242,29 +8242,28 @@ int pc_checkjoblevelup(struct map_session_data *sd)
 
 
 //biali reputation system
-void pc_update_rep(map_session_data *sd, int value) {
-	int i = sd->status.faction_id;
-	if(i > 0) {
-		sd->status.rep[i].value = value;
+void pc_update_rep(map_session_data *sd, int faction_id, int value) {
+	if(faction_id > 0) {
+		sd->status.rep[faction_id].value = value;
 		if(value <= battle_config.reputation_hated) {
-			sd->status.rep[i].reputation = -2;
-			strncpy(sd->status.rep[i].desc,"HATED",12);
+			sd->status.rep[faction_id].reputation = -2;
+			strncpy(sd->status.rep[faction_id].desc,"HATED",12);
 		}
 		else if(value <= battle_config.reputation_unfriendly) {
-			sd->status.rep[i].reputation = -1;
-			strncpy(sd->status.rep[i].desc,"UNFRIENDLY",12);
+			sd->status.rep[faction_id].reputation = -1;
+			strncpy(sd->status.rep[faction_id].desc,"UNFRIENDLY",12);
 		}
 		else if(value > battle_config.reputation_unfriendly && value < battle_config.reputation_friendly) {
-			sd->status.rep[i].reputation = 0;
-			strncpy(sd->status.rep[i].desc,"NEUTRAL",12);
+			sd->status.rep[faction_id].reputation = 0;
+			strncpy(sd->status.rep[faction_id].desc,"NEUTRAL",12);
 		}
 		else if(value >= battle_config.reputation_friendly) {
-			sd->status.rep[i].reputation = 1;
-			strncpy(sd->status.rep[i].desc,"FRIENDLY",12);
+			sd->status.rep[faction_id].reputation = 1;
+			strncpy(sd->status.rep[faction_id].desc,"FRIENDLY",12);
 		}
 		else {
-			sd->status.rep[i].reputation = 2;
-			strncpy(sd->status.rep[i].desc,"HONORED",12);
+			sd->status.rep[faction_id].reputation = 2;
+			strncpy(sd->status.rep[faction_id].desc,"HONORED",12);
 		}
 
 		if(battle_config.faction_change_name)
@@ -8276,25 +8275,23 @@ void pc_update_rep(map_session_data *sd, int value) {
 * @param sd Player
 * @param base_exp Base EXP before personal bonuses
 */
-void pc_calcrep(struct map_session_data *sd, t_exp base_exp)
+void pc_calcrep(struct map_session_data *sd, int faction_id, t_exp base_exp)
 {
-	int faction_id, exp, i;
+	int exp, i;
 	int value;
 
-	if((faction_id = sd->status.faction_id) <= 0)
+	if((faction_id) <= 0)
 		return;
 
-	//exp = (int)(base_exp / sd->status.base_level);
 	exp = int(base_exp);
 
 	for (i=1; i < MAX_FACTION; i++) {
 		if(faction_search(i) && faction_id == i) {
 			value = cap_value(sd->status.rep[i].value + exp, battle_config.reputation_min, battle_config.reputation_max);
-			pc_update_rep(sd, value);
+			pc_update_rep(sd, faction_id, value);
 		} else {
 			sd->status.rep[i].value = cap_value(sd->status.rep[i].value - (int)(exp * 0.05), battle_config.reputation_min, battle_config.reputation_max);
 		}
-		//ShowInfo("Player %d reputation with faction[%d] is now  %d. \n", sd->status.char_id, i, sd->status.rep[i].value);
 	}
 	return;
 }
@@ -8526,7 +8523,7 @@ void pc_gainexp(struct map_session_data *sd, struct block_list *src, t_exp base_
 	}
 
 	// Biali Reputation System
-	pc_calcrep(sd, base_exp);
+	pc_calcrep(sd, sd->status.faction_id, base_exp);
 
 	// Biali : get infamy from killing mobs
 	// infamy is a % of the base exp given by the mob

@@ -7,7 +7,7 @@ function	script	farm	{
 	set .@cID,getcharid(0);
 	
 	getmapxy(.@map$,.@x,.@y,BL_PC);
-	set .@y,.@y-1;
+	// set .@y,.@y-1;
 
 	if(checknonearnpc(strcharinfo(3),2) < 1) {
 		dispbottom "You cannot plant it here as it's too close to another NPC. Please choose a different spot.",0xFF0000;
@@ -15,8 +15,13 @@ function	script	farm	{
 		end;
 	}
 
-	if(!@instance) {
-		dispbottom "You can only plant in the premisses of your house.",0xFF0000;
+	// if(!@instance) {
+	// 	dispbottom "You can only plant in the premisses of your house.",0xFF0000;
+	// 	getitem .@item,1; 
+	// 	end;
+	// }
+	if(checkcell(.@map$,.@x,.@y,cell_chkplant) == 0) {
+		dispbottom "I can only plant in fertile soil I own.",0xFF0000;
 		getitem .@item,1; 
 		end;
 	}

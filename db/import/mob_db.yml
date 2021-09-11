@@ -8143,3 +8143,178 @@ Body:
       CanMove: true
       CastSensorChase: true
       Angry: true
+  - Id: 25701
+    AegisName: LESSER_VEIN
+    Name: Lesser Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+    Drops:
+      - Item: Oridecon
+        Rate: 250
+        StealProtected: true
+      - Item: Elunium
+        Rate: 250
+        StealProtected: true
+      - Item: Enriched_Elunium
+        Rate: 100
+        StealProtected: true
+      - Item: Azure_Jewel
+        Rate: 1000
+        StealProtected: true
+      - Item: White_Jewel
+        Rate: 2800
+        StealProtected: true
+      - Item: Brigan
+        Rate: 3500
+        StealProtected: true
+      - Item: Oridecon_Stone
+        Rate: 5500
+        StealProtected: true
+      - Item: Elunium_Stone
+        Rate: 5500
+        StealProtected: true
+  - Id: 25702
+    AegisName: LESSER_VEIN_EMPTY
+    Name: Greater Vein
+    Level: 1
+    Hp: 5
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25703
+    AegisName: GREATER_VEIN
+    Name: Greater Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+    Drops:
+      - Item: Oridecon
+        Rate: 250
+        StealProtected: true
+      - Item: Elunium
+        Rate: 250
+        StealProtected: true
+      - Item: Enriched_Elunium
+        Rate: 100
+        StealProtected: true
+      - Item: Azure_Jewel
+        Rate: 1000
+        StealProtected: true
+      - Item: White_Jewel
+        Rate: 2800
+        StealProtected: true
+      - Item: Brigan
+        Rate: 3500
+        StealProtected: true
+      - Item: Oridecon_Stone
+        Rate: 5500
+        StealProtected: true
+      - Item: Elunium_Stone
+        Rate: 5500
+        StealProtected: true
+  - Id: 25704
+    AegisName: GREATER_VEIN_EMPTY
+    Name: Empty Greater Vein
+    Level: 1
+    Hp: 5
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25750
+    AegisName: FURNACE
+    Name: Craftsman Furnace
+    Level: 1
+    Hp: 5
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Brute
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true  
