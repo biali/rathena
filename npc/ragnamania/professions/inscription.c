@@ -624,14 +624,26 @@ L_REDO:
 						close;
 					}
 					close2;
-					dispbottom "Crafting.... Please don't move or you will lose all your resources",0xff6600;
+
 					delitem BLANK_SCROLL,1;
 					delitem .@dye,1;
 					delitem .@rtid, .@rtqt;
 					if(.@bsid > 0)
 						delitem .@bsid,.@bsqt;
 
-					progressbar "0xffffff",.@lv +2;
+					
+					pcblockmove getcharid(3),1;
+					cutin "i_00",2; sleep2 200; specialeffect2 457;
+					cutin "i_01",2; sleep2 200;
+					cutin "i_02",2; sleep2 200; 
+					cutin "i_03",2; sleep2 200;
+					cutin "i_04",2; sleep2 200;
+					cutin "i_05",2; sleep2 200;
+					cutin "i_06",2; sleep2 200; specialeffect2 457;
+					cutin "i_07",2; sleep2 200; 
+					cutin "i_ok",2; sleep2 500; cutin "",255; 
+					pcblockmove getcharid(3),0;
+
 					getitem .@cardid,1;
 
 					updateXP();
@@ -724,6 +736,19 @@ S_MakeDye:
 		// delete items
 		for (.@i=0; .@i < .@size; .@i++)
 			delitem .@item[.@i], .@count[.@i];
+		
+		pcblockmove getcharid(3),1;
+		cutin "i_00",2; sleep2 200; specialeffect2 457;
+		cutin "i_01",2; sleep2 200;
+		cutin "i_02",2; sleep2 200; 
+		cutin "i_03",2; sleep2 200;
+		cutin "i_04",2; sleep2 200;
+		cutin "i_05",2; sleep2 200;
+		cutin "i_06",2; sleep2 200; specialeffect2 457;
+		cutin "i_07",2; sleep2 200; 
+		cutin "i_ok",2; sleep2 500; cutin "",255; 
+		pcblockmove getcharid(3),0;
+		
 		// get dyestuff
 		getitem .@dyestuff,1;
 		updateXP(1);

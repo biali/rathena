@@ -105,6 +105,17 @@ DO_IT:
 		for(.@i=0; .@i<getarraysize(@ingredients); .@i+=2) {
 			delitem @ingredients[.@i], @ingredients[(.@i+1)];
 		}
+
+		cutin "f_00",2; sleep2 200; specialeffect2 457;
+		cutin "f_01",2; sleep2 200;
+		cutin "f_02",2; sleep2 200; 
+		cutin "f_03",2; sleep2 200;
+		cutin "f_04",2; sleep2 200;
+		cutin "f_05",2; sleep2 200;
+		cutin "f_06",2; sleep2 200; specialeffect2 457;
+		cutin "f_07",2; sleep2 200; 
+		cutin "f_ok",2; sleep2 500; cutin "",255; 
+
 		getitem @ids[.@op],1;
 		clear;
 		mes .n$;
@@ -247,8 +258,19 @@ function	script	farm	{
 	}
 	
 	delitem .@item,1;
-	showscript "Planting...";
-	progressbar "0xFFFFFF",1;
+
+	pcblockmove getcharid(3),1;
+	cutin "f_00",2; sleep2 200; specialeffect2 457;
+	cutin "f_01",2; sleep2 200;
+	cutin "f_02",2; sleep2 200; 
+	cutin "f_03",2; sleep2 200;
+	cutin "f_04",2; sleep2 200;
+	cutin "f_05",2; sleep2 200;
+	cutin "f_06",2; sleep2 200; specialeffect2 457;
+	cutin "f_07",2; sleep2 200; 
+	cutin "f_ok",2; sleep2 500; cutin "",255; 
+	pcblockmove getcharid(3),0;
+
 	.@id$ = .@rst+""+getcharid(0);
 	duplicatenpc("planta2", " ",""+.@id$,.@map$,.@x,.@y,DIR_SOUTH,atoi(.@PlantVal$[3]));
 	set .@tTmp,(gettimetick(2)+atoi(.@PlantVal$[7]));

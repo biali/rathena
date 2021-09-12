@@ -31,19 +31,29 @@
 	.@max = getarraysize(.item) -1;
 	getitem .item[rand(0,.@max)],@rand;
 
-	cutin "p_00",4; sleep2 100; specialeffect2 457;
-	cutin "p_01",4; specialeffect2 457; sleep2 200;
-	cutin "p_02",4; specialeffect2 457; sleep2 500;
-	cutin "p_03",4; specialeffect2 457; sleep2 800;
-	cutin "p_04",4; sleep2 700;
-	specialeffect2 457;
-	cutin "p_00",4; sleep2 100; 
-	cutin "p_01",4; sleep2 200;
-	cutin "p_02",4; specialeffect2 457; sleep2 500;
-	cutin "p_03",4; specialeffect2 457; sleep2 800;
-	cutin "p_04",4; specialeffect2 457; sleep2 700;
-	cutin "p_05",4; specialeffect2 457; sleep2 500; 
-	specialeffect2 457;
+	pcblockmove getcharid(3),1;
+	cutin "p_00",2; sleep2 200; 
+	cutin "p_01",2; sleep2 200;
+	cutin "p_02",2; sleep2 200; specialeffect2 457;
+	cutin "p_03",2; sleep2 200;
+	cutin "p_04",2; sleep2 200;
+	cutin "p_05",2; sleep2 200; specialeffect2 457;
+	cutin "p_06",2; sleep2 200; 
+	cutin "p_07",2; sleep2 200;
+	cutin "p_08",2; sleep2 200; specialeffect2 457;
+	cutin "p_09",2; sleep2 200;
+	cutin "p_10",2; sleep2 200;
+	cutin "p_11",2; sleep2 200; specialeffect2 457;
+	cutin "p_12",2; sleep2 200;
+	cutin "p_13",2; sleep2 200;
+	cutin "p_14",2; sleep2 200; specialeffect2 457;
+	if(@reward == 0){ 
+		cutin "p_15f",2; sleep2 500; cutin "",255; 
+	} else {
+		cutin "p_15s",2; sleep2 500; cutin "",255; 
+		getitem @reward,1;
+	}
+	pcblockmove getcharid(3),0;
 
 	respawn();
 	setd ".depleted_"+strnpcinfo(2), 1;
@@ -52,12 +62,6 @@
 	addreputation(getcharid(6),.faction_exp,.faction_points); // this will give 1000 points towards the faction reputation and 5 points in faction points
 	updateXp(1);
 
-	if(@reward == 0){ 
-		cutin "p_fail",4; sleep2 500; cutin "",255; 
-	} else {
-		getitem @reward,1;
-		cutin "p_06",4; specialeffect2 457; sleep2 1000; cutin "",255;
-	}
 	setd("."+strnpcinfo(2)+"",0); // make it again available for gathering
 	
 	sleep .tempo_main;

@@ -743,19 +743,17 @@ OnInit:
 		if(.@check) {
 			for(.@i=0; .@i<getarraysize(@res); .@i+=2)
 				delitem @res[.@i], @res[(.@i+1)];
-			clear;
-			mes .n$;
-			mes "...";
-			sleep2 600;
-			mes ".....";
-			sleep2 400;
-			mes ".........";
-			sleep2 300;
-			misceffect 96;//154;
-			sleep2 1500;
-			getitem .@id, 1;
-			sleep2 500;
-			mes "Success!";
+
+			cutin "c_f_00",2; sleep2 200; 
+			cutin "c_f_01",2; sleep2 200;
+			cutin "c_f_02",2; sleep2 200; specialeffect2 457;
+			cutin "c_f_03",2; sleep2 200;
+			cutin "c_f_04",2; sleep2 200;
+			cutin "c_f_05",2; sleep2 200; specialeffect2 457;
+			cutin "c_f_06",2; sleep2 200; 
+			cutin "c_f_07",2; sleep2 200; 
+			cutin "c_f_ok",2; sleep2 500; cutin "",255; 
+
 			mes " ";
 			mes "Got 1x " + getitemname(.@id);
 			updateXP();
