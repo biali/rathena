@@ -10355,6 +10355,12 @@ BUILDIN_FUNC(openstorage)
 	if( !script_rid2sd(sd) )
 		return SCRIPT_CMD_SUCCESS;
 
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOSTORAGE)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the Storage in this map.", false, SELF);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
 	storage_storageopen(sd);
 	return SCRIPT_CMD_SUCCESS;
 }
@@ -10366,6 +10372,12 @@ BUILDIN_FUNC(guildopenstorage)
 
 	if( !script_rid2sd(sd) )
 		return SCRIPT_CMD_SUCCESS;
+
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOSTORAGE)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the Storage in this map.", false, SELF);
+		return SCRIPT_CMD_SUCCESS;
+	}
 
 	ret = storage_guild_storageopen(sd);
 	script_pushint(st,ret);
@@ -10380,6 +10392,12 @@ BUILDIN_FUNC(masteropenstorage)
 
 	if( !script_rid2sd(sd) )
 		return SCRIPT_CMD_SUCCESS;
+
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOSTORAGE)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the Storage in this map.", false, SELF);
+		return SCRIPT_CMD_SUCCESS;
+	}
 
 	ret = storage_master_storageopen(sd);
 	script_pushint(st,ret);

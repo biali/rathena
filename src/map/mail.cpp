@@ -328,6 +328,12 @@ int mail_openmail(struct map_session_data *sd)
 	if( sd->state.storage_flag || sd->state.vending || sd->state.buyingstore || sd->state.trading )
 		return 0;
 
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NORODEX)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the mails here.", false, SELF);
+		return 0;
+	}
+
 	clif_Mail_window(sd->fd, 0);
 
 	return 1;

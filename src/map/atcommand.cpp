@@ -1027,6 +1027,12 @@ ACMD_FUNC(storage)
 	if (sd->npc_id || sd->state.vending || sd->state.buyingstore || sd->state.trading || sd->state.storage_flag)
 		return -1;
 
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOSTORAGE)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the Storage in this map.", false, SELF);
+		return -1;
+	}
+
 	if (storage_storageopen(sd) == 1)
 	{	//Already open.
 		clif_displaymessage(fd, msg_txt(sd,250)); // You have already opened your storage. Close it first.
@@ -1048,6 +1054,12 @@ ACMD_FUNC(guildstorage)
 
 	if (sd->npc_id || sd->state.vending || sd->state.buyingstore || sd->state.trading)
 		return -1;
+
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOSTORAGE)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the Storage in this map.", false, SELF);
+		return -1;
+	}
 
 	switch (storage_guild_storageopen(sd)) {
 		case GSTORAGE_OPEN:
@@ -4344,6 +4356,18 @@ ACMD_FUNC(mapinfo) {
 	clif_displaymessage(fd, atcmd_output);
 	
 	strcpy(atcmd_output,"Ragnamania Mapflags: \n"); //Ragnamania flags
+
+	if (map_getmapflag(m_id, MF_NOMOUNT))
+		strcat(atcmd_output, "No Mounts Allowed |");
+
+	if (map_getmapflag(m_id, MF_NOSTORAGE))
+		strcat(atcmd_output, " No Access to Storages |");
+
+	if (map_getmapflag(m_id, MF_NORODEX))
+		strcat(atcmd_output, " No Access to Mails |");
+
+	if (map_getmapflag(m_id, MF_NOCASHSHOP))
+		strcat(atcmd_output, " No Access to Cashshop |");
 
 	if (map_getmapflag(m_id, MF_ANCIENT))
 		strcat(atcmd_output, "Classic GvG | ");

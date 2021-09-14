@@ -17396,10 +17396,16 @@ void clif_parse_cashshop_open_request( int fd, struct map_session_data* sd ){
 	tab = p->tab;
 #endif
 
-	sd->state.cashshop_open = true;
-	sd->npc_shopid = -1; // Set npc_shopid when using cash shop from "cash shop" button [Aelys|Susu] bugreport:96
+	//biali
+	if(map_getmapflag(sd->bl.m,MF_NOCASHSHOP)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't open the cashshop here.", false, SELF);
+	} else {
 
-	clif_cashshop_open( sd, tab );
+		sd->state.cashshop_open = true;
+		sd->npc_shopid = -1; // Set npc_shopid when using cash shop from "cash shop" button [Aelys|Susu] bugreport:96
+
+		clif_cashshop_open( sd, tab );
+	}
 #endif
 }
 

@@ -624,6 +624,10 @@ enum e_mapflag : int16 {
 	MF_BLOCKED, // Biali eAmod WoE
 	MF_SKILLNOREQUIREMENTS, //Biali
 	MF_ANCIENT, //Biali
+	MF_NOMOUNT, //Biali
+	MF_NOSTORAGE, //Biali
+	MF_NORODEX, //Biali
+	MF_NOCASHSHOP, //Biali
 	MF_MAX
 };
 

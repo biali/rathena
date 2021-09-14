@@ -6336,6 +6336,12 @@ bool pc_isUseitem(struct map_session_data *sd,int n)
 	if (item->flag.dead_branch && (mapdata->flag[MF_NOBRANCH] || mapdata_flag_gvg2(mapdata)))
 		return false;
 
+	//biali
+	if(mapdata->flag[MF_NOMOUNT] && item->flag.isMount == true) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't mount in this map.", false, SELF);
+		return false;
+	}
+
 	switch( nameid ) {
 		case ITEMID_WING_OF_FLY:
 		case ITEMID_GIANT_FLY_WING:
@@ -6976,12 +6982,17 @@ enum e_setpos pc_setpos(struct map_session_data* sd, unsigned short mapindex, in
 	status_change *sc = status_get_sc(&sd->bl);
 
 	// Biali Ancient WoE
-	if( (map_getmapflag(m,MF_BLOCKED) && !pc_has_permission(sd,PC_PERM_WARP_ANYWHERE)) || (map_getmapflag(m,MF_ANCIENT) && (sd->md || !pc_class2ancientwoe(sd->status.class_))) )
+	if( (mapdata->flag[MF_BLOCKED] && !pc_has_permission(sd,PC_PERM_WARP_ANYWHERE)) || (mapdata->flag[MF_ANCIENT] && (sd->md || !pc_class2ancientwoe(sd->status.class_))) )
 	{
 		mapindex = sd->status.save_point.map;
 		x = sd->status.save_point.x;
 		y = sd->status.save_point.y;
 		m = map_mapindex2mapid(mapindex);
+	}
+
+	if(mapdata->flag[MF_NOMOUNT] && sd->mount_id) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], "You can't mount in this map.", false, SELF);
+		mount_desmount(sd,false);
 	}
 
 	sd->state.changemap = (sd->mapindex != mapindex);
