@@ -113,7 +113,6 @@ DO_IT:
 		cutin "f_04",2; sleep2 200;
 		cutin "f_05",2; sleep2 200;
 		cutin "f_06",2; sleep2 200; specialeffect2 457;
-		cutin "f_07",2; sleep2 200; 
 		cutin "f_ok",2; sleep2 500; cutin "",255; 
 
 		getitem @ids[.@op],1;
@@ -217,11 +216,17 @@ function	script	farm	{
 	set .@cName$,strcharinfo(0);
 	set .@cID,getcharid(0);
 	set .@mapname$, "farm";
-	
+	set .@lv, PRO_INFO[0];
+
 	getmapxy(.@map$,.@x,.@y,BL_PC);
 
 	if(PROFESSION != FARMER) {
 		dispbottom "You need to be a farmer in order to do that.";
+		end;
+	}
+
+	if(.@lv < (.@pID -1)) {
+		dispbottom "That plant requires some knowledge you don't have just yet",0xFf6600;
 		end;
 	}
 
@@ -267,7 +272,6 @@ function	script	farm	{
 	cutin "f_04",2; sleep2 200;
 	cutin "f_05",2; sleep2 200;
 	cutin "f_06",2; sleep2 200; specialeffect2 457;
-	cutin "f_07",2; sleep2 200; 
 	cutin "f_ok",2; sleep2 500; cutin "",255; 
 	pcblockmove getcharid(3),0;
 

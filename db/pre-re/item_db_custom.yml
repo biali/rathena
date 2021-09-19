@@ -6539,7 +6539,7 @@ Body:
     Buy: 1300
     Weight: 50
     Script: >
-      callfunc "farm",1,30034;
+      callfunc "farm",4,30034;
   - Id: 30035
     AegisName: Yggdrasil_Seeds_Bag
     Name: Bag of Yggdrasil Seeds
@@ -6547,7 +6547,7 @@ Body:
     Buy: 54000
     Weight: 50
     Script: >
-      callfunc "farm",1,30035;
+      callfunc "farm",7,30035;
   - Id: 30036
     AegisName: Mastela_Seeds_Bag
     Name: Bag of Mastela Seeds
@@ -6555,7 +6555,7 @@ Body:
     Buy: 39000
     Weight: 50
     Script: >
-      callfunc "farm",1,30036;
+      callfunc "farm",6,30036;
   - Id: 30037
     AegisName: Orange_Seeds_Bag
     Name: Bag of Orange Seeds
@@ -6563,7 +6563,7 @@ Body:
     Buy: 500
     Weight: 50
     Script: >
-      callfunc "farm",1,30037;
+      callfunc "farm",3,30037;
   - Id: 30038
     AegisName: Prickly_Fruid_Seeds_Bag
     Name: Bag of Prickly Fruit Seeds
@@ -6571,7 +6571,7 @@ Body:
     Buy: 36000
     Weight: 50
     Script: >
-      callfunc "farm",1,30038;
+      callfunc "farm",5,30038;
   - Id: 30039
     AegisName: Grapes_Seeds_Bag
     Name: Bag of Grapes Seeds
@@ -6579,7 +6579,7 @@ Body:
     Buy: 220
     Weight: 50
     Script: >
-      callfunc "farm",1,30039;
+      callfunc "farm",2,30039;
   - Id: 30100
     AegisName: Adventurer_Medal
     Name: Adventurer's Medal
