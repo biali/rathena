@@ -3729,13 +3729,19 @@ static unsigned int status_calc_maxhpsp_pc(struct map_session_data* sd, unsigned
 	level = umax(sd->status.base_level,1);
 
 	if (isHP) { //Calculates MaxHP
-		double equip_bonus = 0, item_bonus = 0;
-		dmax = job_info[idx].base_hp[level-1] * (1 + (umax(stat,1) * 0.01)) * ((sd->class_&JOBL_UPPER)?1.25:(pc_is_taekwon_ranker(sd))?3:1);
-		dmax += status_get_hpbonus(&sd->bl,STATUS_BONUS_FIX);
-		equip_bonus = (dmax * status_get_hpbonus_equip(sd) / 100);
-		item_bonus = (dmax * status_get_hpbonus_item(&sd->bl) / 100);
-		dmax += equip_bonus + item_bonus;
-		dmax += (int64)(dmax * status_get_hpbonus(&sd->bl,STATUS_BONUS_RATE) / 100); //Aegis accuracy
+		if(sd->mount_id > 0) {
+			struct mount_data *mdb = mountdb_exists(sd->mount_id);
+			if(mdb != NULL)
+				dmax = mdb->max_hp;
+		} else {
+			double equip_bonus = 0, item_bonus = 0;
+			dmax = job_info[idx].base_hp[level-1] * (1 + (umax(stat,1) * 0.01)) * ((sd->class_&JOBL_UPPER)?1.25:(pc_is_taekwon_ranker(sd))?3:1);
+			dmax += status_get_hpbonus(&sd->bl,STATUS_BONUS_FIX);
+			equip_bonus = (dmax * status_get_hpbonus_equip(sd) / 100);
+			item_bonus = (dmax * status_get_hpbonus_item(&sd->bl) / 100);
+			dmax += equip_bonus + item_bonus;
+			dmax += (int64)(dmax * status_get_hpbonus(&sd->bl,STATUS_BONUS_RATE) / 100); //Aegis accuracy
+		}
 	}
 	else { //Calculates MaxSP
 		double equip_bonus = 0, item_bonus = 0;

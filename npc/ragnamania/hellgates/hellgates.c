@@ -54,6 +54,14 @@
 			end;
 		}
 
+		// Must be close to the portal in order to enter
+		getmapxy(.@mn$,.@xn,.@yn,BL_NPC);
+		getmapxy(.@mp$,.@xp,.@yp,BL_PC);
+		if(distance(.@xn,.@yn,.@xp,.@yp) > 2 ) {
+			dispbottom "You are too far from the Hell Gate",0xFF6600;
+			end;
+		}
+
 		if(getd("$@"+strnpcinfo(4)+"Party") == getcharid(1) && @hg_id > 0 && BaseLevel >= @HG_MIN_LEVEL) {
 			progressbar "0xff0000",5;
 			set getvariableofinstance('hg_party_count,@hg_id), getvariableofinstance('hg_party_count,@hg_id) + 1;
@@ -74,6 +82,9 @@
 
 	OnInit:
 		callfunc "hg_setmapflag",strnpcinfo(4);
+		getmapxy(.@m$,.@x,.@y,BL_NPC);
+		setd "."+.@m$+"_x", .@x;
+		setd "."+.@m$+"_y", .@y;
 	OnMinute00:
 	OnMinute10:
 	OnMinute20:
@@ -89,23 +100,28 @@
 		getmapxy(.@m$,.@x,.@y,BL_NPC);
 		if(getd("$@"+.@m$+"Guardian") < 2) {
 			monster .@m$,.@x,.@y,"Guardian",25224,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
+			set getd("."+.@m$+"_ggid"), $@mobid[0]; 
 			set getd("$@"+.@m$+"Guardian"), 2;
 		}
 		end;
 	
 	OnGuardianDead:
+		getmapxy(.@m$,.@x,.@y,BL_NPC);
 		if(getattachedrid() == 0) {
 			monster .@m$,.@x,.@y,"Guardian",25224,1,strnpcinfo(0)+"::OnGuardianDead",0,AI_NONE,DIR_SOUTH,0;
+			set getd("."+.@m$+"_ggid"), $@mobid[0]; 
 			end;
 		}
 		initnpctimer;
 		if(getcharid(1) == 0) {
-			party_create(md5(getcharid(0)),getcharid(0),0,0);
+			party_create(md5(""+getcharid(0)),getcharid(0),0,0);
 			sleep2 300;
 		}
 		set getd("$@"+strnpcinfo(4)+"Party"), getcharid(1);
 		set getd("$@"+strnpcinfo(4)+"Guardian"),1;
 
+		getunitdata getd("."+.@m$+"_ggid"), .@guardianData;
+		movenpc strnpcinfo(0),.@guardianData[6],.@guardianData[7];
 		setnpcdisplay(strnpcinfo(0),10007);
 
 		// Find an instanced hell or create one
@@ -125,6 +141,8 @@
 
 	OnTimer60000:
 		stopnpctimer;
+		getmapxy(.@m$,.@x,.@y,BL_NPC);
+		movenpc strnpcinfo(0),getd("."+.@m$+"_x"),getd("."+.@m$+"_y");
 		setnpcdisplay(strnpcinfo(0),111);
 		set getd("$@"+strnpcinfo(4)+"Guardian"),0;
 		end;

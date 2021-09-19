@@ -132,6 +132,107 @@ Body:
     Name: "Personal Storage"
     Table: "stor_ars_fild13_char_2"
     Max: 50
+  #Hellgates battle chests
+  - ID: 100
+    Name: "Personal Storage"
+    Table: "stor_moc_fild18_char_0"
+    Max: 200
+  - ID: 101
+    Name: "Personal Storage"
+    Table: "stor_moc_fild18_char_1"
+    Max: 200
+  - ID: 102
+    Name: "Personal Storage"
+    Table: "stor_moc_fild18_char_2"
+    Max: 200
+  - ID: 103
+    Name: "Personal Storage"
+    Table: "stor_moc_fild18_char_3"
+    Max: 200
+  - ID: 104
+    Name: "Personal Storage"
+    Table: "stor_moc_fild18_char_4"
+    Max: 200
+  - ID: 110
+    Name: "Personal Storage"
+    Table: "stor_pay_fild07_char_0"
+    Max: 200
+  - ID: 111
+    Name: "Personal Storage"
+    Table: "stor_pay_fild07_char_1"
+    Max: 200
+  - ID: 112
+    Name: "Personal Storage"
+    Table: "stor_pay_fild07_char_2"
+    Max: 200
+  - ID: 113
+    Name: "Personal Storage"
+    Table: "stor_pay_fild07_char_3"
+    Max: 200
+  - ID: 114
+    Name: "Personal Storage"
+    Table: "stor_pay_fild07_char_4"
+    Max: 200
+  - ID: 120
+    Name: "Personal Storage"
+    Table: "stor_ra_fild13_char_0"
+    Max: 200
+  - ID: 121
+    Name: "Personal Storage"
+    Table: "stor_ra_fild13_char_1"
+    Max: 200
+  - ID: 122
+    Name: "Personal Storage"
+    Table: "stor_ra_fild13_char_2"
+    Max: 200
+  - ID: 123
+    Name: "Personal Storage"
+    Table: "stor_ra_fild13_char_3"
+    Max: 200
+  - ID: 124
+    Name: "Personal Storage"
+    Table: "stor_ra_fild13_char_4"
+    Max: 200
+  - ID: 130
+    Name: "Personal Storage"
+    Table: "stor_prt_fild00_char_0"
+    Max: 200
+  - ID: 131
+    Name: "Personal Storage"
+    Table: "stor_prt_fild00_char_1"
+    Max: 200
+  - ID: 132
+    Name: "Personal Storage"
+    Table: "stor_prt_fild00_char_2"
+    Max: 200
+  - ID: 133
+    Name: "Personal Storage"
+    Table: "stor_prt_fild00_char_3"
+    Max: 200
+  - ID: 134
+    Name: "Personal Storage"
+    Table: "stor_prt_fild00_char_4"
+    Max: 200
+  - ID: 140
+    Name: "Personal Storage"
+    Table: "stor_hu_fild03_char_0"
+    Max: 200
+  - ID: 141
+    Name: "Personal Storage"
+    Table: "stor_hu_fild03_char_1"
+    Max: 200
+  - ID: 142
+    Name: "Personal Storage"
+    Table: "stor_hu_fild03_char_2"
+    Max: 200
+  - ID: 143
+    Name: "Personal Storage"
+    Table: "stor_hu_fild03_char_3"
+    Max: 200
+  - ID: 144
+    Name: "Personal Storage"
+    Table: "stor_hu_fild03_char_4"
+    Max: 200
 Footer:
   Imports:
     - Path: conf/import/inter_server.yml

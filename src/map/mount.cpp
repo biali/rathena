@@ -455,6 +455,8 @@ void mount_pc_status(struct map_session_data *sd) {
 		sd->tmp_maxhp = pc_readparam(sd, SP_MAXHP);
 		pc_setparam( sd, SP_MAXHP, mdb->max_hp );
     	pc_setparam( sd, SP_HP, mdb->max_hp );
+		// sd->status.max_hp = status_calc_maxhpsp_pc(sd,sd->status.vit,true);
+		
 
 		status->race 	 = mdb->race;
 		status->def_ele	 = mdb->ele;
