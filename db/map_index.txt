@@ -1084,6 +1084,7 @@ event_01
 
 hell
 farm
+gincana
 
 //bg_ball
 soccer3

@@ -308,3 +308,11 @@ Body:
       Map: ars_phare
       X: 72
       Y: 140
+  - Id: 62
+    Name: Maze Runner
+    TimeLimit: 1260
+    IdleTimeOut: 30
+    Enter:
+      Map: maze
+      X: 371
+      Y: 143

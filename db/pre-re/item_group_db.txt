@@ -2919,6 +2919,34 @@ IG_RM_007,619,100,1,0   // unripe apple
 IG_RM_007,1025,100,2,0  // spider web
 
 
+// Gincana Rewards
+IG_RM_008,616,90,1,1,0	// Old_Card_Album
+IG_RM_008,12208,90,2,1,0,0,1	// 2x Battle_Manual
+IG_RM_008,12219,150,2,1,0,0,1	// 2x Wind_Walk_10_Scroll
+IG_RM_008,7621,200,2,1,0,0,1	// 2x Token_Of_Siegfried
+IG_RM_008,12212,200,2,1,0,0,1	// 2x Giant_Fly_Wing
+IG_RM_008,12217,200,2,1,0,0,1	// 2x Aspersio_5_Scroll
+IG_RM_008,12208,150,2,1,0,0,1	// 2x Battle_Manual
+IG_RM_008,7619,135,1,1,0,0,1	// 1x Enriched_Elunium
+IG_RM_008,12210,200,1,1,0,0,1	// 1x Bubble_Gum
+IG_RM_008,12107,3,1,1	// 1x Wrapped_Mask
+IG_RM_008,678,10,2,1	// 2x Poison_Bottle
+IG_RM_008,12105,5,1,1	// 1x Set_Of_Taiming_Item
+IG_RM_008,12016,80,2,1	// 2x Speed_Up_Potion
+IG_RM_008,603,19,1,1	// 1x Old_Blue_Box
+IG_RM_008,604,14,5,1	// 5x Branch_Of_Dead_Tree
+IG_RM_008,12110,19,1,1	// 1x First_Aid_Kit
+IG_RM_008,12302,50,2,1	// 2x Ygnizem_Scroll
+IG_RM_008,12300,60,2,1	// 2x Wild_Rose_Scroll
+IG_RM_008,644,70,1,1	// 1x Gift_Box
+IG_RM_008,12132,70,3,1	// 3x Red_Bag
+IG_RM_008,12260,70,1,1	// 1x Cool_Summer_Outfit
+IG_RM_008,12017,80,2,1	// 2x Slow_Down_Potion
+
+
+
+
+
 IG_ADVENTURER_BOX,12100,10,5,1,0,0,1,1,0	// 5x Luk_Dish10
 IG_ADVENTURER_BOX,12073,10,5,1,0,0,1,1,0	// 5x Str_Dish08
 IG_ADVENTURER_BOX,12048,10,5,1,0,0,1,1,0	// 5x Int_Dish03
