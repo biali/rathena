@@ -56,6 +56,7 @@ L_Menu:
 		mes "Level: [ " + callfunc("F_GetProfLevel",PRO_INFO[0]) +" ]";
 		if(PRO_INFO[0] < 7)
 			mes "Exp: [ " + PRO_INFO[1] * 100 / 1000 + "% ]";
+		mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",getvariableofnpc(.max_focus, "focus")) + "^000000";
 		mes " ";
 	}
 

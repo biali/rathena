@@ -8144,8 +8144,8 @@ Body:
       CastSensorChase: true
       Angry: true
   - Id: 25701
-    AegisName: LESSER_VEIN
-    Name: Lesser Vein
+    AegisName: L_VEIN_COPPER
+    Name: Lesser Copper Vein
     Level: 1
     Hp: 3
     Attack: 1
@@ -8168,36 +8168,11 @@ Body:
       IgnoreMelee: true
       IgnoreMisc: true
       IgnoreRanged: true
-    Drops:
-      - Item: Oridecon
-        Rate: 250
-        StealProtected: true
-      - Item: Elunium
-        Rate: 250
-        StealProtected: true
-      - Item: Enriched_Elunium
-        Rate: 100
-        StealProtected: true
-      - Item: Azure_Jewel
-        Rate: 1000
-        StealProtected: true
-      - Item: White_Jewel
-        Rate: 2800
-        StealProtected: true
-      - Item: Brigan
-        Rate: 3500
-        StealProtected: true
-      - Item: Oridecon_Stone
-        Rate: 5500
-        StealProtected: true
-      - Item: Elunium_Stone
-        Rate: 5500
-        StealProtected: true
   - Id: 25702
-    AegisName: LESSER_VEIN_EMPTY
-    Name: Greater Vein
+    AegisName: L_VEIN_COPPER_E
+    Name: Lesser Drained Copper Vein
     Level: 1
-    Hp: 5
+    Hp: 3
     Attack: 1
     Attack2: 2
     Defense: 1
@@ -8219,8 +8194,8 @@ Body:
       IgnoreMisc: true
       IgnoreRanged: true
   - Id: 25703
-    AegisName: GREATER_VEIN
-    Name: Greater Vein
+    AegisName: L_VEIN_TIN
+    Name: Lesser Tin Vein
     Level: 1
     Hp: 3
     Attack: 1
@@ -8243,36 +8218,611 @@ Body:
       IgnoreMelee: true
       IgnoreMisc: true
       IgnoreRanged: true
-    Drops:
-      - Item: Oridecon
-        Rate: 250
-        StealProtected: true
-      - Item: Elunium
-        Rate: 250
-        StealProtected: true
-      - Item: Enriched_Elunium
-        Rate: 100
-        StealProtected: true
-      - Item: Azure_Jewel
-        Rate: 1000
-        StealProtected: true
-      - Item: White_Jewel
-        Rate: 2800
-        StealProtected: true
-      - Item: Brigan
-        Rate: 3500
-        StealProtected: true
-      - Item: Oridecon_Stone
-        Rate: 5500
-        StealProtected: true
-      - Item: Elunium_Stone
-        Rate: 5500
-        StealProtected: true
   - Id: 25704
-    AegisName: GREATER_VEIN_EMPTY
-    Name: Empty Greater Vein
+    AegisName: L_VEIN_TIN_E
+    Name: Lesser Drained Tin Vein
     Level: 1
-    Hp: 5
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25705
+    AegisName: L_VEIN_IRON
+    Name: Lesser Iron Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25706
+    AegisName: L_VEIN_IRON_E
+    Name: Lesser Drained Iron Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25707
+    AegisName: L_VEIN_TITANIUM
+    Name: Lesser Titanium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25708
+    AegisName: L_VEIN_TITANIUM_E
+    Name: Lesser Drained Titanium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25709
+    AegisName: L_VEIN_RUNITE
+    Name: Lesser Runite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25710
+    AegisName: L_VEIN_RUNITE_E
+    Name: Lesser Drained Runite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25711
+    AegisName: L_VEIN_METEORITE
+    Name: Lesser Meteorite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25712
+    AegisName: L_VEIN_METEORITE_E
+    Name: Lesser Drained Meteorite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25713
+    AegisName: L_VEIN_ADAMANTIUM
+    Name: Lesser Adamantium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25714
+    AegisName: L_VEIN_ADAMANTIUM_E
+    Name: Lesser Drained Adamantium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25721
+    AegisName: G_VEIN_COPPER
+    Name: Greater Copper Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25722
+    AegisName: G_VEIN_COPPER_E
+    Name: Greater Drained Copper Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25723
+    AegisName: G_VEIN_TIN
+    Name: Greater Tin Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25724
+    AegisName: G_VEIN_TIN_E
+    Name: Greater Drained Tin Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25725
+    AegisName: G_VEIN_IRON
+    Name: Greater Iron Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25726
+    AegisName: G_VEIN_IRON_E
+    Name: Greater Drained Iron Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25727
+    AegisName: G_VEIN_TITANIUM
+    Name: Greater Titanium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25728
+    AegisName: G_VEIN_TITANIUM_E
+    Name: Greater Drained Titanium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25729
+    AegisName: G_VEIN_RUNITE
+    Name: Greater Runite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25730
+    AegisName: G_VEIN_RUNITE_E
+    Name: Greater Drained Runite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25731
+    AegisName: G_VEIN_METEORITE
+    Name: Greater Meteorite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25732
+    AegisName: G_VEIN_METEORITE_E
+    Name: Greater Drained Meteorite Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25733
+    AegisName: G_VEIN_ADAMANTIUM
+    Name: Greater Adamantium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25734
+    AegisName: G_VEIN_ADAMANTIUM_E
+    Name: Greater Drained Adamantium Vein
+    Level: 1
+    Hp: 3
     Attack: 1
     Attack2: 2
     Defense: 1

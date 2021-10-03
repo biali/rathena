@@ -523,6 +523,7 @@ L_MENU:
 	mes .n$;
 	mes "Title: ^0000FF" + getTitle(PRO_INFO[0]) + "^000000";
 	mes "Exp: ^0000FF" +  PRO_INFO[1] + "/1000^000000";
+	mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",getvariableofnpc(.max_focus, "focus")) + "^000000";
 	next;
 	mes .n$;
 
@@ -566,7 +567,6 @@ L_MENU:
 			mes .n$;
 			mes "Craft: ^FF6600" + getitemname(.@id) + "^000000";
 			mes "Resource List:";
-
 			// for those gears with two arrays (normal/advanced) look for the item index in the second array, the full one (lvl 6+)
 			if(getarraysize(getvariableofnpc(getd(".Craftsman_"+.@mn$+"p$["+.@op+"]"),"craftsman")) > 0 )
 				.@op = inarray(getvariableofnpc(getd(".Craftsman_"+.@mn$+"p$["+.@op+"]"),"craftsman"), .@id);
@@ -582,14 +582,22 @@ L_MENU:
 				}
 			}
 
+			.@cost = .cost - (.@lv * 10);
+			mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost) + "^000000";
+
+			if(FOCUS < .@cost) {
+				mes "^ff0000 ** Not enough Focus **^000000";
+				next;
+				goto L_MENU;
+			}
+
 			if(.@pass) {
 				if(select("Craft now:^AA0000Cancel^000000") == 2) {
 					clear;
 					goto L_MENU;
 				}
-
+				set FOCUS, FOCUS - .@cost;
 				craft(.@id);
-
 			} 
 			mes "^ff0000 ** Missing Materials **^000000";
 			next;
@@ -641,12 +649,21 @@ L_MENU:
 				}
 			}
 
+			.@cost = .cost - (.@lv * 10);
+			mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost) + "^000000";
+
+			if(FOCUS < .@cost) {
+				mes "^ff0000 ** Not enough Focus **^000000";
+				next;
+				goto L_MENU;
+			}
+
 			if(.@pass) {
 				if(select("Craft now:^AA0000Cancel^000000") == 2) {
 					clear;
 					goto L_MENU;
 				}
-
+				set FOCUS, FOCUS - .@cost;
 				craft(.@id);
 
 			} 
@@ -680,6 +697,7 @@ OnPCLogoutEvent:
 
 OnInit:
 	.n$ = "^ff6600[ Craftsman Furnace ]^000000";
+	.cost = 1000; // base cost in focus
 	end;
 
 
@@ -807,7 +825,7 @@ OnInit:
 		
 		clear;
 		mes .n$;
-		mes "You don't have access to these options yet.";
+		mes "You don't have access to this option yet.";
 		next;
 		clear;
 		goto L_MENU;
@@ -816,4 +834,4 @@ OnInit:
 }
 
 // SHOPS
--	shop	Craftsman Shop	-1,6010:-1,30310:-1,30311:-1,24502:8000;
+-	shop	Craftsman Shop	-1,30311:-1,30312:-1,30313:-1,30314:-1,30315:-1,30316:-1,30317:-1,30318:-1,24502:8000;

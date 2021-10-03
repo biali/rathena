@@ -7641,12 +7641,11 @@ Body:
       BuyingStore: true
     Script: |
       callfunc "farm",2,7194;
-  - Id: 6010
-    AegisName: Pickaxe
-    Name: Pickaxe
+  - Id: 30311
+    AegisName: Apprentice_Pickaxe
+    Name: Apprentice's Pickaxe
     Type: Armor
-    Buy: 12000
-    Sell: 140
+    Buy: 500
     Weight: 400
     Attack: 39
     Range: 1
@@ -7656,111 +7655,265 @@ Body:
     Refineable: false
     Flags:
       BuyingStore: false
-    Script: |
-      if(PROFESSION != CRAFTSMAN) end; 
-      bonus2 bAddRace,RC_Brute,10; 
-      bonus2 bSubRace,RC_Brute,5;
-      bonus2 bAddRace,RC_Insect,10; 
-      bonus2 bSubRace,RC_Insect,5; 
-      bonus3 bAddMonsterDropItem,702,RC_Brute,200; 
-      bonus3 bAddMonsterDropItem,7055,RC_Brute,200; 
-      bonus3 bAddMonsterDropItem,919,RC_Brute,200; 
-      bonus3 bAddMonsterDropItem,30350,RC_Brute,200; 
-      bonus3 bAddMonsterDropItem,30351,RC_Brute,250; 
-      bonus3 bAddMonsterDropItem,30352,RC_Brute,250; 
-      bonus3 bAddMonsterDropItem,1059,RC_Insect,200;
-      bonus3 bAddMonsterDropItem,30400,RC_Insect,200;
-      bonus3 bAddMonsterDropItem,30401,RC_Insect,250;
-  - Id: 30310
-    AegisName: Improved_Pickaxe
-    Name: Improved Pickaxe
-    Type: Weapon
-    Subtype: Dagger
-    Buy: 3000000
-    Sell: 140
-    Weight: 200
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+  - Id: 30312
+    AegisName: Journeyman_Pickaxe
+    Name: Journeyman's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
     Attack: 39
     Range: 1
     Locations:
-      Right_Hand: true
-    WeaponLevel: 1
+      Right_Accessory: true
     EquipLevelMin: 1
     Refineable: false
     Flags:
       BuyingStore: false
-    Script: >
-      if(PROFESSION != CRAFTSMAN) end; 
-      if( PRO_INFO[0] >= 1) {
-        bonus2 bAddRace,RC_Brute,15; 
-        bonus2 bSubRace,RC_Brute,10; 
-        bonus2 bAddRace,RC_Insect,15; 
-        bonus2 bSubRace,RC_Insect,10; 
-        bonus3 bAddMonsterDropItem,702,RC_Brute,350; 
-        bonus3 bAddMonsterDropItem,7055,RC_Brute,350; 
-        bonus3 bAddMonsterDropItem,919,RC_Brute,350; 
-        bonus3 bAddMonsterDropItem,30350,RC_Brute,350; 
-        bonus3 bAddMonsterDropItem,30351,RC_Brute,400; 
-        bonus3 bAddMonsterDropItem,30352,RC_Brute,400; 
-        bonus3 bAddMonsterDropItem,1059,RC_Insect,400;
-        bonus3 bAddMonsterDropItem,30400,RC_Insect,250;
-        bonus3 bAddMonsterDropItem,30401,RC_Insect,300;
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 1) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",1) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
       }
-  - Id: 30311
-    AegisName: Enriched_Pickaxe
-    Name: Enriched_Pickaxe
-    Type: Weapon
-    Subtype: Dagger
-    Buy: 12000000
-    Sell: 140
-    Weight: 20
+  - Id: 30313
+    AegisName: Skilled_Pickaxe
+    Name: Skilled's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
     Attack: 39
     Range: 1
     Locations:
-      Right_Hand: true
-    WeaponLevel: 1
+      Right_Accessory: true
     EquipLevelMin: 1
     Refineable: false
     Flags:
       BuyingStore: false
-    Script: |
-      if(PROFESSION != CRAFTSMAN) end; 
-      if( PRO_INFO[0] >= 2) {
-        bonus2 bAddRace,RC_Brute,20;
-        bonus2 bSubRace,RC_Brute,20;
-        bonus2 bAddRace,RC_Insect,20;
-        bonus2 bSubRace,RC_Insect,20;
-        bonus3 bAddMonsterDropItem,702,RC_Brute,450; 
-        bonus3 bAddMonsterDropItem,7055,RC_Brute,450; 
-        bonus3 bAddMonsterDropItem,919,RC_Brute,450; 
-        bonus3 bAddMonsterDropItem,30350,RC_Brute,450; 
-        bonus3 bAddMonsterDropItem,30351,RC_Brute,500; 
-        bonus3 bAddMonsterDropItem,30352,RC_Brute,500; 
-        bonus3 bAddMonsterDropItem,1059,RC_Insect,500;
-        bonus3 bAddMonsterDropItem,30400,RC_Insect,350;
-        bonus3 bAddMonsterDropItem,30401,RC_Insect,400;
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 2) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",2) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
       }
-  - Id: 30350
-    AegisName: Fine_Animal_Pelt
-    Name: Fine Animal Pelt
-    Type: Etc
-    Buy: 850
-    Weight: 15
+  - Id: 30314
+    AegisName: Expert_Pickaxe
+    Name: Expert's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
     Flags:
-      BuyingStore: true
+      BuyingStore: false
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 3) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",3) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
+      }
+  - Id: 30315
+    AegisName: Artisan_Pickaxe
+    Name: Artisan's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 4) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",4) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
+      }
+  - Id: 30316
+    AegisName: Master_Pickaxe
+    Name: Master's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 5) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",5) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
+      }
+  - Id: 30317
+    AegisName: Grand_Master_Pickaxe
+    Name: Grand-Master's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 6) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",6) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
+      }
+  - Id: 30318
+    AegisName: Illustrious_Pickaxe
+    Name: Illustrious's Pickaxe
+    Type: Armor
+    Buy: 500
+    Weight: 400
+    Attack: 39
+    Range: 1
+    Locations:
+      Right_Accessory: true
+    EquipLevelMin: 1
+    Refineable: false
+    Flags:
+      BuyingStore: false
+    EquipScript: |
+      if(PROFESSION != CRAFTSMAN) { unequip(EQI_ACC_R); end; }
+      if(PRO_INFO[0] < 7) {
+        unequip(EQI_ACC_R);
+        dispbottom "I need to be a " + callfunc("F_GetProfLevel",7) + " " + callfunc("F_GetProfName") + " to equip that",0xFF6600;
+        end;
+      }
   - Id: 30351
-    AegisName: Thick_Animal_Pelt
-    Name: Thick Animal Pelt
+    AegisName: Perfect_Copper
+    Name: Perfect Copper
     Type: Etc
-    Buy: 960
-    Weight: 30
+    Buy: 100
+    Weight: 200
     Flags:
       BuyingStore: true
   - Id: 30352
-    AegisName: Exquisite_Animal_Pelt
-    Name: Exquisite Animal Pelt
+    AegisName: Perfect_Tin
+    Name: Perfect Tin
     Type: Etc
-    Buy: 1100
-    Weight: 15
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30353
+    AegisName: Perfect_Iron
+    Name: Perfect Iron
+    Type: Etc
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30354
+    AegisName: Perfect_Titanium
+    Name: Perfect Titanium
+    Type: Etc
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30355
+    AegisName: Perfect_Runite
+    Name: Perfect Runite
+    Type: Etc
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30356
+    AegisName: Perfect_Meteorite
+    Name: Perfect Meteorite
+    Type: Etc
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30357
+    AegisName: Perfect_Adamantium
+    Name: Perfect Adamantium
+    Type: Etc
+    Buy: 100
+    Weight: 200
+    Flags:
+      BuyingStore: true
+  - Id: 30361
+    AegisName: Copper_Bar
+    Name: Copper Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30362
+    AegisName: Bronze_Bar
+    Name: Bronze Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30363
+    AegisName: Steel_Bar
+    Name: Steel Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30364
+    AegisName: Titanium_Steel_Bar
+    Name: Titanium Steel Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30365
+    AegisName: Runite_Steel_Bar
+    Name: Runite Steel Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30366
+    AegisName: Meteorite_Steel_Bar
+    Name: Meteorite Steel Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
+    Flags:
+      BuyingStore: true
+  - Id: 30367
+    AegisName: Adamantium_Steel_Bar
+    Name: Adamantium Steel Bar
+    Type: Etc
+    Buy: 100
+    Weight: 800
     Flags:
       BuyingStore: true
   - Id: 30400
@@ -7779,3 +7932,224 @@ Body:
     Weight: 5
     Flags:
       BuyingStore: true
+  - Id: 24000
+    AegisName: Heirloom_Tabard
+    Name: Heirloom Tabard
+    Type: Shadowgear
+    Locations:
+      Shadow_Armor: true
+    EquipLevelMin: 1
+    Refineable: false
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Flags:
+      fulllootNoDrop: true
+    Script: >
+      bonus2 bExpAddClass,Class_All,25;
+  - Id: 24001
+    AegisName: Heirloom_Socks
+    Name: Heirloom Socks
+    Type: Shadowgear
+    Locations:
+      Shadow_Shoes: true
+    EquipLevelMin: 1
+    Refineable: false
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Flags:
+      fulllootNoDrop: true
+    Script: >
+      bonus2 bExpAddClass,Class_All,25;
+  - Id: 24002
+    AegisName: Heirloom_Pocket_Watch
+    Name: Heirloom Pocket Watch
+    Type: Shadowgear
+    Locations:
+      Shadow_Right_Accessory: true
+    EquipLevelMin: 80
+    Refineable: false
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Flags:
+      fulllootNoDrop: true
+    Script: >
+      bonus2 bExpAddClass,Class_All,25;
+  - Id: 24003
+    AegisName: Heirloom_Brooch
+    Name: Heirloom Brooch
+    Type: Shadowgear
+    Locations:
+      Shadow_Left_Accessory: true
+    EquipLevelMin: 90
+    Refineable: false
+    Trade:
+      Override: 100
+      NoDrop: true
+      NoTrade: true
+      NoCart: true
+      NoGuildStorage: true
+      NoMail: true
+      NoAuction: true
+    Flags:
+      fulllootNoDrop: true
+    Script: >
+      bonus2 bExpAddClass,Class_All,25;
+  - Id: 30512
+    AegisName: Perfect_Apple
+    Name: Perfect Apple
+    Type: Healing
+    Buy: 30
+    Weight: 20
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal rand(160,220),0;
+  - Id: 30514
+    AegisName: Perfect_Grape
+    Name: Perfect Grape
+    Type: Healing
+    Buy: 30
+    Weight: 20
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal 0,rand(15,30);
+  - Id: 30578
+    AegisName: Perfect_Strawberry
+    Name: Perfect Strawberry
+    Type: Healing
+    Buy: 30
+    Weight: 20
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal 0,rand(25,50);
+  - Id: 30582
+    AegisName: Perfect_Orange
+    Name: Perfect Orange
+    Type: Healing
+    Buy: 30
+    Weight: 20
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal rand(20,30),rand(20,30);
+  - Id: 30576
+    AegisName: Perfect_Prickly_Fruit
+    Name: Perfect Prickly Fruit
+    Type: Healing
+    Buy: 30
+    Weight: 60
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal rand(300,400),rand(80,150);
+  - Id: 30522
+    AegisName: Perfect_Mastela
+    Name: Perfect Mastela Fruit
+    Type: Healing
+    Buy: 30
+    Weight: 30
+    Flags:
+      BuyingStore: true
+    Script: |
+      itemheal rand(600,1000),0;
+  - Id: 30607
+    AegisName: Perfect_Yggdrasilberry
+    Name: Perfect Yggdrasil Berry
+    Type: Healing
+    Buy: 30
+    Weight: 200
+    Flags:
+      BuyingStore: true
+    Delay:
+      Duration: 2000
+      Status: Reuse_Limit_F
+    Script: |
+      percentheal 100,100;
+  - Id: 30531
+    AegisName: Apple_Juice_Plus
+    Name: Apple Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Script: |
+      itemheal rand(60,100),0;
+  - Id: 30533
+    AegisName: Grapes_Juice_Plus
+    Name: Grapes Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Script: |
+      itemheal 0,rand(50,100);
+  - Id: 30620
+    AegisName: Orange_Juice_Plus
+    Name: Orange Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Script: |
+      itemheal rand(100,160),rand(30,100);
+  - Id: 30650
+    AegisName: Strawberry_Juice_Plus
+    Name: Strawberry Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Script: |
+      itemheal 0,rand(100,250);
+  - Id: 30700
+    AegisName: Prickly_Juice_Plus
+    Name: Prickly Fruit Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Script: |
+      itemheal rand(400,500),rand(120,200);
+  - Id: 30750
+    AegisName: Mastela_Juice_Plus
+    Name: Mastela Juice+
+    Type: Healing
+    Buy: 30
+    Weight: 50
+    Flags:
+      BuyingStore: true
+    Delay:
+      Duration: 1000
+      Status: Reuse_Limit_F
+    Script: |
+      itemheal rand(600,1000),rand(150,300);
+  - Id: 30800
+    AegisName: Yggdrasil_Mix
+    Name: Yggdrasil Mix
+    Type: Healing
+    Buy: 30
+    Weight: 500
+    Flags:
+      BuyingStore: true
+    Delay:
+      Duration: 180000
+      Status: Reuse_Limit_F
+    Script: |
+      percentheal 100,100;
+      sc_start SC_INCALLSTATUS,60000,5;
+  

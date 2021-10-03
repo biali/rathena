@@ -165,3 +165,4 @@
 //5470:5653,{ bonus bDex,1; bonus bLongAtkRate,3; }
 13034:13035,{ bonus bMaxSP,20; bonus bMaxHPRate,5; bonus bHit,10; bonus2 bAddSize,Size_Large,30; autobonus "{ bonus bAspdRate,100; }",1,7000,BF_WEAPON,"{ specialeffect2 EF_POTION_BERSERK; }"; }
 18507:18539,{ bonus bUseSPrate,-3; }
+24000:24001:24002:24003,{ bonus2 bExpAddClass,Class_All,50; }

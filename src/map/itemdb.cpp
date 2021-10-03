@@ -585,6 +585,32 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->flag.ancient = false;
 		}
 
+		// biali : mount system
+		if (this->nodeExists(flagNode, "isMount")) {
+			bool active;
+
+			if (!this->asBool(flagNode, "isMount", active))
+				return 0;
+
+			item->flag.isMount = active;
+		} else {
+			if (!exists)
+				item->flag.isMount = false;
+		}
+
+		// biali : protected from dropping in fullloot maps
+		if (this->nodeExists(flagNode, "fulllootNoDrop")) {
+			bool active;
+
+			if (!this->asBool(flagNode, "fulllootNoDrop", active))
+				return 0;
+
+			item->flag.fulllootNoDrop = active;
+		} else {
+			if (!exists)
+				item->flag.fulllootNoDrop = false;
+		}
+
 		if (this->nodeExists(flagNode, "UniqueId")) {
 			bool active;
 

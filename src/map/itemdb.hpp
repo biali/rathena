@@ -932,6 +932,7 @@ struct item_data
 		bool bindOnEquip; ///< Set item as bound when equipped
 		bool ancient; // Biali Ancient WoE
 		bool isMount; // Biali used to summon a mount
+		bool fulllootNoDrop; // biali items that wont ever drop in fullloot maps
 		e_item_drop_effect dropEffect; ///< Drop Effect Mode
 	} flag;
 	struct {// item stacking limitation

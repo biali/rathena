@@ -52,22 +52,23 @@ L_MENU:
 			break;
 		case 1:
 			cleararray @ids[0],0,getarraysize(@ids);
+			// craftable items comma separated eg "1030,1045,1050"
 			switch(.@lv) {
 				case 7:
 				case 6:
-					.@menu$ += add2menu("12320,12437");
+					.@menu$ += add2menu("30800");
 				case 5: // mastela
-					.@menu$ += add2menu("12050,505,11502");
+					.@menu$ += add2menu("30750");
 				case 4: // pricly
-					.@menu$ += add2menu("12332,12067");
+					.@menu$ += add2menu("30700");
 				case 3: // strawberry
-					.@menu$ += add2menu("12235,504,11501,547");
+					.@menu$ += add2menu("30650");
 				case 2: // orange
-					.@menu$ += add2menu("620,502,599");
+					.@menu$ += add2menu("30620");
 				case 1: // grape
-					.@menu$ += add2menu("533,12061,656,506");
+					.@menu$ += add2menu("30533");
 				case 0: // apple
-					.@menu$ += add2menu("531,6108,501,598,545");
+					.@menu$ += add2menu("30531");
 					break;
 			}
 			break;
@@ -81,8 +82,11 @@ L_MENU:
 
 	clear;
 DO_IT:
+	set .@lv, PRO_INFO[0]+1;
 	mes .n$;
 	mes "Producing: ^0000FF" + .@names$[.@op] + "^000000";
+	set .@cost, $rQtd - .@lv;
+	mes "Focus: ^000000("+ callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost) + ")";
 	mes "Ingredients:";
 	
 	if(showIngredients(@ids[.@op]) == 1) {
@@ -94,6 +98,12 @@ DO_IT:
 			goto L_MENU;
 		}
 
+		if(FOCUS < .@cost) {
+			mes "^FF0000 You don't have enough Focus to do this.";
+			next;
+			goto L_MENU;
+		}
+
 		for(.@i=0; .@i<getarraysize(@ingredients); .@i+=2) {
 			if(countitem(@ingredients[.@i]) < @ingredients[(.@i+1)] ) {
 				mes "^ff0000ERROR! Items no longer found in the inventory. This incident has been reported to the staff.^000000";
@@ -102,9 +112,10 @@ DO_IT:
 			}
 		}
 
-		for(.@i=0; .@i<getarraysize(@ingredients); .@i+=2) {
+		for(.@i=0; .@i<getarraysize(@ingredients); .@i+=2)
 			delitem @ingredients[.@i], @ingredients[(.@i+1)];
-		}
+		
+		set FOCUS, FOCUS - .@cost;
 
 		cutin "f_00",2; sleep2 200; specialeffect2 457;
 		cutin "f_01",2; sleep2 200;
@@ -115,11 +126,13 @@ DO_IT:
 		cutin "f_06",2; sleep2 200; specialeffect2 457;
 		cutin "f_ok",2; sleep2 500; cutin "",255; 
 
-		getitem @ids[.@op],1;
 		clear;
 		mes .n$;
 		mes "^00AA00Success!^000000";
 		specialeffect2 305;
+		getitem @ids[.@op],1;
+
+		callfunc "updateXP";
 		next;
 		goto DO_IT;
 
@@ -133,35 +146,41 @@ DO_IT:
 
 OnInit:
 	.n$ = "^FF6600[ Cheff ]^000000";
-	setarray .i_531[0],512,3;
-	setarray .i_6108[0],512,3,909,5;
-	setarray .i_501[0],512,5,507,1;
-	setarray .i_598[0],512,8,507,5;
-	setarray .i_545[0],512,10,507,10;
+	// apples
+	setarray .i_30531[0],30512,1,512,2;
+	// setarray .i_501[0],512,5,507,1;
+	// setarray .i_598[0],512,8,507,5;
+	// setarray .i_545[0],512,10,507,10;
 
-	setarray .i_533[0],514,3;
-	setarray .i_12061[0],514,5,518,1;
-	setarray .i_656[0],514,5,511,2;
-	setarray .i_506[0],514,1,511,5;
+	// grapes
+	setarray .i_30533[0],30514,1,30512,2;
+	// setarray .i_12061[0],514,5,518,1;
+	// setarray .i_656[0],514,5,511,2;
+	// setarray .i_506[0],514,1,511,5;
 
-	setarray .i_620[0],582,3;
-	setarray .i_502[0],582,5,508,1;
-	setarray .i_599[0],582,8,508,5;
+	// oranges
+	setarray .i_30620[0],30582,1,30514,2;
+	// setarray .i_502[0],582,5,508,1;
+	// setarray .i_599[0],582,8,508,5;
 
-	setarray .i_12235[0],578,5,509,2;
-	setarray .i_504[0],509,5;
-	setarray .i_11501[0],509,8;
-	setarray .i_547[0],578,2,509,10;
+	// strawberries
+	setarray .i_30650[0],30578,1,30582,2;
+	// setarray .i_504[0],509,5;
+	// setarray .i_11501[0],509,8;
+	// setarray .i_547[0],578,2,509,10;
 
-	setarray .i_12332[0],576,3,587,3,514,3;
-	setarray .i_12067[0],576,3,587,3,578,3;
+	// prickly
+	setarray .i_30700[0],30576,1,30578,2;
+	// setarray .i_12067[0],576,3,587,3,578,3;
 
-	setarray .i_12050[0],522,3,12067,1;
-	setarray .i_505[0],510,6;
-	setarray .i_11502[0],510,5,522,1;
+	// mastela
+	setarray .i_30750[0],30522,1,30576,2;
+	// setarray .i_505[0],510,6;
+	// setarray .i_11502[0],510,5,522,1;
 
-	setarray .i_12320[0],607,2,12292,2;
-	setarray .i_12437[0],607,3,11502,1;
+	// yggdrasil
+	setarray .i_30800[0],30607,1,30522,1,30576,1,30578,1,30582,1,30514,1,30512,1;
+	// setarray .i_12437[0],607,3,11502,1;
 	end;
 
 
@@ -285,7 +304,6 @@ function	script	farm	{
 
 // Main NPC
 -	script	planta2	-1,{
-	function updateXP;
 
 	getmapxy(.@map$, .@x, .@y, BL_NPC);
 	for(.@a=0;.@a<getstrlen(strnpcinfo(2));.@a++) {
@@ -299,11 +317,15 @@ function	script	farm	{
 		if(.@cID) {
 			mes "^ff0000Plant Name:^000000 "+$@PlantName$[.@pID]+"";			
 			mes "^ff0000Growth:^000000 "+.@stage+"/4";		
-			mes "";			
-			set .@calcT,.@time-gettimetick(2);
+			mes "";
 
-			mes "^ff0000"+(.@stage == 3 ? "Ready to Harvest:":"Next Stage:")+"^000000 "+ ( .@calcT < 3600 ? (.@calcT < 60 ? (.@calcT < 0 ? "Ready":.@calcT+"sec"):(.@calcT/60)+"min+") : (.@calcT/3600)+":"+(.@calcT%3600)/60 + " hours" );
-			
+			if(.@stage < 4) {
+				set .@cost, $rQtd - .@pID;
+				mes "^ff0000Focus: ^000000("+ callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost)+ ")";
+			} else {
+				set .@calcT,.@time-gettimetick(2);
+				mes "^ff0000Harvest: ^000000 "+ ( .@calcT < 3600 ? (.@calcT < 60 ? (.@calcT < 0 ? "Ready":.@calcT+"sec"):(.@calcT/60)+"min+") : (.@calcT/3600)+" hours and "+(.@calcT%3600)/60 + " minutes" );
+			}
 			menu (.@stage < 4 ? "Water":"")+"",-,(.@stage == 4 ? "Harvest":"")+"",-,"Close",-;
 			set .@mn,@menu;
 			set .@PlantInfo,explode(.@PlantVal$, callfunc("plant_type",.@pID),",");
@@ -323,13 +345,14 @@ function	script	farm	{
 					
 					if(.@stage < 4)
 					{	// Water
-						if(countitem($Regador) < $rQtd){ 
-							mes "^FF0000* You'll need a "+$rQtd+"x "+getitemname($Regador)+" in order to do that.^000000"; 
-							close; 
-						}									
+						if(FOCUS < .@cost) {
+							mes "^FF0000* You don't have enough Focus to do that.^000000";
+							close;
+						}								
 						set .@nTmp$,strnpcinfo(0);
 						query_sql "UPDATE `farm` SET `stage`="+.@cStage+",`time`="+.@cTime+" WHERE `char_id` = "+getcharid(0)+" AND `plant_ord`="+.@pOrd+" AND `plant_id`="+.@pID;
-						delitem $Regador,$rQtd;
+						// delitem $Regador,$rQtd;
+						set FOCUS, FOCUS - .@cost;
 						close2;
 						duplicateremove(strnpcinfo(0));
 						duplicatenpc("planta2", " ",.@nTmp$,.@map$,.@x,.@y,DIR_SOUTH,atoi(.@PlantVal$[.@cSpr]));				
@@ -349,28 +372,36 @@ function	script	farm	{
 
 						.@lootid1 = atoi(.@PlantVal$[1]);
 						.@lootid2 = atoi(.@PlantVal$[11]);
-						.@qtty = atoi(.@PlantVal$[2]);
-						.@loot2 = rand(1,(.@qtty - 2));
-						.@loot1 = .@qtty - .@loot2;
+						.@loot1  = atoi(.@PlantVal$[2]);
 
-
-						cutin "p_00",4; sleep2 100; specialeffect2 457;
-						getitem .@lootid2, .@loot2; sleep2 200;
-						cutin "p_01",4; specialeffect2 457;
-						getrandgroupitem IG_RM_007;
-						cutin "p_02",4; specialeffect2 457; sleep2 500;
+						pcblockmove getcharid(3),1;
+						cutin "f_00",4; sleep2 300; specialeffect2 457;
+						cutin "f_01",4; specialeffect2 457;
+						getitem .@lootid2, rand(1,3); sleep2 300;
+						cutin "f_02",4; specialeffect2 457; sleep2 300;
+						cutin "f_03",4; specialeffect2 457; sleep2 300;
 						if(rand(1,10) <= .@pID)
 							getitem 526,2; // royal jelly
-						cutin "p_03",4; specialeffect2 457; sleep2 300;
-						getitem .@lootid1, .@loot1; sleep2 400;
+						cutin "f_04",4; specialeffect2 457; sleep2 300;
+						cutin "f_05",4; specialeffect2 457; sleep2 300;
+						cutin "f_06",4; specialeffect2 457; sleep2 300;
+						for(.@j=0;.@j<.@loot1;.@j++) {
+							if(rand(2) == 1) {
+								getitem .@lootid1, 1;
+							} else {
+								.@inferior = .@lootid1 - 30000;
+								getitem .@inferior, 1;
+							}
+						}
+						cutin "f_ok",4; specialeffect2 457; sleep2 400;
 						cutin "",255;
-
+						pcblockmove getcharid(3),0;
 
 						// getitem atoi(.@PlantVal$[1]),($PlantGain ? rand(1,atoi(.@PlantVal$[2])):atoi(.@PlantVal$[2]));
 						query_sql "DELETE FROM `farm` WHERE `id` = "+.@name$;							
 
 
-						updateXP(.@PlantInfo[0]);
+						callfunc "updateXP",.@PlantInfo[0];
 
 						duplicateremove(strnpcinfo(0));
 						end;
@@ -383,65 +414,73 @@ function	script	farm	{
 	dispbottom "This doesn't seem to belong to you."; 
 	end;
 
+}
 
-	function updateXP {
-		.@lv = PRO_INFO[0];
-		if(.@lv == (getarraysize(getvariableofnpc(.Farmer_Exp$,"farmer")) -1))
-			return;
 
-		.@plantlvl = getarg(0,1);
+function	script	updateXP	{
+	.@lv = PRO_INFO[0];
+	if(.@lv == (getarraysize(getvariableofnpc(.Farmer_Exp$,"farmer")) -1))
+		return;
+
+	.@plantlvl = getarg(0,0);
+
+	if(.@plantlvl == 0) {
+		// xp from creating food
+		PRO_INFO[1] += (.@xp = 8);
+	} else {
+		// xp from harvesting
 		if(.@lv < 7 && .@plantlvl < .@lv) 
 			PRO_INFO[1] += (.@xp = getvariableofnpc(.Farmer_Exp[.@plantlvl],"farmer"));
 		else 
 			PRO_INFO[1] += (.@xp = getvariableofnpc(.Farmer_Exp[.@lv],"farmer"));
-		
-		dispbottom "Farmer Exp gained: " + .@xp;
-		
-
-		if(PRO_INFO[1] >= getvariableofnpc(.Xp2LvlUp,"farmer") && PRO_INFO[0] < (getarraysize(getvariableofnpc(.Farmer_Exp,"farmer")) -1)) {
-			.@lv++;
-			setarray PRO_INFO[0], .@lv;
-			setarray PRO_INFO[1], 0;
-			specialeffect2 999;
-			soundeffect "bijou_die.wav", 0;
-			
-			announce "Farmer LEVEL UP!",bc_blue|bc_self;
-			dispbottom "You are now a " + getvariableofnpc(.Farmer_Exp$[.@lv],"farmer") + " Farmer. Congratulations!";
-			if(.@lv < 7)
-				dispbottom "You can now plant " + $@PlantName$[(.@lv+1)] + ".";
-
-			if(.@lv >= 3) {
-				setcell instance_mapname("farm", @instance),18,14,25,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),18,20,25,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),18,26,25,29,CELL_PLANT,1;
-
-				setcell instance_mapname("farm", @instance),28,14,35,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),28,20,35,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),28,26,35,29,CELL_PLANT,1;
-
-				setcell instance_mapname("farm", @instance),38,14,45,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),38,20,45,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),38,26,45,29,CELL_PLANT,1;
-				dispbottom "First farm extension unlocked.";
-			}
-
-			if(.@lv == 7) {
-				setcell instance_mapname("farm", @instance),50,14,57,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),50,20,57,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),50,26,57,29,CELL_PLANT,1;
-
-				setcell instance_mapname("farm", @instance),60,14,67,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),60,20,67,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),60,26,67,29,CELL_PLANT,1;
-
-				setcell instance_mapname("farm", @instance),70,14,77,17,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),70,20,77,23,CELL_PLANT,1;
-				setcell instance_mapname("farm", @instance),70,26,77,29,CELL_PLANT,1;
-				dispbottom "Second farm extension unlocked.";
-			}
-		}
-		return;
 	}
+	
+	dispbottom "Farmer Exp gained: " + .@xp;
+	
+
+	if(PRO_INFO[1] >= getvariableofnpc(.Xp2LvlUp,"farmer") && PRO_INFO[0] < (getarraysize(getvariableofnpc(.Farmer_Exp,"farmer")) -1)) {
+		.@lv++;
+		setarray PRO_INFO[0], .@lv;
+		setarray PRO_INFO[1], 0;
+		specialeffect2 999;
+		soundeffect "bijou_die.wav", 0;
+		
+		announce "Farmer LEVEL UP!",bc_blue|bc_self;
+		dispbottom "You are now a " + getvariableofnpc(.Farmer_Exp$[.@lv],"farmer") + " Farmer. Congratulations!";
+		if(.@lv < 7)
+			dispbottom "You can now plant " + $@PlantName$[(.@lv+1)] + ".";
+
+		if(.@lv >= 3) {
+			setcell instance_mapname("farm", @instance),18,14,25,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),18,20,25,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),18,26,25,29,CELL_PLANT,1;
+
+			setcell instance_mapname("farm", @instance),28,14,35,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),28,20,35,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),28,26,35,29,CELL_PLANT,1;
+
+			setcell instance_mapname("farm", @instance),38,14,45,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),38,20,45,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),38,26,45,29,CELL_PLANT,1;
+			dispbottom "First farm extension unlocked.";
+		}
+
+		if(.@lv == 7) {
+			setcell instance_mapname("farm", @instance),50,14,57,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),50,20,57,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),50,26,57,29,CELL_PLANT,1;
+
+			setcell instance_mapname("farm", @instance),60,14,67,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),60,20,67,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),60,26,67,29,CELL_PLANT,1;
+
+			setcell instance_mapname("farm", @instance),70,14,77,17,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),70,20,77,23,CELL_PLANT,1;
+			setcell instance_mapname("farm", @instance),70,26,77,29,CELL_PLANT,1;
+			dispbottom "Second farm extension unlocked.";
+		}
+	}
+	return;
 }
 
 
@@ -467,8 +506,8 @@ OnTimer600000: //10min
 	
 
 OnInit:
-	set $Regador,523;		//ID do item que vai regar as plantas.	
-	set $rQtd,1;			//Quantidade do item que vai ser utilizado
+	// set $Regador,523;		//ID do item que vai regar as plantas.	
+	set $rQtd,90;			//Quantidade de foco para regar a planta
 	// set $PlantGain,1;		// 0 = ganha o valor fixo definido na fun��o, 1 = ganha um valor aleat�rio definido na fun��o
 	
 	setarray $@PlantName$[1],"Apple Tree","Grapes Tree","Orange Tree","Strawberry Tree","Prickly Fruit Tree","Mastela Tree","Yggdrasil Tree";
@@ -536,13 +575,13 @@ function	script	plant_type	{
 	
 	switch(getarg(0))
 	{
-		case 1: set .@PlantSet$,"1,512,30,10463,10464,10465,10466,0,14400,57600,14400,507"; break; // apple tree
-		case 2: set .@PlantSet$,"2,514,30,10463,10464,10465,10468,0,14400,57600,14400,511"; break; // grapes tree
-		case 3: set .@PlantSet$,"3,582,30,10463,10464,10465,10469,0,14400,57600,14400,508"; break; // orange tree
-		case 4: set .@PlantSet$,"4,578,30,10463,10464,10465,10470,0,14400,57600,14400,509"; break; // strawberry tree
-		case 5: set .@PlantSet$,"5,576,16,10463,10464,10465,10472,0,14400,57600,14400,587"; break; // prickly tree
-		case 6: set .@PlantSet$,"6,522,16,10463,10464,10465,10471,0,14400,57600,14400,510"; break; // mastela tree
-		case 7: set .@PlantSet$,"7,607,10,10463,10464,10465,10467,0,14400,57600,14400,12292"; break; // yggdrasil tree
+		case 1: set .@PlantSet$,"1,30512,10,10463,10464,10465,10466,0,0,0,86400,507"; break; // apple tree
+		case 2: set .@PlantSet$,"2,30514,10,10463,10464,10465,10468,0,0,0,86400,511"; break; // grapes tree
+		case 3: set .@PlantSet$,"3,30582,10,10463,10464,10465,10469,0,0,0,86400,508"; break; // orange tree
+		case 4: set .@PlantSet$,"4,30578,10,10463,10464,10465,10470,0,0,0,86400,509"; break; // strawberry tree
+		case 5: set .@PlantSet$,"5,30576, 8,10463,10464,10465,10472,0,0,0,86400,587"; break; // prickly tree
+		case 6: set .@PlantSet$,"6,30522, 6,10463,10464,10465,10471,0,0,0,86400,510"; break; // mastela tree
+		case 7: set .@PlantSet$,"7,30607, 6,10463,10464,10465,10467,0,0,0,86400,12292"; break; // yggdrasil tree
 	}
 	
 	return (.@PlantSet$ != "" ? .@PlantSet$:"null");

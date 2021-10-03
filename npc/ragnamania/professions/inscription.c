@@ -8,6 +8,7 @@ OnInit:
 	.n$ = "^0055DD[ Inscription ] ^000000";
 	// Player Settings
 	set .Xp2LvlUp, 1000;
+	set .cost, 1000; // base focus necessary to craft
 	setarray .InscriptionTitle$[0],		"Apprentice","Journeyman","Skilled","Expert","Artisan","Master","Grand Master","Illustrious";
 	setarray .InscriptionDyeID[0],     	         975,         976,      978,     979,      970,     981,           982,          983;
 	setarray .Inscription_Lvl[0],	               0,           1,        2,       3,        4,       5,             6,            7; // * Required Lvl to Work on It
@@ -574,6 +575,8 @@ L_REDO:
 			next;
 			mes .n$;
 			mes "Craft: ^FF6600" + .@cardnames$[.@index] + "^000000";
+			.@cost = .cost - (.@lv * 10);
+			mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost) + "^000000";
 			mes "Resource List:";
 
 			// Blank scroll
@@ -623,8 +626,15 @@ L_REDO:
 						logmes "Cheater. Inscription";
 						close;
 					}
+
+					if(FOCUS < .@cost) {
+						mes "^ff0000 ** Not enough Focus **^000000";
+						next;
+						goto L_MENU;
+					}
 					close2;
 
+					set FOCUS, FOCUS - .@cost;
 					delitem BLANK_SCROLL,1;
 					delitem .@dye,1;
 					delitem .@rtid, .@rtqt;
@@ -714,6 +724,8 @@ S_MakeDye:
 	}
 	next;
 	mes .n$;
+	.@cost = (.cost/5) - (.@lv * 10);
+	mes "Focus: ^0000FF" + callfunc("F_InsertComma",FOCUS) + "/" + callfunc("F_InsertComma",.@cost) + "^000000";
 	mes "Ingredients:";
 	for(.@i=0;.@i<getarraysize(.@item);.@i++) {
 		mes .@count[.@i] + "x " + getitemname(.@item[.@i]);
@@ -733,6 +745,12 @@ S_MakeDye:
 			clear;
 			goto L_Menu;
 		}
+		if(FOCUS < .@cost) {
+			mes "^ff0000 ** Not enough Focus **^000000";
+			next;
+			goto L_MENU;
+		}
+		set FOCUS, FOCUS - .@cost;
 		// delete items
 		for (.@i=0; .@i < .@size; .@i++)
 			delitem .@item[.@i], .@count[.@i];

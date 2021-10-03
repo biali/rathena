@@ -1413,7 +1413,7 @@ ACMD_FUNC(item)
 		{
 			if (!battle_config.reserved_costume_id)
 			{
-				clif_displaymessage(fd, "Costume convertion is disable. Set a value for reserved_cosutme_id on your battle.conf file.");
+				clif_displaymessage(fd, "Costume convertion is disabled. Set a value for reserved_cosutme_id on your battle.conf file.");
 				return -1;
 			}
 			if (!(item_data[j]->equip&EQP_HEAD_LOW) &&

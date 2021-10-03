@@ -245,6 +245,7 @@ hugel,149,188,2	script	Illustrious Farmer	570,{
 				} else {
 					set PROFESSION, 0;
 					deletearray PRO_INFO[0],getarraysize(PRO_INFO);
+					query_sql "DELETE FROM `farm` WHERE `char_id` = "+getcharid(0);
 					mes "It is done... I've removed you from our records.";
 					mes "Have a blessed day, " + strcharinfo(0);
 					close;
