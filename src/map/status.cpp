@@ -4029,6 +4029,9 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 		if (!sd->inventory_data[index])
 			continue;
 
+		if (sd->inventory.u.items_inventory[current_equip_item_index].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[current_equip_item_index].card[2], sd->inventory.u.items_inventory[current_equip_item_index].card[3]) == battle_config.reserved_costume_id)
+			continue; // Lets Ignore CostumeIT items Biali
+
 		base_status->def += sd->inventory_data[index]->def;
 
 		// Items may be equipped, their effects however are nullified.
@@ -15505,7 +15508,7 @@ static int status_natural_heal(struct block_list* bl, va_list args)
 	}
 
 	//biali mount rework
-	if(sd->mount_id && sd->tmp_hp < sd->tmp_maxhp) {
+	if(sd && sd->mount_id && sd->tmp_hp < sd->tmp_maxhp) {
 		
 		int multiplier = 1;
 		if(!vd)
