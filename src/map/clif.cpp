@@ -5024,7 +5024,7 @@ void clif_getareachar_unit( struct map_session_data* sd,struct block_list *bl ){
 			}
 
 			// biali trying to show the crossed swords on top of enemy heads
-			if(map_getmapflag(tsd->bl.m,MF_RPK)) {
+			if(map_getmapflag(tsd->bl.m,MF_RPK) && tsd->status.party_id != sd->status.party_id) {
 				clif_sendrpkswords_single(tsd->fd, sd);
 				clif_sendrpkswords_single(sd->fd, tsd);
 			}
