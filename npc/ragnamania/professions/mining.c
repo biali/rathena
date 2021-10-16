@@ -94,6 +94,7 @@ OnInit:
 			case L_VEIN_RUNITE: 	case G_VEIN_RUNITE: 		return 5;
 			case L_VEIN_METEORITE: 	case G_VEIN_METEORITE: 		return 6;
 			case L_VEIN_ADAMANTIUM:	case G_VEIN_ADAMANTIUM: 	return 7;
+			case L_VEIN_BRADIUM:	case G_VEIN_BRADIUM:	 	return 8;
 			default: return -1;
 		}
 
@@ -143,7 +144,7 @@ OnInit:
 
 OnInit:
 	setarray .caves$[0], "alde_dun01","alde_dun02","alde_dun03","alde_dun04","gef_dun00","gef_dun01","gef_dun02","gef_dun03","gl_dun01","gl_dun02","iz_dun00","iz_dun01","iz_dun02","iz_dun03","iz_dun04","mjo_dun01","mjo_dun02","mjo_dun03","orcsdun01","orcsdun02","pay_dun00","pay_dun01","pay_dun02","pay_dun03","pay_dun04","beach_dun","beach_dun2","beach_dun3","mag_dun01","mag_dun02","gon_dun01","gon_dun02","gon_dun03","ein_dun01","ein_dun02","ice_dun01","ice_dun02","ice_dun03","bra_dun01","bra_dun02","juperos_01","thor_v01","thor_v02","thor_v03","abyss_01","abyss_02","abyss_03";
-    setarray .maplvl[0],			3,			 3,			  4,		   4,		   1,		   1,		   2,		   2,		  3,		 4,			1,		   1,		  2,		 2,			3,			2,			2,			3,			1,			2,			1,			1,			2,			3,			4,			4,			5,			  2,	 	  4,		  5,		  4,		  5,		  6,		  4,		  5,		  5,		  5,		  6,		  6,		  7,		   5,		  5,		 6,			7,		   5,		  6,		 7;
+    setarray .maplvl[0],			3,			 3,			  4,		   4,		   1,		   1,		   2,		   2,		  3,		 4,			1,		   1,		  2,		 2,			3,			2,			2,			3,			1,			2,			1,			1,			2,			3,			4,			4,			5,			  2,	 	  4,		  5,		  4,		  5,		  6,		  4,		  5,		  5,		  5,		  6,		  5,		  7,		   6,		  6,		 7,			8,		   6,		  7,		 8;
 	.lesser_veins = 10;
 	.greater_veins = 3;
 
@@ -157,6 +158,7 @@ OnInit:
 			case 5:	.@id = 25709; break;
 			case 6:	.@id = 25711; break;
 			case 7:	.@id = 25713; break;
+			case 8:	.@id = 25715; break;
 			default: .@id = 25701; break;
 		}
 		spawn(.caves$[.@i],.@id,.lesser_veins);
@@ -186,6 +188,7 @@ OnInit:
 			case L_VEIN_RUNITE		: .@n$ = "Runite Vein"; break;
 			case L_VEIN_METEORITE	: .@n$ = "Meteorite Vein"; break;
 			case L_VEIN_ADAMANTIUM	: .@n$ = "Adamantium Vein"; break;
+			case L_VEIN_BRADIUM		: .@n$ = "Bradium Vein"; break;
 			case G_VEIN_COPPER		: .@n$ = "Copper Vein"; break;
 			case G_VEIN_TIN			: .@n$ = "Tin Vein"; break;
 			case G_VEIN_IRON		: .@n$ = "Iron Vein"; break;
@@ -193,6 +196,7 @@ OnInit:
 			case G_VEIN_RUNITE		: .@n$ = "Runite Vein"; break;
 			case G_VEIN_METEORITE	: .@n$ = "Meteorite Vein"; break;
 			case G_VEIN_ADAMANTIUM	: .@n$ = "Adamantium Vein"; break;
+			case G_VEIN_BRADIUM		: .@n$ = "Bradium Vein"; break;
         }
 
 		freeloop(1);

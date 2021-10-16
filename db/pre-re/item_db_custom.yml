@@ -7661,7 +7661,7 @@ Body:
     AegisName: Journeyman_Pickaxe
     Name: Journeyman's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 10500
     Weight: 400
     Attack: 39
     Range: 1
@@ -7682,7 +7682,7 @@ Body:
     AegisName: Skilled_Pickaxe
     Name: Skilled's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 35000
     Weight: 400
     Attack: 39
     Range: 1
@@ -7703,7 +7703,7 @@ Body:
     AegisName: Expert_Pickaxe
     Name: Expert's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 300000
     Weight: 400
     Attack: 39
     Range: 1
@@ -7724,7 +7724,7 @@ Body:
     AegisName: Artisan_Pickaxe
     Name: Artisan's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 530000
     Weight: 400
     Attack: 39
     Range: 1
@@ -7745,7 +7745,7 @@ Body:
     AegisName: Master_Pickaxe
     Name: Master's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 800000
     Weight: 400
     Attack: 39
     Range: 1
@@ -7766,7 +7766,7 @@ Body:
     AegisName: Grand_Master_Pickaxe
     Name: Grand-Master's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 990000
     Weight: 400
     Attack: 39
     Range: 1
@@ -7787,7 +7787,7 @@ Body:
     AegisName: Illustrious_Pickaxe
     Name: Illustrious's Pickaxe
     Type: Armor
-    Buy: 500
+    Buy: 1200000
     Weight: 400
     Attack: 39
     Range: 1
@@ -8152,4 +8152,3 @@ Body:
     Script: |
       percentheal 100,100;
       sc_start SC_INCALLSTATUS,60000,5;
-  
