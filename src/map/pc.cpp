@@ -1939,7 +1939,18 @@ int pc_equippoint_sub(struct map_session_data *sd,struct item_data* id){
 int pc_equippoint(struct map_session_data *sd,int n){
 	nullpo_ret(sd);
 
-	return pc_equippoint_sub(sd,sd->inventory_data[n]);
+	int ep = pc_equippoint_sub(sd, sd->inventory_data[n]);
+
+	if (battle_config.reserved_costume_id &&
+		sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE &&
+		MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.reserved_costume_id)
+	{ // Costume Item - Converted
+		if (ep&EQP_HEAD_TOP) { ep &= ~EQP_HEAD_TOP; ep |= EQP_COSTUME_HEAD_TOP; }
+		if (ep&EQP_HEAD_LOW) { ep &= ~EQP_HEAD_LOW; ep |= EQP_COSTUME_HEAD_LOW; }
+		if (ep&EQP_HEAD_MID) { ep &= ~EQP_HEAD_MID; ep |= EQP_COSTUME_HEAD_MID; }
+		if (ep&EQP_GARMENT) { ep &= ~EQP_GARMENT; ep |= EQP_COSTUME_GARMENT; }
+	}
+	return ep;
 }
 
 /**
@@ -9882,6 +9893,10 @@ int pc_dead(struct map_session_data *sd,struct block_list *src, uint16 skill_id)
 				continue;
 			}
 
+			// protected items wont drop. one item can be marked as protected in the item_db_*.yml
+			if(id && id->flag.fulllootNoDrop == true)
+				continue;
+
 			//lets also skip items we should not break (itemdb.hpp can keep a list of constants for this)
 			if(sd->inventory.u.items_inventory[i].nameid == ITEMID_LOGBOOK)
 				continue;
@@ -11631,6 +11646,10 @@ static int pc_checkcombo(struct map_session_data *sd, item_data *data) {
 							}
 						}
 
+						//Biali Costume shoundnt combo
+						if (sd->inventory.u.items_inventory[index].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[index].card[2], sd->inventory.u.items_inventory[index].card[3]) == battle_config.reserved_costume_id)
+							continue;						
+
 						if (do_continue)
 							continue;
 					}
@@ -11765,6 +11784,9 @@ int pc_load_combo(struct map_session_data *sd) {
 
 			for (uint8 j = 0; j < MAX_SLOTS; j++) {
 				if (!sd->inventory.u.items_inventory[idx].card[j])
+					continue;
+				// biali costume items
+				if(battle_config.reserved_costume_id && sd->inventory.u.items_inventory[idx].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[idx].card[2], sd->inventory.u.items_inventory[idx].card[3]) == battle_config.reserved_costume_id)
 					continue;
 
 				if ((data = itemdb_exists(sd->inventory.u.items_inventory[idx].card[j])) != nullptr) {
@@ -12010,7 +12032,8 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 	iflag = sd->npc_item_flag;
 
 	// Check for combos (MUST be before status_calc_pc)
-	if (!id->combos.empty())
+	// Biali added code to do not compo costume equips
+	if (!id->combos.empty() && !(sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.reserved_costume_id))
 		pc_checkcombo(sd, id);
 
 	if (itemdb_isspecial(sd->inventory.u.items_inventory[n].card[0]))
@@ -12022,7 +12045,8 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 			if (!sd->inventory.u.items_inventory[n].card[i])
 				continue;
 			if ((data = itemdb_exists(sd->inventory.u.items_inventory[n].card[i])) != nullptr) {
-				if (!data->combos.empty())
+				// Biali added code to check for costume items
+				if (!data->combos.empty() && !(sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.reserved_costume_id))
 					pc_checkcombo(sd, data);
 			}
 		}
@@ -12033,7 +12057,8 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 		clif_skillinfoblock(sd);
 
 	//OnEquip script [Skotlex]
-	if (id) {
+	// Biali added code to do not compo costume equips
+	if (id && !(sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.reserved_costume_id)) {
 		//only run the script if item isn't restricted
 		if (id->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(id,sd->bl.m)))
 			run_script(id->equip_script,0,sd->bl.id,fake_nd->bl.id);
@@ -12091,7 +12116,8 @@ static void pc_unequipitem_sub(struct map_session_data *sd, int n, int flag) {
 				if (!sd->inventory.u.items_inventory[n].card[i])
 					continue;
 				if ((data = itemdb_exists(sd->inventory.u.items_inventory[n].card[i])) != nullptr) {
-					if (!data->combos.empty()) {
+					// biali added code to check for costume items
+					if (!data->combos.empty() && !(sd->inventory.u.items_inventory[n].card[0] == CARD0_CREATE && MakeDWord(sd->inventory.u.items_inventory[n].card[2], sd->inventory.u.items_inventory[n].card[3]) == battle_config.reserved_costume_id)) {
 						if (pc_removecombo(sd, data))
 							status_calc = true;
 					}
