@@ -14,7 +14,7 @@
 	.@veinlvl = getVeinLvl(.@spr);
 
 	if(.@pickaxeLvl < .@veinlvl) {
-		dispbottom "I need to be a " + callfunc("F_GetProfLevel",(.@veinlvl-1)) + " " + callfunc("F_GetProfName") + " for that",0xFF6600;
+		dispbottom "I need a proper tool to mine that.",0xFF6600;
 		end;
 	}
 	
@@ -61,15 +61,12 @@
 	respawn();
 	setd ".depleted_"+strnpcinfo(2), 1;
 
-	if((.@veinlvl -1) == PRO_INFO[0] || PRO_INFO[0] == 7) {
-		// should we use this or getexp?
-		addreputation(getcharid(6),.faction_exp,.faction_points); // this will give 1000 points towards the faction reputation and 5 points in faction points
-		updateXp(4);
-	}
+	addreputation(getcharid(6),.faction_exp * .@veinlvl, .faction_points * .@veinlvl); // this will give faction points towards the faction reputation points in faction points
+	updateXp(.baseXP * .@veinlvl);
 
 	setd("."+strnpcinfo(2)+"",0); // make it again available for gathering
 	
-	sleep .tempo_main;
+	sleep .tempo_main * .@veinlvl;
 	respawn();
 
 	end;
@@ -77,10 +74,11 @@
 
 OnInit:
 	// === configurações básicas
-	set .tempo_main,600000;	//tempo que irá nascer aleatóriamente no mapa (em milisegundos).
+	set .tempo_main,300000;	//tempo base que irá nascer aleatóriamente no mapa (em milisegundos). Default 5 mins (300000)
 	setarray .equip[1],30311,30312,30313,30314,30315,30316,30317,30318;	//equipamento necessário
-	set .faction_exp, 1000;
-	set .faction_points, 5;
+	set .faction_exp, 100;
+	set .faction_points, 1;
+	set .baseXP, 10;
 	end;
 
 
@@ -119,18 +117,19 @@ OnInit:
 
 	function updateXp {
 		.@lv = PRO_INFO[0];
-		if(.@lv == (getarraysize(getvariableofnpc(.Craftsman_Exp$,"craftsman")) -1))
+		if(.@lv == (getarraysize(getvariableofnpc(.Craftsman_Exp,"craftsman")) -1))
 			return;
-		.@xp = getarg(0,1);
-		setarray PRO_INFO[1], PRO_INFO[1]+.@xp;
-		if(PRO_INFO[1] >= getvariableofnpc(.Xp2LvlUp,"craftsman") && .@lv < (getarraysize(getvariableofnpc(.CraftsmanTitle$,"craftsman")) -1)) {
-			.@lv++;
-			setarray PRO_INFO[0], .@lv;
+		.@xp = getarg(0,10);
+		.@lv1 = .@lv + 1;
+		dispbottom "Gainned " + .@xp + " craftsman experience points.",0xff6600;
+		setarray PRO_INFO[1], PRO_INFO[1] + .@xp;
+		if(PRO_INFO[1] >= getvariableofnpc(.Craftsman_Exp[.@lv1],"craftsman") && .@lv < (getarraysize(getvariableofnpc(.CraftsmanTitle$,"craftsman")) -1)) {
+			setarray PRO_INFO[0], .@lv1;
 			setarray PRO_INFO[1], 0;
 			specialeffect2 999;
 			soundeffect "bijou_die.wav", 0;
 			announce "CRAFTSMAN LEVEL UP!",bc_blue|bc_self;
-			dispbottom "You are now a " + getvariableofnpc(.CraftsmanTitle$[.@lv],"craftsman") + " Craftsman. Congratulations!";
+			dispbottom "You are now a " + getvariableofnpc(.CraftsmanTitle$[.@lv1],"craftsman") + " Craftsman. Congratulations!";
 		}
 		return;
 	}
@@ -145,8 +144,8 @@ OnInit:
 OnInit:
 	setarray .caves$[0], "alde_dun01","alde_dun02","alde_dun03","alde_dun04","gef_dun00","gef_dun01","gef_dun02","gef_dun03","gl_dun01","gl_dun02","iz_dun00","iz_dun01","iz_dun02","iz_dun03","iz_dun04","mjo_dun01","mjo_dun02","mjo_dun03","orcsdun01","orcsdun02","pay_dun00","pay_dun01","pay_dun02","pay_dun03","pay_dun04","beach_dun","beach_dun2","beach_dun3","mag_dun01","mag_dun02","gon_dun01","gon_dun02","gon_dun03","ein_dun01","ein_dun02","ice_dun01","ice_dun02","ice_dun03","bra_dun01","bra_dun02","juperos_01","thor_v01","thor_v02","thor_v03","abyss_01","abyss_02","abyss_03";
     setarray .maplvl[0],			3,			 3,			  4,		   4,		   1,		   1,		   2,		   2,		  3,		 4,			1,		   1,		  2,		 2,			3,			2,			2,			3,			1,			2,			1,			1,			2,			3,			4,			4,			5,			  2,	 	  4,		  5,		  4,		  5,		  6,		  4,		  5,		  5,		  5,		  6,		  5,		  7,		   6,		  6,		 7,			8,		   6,		  7,		 8;
-	.lesser_veins = 10;
-	.greater_veins = 3;
+	.lesser_veins = 12;
+	.greater_veins = 4;
 
 	freeloop(1);
 	for(.@i=0;.@i<getarraysize(.caves$);.@i++) {
@@ -209,7 +208,6 @@ OnInit:
 				.@y1 = rand(1,.@y);
 
 				if ( checkcell(.@map$,.@x1,.@y1,cell_chkpass) ) {
-					// debugmes ">>>>>>>>>>>> "+.@nTmp$+" Pedra "+.@i+" em .@x1,.@y1: " + .@x1 + "," + .@y1;
 					.@done = duplicatenpc("pedra_main",""+.@n$+"",""+.@nTmp$+"",.@map$,.@x1,.@y1,DIR_SOUTH,.@id);
 				}
 			}

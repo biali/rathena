@@ -2,11 +2,12 @@
 	end;
 
 OnInit:
-	set .Xp2LvlUp, 1000;
+	//set .Xp2LvlUp, 1000;
+	set .baseXP, 100;
 	set .metalid, 30361; // first metal, copper, as base for the rest
 	setarray .CraftsmanTitle$[0],		"Apprentice","Journeyman","Skilled","Expert","Artisan","Master","Grand Master","Illustrious";
 	setarray .Craftsman_Lvl[0],	                   0,           1,        2,       3,        4,       5,             6,            7; // * Required Lvl to Work on It
-	setarray .Craftsman_Exp[0],   	              50,          40,       20,      10,        8,       5,             4,            2; // * Experience gained per craft
+	setarray .Craftsman_Exp[0],   	           	   0, 		10000,    30000,   90000,   150000,  400000,       1000000,      2000000; // * Experience required to lvl up
 
 
 	// list of materials to create any of the equips that dont have a tailored items list
@@ -50,7 +51,7 @@ OnInit:
 	// 1202,	4,	1,	Knife
 	// 1602,	4,	1,	Rod
 	// 1951,	4,	1,	Rope
-	setarray .Menu_0[0][0],30361,2227,2221,2229,2607,2402,2404,2507,2502,2514,2104,2102,2306,2308,2329,1302,1702,1502,1105,1402,1202,1602,1951;
+	setarray .Menu_0[0],30361,2227,2221,2229,2607,2402,2404,2507,2502,2514,2104,2102,2306,2308,2329,1302,1702,1502,1105,1402,1202,1602,1951;
 	setarray .item_2404[0],30361,4,919,20;				// 2404, 1, 64,Shoes
 	setarray .item_2507[0],30361,4,1059,10,930,10;		// 2507, 0, 4,Ancient Cape
 	setarray .item_2514[0],30361,6,999,10;				// 2514, 1, 4,Pauldron
@@ -89,7 +90,7 @@ OnInit:
 	// 1205,	4,	1,	Cutter
 	// 1505,	4,	1,	Mace
 	// 1802,	4,	1,	Waghnak	
-	setarray .Menu_1[0][0],30362,5045,2289,5014,2617,2622,2618,2621,2626,2406,2506,2504,2508,2116,2109,2106,2310,2313,2322,1352,1108,1205,1505,1802;
+	setarray .Menu_1[0],30362,5045,2289,5014,2617,2622,2618,2621,2626,2406,2506,2504,2508,2116,2109,2106,2310,2313,2322,1352,1108,1205,1505,1802;
 	setarray .item_2289[0],30362,4,919,20;				// 2289, 0, 256,Poo Poo Hat
 	setarray .item_2622[0],30362,2,2602,1;				// 2622, 1, 136,Earring
 	setarray .item_2621[0],30362,2,2601,1;				// 2621, 1, 136,Ring
@@ -98,7 +99,7 @@ OnInit:
 	setarray .item_2506[0],30362,4,2505,1;				// 2506, 1, 4,Manteau
 	setarray .item_2504[0],30362,4,2503,1;				// 2504, 1, 4,Muffler
 	setarray .item_2106[0],30362,4,943,60,7054,5;		// 2106, 1, 32,Shield
-	setarray .item_2310[0],30362,4,7065,30;			// 2310, 1, 16,Coat
+	setarray .item_2310[0],30362,6,7065,30;				// 2310, 1, 16,Coat
 	setarray .item_2313[0],30362,8,2312,1;				// 2313, 1, 16,Padded Armor
 	setarray .item_2322[0],30362,4,2321,1,7166,20;		// 2322, 1, 16,Silk Robe
 	setarray .item_1352[0],30362,6,1351,1,999,10;		// 1352,	4,	1,	Battle Axe
@@ -134,7 +135,7 @@ OnInit:
 	// 1904,	3,	2,	Mandolin
 	// 1806,	3,	2,	Studded Knuckles
 	// 1605,	3,	2,	Wand
-	setarray .Menu_2[0][0],30363,2285,2225,2285,2225,2625,2624,2614,2420,2418,2520,2517,2108,2114,2315,2337,2333,1705,1117,1208,1705,1117,1208,1485,1550,13103,1214,1355,1251,1904,1806,1605;
+	setarray .Menu_2[0],30363,2285,2225,2285,2225,2625,2624,2614,2420,2418,2520,2517,2108,2114,2315,2337,2333,1705,1117,1208,1705,1117,1208,1485,1550,13103,1214,1355,1251,1904,1806,1605;
 	setarray .item_2285[0],30363,12,619,1;					// 2285, 0, 256,Apple of Archer
 	setarray .item_2625[0],30363,8,2605,1;					// 2625, 1, 136,Brooch
 	setarray .item_2624[0],30363,8,2604,1;					// 2624, 1, 136,Glove
@@ -184,7 +185,7 @@ OnInit:
 	// 1708,	3,	2,	Great Bow
 	// 1608,	3,	2,	Staff
 	// 1307,	0,	2,	Windhawk
-	setarray .Menu_3[0][0],30364,5017,2252,2680,2726,2425,2422,2521,2527,2544,2135,2355,2366,2354,2353,1155,1711,13152,1211,1511,13104,1455,1708,1608,1307;
+	setarray .Menu_3[0],30364,5017,2252,2680,2726,2425,2422,2521,2527,2544,2135,2355,2366,2354,2353,1155,1711,13152,1211,1511,13104,1455,1708,1608,1307;
 	setarray .item_5017[0],30364,16,2229,1,5014,1,932,50;				// 5017, 0, 256,Bone Helm
 	setarray .item_2252[0],30364,16,5045,1,7166,50,1059,50;				// 2252, 0, 256,Wizard Hat
 	setarray .item_2680[0],30364,16,2601,1,30151,10;					// 2680, 0, 136,Lesser Elemental Ring
@@ -236,7 +237,7 @@ OnInit:
 	// 1730,	1,	3,	Burning Bow
 	// 1163,	0,	3,	Claymore
 	// 1226,	2,	3,	Damascus
-	setarray .Menu_4[0][0],30365,5164,2703,2786,2717,2417,2409,2518,2545,2531,2125,2124,2316,2344,2336,1904,13013,1715,1611,1551,1553,1556,1554,1555,1730,1163,1226;
+	setarray .Menu_4[0],30365,5164,2703,2786,2717,2417,2409,2518,2545,2531,2125,2124,2316,2344,2336,1904,13013,1715,1611,1551,1553,1556,1554,1555,1730,1163,1226;
 	setarray .item_2286[0],30365,25,2234,1;								// 5164, 1, 512,Tiara
 	setarray .item_2703[0],30365,20,2621,1,30152,20;					// 2703, 1, 136,Expert Ring
 	setarray .item_2783[0],30365,20,2621,1,30153,20;					// 2783, 1, 136,Eye Stone Ring
@@ -263,7 +264,6 @@ OnInit:
 	setarray .item_1730[0],30365,20,1708,1,7122,50;						// 1730,	1,	3,	Burning Bow
 	setarray .item_1163[0],30365,30,1108,1,30154,10,30152,10;			// 1163,	0,	3,	Claymore
 	setarray .item_1226[0],30365,30,1205,1,30152,10,30153,10;			// 1226,	2,	3,	Damascus
-
 
 	// 30366 Meteorite Steel Bar
 	// 5172, 0, 256,Beret
@@ -293,7 +293,7 @@ OnInit:
 	// 1514,	2,	3,	Morning Star
 	// 1304,	0,	3,	Orcish Axe
 	// 1417,	1,	3,	Pole Axe
-	setarray .Menu_5[0][0],30366,5172,2652,2719,2716,2426,2418,2516,2111,2134,2311,2331,1732,1820,1564,1615,1812,1967,1726,1220,1908,1464,1625,1255,1818,1514,1304,1417;
+	setarray .Menu_5[0],30366,5172,2652,2719,2716,2426,2418,2516,2111,2134,2311,2331,1732,1820,1564,1615,1812,1967,1726,1220,1908,1464,1625,1255,1818,1514,1304,1417;
 	setarray .item_2652[0],30366,24,2625,1;							// 2652, 0, 136,Goddess of Fortune's Cursed Brooch
 	setarray .item_2719[0],30366,24,2625,1;							// 2719, 0, 136,Iron Wrist
 	setarray .item_2716[0],30366,24,2624,1,7166,50;					// 2716, 1, 136,Librarian Glove
@@ -321,8 +321,6 @@ OnInit:
 	setarray .item_1304[0],30366,24,1302,1,922,100;					// 1304,	0,	3,	Orcish Axe
 	setarray .item_1417[0],30366,50,1352,1;							// 1417,	1,	3,	Pole Axe
 
-
-
 	// 30367 Adamantium Steel Bar
 	// 5124,	Fricca's Circlet
 	// 5128		Goibne's Helm
@@ -346,7 +344,7 @@ OnInit:
 	// 1306,	1,	3,	War Axe
 	// 13107,	2,	3,	Wasteland's Outlaw
 	// 1980,	3,	3,	Whip of Balance
-	setarray .Menu_6[0][0],30367,5124,5128,2749,2718,2440,2532,2536,2123,2135,2365,2387,13414,1723,1613,1965,1620,1461,1120,1361,1158,1306,13107,1980;
+	setarray .Menu_6[0],30367,5124,5128,2749,2718,2440,2532,2536,2123,2135,2365,2387,13414,1723,1613,1965,1620,1461,1120,1361,1158,1306,13107,1980;
 	setarray .item_5124[0],30367,28,2322,1,30151,50;					// 5124,	Fricca's Circlet
 	setarray .item_5128[0],30367,50,2229,1;								// 5128		Goibne's Helm
 	setarray .item_2749[0],30367,28,2624,2,1059,100;					// 2749, 1, 136,Linen Glove
@@ -369,8 +367,6 @@ OnInit:
 	setarray .item_1306[0],30367,40,1352,1,1067,50,999,50;				// 1306,	1,	3,	War Axe
 	setarray .item_13107[0],30367,60;									// 13107,	2,	3,	Wasteland's Outlaw
 	setarray .item_1980[0],30367,50,1951,1;								// 1980,	3,	3,	Whip of Balance
-
-
 
 	// 30368 Bradium Steel Bar
 	// 2202, 1, 512,Sunglasses
@@ -398,7 +394,7 @@ OnInit:
 	// 1164,	0,	4,	Muramasa
 	// 1740,	2,	4,	Nepenthes Bow
 	// 1473,	0,	4,	Wizardry Staff
-	setarray .Menu_7[0][0],30368,2202,2656,2747,2619,2701,2419,2411,2424,2528,2138,2115,2390,2364,2367,1270,1972,1223,1364,1561,1926,1376,1261,1164,1740,1473;
+	setarray .Menu_7[0],30368,2202,2656,2747,2619,2701,2419,2411,2424,2528,2138,2115,2390,2364,2367,1270,1972,1223,1364,1561,1926,1376,1261,1164,1740,1473;
 	setarray .item_[0],30368,20,2201,5;							// 2202, 1, 512,Sunglasses
 	setarray .item_[0],30368,32,2607,2,7319,50;					// 2656, 0, 136,Armor Charm
 	setarray .item_[0],30368,32,2607,2,7206,50;					// 2747, 0, 136,Black Cat
@@ -562,10 +558,10 @@ L_MENU:
 						goto L_MENU;
 						break;
 					case 2:
-						craftItem(.@id,.@all,.@cost);
+						craftItem(.@id,.@all,.@cost,.@c);
 						break;
 					case 1:
-						craftItem(.@id,1,.@cost);
+						craftItem(.@id,1,.@cost,.@c);
 						break;
 				}
 				next;
@@ -655,6 +651,7 @@ OnInit:
 		.@id = getarg(0,0);
 		.@qt = getarg(1,1);
 		.@cost = getarg(2,1000);
+		.@c = getarg(3,0);
 		
 		for(.@j=0;.@j<.@qt;.@j++) {
 			.@check = 1;
@@ -682,7 +679,7 @@ OnInit:
 				cutin "c_f_ok",2; sleep2 500; 
 				cutin "",255; specialeffect2 610; //success!
 				getitem .@id, 1;
-				updateXP();
+				updateXP(.@c);
 			} else {
 				mes "ERROR: Cant find the items or Focus not enough. This will be reported to the staff.";
 				logmes "Cheater detected.";
@@ -698,19 +695,21 @@ OnInit:
 	}
 
 	function updateXP {
-		.@lv = PRO_INFO[0];
-		if(.@lv == (getarraysize(getvariableofnpc(.Craftsman_Exp$,"craftsman")) -1))
+		.@c = getarg(0,0); // this is the level of the equipment the player is crafting.
+		.@lv = PRO_INFO[0];	// this is the actual profession level of the player
+		.@lv1 = .@lv + 1; // this is the next level;
+		if(.@lv == (getarraysize(getvariableofnpc(.Craftsman_Exp,"craftsman")) -1))
 			return;
-		setarray PRO_INFO[1], PRO_INFO[1] + getvariableofnpc(.Craftsman_Exp[.@lv],"craftsman");
-		if(PRO_INFO[1] >= getvariableofnpc(.Xp2LvlUp,"craftsman") && PRO_INFO[0] < (getarraysize(getvariableofnpc(.Craftsman_Exp,"craftsman")) -1)) {
-			.@lv++;
-			setarray PRO_INFO[0], .@lv;
+		.@xp = getvariableofnpc(.baseXP,"craftsman") * (.@c + 1); //adding one because .@c starts from 0 (apprentice)
+		setarray PRO_INFO[1], PRO_INFO[1] + .@xp;
+		if(PRO_INFO[1] >= getvariableofnpc(.Craftsman_Exp[.@lv1],"craftsman") && PRO_INFO[0] < (getarraysize(getvariableofnpc(.Craftsman_Exp,"craftsman")) -1)) {
+			setarray PRO_INFO[0], .@lv1;
 			setarray PRO_INFO[1], 0;
 			specialeffect2 999;
 			soundeffect "bijou_die.wav", 0;
 			
 			announce "CRAFTSMAN LEVEL UP!",bc_blue|bc_self;
-			dispbottom "You are now a " + getvariableofnpc(.Craftsman_Exp$[.@lv],"craftsman") + " Craftsman. Congratulations!";
+			dispbottom "You are now a " + getvariableofnpc(.Craftsman_Exp[.@lv1],"craftsman") + " Craftsman. Congratulations!";
 		}
 		return;
 	}

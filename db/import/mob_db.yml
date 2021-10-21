@@ -8493,6 +8493,56 @@ Body:
       IgnoreMelee: true
       IgnoreMisc: true
       IgnoreRanged: true
+  - Id: 25715
+    AegisName: L_VEIN_BRADIUM
+    Name: Lesser Bradium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25716
+    AegisName: L_VEIN_BRADIUM_E
+    Name: Lesser Drained Bradium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
   - Id: 25721
     AegisName: G_VEIN_COPPER
     Name: Greater Copper Vein
@@ -8821,6 +8871,56 @@ Body:
   - Id: 25734
     AegisName: G_VEIN_ADAMANTIUM_E
     Name: Greater Drained Adamantium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25735
+    AegisName: G_VEIN_BRADIUM
+    Name: Greater Bradium Vein
+    Level: 1
+    Hp: 3
+    Attack: 1
+    Attack2: 2
+    Defense: 1
+    MagicDefense: 99
+    AttackRange: 1
+    SkillRange: 1
+    ChaseRange: 1
+    Size: Small
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 1
+    AttackMotion: 1
+    DamageMotion: 1
+    Modes:
+      IgnoreMagic: true
+      IgnoreMelee: true
+      IgnoreMisc: true
+      IgnoreRanged: true
+  - Id: 25736
+    AegisName: G_VEIN_BRADIUM_E
+    Name: Greater Drained Bradium Vein
     Level: 1
     Hp: 3
     Attack: 1
